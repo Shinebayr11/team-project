@@ -1,17 +1,21 @@
+"use client"
+
 import Link from "next/link"
 import { Search, Coins } from "lucide-react"
 import { NavTabs } from "./nav-tabs"
 import { ThemeToggle } from "./theme-toggle"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useAuth, SignInButton, UserButton } from "@clerk/nextjs"
+import { Button } from "@/components/ui/button"
 
 interface HeaderProps {
   credits?: number
-  user?: { username: string; avatarUrl?: string }
 }
 
-export function Header({ credits = 0, user }: HeaderProps) {
+export function Header({ credits = 0 }: HeaderProps) {
+  const { isSignedIn, isLoaded } = useAuth()
+
   return (
-    <header className="sticky top-0 z-50 border-b bg-background">
+    <header className="sticky top-0 z-40 border-b bg-background">
       <div className="flex h-16 items-center gap-6 px-6">
         <Link href="/" className="shrink-0 text-xl font-bold tracking-tight">
           Reelshop
@@ -31,17 +35,21 @@ export function Header({ credits = 0, user }: HeaderProps) {
         <div className="ml-auto flex shrink-0 items-center gap-2">
           <ThemeToggle />
 
-          <div className="flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground">
-            <Coins className="size-4" />
-            {credits.toLocaleString()}
-          </div>
-
-          <Avatar className="size-8">
-            <AvatarImage src={user?.avatarUrl} alt={user?.username} />
-            <AvatarFallback>
-              {user?.username?.[0]?.toUpperCase() ?? "?"}
-            </AvatarFallback>
-          </Avatar>
+          {!isLoaded ? (
+            <div className="size-8" aria-hidden />
+          ) : isSignedIn ? (
+            <>
+              <div className="flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground">
+                <Coins className="size-4" />
+                {credits.toLocaleString()}
+              </div>
+              <UserButton appearance={{ elements: { avatarBox: "size-8" } }} />
+            </>
+          ) : (
+            <SignInButton mode="modal">
+              <Button size="sm">Нэвтрэх</Button>
+            </SignInButton>
+          )}
         </div>
       </div>
     </header>
