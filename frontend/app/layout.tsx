@@ -29,11 +29,12 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <body>
+        <body suppressHydrationWarning>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
-            enableSystem={false}
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
           >
             {children}
           </ThemeProvider>

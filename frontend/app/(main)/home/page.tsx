@@ -10,11 +10,9 @@ export default function HomePage() {
   const followedLive = MOCK_STREAMS.filter(
     (s) => s.status.kind === "live" && followedNames.has(s.seller.username)
   )
-
   const live = MOCK_STREAMS.filter(
     (s) => s.status.kind === "live" && !followedNames.has(s.seller.username)
   )
-
   const soon = MOCK_STREAMS.filter((s) => s.status.kind === "scheduled")
 
   return (

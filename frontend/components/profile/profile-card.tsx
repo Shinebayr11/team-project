@@ -1,8 +1,12 @@
+"use client"
+import { useClerk } from "@clerk/nextjs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import type { UserProfile } from "@/types/user"
 
 export function ProfileCard({ user }: { user: UserProfile }) {
+  const { openUserProfile } = useClerk()
+
   const stats = [
     { value: user.followingCount, label: "Дагаж буй" },
     { value: user.purchasesCount, label: "Худалдан авалт" },
@@ -36,7 +40,7 @@ export function ProfileCard({ user }: { user: UserProfile }) {
           </dl>
         </div>
 
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => openUserProfile()}>
           Профайл засах
         </Button>
       </div>
