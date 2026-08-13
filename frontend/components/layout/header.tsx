@@ -31,7 +31,6 @@ export function Header({ credits = 0 }: HeaderProps) {
             className="h-9 w-full rounded-full border bg-muted/40 pr-4 pl-9 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
-
         <div className="ml-auto flex shrink-0 items-center gap-2">
           <ThemeToggle />
 
