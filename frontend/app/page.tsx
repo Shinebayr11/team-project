@@ -33,7 +33,7 @@ export default async function LandingPage() {
             Худалдан авах эхлэх
           </Link>
           <Link
-            href="/sign-up?intent=seller"
+            href="/sell"
             className="inline-flex h-11 items-center justify-center rounded-md border px-8 text-sm font-medium hover:bg-accent"
           >
             Худалдагч болох
