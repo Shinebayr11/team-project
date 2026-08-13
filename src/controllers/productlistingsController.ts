@@ -1,6 +1,5 @@
 import { Context } from "hono"
 import { ProductListing } from "../models/ProductListing.js"
-
 export const getProductlisting = async (c: Context) => {
     try {
         const data = await ProductListing.find()

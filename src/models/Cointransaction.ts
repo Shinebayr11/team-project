@@ -9,4 +9,4 @@ const CoinTransactionSchema = new Schema(
     },
     { timestamps: true }
 )
-export const CoiTransaction = mongoose.model("CoinTransaction", CoinTransactionSchema)
+export const CoinTransaction = mongoose.model("CoinTransaction", CoinTransactionSchema)

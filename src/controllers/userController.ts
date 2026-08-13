@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { User } from "../models/Users.js";
+import { User } from "../models/User.js";
 export const getUsers = async (c: Context) => {
     try {
         const users = await User.find()

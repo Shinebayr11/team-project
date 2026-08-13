@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { Order } from "../models/Orders.js";
+import { Order } from "../models/Order.js";
 
 export const getOrder = async (c: Context) => {
     try {

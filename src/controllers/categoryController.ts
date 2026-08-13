@@ -1,6 +1,7 @@
 
 import { Context } from "hono"
-import { Category } from "../models/category.js"
+import { Category } from "../models/Category.js"
+
 
 export const getcategory = async (c: Context) => {
     try {

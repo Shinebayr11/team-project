@@ -11,4 +11,4 @@ const BidsSchema = new Schema(
     },
     { timestamps: true }
 )
-export const Bids = mongoose.model("Bids", BidsSchema)
+export const Bid = mongoose.model("Bid", BidsSchema)

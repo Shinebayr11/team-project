@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const ProductListingSchema = new Schema(
+const productListingSchema = new Schema(
     {
         product_id: { type: Schema.Types.ObjectId, ref: "Product" },
         live_show_id: { type: Schema.Types.ObjectId, ref: "Live_Show" },
@@ -12,4 +12,4 @@ const ProductListingSchema = new Schema(
         status: { type: String }
     }
 )
-export const ProductListing = mongoose.model("ProducListing", ProductListingSchema)
+export const ProductListing = mongoose.model("ProductListing", productListingSchema)

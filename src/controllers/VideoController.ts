@@ -1,5 +1,6 @@
 import { Context } from "hono";
-import { Video } from "../models/video.js";
+import { Video } from "../models/Video.js";
+
 export const getVideo = async (c: Context) => {
     try {
         const data = await Video.find()
@@ -30,3 +31,4 @@ export const postVideo = async (c: Context) => {
         }, 500)
     }
 }
+

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const VideoproductSchema = new Schema(
+const videoproductSchema = new Schema(
     {
         video_id: { type: Schema.Types.ObjectId, ref: "Video" },
         product_id: { type: Schema.Types.ObjectId, ref: "Product" },
@@ -8,4 +8,4 @@ const VideoproductSchema = new Schema(
     },
     { timestamps: true }
 )
-export const Videoproduct = mongoose.model("Videoproduct", VideoproductSchema)
+export const Videoproduct = mongoose.model("Videoproduct", videoproductSchema)

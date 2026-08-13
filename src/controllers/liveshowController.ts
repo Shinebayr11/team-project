@@ -1,5 +1,5 @@
 import { Context } from "hono"
-import { Live_Show } from "../models/Live_shows.js"
+import { Live_Show } from "../models/Live_show.js"
 
 export const getliveshow = async (c: Context) => {
     try {

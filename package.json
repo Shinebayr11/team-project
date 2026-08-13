@@ -2,7 +2,7 @@
   "name": "hono",
   "type": "module",
   "scripts": {
-    "server": "tsx watch src/index.ts"
+    "start:dev": "vercel dev"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.0",
