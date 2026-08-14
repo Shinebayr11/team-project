@@ -41,7 +41,7 @@ export default async function LandingPage() {
         </div>
 
         <p className="text-sm text-muted-foreground">
-          Бүртгэлтэй юу?{" "}
+          Бүртгэлтэй юу?
           <Link
             href="/sign-in"
             className="font-medium text-foreground underline"
