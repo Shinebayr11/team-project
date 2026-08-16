@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { Search, Coins } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Search, Coins, Radio } from "lucide-react"
 import { NavTabs } from "./nav-tabs"
 import { ThemeToggle } from "./theme-toggle"
 import { useAuth, SignInButton, UserButton } from "@clerk/nextjs"
@@ -13,6 +14,11 @@ interface HeaderProps {
 
 export function Header({ credits = 0 }: HeaderProps) {
   const { isSignedIn, isLoaded } = useAuth()
+  const [hasActive, setHasActive] = useState(false)
+
+  useEffect(() => {
+    setHasActive(!!localStorage.getItem("activeStream"))
+  }, [])
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
@@ -31,7 +37,21 @@ export function Header({ credits = 0 }: HeaderProps) {
             className="h-9 w-full rounded-full border bg-muted/40 pr-4 pl-9 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
+
         <div className="ml-auto flex shrink-0 items-center gap-2">
+          {hasActive && (
+            <Link
+              href="/sell"
+              className="text-destructive-foreground inline-flex h-8 items-center gap-1.5 rounded-md bg-destructive px-3 text-sm font-medium hover:bg-destructive/90"
+            >
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-white" />
+              </span>
+              Миний шууд дамжуулалт
+            </Link>
+          )}
+
           <ThemeToggle />
 
           {!isLoaded ? (
