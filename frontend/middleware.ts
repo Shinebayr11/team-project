@@ -1,8 +1,19 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
 
+// Everything under app/(shop) runs on mock data, so it stays public — gating it
+// would only put a login in front of a static demo. Clerk protects the one real
+// feature: app/(broadcast), the LiveKit go-live flow at /sell and /live/[id].
 const isPublic = createRouteMatcher([
   "/",
-  "/browse(.*)",
+  "/home",
+  "/explore",
+  "/live-show",
+  "/shop",
+  "/product",
+  "/profile",
+  "/messages",
+  "/wallet",
+  "/admin(.*)",
   "/sign-in(.*)",
   "/sign-up(.*)",
 ])

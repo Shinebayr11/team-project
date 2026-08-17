@@ -3,14 +3,13 @@ import { Geist_Mono, Inter } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
 const inter = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-sans" })
 const fontMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export const metadata: Metadata = {
-  title: "Reelshop",
+  title: "WhyNot",
   description: "Шууд дамжуулалттай дуудлага худалдаа",
 }
 
@@ -29,16 +28,7 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <body suppressHydrationWarning>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </body>
+        <body suppressHydrationWarning>{children}</body>
       </html>
     </ClerkProvider>
   )
