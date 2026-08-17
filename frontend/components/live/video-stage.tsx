@@ -24,7 +24,13 @@ function Stage() {
     )
   }
 
-  return <VideoTrack trackRef={track} className="size-full object-cover" />
+  return (
+    <VideoTrack
+      trackRef={track}
+      className="size-full object-cover"
+      style={{ transform: "scaleX(-1)" }}
+    />
+  )
 }
 
 export function VideoStage({
