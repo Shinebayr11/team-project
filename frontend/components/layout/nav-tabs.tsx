@@ -2,24 +2,30 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useUser } from "@clerk/nextjs"
 import { cn } from "@/lib/utils"
 
-const TABS = [
+const BASE_TABS = [
   { href: "/home", label: "Home" },
   { href: "/browse", label: "Browse" },
   { href: "/following", label: "Following" },
-  { href: "/sell", label: "Sell" },
   { href: "/profile", label: "Profile" },
 ]
 
 export function NavTabs() {
   const pathname = usePathname()
+  const { user, isLoaded } = useUser()
+
+  const isSeller = isLoaded && user?.publicMetadata?.sellerStatus === "approved"
+
+  const tabs = isSeller
+    ? [...BASE_TABS.slice(0, 3), { href: "/sell", label: "Sell" }, BASE_TABS[3]]
+    : BASE_TABS
 
   return (
     <nav className="flex items-center gap-6">
-      {TABS.map((tab) => {
-        const active =
-          tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href)
+      {tabs.map((tab) => {
+        const active = pathname.startsWith(tab.href)
 
         return (
           <Link
