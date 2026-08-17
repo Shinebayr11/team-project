@@ -7,7 +7,7 @@ export default function MainLayout({
 }) {
   return (
     <div className="min-h-svh">
-      <Header credits={2480} user={{ username: "junglefinds" }} />
+      <Header credits={2480} />
       {children}
     </div>
   )
