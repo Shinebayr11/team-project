@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 const TABS = [
-  { href: "/", label: "Home" },
+  { href: "/home", label: "Home" },
   { href: "/browse", label: "Browse" },
   { href: "/following", label: "Following" },
+  { href: "/sell", label: "Sell" },
   { href: "/profile", label: "Profile" },
 ]
 
