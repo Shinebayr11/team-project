@@ -4,26 +4,27 @@ import { Live_Show } from "../models/Live_show.js"
 export const getliveshow = async (c: Context) => {
     try {
         const data = await Live_Show.find()
-        return c.json({ data })
+        return c.json({ data }, 200)
     } catch (error) {
         return c.json({
             message: "Aldaa garlaa"
-        })
+
+        }, 500)
     }
 
 }
 export const postliveshow = async (c: Context) => {
     try {
         const body = await c.req.json()
-        const { seller_id, title, thumbnail_url, agora_channel_name, viewer_count } = body
-        if (!seller_id || !title || !agora_channel_name) {
+        const { seller_id, title, thumbnail_url, livekit_room_name, viewer_count } = body
+        if (!seller_id || !title || !livekit_room_name) {
             return c.json({
                 message: "shaardlagtai medeelel dutuu bn"
             }, 400)
 
         }
         const data = await Live_Show.create({
-            seller_id, title, thumbnail_url, agora_channel_name, viewer_count
+            seller_id, title, thumbnail_url, livekit_room_name, viewer_count
         })
         return c.json({
             message: "Amjilttai hadgallaa", data

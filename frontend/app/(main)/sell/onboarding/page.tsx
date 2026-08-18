@@ -1,10 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { useUser } from "@clerk/nextjs"
+import { useAuth, useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 
 export default function SellerOnboardingPage() {
+  const { getToken } = useAuth()
   const { user } = useUser()
   const [shopName, setShopName] = useState("")
   const [submitting, setSubmitting] = useState(false)
@@ -13,7 +14,35 @@ export default function SellerOnboardingPage() {
   const submit = async () => {
     if (!shopName.trim()) return
     setSubmitting(true)
+    const submit = async () => {
+      if (!shopName.trim()) return
+      setSubmitting(true)
 
+      try {
+        const token = await getToken() // Clerk JWT token авна
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sellers/apply`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            shop_name: shopName, // Баазын талбарын нэртэй тааруулж илгээнэ
+          }),
+        })
+
+        if (res.ok) {
+          setDone(true)
+        } else {
+          console.error("Хүсэлт илгээхэд алдаа гарлаа")
+        }
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setSubmitting(false)
+      }
+    }
     // TODO: server дээр /sellers/apply endpoint холбох
     // const token = await getToken()
     // await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sellers/apply`, {...})

@@ -17,26 +17,51 @@ export const getWallet = async (c: Context) => {
 }
 export const postWallet = async (c: Context) => {
     try {
-        const body = await c.req.json()
-        const { user_id, coin_balance } = body
-        if (!user_id || coin_balance === undefined) {
-            return c.json({
-                message: "user_id,bolon coin_balance shaardlagtai"
-            }, 400)
+        const userId = c.get("userId"); // Auth middleware-ээс ирнэ
+        const body = await c.req.json();
+        const { coin_balance } = body;
+
+        if (coin_balance === undefined) {
+            return c.json(
+                {
+                    message: "coin_balance shaardlagtai",
+                },
+                400
+            );
         }
+
+        const existingWallet = await Wallet.findOne({
+            user_id: userId,
+        });
+
+        if (existingWallet) {
+            return c.json(
+                {
+                    message: "Wallet ali hediin vvssen baina",
+                },
+                409
+            );
+        }
+
         const data = await Wallet.create({
-            user_id, coin_balance
-        })
-        return c.json({
-            message: "Amjilttai hadgallaa",
-            data
-        }, 201)
+            user_id: userId,
+            coin_balance,
+        });
 
-
+        return c.json(
+            {
+                message: "Amjilttai hadgallaa",
+                data,
+            },
+            201
+        );
     } catch (error) {
-        return c.json({
-            message: "Aldaa garlaa"
-        }, 500)
+        return c.json(
+            {
+                message: "Aldaa garlaa",
+            },
+            500
+        );
     }
-}
+};
 

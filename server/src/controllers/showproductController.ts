@@ -21,7 +21,7 @@ export const postshowproduct = async (c: Context) => {
     try {
         const body = await c.req.json()
         const { live_show_id, product_id, display_order } = body
-        if (!live_show_id || !product_id) {
+        if (!live_show_id || !product_id || display_order === undefined) {
             return c.json({
                 message: "shaardlagtai medeelel dutuu bn"
             }, 400)

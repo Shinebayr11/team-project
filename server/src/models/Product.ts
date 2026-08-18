@@ -7,7 +7,8 @@ export const ProductSchema = new Schema(
         stock_quantity: { type: Number },
         seller_id: { type: Schema.Types.ObjectId, ref: "User" },
         images: [{ type: String }],
-        category_id: { type: Schema.Types.ObjectId, ref: "Category" }
-    }
+        category_id: { type: Schema.Types.ObjectId, ref: "Category" },
+    },
+    { timestamps: true }
 )
 export const Product = mongoose.model("Product", ProductSchema)

@@ -19,8 +19,8 @@ export const getbids = async (c: Context) => {
 export const postbids = async (c: Context) => {
     try {
         const body = await c.req.json()
-        const { listing_id, buyer_id, amount_coins, } = body
-        if (!listing_id || !buyer_id || !amount_coins) {
+        const { listing_id, buyer_id, amount_coins } = body
+        if (!listing_id || !buyer_id || amount_coins === undefined) {
             return c.json({
                 message: "Bvh talbariig boglonvv"
             }, 400)

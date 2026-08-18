@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const BidsSchema = new Schema(
     {
         listing_id: {
-            type: Schema.Types.ObjectId, ref: "ProducListing"
+            type: Schema.Types.ObjectId, ref: "ProductListing"
         },
         buyer_id: { type: Schema.Types.ObjectId, ref: "User" },
         amount_coins: { type: Number },
