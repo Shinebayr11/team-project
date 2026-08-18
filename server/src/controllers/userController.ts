@@ -13,10 +13,18 @@ export const postUsers = async (c: Context) => {
         const body = await c.req.json()
         const { clerk_user_id, role, display_name, avatar_url, shop_name } = body
         const newUser = await User.create({ clerk_user_id, role, display_name, avatar_url, shop_name })
+        if (!clerk_user_id || !role || !display_name) {
+            return c.json(
+                {
+                    message: "Shaardlagtai medeelel dutuu bn"
+                },
+                400
+            );
+        }
         return c.json({
             message: "amjilttai hadgalagdlaa",
             newUser
-        })
+        }, 201)
     } catch (error) {
         return c.json({ message: "aldaa garlaa", }, 500)
     }

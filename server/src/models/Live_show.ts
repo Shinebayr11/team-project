@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { stringify } from "node:querystring";
+import { string } from "zod";
 
 const Live_showsSchema = new Schema(
     {
@@ -8,7 +9,7 @@ const Live_showsSchema = new Schema(
         status: { type: String },
         thumbnail_url: { type: String },
         ended_at: { type: Date },
-        agora_channel_name: { type: String },
+        livekit_room_name: { type: String },
         viewer_count: { type: Number },
         started_at: { type: Date }
     },

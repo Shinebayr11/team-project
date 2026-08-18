@@ -10,6 +10,7 @@ const productListingSchema = new Schema(
         current_highest_bid_coins: { type: Number },
         timer_ends_at: { type: Date },
         status: { type: String }
-    }
+    },
+    { timestamps: true }
 )
 export const ProductListing = mongoose.model("ProductListing", productListingSchema)

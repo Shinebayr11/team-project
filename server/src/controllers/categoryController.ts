@@ -6,11 +6,11 @@ import { Category } from "../models/Category.js"
 export const getcategory = async (c: Context) => {
     try {
         const category = await Category.find()
-        return c.json({ category })
+        return c.json({ category }, 200)
     } catch (error) {
         return c.json({
             message: "aldaa garlaa"
-        })
+        }, 500)
     }
 }
 export const postcategory = async (c: Context) => {
@@ -18,6 +18,14 @@ export const postcategory = async (c: Context) => {
         const body = await c.req.json()
         const { name, parent_id } = body
         const category = await Category.create({ name, parent_id })
+        if (!name) {
+            return c.json(
+                {
+                    message: "Shaardlagtai medeelel dutuu bn"
+                },
+                400
+            );
+        }
         return c.json({
             message: "Amjilttai hadgallaa",
             category

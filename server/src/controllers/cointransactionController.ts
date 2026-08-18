@@ -2,11 +2,19 @@ import { Context } from "hono"
 import { CoinTransaction } from "../models/Cointransaction.js"
 
 export const getCointransaction = async (c: Context) => {
-    const data = await CoinTransaction.find()
-    return c.json({
-        message: "Amjilttai avlaa",
-        data
-    }, 200)
+    try {
+
+        const data = await CoinTransaction.find()
+        return c.json({
+            message: "Amjilttai avlaa",
+            data
+        }, 200)
+    } catch (error) {
+        console.log("getcointransaction aldaa", error)
+        return c.json({
+            message: "Aldaa garlaa"
+        }, 500)
+    }
 }
 export const postCointransaction = async (c: Context) => {
     try {
@@ -15,7 +23,7 @@ export const postCointransaction = async (c: Context) => {
         if (!wallet_id || !type || amount === undefined) {
             return c.json({
                 message: "wallet_id,type,amount shaardlagtai"
-            })
+            }, 400)
         }
         const data = await CoinTransaction.create({
             wallet_id, type, amount, related_order_id
@@ -27,6 +35,6 @@ export const postCointransaction = async (c: Context) => {
     } catch (error) {
         return c.json({
             message: "Aldaa garlaa"
-        })
+        }, 500)
     }
 }

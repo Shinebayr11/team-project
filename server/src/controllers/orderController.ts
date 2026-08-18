@@ -18,7 +18,7 @@ export const postOrder = async (c: Context) => {
     try {
         const body = await c.req.json()
         const { buyer_id, product_id, video_id, live_show_id, quantity, price_coins, status } = body
-        if (!buyer_id || !product_id || !quantity || !price_coins) {
+        if (!buyer_id || !product_id || quantity === undefined || price_coins === undefined) {
             return c.json({
                 message: "shaardlagtai medeelel dutuu bn"
             }, 400)
@@ -31,7 +31,9 @@ export const postOrder = async (c: Context) => {
             data
         }, 201)
     } catch (error) {
+        console.log(error)
         return c.json({
+
             message: "Aldaa garlaa"
         }, 500)
     }
