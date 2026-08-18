@@ -4,3 +4,4 @@ const videoRoutes = new Hono()
 videoRoutes.get("/", getVideo)
 videoRoutes.post("/", postVideo)
 export default videoRoutes
+

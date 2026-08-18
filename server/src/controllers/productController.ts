@@ -19,6 +19,20 @@ export const postProduct = async (c: Context) => {
         const product = await Product.create({
             seller_id, name, description, price_coins, stock_quantity, images, category_id,
         })
+        if (
+            !seller_id ||
+            !name ||
+            price_coins === undefined ||
+            stock_quantity === undefined ||
+            !category_id
+        ) {
+            return c.json(
+                {
+                    message: "Shaardlagtai medeelel dutuu bn",
+                },
+                400
+            );
+        }
         return c.json({
             message: "amjilttai hadgallaa",
             product

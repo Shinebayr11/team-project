@@ -19,7 +19,7 @@ export const postVideoproduct = async (c: Context) => {
     try {
         const body = await c.req.json()
         const { video_id, product_id, display_order } = body
-        if (!video_id || !product_id || !display_order) {
+        if (!video_id || !product_id || !display_order === undefined) {
             return c.json({
                 message: "shaardlagtai medeelel dutuu bn"
             }, 400)
