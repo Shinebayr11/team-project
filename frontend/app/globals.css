@@ -1,0 +1,297 @@
+/* Typefaces for the WhyNot UI (see the .whynot-root block at the bottom).
+   Must stay above the Tailwind import: that one is inlined, which would leave
+   this @import sitting after real rules. */
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(0.99 0.002 260);
+  --foreground: oklch(0.18 0.012 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.012 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.012 260);
+  --primary: oklch(0.62 0.21 32);
+  --primary-foreground: oklch(0.99 0.002 260);
+  --secondary: oklch(0.96 0.005 260);
+  --secondary-foreground: oklch(0.18 0.012 260);
+  --muted: oklch(0.96 0.005 260);
+  --muted-foreground: oklch(0.52 0.015 260);
+  --accent: oklch(0.96 0.005 260);
+  --accent-foreground: oklch(0.18 0.012 260);
+  --destructive: oklch(0.58 0.24 27);
+  --destructive-foreground: oklch(0.99 0.002 260);
+  --border: oklch(0.91 0.008 260);
+  --input: oklch(0.91 0.008 260);
+  --ring: oklch(0.62 0.21 32);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: oklch(0.15 0.01 260);
+  --foreground: oklch(0.97 0.005 260);
+  --card: oklch(0.19 0.012 260);
+  --card-foreground: oklch(0.97 0.005 260);
+  --popover: oklch(0.19 0.012 260);
+  --popover-foreground: oklch(0.97 0.005 260);
+  --primary: oklch(0.68 0.21 32);
+  --primary-foreground: oklch(0.15 0.01 260);
+  --secondary: oklch(0.26 0.015 260);
+  --secondary-foreground: oklch(0.97 0.005 260);
+  --muted: oklch(0.26 0.015 260);
+  --muted-foreground: oklch(0.68 0.015 260);
+  --accent: oklch(0.26 0.015 260);
+  --accent-foreground: oklch(0.97 0.005 260);
+  --destructive: oklch(0.62 0.24 27);
+  --destructive-foreground: oklch(0.97 0.005 260);
+  --border: oklch(0.28 0.015 260);
+  --input: oklch(0.28 0.015 260);
+  --ring: oklch(0.68 0.21 32);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* ===========================================================================
+   WhyNot UI — ported from the standalone Vite app into frontend/whynot.
+
+   Every custom property below is `--wn-` prefixed on purpose: the source app
+   used bare names like --accent and --line, which would otherwise overwrite the
+   shadcn tokens above (bg-accent, border-border, ...) for the whole site.
+   Nothing here applies outside a `.whynot-root` subtree.
+   =========================================================================== */
+.whynot-root {
+  --wn-accent: #5b3fe0;
+  --wn-accent-hover: #4a31c4;
+  --wn-accent-soft: #f1edfe;
+  --wn-accent-soft-hover: #f4f3fb;
+  --wn-live: #e5484d;
+  --wn-live-soft: #fdecec;
+
+  --wn-canvas: #f1f1f5;
+  --wn-page: #fafafa;
+  --wn-surface: #ffffff;
+  --wn-surface-2: #f2f2f7;
+  --wn-surface-3: #f5f5fa;
+  --wn-surface-4: #f7f7fb;
+  --wn-shot: #16161f;
+  --wn-shot-deep: #0f0f16;
+
+  --wn-ink: #1a1a2e;
+  --wn-ink-2: #4a4a60;
+  --wn-ink-3: #6b6b80;
+  --wn-ink-4: #8a8a9e;
+  --wn-ink-5: #9a9aae;
+
+  --wn-line: #ececf2;
+  --wn-line-2: #e2e2ea;
+  --wn-line-3: #d3d3dd;
+  --wn-line-soft: #f0f0f5;
+
+  --wn-font: "Plus Jakarta Sans", system-ui, sans-serif;
+  --wn-font-display:
+    "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+
+  /* Seller hub palette */
+  --wn-admin-ink: #0e0b18;
+  --wn-admin-ink-2: #4a4655;
+  --wn-admin-muted: #6b7280;
+  --wn-admin-nav-bg: #f4f3f5;
+  --wn-admin-nav-hover: #eae8ed;
+  --wn-admin-nav-rule: #e4e2e8;
+  --wn-admin-nav-border: #e9e7ec;
+  --wn-admin-card-border: #e7e5ea;
+  --wn-admin-row-rule: #f4f2f6;
+  --wn-admin-head-rule: #efedf1;
+  --wn-admin-chip: #f1f0f3;
+  --wn-admin-chip-2: #e8e6ec;
+  --wn-admin-lime: #c9f73d;
+  --wn-admin-btn-hover: #241f35;
+  --wn-admin-outline: #d9d6de;
+  --wn-admin-live: #e5484d;
+  --wn-admin-live-soft: #fdecec;
+
+  /* This UI is light-only, so neutralise the app's dark-mode shadcn tokens for
+     any bare `border` / `outline-ring` that @layer base applies inside it. */
+  --background: var(--wn-page);
+  --foreground: var(--wn-ink);
+  --border: var(--wn-line);
+  --input: var(--wn-line);
+  --ring: var(--wn-accent);
+
+  font-family: var(--wn-font);
+  background-color: var(--wn-page);
+  color: var(--wn-ink);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+}
+
+.whynot-root .font-display {
+  font-family: var(--wn-font-display);
+}
+
+/* ---------------------------------------------------------------------------
+   Tailwind v3 -> v4 compatibility.
+
+   The source app ran Tailwind v3 from the CDN. v4 renamed the bottom of the
+   radius / shadow / blur scales (shadow-sm now means what `shadow` used to,
+   rounded-md/xl/2xl resolve through this project's calc() radius scale, and
+   bare `rounded` no longer exists), so the same class names render at
+   different sizes here. These rules restore the v3 values inside the ported
+   subtree only — measured against the original app, not assumed.
+--------------------------------------------------------------------------- */
+.whynot-root .rounded {
+  border-radius: 0.25rem;
+}
+.whynot-root .rounded-sm {
+  border-radius: 0.125rem;
+}
+.whynot-root .rounded-md {
+  border-radius: 0.375rem;
+}
+.whynot-root .rounded-lg {
+  border-radius: 0.5rem;
+}
+.whynot-root .rounded-xl {
+  border-radius: 0.75rem;
+}
+.whynot-root .rounded-2xl {
+  border-radius: 1rem;
+}
+.whynot-root .rounded-3xl {
+  border-radius: 1.5rem;
+}
+
+.whynot-root .shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+.whynot-root .backdrop-blur-sm {
+  --tw-backdrop-blur: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.whynot-root ::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+@keyframes wn-pulse-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+.whynot-root .animate-pulse-dot {
+  animation: wn-pulse-dot 1.9s ease-in-out infinite;
+}
+
+@keyframes wn-slide-up {
+  from {
+    transform: translate(-50%, 100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.whynot-root .animate-slide-up {
+  animation: wn-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
