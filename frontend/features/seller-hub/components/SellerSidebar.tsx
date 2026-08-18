@@ -31,7 +31,7 @@ export const SellerSidebar: React.FC<SellerSidebarProps> = ({ path, pendingOrder
   return (
     <aside className="w-[240px] shrink-0 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0 z-30">
       <div className="h-16 flex items-center px-6 shrink-0">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/home" className="flex items-center gap-2">
           <span className="font-display text-[21px] font-[800] tracking-[-0.04em] text-black">WhyNot</span>
           <span className="px-2 py-0.5 border border-gray-200 bg-gray-50 rounded-md text-[11px] font-[700] text-gray-600 uppercase tracking-wider">
             Seller Hub

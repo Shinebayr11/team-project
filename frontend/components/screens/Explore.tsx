@@ -29,10 +29,10 @@ export const Explore: React.FC = () => {
       <ExploreHeader query={query} onQueryChange={setQuery} />
 
       <div className="max-w-[1200px] mx-auto px-6 md:px-12 py-10 flex flex-col gap-16">
-        <ExploreSection title="Categories" onViewAll={() => navigate('/')}>
+        <ExploreSection title="Categories" onViewAll={() => navigate('/home')}>
           <CategoryGrid
             categories={EXPLORE_CATEGORIES}
-            onSelect={category => navigate(`/?cat=${encodeURIComponent(category.name)}`)}
+            onSelect={category => navigate(`/home?cat=${encodeURIComponent(category.name)}`)}
           />
         </ExploreSection>
 
@@ -50,7 +50,7 @@ export const Explore: React.FC = () => {
         <ExploreSection
           title="Trending Products"
           icon={<TrendingUp className="w-5 h-5 text-[var(--wn-ink-2)]" />}
-          onViewAll={() => navigate('/')}
+          onViewAll={() => navigate('/home')}
         >
           <TrendingProducts products={trendingProducts} />
         </ExploreSection>
@@ -58,7 +58,7 @@ export const Explore: React.FC = () => {
         <ExploreSection
           title="Upcoming Shows"
           icon={<Calendar className="w-5 h-5 text-[var(--wn-ink-2)]" />}
-          onViewAll={() => navigate('/')}
+          onViewAll={() => navigate('/home')}
         >
           <UpcomingShows shows={upcomingShows.slice(0, 4)} />
         </ExploreSection>

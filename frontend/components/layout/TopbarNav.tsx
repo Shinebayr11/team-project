@@ -8,7 +8,7 @@ interface TopbarNavProps {
 }
 
 const LINKS = [
-  { to: '/', label: 'Home', exact: true },
+  { to: '/home', label: 'Home', exact: true },
   { to: '/explore', label: 'Explore' },
   { to: '/live-show', label: 'Browse' },
 ];
@@ -18,7 +18,7 @@ const isActive = (path: string, to: string, exact?: boolean) =>
 
 export const TopbarNav: React.FC<TopbarNavProps> = ({ path }) => (
   <div className="flex items-center gap-2">
-    <Link to="/" className="mr-4 flex items-center gap-2">
+    <Link to="/home" className="mr-4 flex items-center gap-2">
       <span className="font-display text-[21px] font-[800] tracking-[-0.04em] text-[var(--wn-ink)]">WhyNot</span>
     </Link>
 
