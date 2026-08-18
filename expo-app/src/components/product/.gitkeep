@@ -1,0 +1,3 @@
+Reserved for ProductCard, ProductInfo, etc.
+Left empty in Phase 1 — real product data isn't available until the
+product/productlisting routes are mounted on the backend.

@@ -1,0 +1,3 @@
+Reserved for AuctionCard, BidButton, BidHistory, AuctionTimer, LiveBadge, etc.
+Left empty in Phase 1 — building these now would mean fake domain logic
+before bidding/auction data contracts are confirmed with the backend team.

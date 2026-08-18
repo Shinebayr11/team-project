@@ -14,6 +14,13 @@ export const Colors = {
     backgroundElement: '#F0F0F3',
     backgroundSelected: '#E0E1E6',
     textSecondary: '#60646C',
+    // Live Auction brand accent — purple primary (light theme: white/light surfaces).
+    primary: '#7C5CFC',
+    primaryMuted: '#F1EDFE',
+    onPrimary: '#FFFFFF',
+    danger: '#E0363C',
+    success: '#16A34A',
+    border: '#E6E5E2',
   },
   dark: {
     text: '#ffffff',
@@ -21,6 +28,14 @@ export const Colors = {
     backgroundElement: '#212225',
     backgroundSelected: '#2E3135',
     textSecondary: '#B0B4BA',
+    // Live Auction brand accent — brighter purple for legibility on near-black
+    // surfaces (used for the dark "live" auction room screen in later phases).
+    primary: '#9B87F5',
+    primaryMuted: '#241B3D',
+    onPrimary: '#14101F',
+    danger: '#FF6369',
+    success: '#34D399',
+    border: '#262626',
   },
 } as const;
 
