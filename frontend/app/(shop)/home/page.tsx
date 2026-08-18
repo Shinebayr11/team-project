@@ -1,6 +1,13 @@
-import { redirect } from "next/navigation"
+import { Suspense } from "react"
 
-// The old Reelshop feed lived at /home; the WhyNot feed is the site root now.
+import { Home } from "@/components/screens/Home"
+import { RouteFallback } from "@/components/layout/AppShell"
+
+// The shopper feed lives at /home; "/" is the public landing page.
 export default function Page() {
-  redirect("/")
+  return (
+    <Suspense fallback={<RouteFallback />}>
+      <Home />
+    </Suspense>
+  )
 }
