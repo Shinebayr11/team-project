@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   LiveKitRoom,
   useTracks,
@@ -9,6 +10,7 @@ import {
 } from "@livekit/components-react"
 import { Track } from "livekit-client"
 import "@livekit/components-styles"
+import { Button } from "@/components/ui/button"
 
 function Stage() {
   const tracks = useTracks([Track.Source.Camera], { onlySubscribed: false })
@@ -22,7 +24,13 @@ function Stage() {
     )
   }
 
-  return <VideoTrack trackRef={track} className="size-full object-cover" />
+  return (
+    <VideoTrack
+      trackRef={track}
+      className="size-full object-cover"
+      style={{ transform: "scaleX(-1)" }}
+    />
+  )
 }
 
 export function VideoStage({
@@ -32,8 +40,10 @@ export function VideoStage({
   roomName: string
   isHost?: boolean
 }) {
+  const router = useRouter()
   const [token, setToken] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [confirming, setConfirming] = useState(false)
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/livekit/token`, {
@@ -49,6 +59,11 @@ export function VideoStage({
       .then((d) => setToken(d.token))
       .catch((e) => setError(String(e)))
   }, [roomName, isHost])
+
+  const endStream = () => {
+    localStorage.removeItem("activeStream")
+    router.push("/sell")
+  }
 
   return (
     <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black">
@@ -70,8 +85,9 @@ export function VideoStage({
           className="size-full"
         >
           <Stage />
+
           {isHost && (
-            <div className="absolute inset-x-0 bottom-4 flex justify-center">
+            <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-3">
               <ControlBar
                 controls={{
                   camera: true,
@@ -81,6 +97,30 @@ export function VideoStage({
                   chat: false,
                 }}
               />
+
+              {confirming ? (
+                <div className="flex items-center gap-2 rounded-lg bg-background/95 p-2 backdrop-blur">
+                  <span className="px-2 text-sm">Шоуг дуусгах уу?</span>
+                  <Button size="sm" variant="destructive" onClick={endStream}>
+                    Тийм
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setConfirming(false)}
+                  >
+                    Үгүй
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => setConfirming(true)}
+                >
+                  Дуусгах
+                </Button>
+              )}
             </div>
           )}
         </LiveKitRoom>
