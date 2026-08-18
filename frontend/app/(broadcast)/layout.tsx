@@ -12,6 +12,7 @@ export default async function BroadcastLayout({
   children: React.ReactNode
 }) {
   const { userId } = await auth()
+  console.log("BROADCAST LAYOUT userId:", userId)
   if (!userId) redirect("/sign-in")
 
   return <AppShell>{children}</AppShell>
