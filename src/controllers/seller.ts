@@ -1,52 +1,45 @@
 import { Context } from "hono";
 import { User } from "../models/User.js";
 
-export const getUsers = async (c: Context) => {
+// Борлуулагчийн мэдээлэл авдаг контроллер
+export const getSeller = async (c: Context) => {
     try {
-        const limit = Number(c.req.query("limit")) || 20;
-        const page = Number(c.req.query("page")) || 1;
-        const skip = (page - 1) * limit;
+        const user = c.get("user");
+        const currentUser = await User.findById(user._id);
 
-        const users = await User.find().limit(limit).skip(skip);
-        return c.json({ users });
+        return c.json({ user: currentUser }, 200);
     } catch (error) {
-        console.error("getUsers error:", error);
-        return c.json({ message: "aldaa garlaa" }, 500);
+        console.error("getSeller error:", error);
+        return c.json({ message: "Серверийн алдаа гарлаа" }, 500);
     }
 };
 
-export const postUsers = async (c: Context) => {
+// Борлуулагч болох хүсэлт илгээх контроллер
+export const applySeller = async (c: Context) => {
     try {
-        const body = await c.req.json();
-        const { display_name, avatar_url, shop_name } = body;
+        const user = c.get("user");
+        const { shop_name } = await c.req.json();
 
-        // 1. Validation-ыг DB-д хүрэхээс ӨМНӨ шалгана (B3)
-        if (!display_name) {
-            return c.json({ message: "Shaardlagtai medeelel dutuu bn" }, 400);
+        if (!shop_name) {
+            return c.json({ message: "Дэлгүүрийн нэр оруулна уу" }, 400);
         }
 
-        // 2. Auth middleware-ээс баталгаажсан Clerk ID-г авна (A1/A2)
-        const clerkUserId = c.get("clerkUserId");
-
-        // 3. User үүсгэнэ (role-ийг "user" гэж албадаж өгнө)
-        const newUser = await User.create({
-            clerk_user_id: clerkUserId,
-            role: "user", // ← client-ээс авахгүй
-            display_name,
-            avatar_url,
-            shop_name,
-        });
+        const updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            {
+                shop_name,
+                seller_status: "pending",
+            },
+            { new: true }
+        );
 
         return c.json(
-            {
-                message: "amjilttai hadgalagdlaa",
-                newUser,
-            },
-            201
+            { message: "Худалдагч болох хүсэлт илгээгдлээ", user: updatedUser },
+            200
         );
     } catch (error) {
-        console.error("postUsers error:", error);
-        return c.json({ message: "aldaa garlaa" }, 500);
+        console.error("applySeller error:", error);
+        return c.json({ message: "Серверийн алдаа гарлаа" }, 500);
     }
 };
 
