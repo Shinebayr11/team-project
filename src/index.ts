@@ -10,6 +10,7 @@ import productlistingRoutes from './route/productlistingRoute.js';
 import orderRoutes from './route/orderRoute.js';
 import VideoProductRoutes from './route/videoProductRoute.js';
 import showproductRoutes from './route/showproductRoute.js';
+import sellerRoutes from './route/sellerRoute.js';
 const app = new Hono()
 connectDb();
 
@@ -22,6 +23,7 @@ app.route("/api/productlisting", productlistingRoutes)
 app.route("/api/order", orderRoutes)
 app.route("/api/videoproduct", VideoProductRoutes)
 app.route("/api/showproduct", showproductRoutes)
+app.route("/seller", sellerRoutes);
 serve({
   fetch: app.fetch,
   port: 3000

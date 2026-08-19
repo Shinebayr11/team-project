@@ -1,5 +1,6 @@
 import { Context } from "hono"
-import { Show_product } from "../models/Show_products.js"
+import { Show_product } from "../models/Show_product.js"
+
 
 export const getshowproduct = async (c: Context) => {
     try {
