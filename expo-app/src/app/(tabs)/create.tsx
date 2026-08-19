@@ -1,3 +1,5 @@
+import { useAuth } from '@clerk/expo';
+import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { PrimaryButton } from '@/components/common/primary-button';
@@ -8,12 +10,23 @@ import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 /**
- * Center "+" tab. Seller-only actions live here — for Phase 1 this is a
- * placeholder that explains what's coming; no auction creation logic yet
- * (that needs Clerk auth + mounted backend routes first).
+ * Center "+" tab. Seller-only actions live here.
+ *
+ * Phase 2 adds the auth gate: signed-out users are routed to /sign-in first.
+ * Actual seller onboarding (role assignment, auction creation) still needs
+ * the backend `user`/`liveshow` routes mounted — out of scope until then.
  */
 export default function CreateScreen() {
   const theme = useTheme();
+  const { isSignedIn } = useAuth();
+
+  const onBecomeSeller = () => {
+    if (!isSignedIn) {
+      router.push('/sign-in');
+      return;
+    }
+    // TODO(Phase 11 — Seller functionality): real seller onboarding flow.
+  };
 
   return (
     <Screen scroll={false}>
@@ -33,7 +46,7 @@ export default function CreateScreen() {
         </ThemedText>
 
         <View style={styles.actions}>
-          <PrimaryButton label="Худалдагч болох" variant="primary" />
+          <PrimaryButton label="Худалдагч болох" variant="primary" onPress={onBecomeSeller} />
           <PrimaryButton label="Дэлгэрэнгүй мэдээлэл" variant="secondary" />
         </View>
       </View>
