@@ -10,10 +10,11 @@ export const getUsers = async (c: Context) => {
 }
 export const postUsers = async (c: Context) => {
     try {
+        const clerk_user_id = c.get("clerkUserId") as string
         const body = await c.req.json()
-        const { clerk_user_id, role, display_name, avatar_url, shop_name } = body
-        const newUser = await User.create({ clerk_user_id, role, display_name, avatar_url, shop_name })
-        if (!clerk_user_id || !role || !display_name) {
+        const { display_name, avatar_url, shop_name } = body
+
+        if (!display_name) {
             return c.json(
                 {
                     message: "Shaardlagtai medeelel dutuu bn"
@@ -21,6 +22,13 @@ export const postUsers = async (c: Context) => {
                 400
             );
         }
+
+        const newUser = await User.findOneAndUpdate(
+            { clerk_user_id },
+            { $set: { display_name, avatar_url, shop_name } },
+            { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true }
+        )
+
         return c.json({
             message: "amjilttai hadgalagdlaa",
             newUser

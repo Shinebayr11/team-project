@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs"
 
 import "./globals.css"
 import { cn } from "@/lib/utils"
+import { UserSync } from "@/components/auth/UserSync"
 
 const inter = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-sans" })
 const fontMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
@@ -28,7 +29,10 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <body suppressHydrationWarning>{children}</body>
+        <body suppressHydrationWarning>
+          <UserSync />
+          {children}
+        </body>
       </html>
     </ClerkProvider>
   )

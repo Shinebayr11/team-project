@@ -1,9 +1,11 @@
 import { Context } from "hono"
 import { Wallet } from "../models/Wallet.js"
+import { CoinTransaction } from "../models/Cointransaction.js"
 
 export const getWallet = async (c: Context) => {
     try {
-        const data = await Wallet.find()
+        const userId = c.get("userId")
+        const data = await Wallet.findOne({ user_id: userId })
         return c.json({
             message: "Amjilttai avlaa",
             data
@@ -54,6 +56,48 @@ export const postWallet = async (c: Context) => {
                 data,
             },
             201
+        );
+    } catch (error) {
+        return c.json(
+            {
+                message: "Aldaa garlaa",
+            },
+            500
+        );
+    }
+};
+
+export const topUpWallet = async (c: Context) => {
+    try {
+        const userId = c.get("userId");
+        const body = await c.req.json();
+        const { amount } = body;
+
+        if (typeof amount !== "number" || amount <= 0) {
+            return c.json(
+                { message: "amount эерэг тоо байх ёстой" },
+                400
+            );
+        }
+
+        const data = await Wallet.findOneAndUpdate(
+            { user_id: userId },
+            { $inc: { coin_balance: amount } },
+            { upsert: true, new: true }
+        );
+
+        await CoinTransaction.create({
+            wallet_id: data._id,
+            type: "topup",
+            amount,
+        });
+
+        return c.json(
+            {
+                message: "Amjilttai hadgallaa",
+                data,
+            },
+            200
         );
     } catch (error) {
         return c.json(
