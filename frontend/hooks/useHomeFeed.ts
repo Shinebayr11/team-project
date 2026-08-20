@@ -30,10 +30,16 @@ export const useHomeFeed = (query: string, category: string, statusFilter: Statu
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
   const loaderRef = useRef<HTMLDivElement>(null);
 
-  const hottestShow = useMemo(
-    () => [...shows].filter(s => s.live).sort((a, b) => (b.live || 0) - (a.live || 0))[0],
-    [shows],
-  );
+  const hottestShow = useMemo(() => {
+    const liveShows = shows.filter(s => s.live !== undefined);
+    if (!liveShows.length) return undefined;
+    // A real seller broadcast (has a LiveKit room) always outranks a
+    // decorative/demo card so the front-page spotlight never gets stuck on
+    // filler content while someone is actually live.
+    const real = liveShows.filter(s => s.roomId);
+    const pool = real.length ? real : liveShows;
+    return [...pool].sort((a, b) => (b.live ?? 0) - (a.live ?? 0))[0];
+  }, [shows]);
 
   const filteredShows = useMemo(() => {
     if (query) {

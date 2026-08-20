@@ -33,7 +33,7 @@ export const ShowCard: React.FC<{ show: HomeShow }> = ({ show }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-white text-[12px] font-[600] z-10">
-          {show.live ? (
+          {show.live !== undefined ? (
             <>
               <LiveDot />
               <span>Live</span>
