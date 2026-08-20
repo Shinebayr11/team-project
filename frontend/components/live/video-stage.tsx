@@ -7,6 +7,7 @@ import {
   useTracks,
   VideoTrack,
   ControlBar,
+  RoomAudioRenderer,
 } from "@livekit/components-react"
 import { Track } from "livekit-client"
 import "@livekit/components-styles"
@@ -95,6 +96,7 @@ export function VideoStage({
           className="size-full"
         >
           <Stage />
+          <RoomAudioRenderer />
 
           {isHost && (
             <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-3">
