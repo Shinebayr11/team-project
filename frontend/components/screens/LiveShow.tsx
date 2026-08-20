@@ -6,6 +6,7 @@ import { ReelProduct, ReelShow, ReelTab } from "@/types"
 import { REEL_SHOWS } from "@/data"
 import { useStore } from "@/store"
 import { useReelPlayer } from "@/hooks/useReelPlayer"
+import { useRequireAuth } from "@/hooks/useRequireAuth"
 import { ShowInfoPanel } from "@/components/liveshow/ShowInfoPanel"
 import { ShowProductList } from "@/components/liveshow/ShowProductList"
 import { ReelStage } from "@/components/liveshow/ReelStage"
@@ -18,6 +19,7 @@ export const LiveShow: React.FC = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { openModal, isFollowing, toggleFollow, addToast } = useStore()
+  const { requireAuth } = useRequireAuth()
 
   const requestedSlug = searchParams.get("show")
   const startIndex = Math.max(
@@ -55,21 +57,24 @@ export const LiveShow: React.FC = () => {
   }
 
   // The reel's own item uses 'buynow', while the modal registry keys on 'buy'.
-  const handleItemAction = (show: ReelShow) => {
-    if (show.item.mode === "bid") {
-      openModal("bid", { show })
-      return
-    }
-    openModal("buy", {
-      product: {
-        name: show.item.name,
-        price: show.item.price,
-        tag: "Buy now" as const,
-      },
-      seller: show.seller,
-      qty: 1,
+  // Bidding and buying both need an account, so signed-out visitors are sent
+  // to sign-in first.
+  const handleItemAction = (show: ReelShow) =>
+    requireAuth(() => {
+      if (show.item.mode === "bid") {
+        openModal("bid", { show })
+        return
+      }
+      openModal("buy", {
+        product: {
+          name: show.item.name,
+          price: show.item.price,
+          tag: "Buy now" as const,
+        },
+        seller: show.seller,
+        qty: 1,
+      })
     })
-  }
 
   return (
     <div className="mx-auto flex h-[calc(100vh-68px)] max-w-[1440px] gap-4 px-4 py-4">
