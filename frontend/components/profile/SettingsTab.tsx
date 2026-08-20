@@ -1,6 +1,8 @@
 "use client"
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useUser } from '@clerk/nextjs';
+import { DISPLAY_NAME_KEY, useDisplayName } from '@/hooks/useDisplayName';
 
 interface SettingsTabProps {
   // React 19 types useRef<T>(null) as RefObject<T | null>.
@@ -13,18 +15,57 @@ const NOTIFICATIONS = ['Order updates', 'Followed sellers go live', 'Giveaway re
 const fieldClass = 'w-full h-[44px] rounded-xl border border-[var(--wn-line-2)] px-4 text-[15px] text-[var(--wn-ink)] outline-none focus:border-[var(--wn-accent)] transition-colors';
 const labelClass = 'block text-[13px] font-[700] text-[var(--wn-ink-2)] mb-2';
 
-export const SettingsTab: React.FC<SettingsTabProps> = ({ nameInputRef, onSave }) => (
+export const SettingsTab: React.FC<SettingsTabProps> = ({ nameInputRef, onSave }) => {
+  const { user } = useUser();
+  const { displayName } = useDisplayName();
+  const [name, setName] = useState(displayName);
+  const [saving, setSaving] = useState(false);
+
+  // The name lives on the Clerk user, so every screen (and UserSync) picks the
+  // change up without a reload.
+  const save = async () => {
+    const trimmed = name.trim();
+    if (user && trimmed && trimmed !== displayName) {
+      setSaving(true);
+      try {
+        await user.update({
+          unsafeMetadata: { ...user.unsafeMetadata, [DISPLAY_NAME_KEY]: trimmed },
+        });
+      } catch (error) {
+        console.error('Failed to save display name:', error);
+      } finally {
+        setSaving(false);
+      }
+    }
+    onSave();
+  };
+
+  return (
   <div className="flex flex-col gap-6 max-w-[480px]">
     <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Settings</h2>
 
     <div>
       <label className={labelClass} htmlFor="displayName">Display Name</label>
-      <input id="displayName" ref={nameInputRef} type="text" defaultValue="junglefinds" className={fieldClass} />
+      <input
+        id="displayName"
+        ref={nameInputRef}
+        type="text"
+        value={name}
+        onChange={e => setName(e.target.value)}
+        maxLength={40}
+        className={fieldClass}
+      />
     </div>
 
     <div>
       <label className={labelClass} htmlFor="email">Email Address</label>
-      <input id="email" type="email" defaultValue="hello@junglefinds.com" className={fieldClass} />
+      <input
+        id="email"
+        type="email"
+        value={user?.primaryEmailAddress?.emailAddress ?? ''}
+        readOnly
+        className={`${fieldClass} bg-[var(--wn-surface-2)] text-[var(--wn-ink-3)]`}
+      />
     </div>
 
     <div>
@@ -50,10 +91,12 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ nameInputRef, onSave }
     </div>
 
     <button
-      onClick={onSave}
-      className="mt-4 h-[48px] rounded-xl bg-[var(--wn-ink)] text-white text-[15px] font-[700] hover:bg-[var(--wn-ink-2)] transition-colors"
+      onClick={save}
+      disabled={saving}
+      className="mt-4 h-[48px] rounded-xl bg-[var(--wn-ink)] text-white text-[15px] font-[700] hover:bg-[var(--wn-ink-2)] transition-colors disabled:opacity-60"
     >
-      Save changes
+      {saving ? 'Saving...' : 'Save changes'}
     </button>
   </div>
-);
+  );
+};

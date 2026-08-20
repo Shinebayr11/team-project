@@ -10,7 +10,8 @@ import {
   MapPin,
   LogOut,
 } from "lucide-react"
-import { useClerk, useUser } from "@clerk/nextjs"
+import { useClerk } from "@clerk/nextjs"
+import { useDisplayName } from "@/hooks/useDisplayName"
 
 export type ProfileTab =
   | "overview"
@@ -56,18 +57,7 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
   onEditProfile,
 }) => {
   const { signOut } = useClerk()
-  const { user } = useUser()
-
-  const displayName = user?.fullName ?? user?.firstName ?? "Хэрэглэгч"
-  const handle =
-    user?.username ??
-    user?.primaryEmailAddress?.emailAddress?.split("@")[0] ??
-    ""
-  const initial =
-    user?.username?.[0] ??
-    user?.firstName?.[0] ??
-    user?.primaryEmailAddress?.emailAddress?.[0] ??
-    "?"
+  const { displayName, handle, initial } = useDisplayName()
 
   return (
     <aside className="flex w-[240px] shrink-0 flex-col gap-8">

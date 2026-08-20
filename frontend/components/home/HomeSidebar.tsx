@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react';
+import { useDisplayName } from '@/hooks/useDisplayName';
 import { useNavigate } from '@/lib/router';
 import { SELLERS } from '../../data';
 import { SellerRow } from './SellerRow';
@@ -13,6 +14,7 @@ const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 export const HomeSidebar: React.FC = () => {
   const navigate = useNavigate();
+  const { displayName } = useDisplayName();
   const sellers = Object.values(SELLERS);
   const recommended = sellers.slice(0, 6);
   const following = sellers.slice(6, 10);
@@ -23,7 +25,7 @@ export const HomeSidebar: React.FC = () => {
     <aside className="w-[236px] shrink-0 flex flex-col sticky top-[100px] h-[calc(100vh-100px)] overflow-y-auto pb-8">
       <div className="mb-6">
         <div className="text-[11px] font-[800] tracking-wider text-[var(--wn-ink-4)] uppercase mb-1">Welcome back</div>
-        <div className="text-[18px] font-[800] text-[var(--wn-ink)]">junglefinds</div>
+        <div className="text-[18px] font-[800] text-[var(--wn-ink)]">{displayName}</div>
       </div>
       <Divider />
 
