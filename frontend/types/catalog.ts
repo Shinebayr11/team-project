@@ -45,5 +45,7 @@ export interface HomeShow {
   saved?: number;
   /** LiveKit room name — lets a card link into the real broadcast at /live/[roomId]. */
   roomId?: string;
+  /** Live_Show document id — lets the watch page load seller/product details. */
+  showId?: string;
 }
 

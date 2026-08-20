@@ -1,14 +1,70 @@
 import { Context } from "hono"
+import { RoomServiceClient } from "livekit-server-sdk"
 import { Live_Show } from "../models/Live_show.js"
+
+const roomService = new RoomServiceClient(
+    (process.env.LIVEKIT_URL || "").replace(/^ws/, "http"),
+    process.env.LIVEKIT_API_KEY,
+    process.env.LIVEKIT_API_SECRET,
+)
+
+// Seller "Эхлүүлэх" дарснаас хойш LiveKit-д бодитоор холбогдож room үүсгэх
+// хүртэл хэдхэн секунд зарцуулагддаг (token авах, /live/[id] рүү шилжих,
+// камер/микрофон хүсэх). Энэ хугацаанд staleness шалгалт хийвэл LiveKit дээр
+// room хараахан үүсээгүй байгаа тул шинэхэн live-ийг андуураад "ended" болгож
+// болзошгүй тул — үүссэнээс хойш GRACE хугацаанд шалгалтад оруулахгүй.
+const STALE_CHECK_GRACE_MS = 30_000
 
 export const getliveshow = async (c: Context) => {
     try {
         // Home feed-д зөвхөн одоо шууд явж буй (status: "live"), эсвэл эхлэх цаг нь
         // тохируулагдсан (started_at) шоунуудыг харуулна — цаг/төлөвгүй бэлэн бус
-        // (draft) баримтуудыг нуух.
+        // (draft) баримтуудыг нуух. Дууссан (ended) шоуг үргэлж хасна.
         const data = await Live_Show.find({
+            status: { $ne: "ended" },
             $or: [{ status: "live" }, { started_at: { $ne: null } }],
         }).populate("seller_id", "display_name avatar_url shop_name")
+
+        // status: "live" гэдэг нь зөвхөн DB-д ингэж тэмдэглэгдсэн гэсэн үг —
+        // хэрэглэгч "Дуусгах"-г дарахгүйгээр таб-аа хаавал мөр нь мөнхөд "live"
+        // хэвээр үлддэг. Иймд LiveKit-ээс яг одоо идэвхтэй байгаа room-уудтай
+        // тулгаж, бодитоор дамжуулж буй биш "live" мөрүүдийг хасаж, DB-г засна.
+        // livekit_room_name-гүй "live" мөрүүд бодит дамжуулалт хэзээ ч байгаагүй
+        // (жишээ нь mock/demo өгөгдөл) тул шалгах room алга — эдгээрийг алгасна.
+        // Дөнгөж үүссэн (GRACE хугацаанаас цөөн) мөрүүдийг ч алгасна — race condition-оос сэргийлнэ.
+        const liveDocs = data.filter(
+            (show) =>
+                show.status === "live" &&
+                show.livekit_room_name &&
+                Date.now() - new Date(show.createdAt).getTime() > STALE_CHECK_GRACE_MS,
+        )
+        if (liveDocs.length > 0) {
+            try {
+                const activeRooms = await roomService.listRooms()
+                const activeRoomNames = new Set(activeRooms.map((r) => r.name))
+                const staleIds = liveDocs
+                    .filter((show) => !activeRoomNames.has(show.livekit_room_name ?? ""))
+                    .map((show) => show._id)
+
+                if (staleIds.length > 0) {
+                    Live_Show.updateMany(
+                        { _id: { $in: staleIds } },
+                        { status: "ended", ended_at: new Date() },
+                    ).catch(() => {})
+
+                    const staleIdSet = new Set(staleIds.map(String))
+                    return c.json(
+                        { data: data.filter((show) => !staleIdSet.has(String(show._id))) },
+                        200,
+                    )
+                }
+            } catch (livekitError) {
+                // LiveKit-тэй холбогдож чадаагүй бол DB-ийн өгөгдлөөр буцаана —
+                // feed-ийг бүрэн эвдэхээс сэргийлнэ.
+                console.error("LiveKit listRooms алдаа:", livekitError)
+            }
+        }
+
         return c.json({ data }, 200)
     } catch (error) {
         return c.json({

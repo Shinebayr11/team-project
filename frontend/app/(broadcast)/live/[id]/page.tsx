@@ -4,6 +4,7 @@ import { use, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import { VideoStage } from "@/components/live/video-stage"
+import { LiveViewer } from "@/components/live/live-viewer"
 
 export default function LivePage({
   params,
@@ -24,8 +25,14 @@ export default function LivePage({
 
   if (isHost && (!isLoaded || !user)) return null
 
+  // Viewers get the browse-style stage (seller, products, chat); the host keeps
+  // the focused broadcast console with its own controls.
+  if (!isHost) {
+    return <LiveViewer roomName={id} showId={showId} title={title} />
+  }
+
   return (
-    <main className="mx-auto max-w-4xl px-6 py-6">
+    <main className="mx-auto max-w-[1440px] px-4 py-4">
       <h1 className="mb-4 text-xl font-bold tracking-tight">
         {title ?? "Шууд шоу"}
       </h1>

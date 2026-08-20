@@ -1,64 +1,22 @@
 "use client"
 
-import { useEffect, useState, useSyncExternalStore } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Video, Clock, Radio } from "lucide-react"
 import { useApiClient } from "@/hooks/useApiClient"
-
-type ActiveStream = { roomName: string; title: string; showId: string }
-
-const STORAGE_KEY = "activeStream"
-// "storage" only fires in *other* tabs, so writes from this one announce
-// themselves.
-const CHANGE_EVENT = "activestream:change"
-
-// getSnapshot runs on every render and React bails out on Object.is only, so a
-// fresh JSON.parse each time would re-render forever. Re-parse only when the
-// stored string actually changes.
-let cachedRaw: string | null = null
-let cachedValue: ActiveStream | null = null
-
-function getSnapshot(): ActiveStream | null {
-  const raw = localStorage.getItem(STORAGE_KEY)
-  if (raw !== cachedRaw) {
-    cachedRaw = raw
-    cachedValue = raw ? (JSON.parse(raw) as ActiveStream) : null
-  }
-  return cachedValue
-}
-
-// Nothing is live on the server or during hydration; React re-reads the real
-// value once mounted.
-function getServerSnapshot(): ActiveStream | null {
-  return null
-}
-
-function subscribe(onStoreChange: () => void) {
-  window.addEventListener("storage", onStoreChange)
-  window.addEventListener(CHANGE_EVENT, onStoreChange)
-  return () => {
-    window.removeEventListener("storage", onStoreChange)
-    window.removeEventListener(CHANGE_EVENT, onStoreChange)
-  }
-}
-
-function writeActiveStream(next: ActiveStream | null) {
-  if (next) localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-  else localStorage.removeItem(STORAGE_KEY)
-  window.dispatchEvent(new Event(CHANGE_EVENT))
-}
+import { useActiveStream, writeActiveStream } from "@/hooks/useActiveStream"
+import { EXPLORE_CATEGORIES } from "@/data/exploreCategories"
 
 export default function SellPage() {
   const { user, isLoaded } = useUser()
   const router = useRouter()
   const { callApi } = useApiClient()
   const [title, setTitle] = useState("")
+  const [category, setCategory] = useState(EXPLORE_CATEGORIES[0].name)
   const [starting, setStarting] = useState(false)
-  // localStorage is an external store: reading it through useSyncExternalStore
-  // keeps SSR and hydration in step without a setState round trip in an effect.
-  const active = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+  const active = useActiveStream()
 
   useEffect(() => {
     if (isLoaded && !user) router.replace("/sign-in")
@@ -115,6 +73,7 @@ export default function SellPage() {
             title: streamTitle,
             livekit_room_name: roomName,
             status: "live",
+            category,
           }),
         }
       )
@@ -172,15 +131,35 @@ export default function SellPage() {
         <>
           <h1 className="text-2xl font-bold tracking-tight">Шоу эхлүүлэх</h1>
           <p className="mt-2 text-muted-foreground">
-            Гарчгаа бичээд шууд дамжуулалт эхлүүлээрэй.
+            Гарчиг, ангиллаа сонгоод шууд дамжуулалт эхлүүлээрэй.
           </p>
 
+          <label className="mt-6 block text-sm font-medium" htmlFor="show-title">
+            Шоуны гарчиг
+          </label>
           <input
+            id="show-title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Шоуны гарчиг"
-            className="mt-6 h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className="mt-2 h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
+
+          <label className="mt-4 block text-sm font-medium" htmlFor="show-category">
+            Ангилал
+          </label>
+          <select
+            id="show-category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="mt-2 h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+          >
+            {EXPLORE_CATEGORIES.map((option) => (
+              <option key={option.id} value={option.name}>
+                {option.icon} {option.name}
+              </option>
+            ))}
+          </select>
 
           <Button
             className="mt-4 w-full"

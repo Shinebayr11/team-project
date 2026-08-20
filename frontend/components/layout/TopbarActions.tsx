@@ -2,8 +2,9 @@
 
 import React from "react"
 import { Link } from "@/lib/router"
-import { ShoppingCart, MessageSquare, Heart, Bell } from "lucide-react"
-import { useUser } from "@clerk/nextjs"
+import { ShoppingCart, MessageSquare, Heart, Bell, Radio } from "lucide-react"
+import { useActiveStream } from "@/hooks/useActiveStream"
+import { useDisplayName } from "@/hooks/useDisplayName"
 
 interface TopbarActionsProps {
   creditsLabel: string
@@ -23,22 +24,28 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
   unreadCount,
   onOpenCart,
 }) => {
-  const { user } = useUser()
-  const initial =
-    user?.username?.[0] ??
-    user?.firstName?.[0] ??
-    user?.primaryEmailAddress?.emailAddress?.[0] ??
-    "?"
+  const activeStream = useActiveStream()
+  const { initial } = useDisplayName()
 
   return (
     <div className="flex items-center gap-2">
       {/* Seller hub (mock data). Going live itself now lives in Seller Hub > Shows. */}
-      <Link
-        to="/admin"
-        className="mr-2 rounded-full bg-[var(--wn-surface-2)] px-5 py-2.5 text-[14px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-line)]"
-      >
-        Become a Seller
-      </Link>
+      {activeStream ? (
+        <Link
+          to={`/live/${activeStream.roomName}?host=1&title=${encodeURIComponent(activeStream.title)}&showId=${activeStream.showId}`}
+          className="mr-2 flex items-center gap-1.5 rounded-full bg-[var(--wn-live)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:opacity-90"
+        >
+          <Radio className="h-4 w-4" />
+          Миний Live
+        </Link>
+      ) : (
+        <Link
+          to="/admin"
+          className="mr-2 rounded-full bg-[var(--wn-surface-2)] px-5 py-2.5 text-[14px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-line)]"
+        >
+          Become a Seller
+        </Link>
+      )}
 
       <Link
         to="/profile?tab=following"

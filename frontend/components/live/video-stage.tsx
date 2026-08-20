@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   LiveKitRoom,
+  useRemoteParticipants,
   useTracks,
   VideoTrack,
   ControlBar,
@@ -12,29 +13,46 @@ import {
 import { Track } from "livekit-client"
 import "@livekit/components-styles"
 import { Button } from "@/components/ui/button"
+import { LiveDot } from "@/components/ui/LiveDot"
 import { useApiClient } from "@/hooks/useApiClient"
+import { writeActiveStream } from "@/hooks/useActiveStream"
+import { useLiveKitToken } from "@/hooks/useLiveKitToken"
+import { useDisplayName } from "@/hooks/useDisplayName"
+import { LiveChat } from "@/components/live/live-chat"
+import { BidsPanel } from "@/components/live/bids-panel"
 
 function Stage() {
   const tracks = useTracks([Track.Source.Camera], { onlySubscribed: false })
   const track = tracks[0]
-
-  if (!track) {
-    return (
-      <div className="flex size-full items-center justify-center text-sm text-white/60">
-        Дамжуулалт хүлээгдэж байна...
-      </div>
-    )
-  }
+  const participants = useRemoteParticipants()
 
   return (
-    <VideoTrack
-      trackRef={track}
-      className="size-full object-cover"
-      style={{ transform: "scaleX(-1)" }}
-    />
+    <>
+      {track ? (
+        <VideoTrack
+          trackRef={track}
+          className="size-full object-cover"
+          style={{ transform: "scaleX(-1)" }}
+        />
+      ) : (
+        <div className="flex size-full items-center justify-center text-sm text-white/60">
+          Дамжуулалт хүлээгдэж байна...
+        </div>
+      )}
+
+      <div className="absolute top-4 left-4 z-10 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-[12px] font-[600] text-white backdrop-blur-md">
+        <LiveDot className="h-2 w-2" />
+        <span>Live</span>
+        <span className="ml-1 opacity-60">{participants.length} watching</span>
+      </div>
+    </>
   )
 }
 
+/**
+ * The host's broadcast console: their camera on the left, and the room's
+ * viewers and comments alongside it on the right.
+ */
 export function VideoStage({
   roomName,
   isHost = false,
@@ -46,24 +64,9 @@ export function VideoStage({
 }) {
   const router = useRouter()
   const { callApi } = useApiClient()
-  const [token, setToken] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { token, error } = useLiveKitToken(roomName, isHost)
+  const { displayName } = useDisplayName()
   const [confirming, setConfirming] = useState(false)
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/livekit/token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        roomName,
-        identity: `${isHost ? "host" : "viewer"}-${Math.random().toString(36).slice(2, 8)}`,
-        canPublish: isHost,
-      }),
-    })
-      .then((r) => r.json())
-      .then((d) => setToken(d.token))
-      .catch((e) => setError(String(e)))
-  }, [roomName, isHost])
 
   const endStream = () => {
     if (showId) {
@@ -72,31 +75,37 @@ export function VideoStage({
         body: JSON.stringify({ status: "ended", ended_at: new Date().toISOString() }),
       }).catch((error) => console.error("Failed to end live show:", error))
     }
-    localStorage.removeItem("activeStream")
+    writeActiveStream(null)
     router.push("/sell")
   }
 
+  if (error) {
+    return (
+      <div className="flex h-[calc(100vh-140px)] items-center justify-center rounded-xl bg-black px-6 text-center text-sm text-red-400">
+        Холбогдож чадсангүй. Сервер (3001) ажиллаж байгаа эсэхийг шалгана уу.
+      </div>
+    )
+  }
+
+  if (!token) {
+    return (
+      <div className="flex h-[calc(100vh-140px)] items-center justify-center rounded-xl bg-black text-sm text-white/60">
+        Холбогдож байна...
+      </div>
+    )
+  }
+
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black">
-      {error ? (
-        <div className="flex size-full items-center justify-center px-6 text-center text-sm text-red-400">
-          Холбогдож чадсангүй. Сервер (3001) ажиллаж байгаа эсэхийг шалгана уу.
-        </div>
-      ) : !token ? (
-        <div className="flex size-full items-center justify-center text-sm text-white/60">
-          Холбогдож байна...
-        </div>
-      ) : (
-        <LiveKitRoom
-          token={token}
-          serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-          connect
-          video={isHost}
-          audio={isHost}
-          className="size-full"
-        >
+    <LiveKitRoom
+      token={token}
+      serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+      connect
+      video={isHost}
+      audio={isHost}
+    >
+      <div className="flex h-[calc(100vh-140px)] gap-4">
+        <div className="relative flex-1 overflow-hidden rounded-[20px] bg-black">
           <Stage />
-          <RoomAudioRenderer />
 
           {isHost && (
             <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-3">
@@ -135,8 +144,13 @@ export function VideoStage({
               )}
             </div>
           )}
-        </LiveKitRoom>
-      )}
-    </div>
+        </div>
+
+        <LiveChat hostName={displayName} />
+        <BidsPanel />
+      </div>
+
+      <RoomAudioRenderer />
+    </LiveKitRoom>
   )
 }
