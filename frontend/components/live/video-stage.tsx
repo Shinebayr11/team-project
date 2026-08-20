@@ -11,6 +11,7 @@ import {
 import { Track } from "livekit-client"
 import "@livekit/components-styles"
 import { Button } from "@/components/ui/button"
+import { useApiClient } from "@/hooks/useApiClient"
 
 function Stage() {
   const tracks = useTracks([Track.Source.Camera], { onlySubscribed: false })
@@ -36,11 +37,14 @@ function Stage() {
 export function VideoStage({
   roomName,
   isHost = false,
+  showId,
 }: {
   roomName: string
   isHost?: boolean
+  showId?: string
 }) {
   const router = useRouter()
+  const { callApi } = useApiClient()
   const [token, setToken] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [confirming, setConfirming] = useState(false)
@@ -61,6 +65,12 @@ export function VideoStage({
   }, [roomName, isHost])
 
   const endStream = () => {
+    if (showId) {
+      callApi(`/api/liveshow/${showId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: "ended", ended_at: new Date().toISOString() }),
+      }).catch((error) => console.error("Failed to end live show:", error))
+    }
     localStorage.removeItem("activeStream")
     router.push("/sell")
   }

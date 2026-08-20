@@ -2,16 +2,19 @@
 
 import React from 'react';
 import { X } from 'lucide-react';
+import { StatusFilter } from '@/hooks/useHomeFeed';
 
 interface HomeFeedHeaderProps {
   query: string;
   category: string;
   onClearSearch: () => void;
+  activeFilter: StatusFilter;
+  onFilterChange: (filter: StatusFilter) => void;
 }
 
-const FILTERS = ['Live now', 'Starting soon', 'Most watched'];
+const FILTERS: Exclude<StatusFilter, null>[] = ['Live now', 'Starting soon', 'Most watched'];
 
-export const HomeFeedHeader: React.FC<HomeFeedHeaderProps> = ({ query, category, onClearSearch }) => {
+export const HomeFeedHeader: React.FC<HomeFeedHeaderProps> = ({ query, category, onClearSearch, activeFilter, onFilterChange }) => {
   if (query) {
     return (
       <div className="flex items-center justify-between mb-8">
@@ -41,11 +44,20 @@ export const HomeFeedHeader: React.FC<HomeFeedHeaderProps> = ({ query, category,
           </button>
         </div>
         <div className="flex items-center gap-2">
-          {FILTERS.map((filter, i) => (
+          <button
+            onClick={() => onFilterChange(null)}
+            className={`px-4 py-1.5 rounded-full text-[13px] font-[600] transition-colors ${
+              activeFilter === null ? 'bg-[var(--wn-ink)] text-white' : 'bg-[var(--wn-surface-2)] text-[var(--wn-ink-2)] hover:bg-[var(--wn-line)]'
+            }`}
+          >
+            All
+          </button>
+          {FILTERS.map(filter => (
             <button
               key={filter}
+              onClick={() => onFilterChange(filter)}
               className={`px-4 py-1.5 rounded-full text-[13px] font-[600] transition-colors ${
-                i === 0 ? 'bg-[var(--wn-ink)] text-white' : 'bg-[var(--wn-surface-2)] text-[var(--wn-ink-2)] hover:bg-[var(--wn-line)]'
+                activeFilter === filter ? 'bg-[var(--wn-ink)] text-white' : 'bg-[var(--wn-surface-2)] text-[var(--wn-ink-2)] hover:bg-[var(--wn-line)]'
               }`}
             >
               {filter}

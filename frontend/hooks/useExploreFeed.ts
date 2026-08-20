@@ -2,7 +2,8 @@
 
 import { useMemo } from 'react';
 import { HomeShow } from '../types';
-import { HOME_SHOWS, SELLERS } from '../data';
+import { SELLERS } from '../data';
+import { useLiveShows } from './useLiveShows';
 
 export interface TrendingProduct {
   name: string;
@@ -31,6 +32,7 @@ const matches = (show: HomeShow, term: string) =>
 
 export const useExploreFeed = (query: string) => {
   const term = query.trim().toLowerCase();
+  const { shows, loading, error } = useLiveShows();
 
   const allTrending = useMemo<TrendingProduct[]>(() => {
     const products = Object.entries(SELLERS).flatMap(([slug, seller]) =>
@@ -42,8 +44,8 @@ export const useExploreFeed = (query: string) => {
     return shuffle(products).slice(0, TRENDING_LIMIT);
   }, []);
 
-  return useMemo(() => {
-    const pool = term ? HOME_SHOWS.filter(s => matches(s, term)) : HOME_SHOWS;
+  const result = useMemo(() => {
+    const pool = term ? shows.filter(s => matches(s, term)) : shows;
     const live = pool.filter(s => s.live).sort((a, b) => (b.live || 0) - (a.live || 0));
 
     return {
@@ -54,5 +56,7 @@ export const useExploreFeed = (query: string) => {
         ? allTrending.filter(p => p.name.toLowerCase().includes(term) || p.seller.toLowerCase().includes(term))
         : allTrending,
     };
-  }, [term, allTrending]);
+  }, [term, allTrending, shows]);
+
+  return { ...result, loading, error };
 };

@@ -1,4 +1,5 @@
-import { HOME_SHOWS } from "@/data"
+import { apiFetch } from "@/lib/api"
+import { LiveShowDoc, toHomeShow } from "@/lib/liveShows"
 
 import { Hero } from "../components/Hero"
 import { HowItWorks } from "../components/HowItWorks"
@@ -16,8 +17,12 @@ const GRID_SIZE = 8
  * Нэвтрэх / Бүртгүүлэх — the page never branches on auth state, so it stays
  * fully static.
  */
-export function Landing() {
-  const liveShows = HOME_SHOWS.filter((show) => show.live).sort(
+export async function Landing() {
+  const shows = await apiFetch<{ data: LiveShowDoc[] }>("/api/liveshow")
+    .then((res) => res.data.map(toHomeShow))
+    .catch(() => [])
+
+  const liveShows = shows.filter((show) => show.live).sort(
     (a, b) => (b.live ?? 0) - (a.live ?? 0)
   )
   const [featured, ...rest] = liveShows

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { HomeShow } from '../types';
-import { HOME_SHOWS } from '../data';
+import { useLiveShows } from './useLiveShows';
 
 const PAGE_SIZE = 8;
 const INITIAL_COUNT = 12;
@@ -13,39 +13,47 @@ const matchesQuery = (show: HomeShow, term: string) =>
   show.category.toLowerCase().includes(term) ||
   show.tags.toLowerCase().includes(term);
 
+export type StatusFilter = 'Live now' | 'Starting soon' | 'Most watched' | null;
+
 /**
  * Home feed state: the browse view groups by category, while search or a picked
  * category switches to a flat, infinitely-scrolled list.
  */
-export const useHomeFeed = (query: string, category: string) => {
-  const isBrowsing = !query && category === 'For You';
+export const useHomeFeed = (query: string, category: string, statusFilter: StatusFilter = null) => {
+  const { shows: allShows, loading, error } = useLiveShows();
+  const shows = useMemo(() => {
+    if (statusFilter === 'Live now') return allShows.filter(s => s.live !== undefined);
+    if (statusFilter === 'Starting soon') return allShows.filter(s => s.live === undefined);
+    return allShows;
+  }, [allShows, statusFilter]);
+  const isBrowsing = !query && category === 'For You' && !statusFilter;
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
   const loaderRef = useRef<HTMLDivElement>(null);
 
   const hottestShow = useMemo(
-    () => [...HOME_SHOWS].filter(s => s.live).sort((a, b) => (b.live || 0) - (a.live || 0))[0],
-    [],
+    () => [...shows].filter(s => s.live).sort((a, b) => (b.live || 0) - (a.live || 0))[0],
+    [shows],
   );
 
   const filteredShows = useMemo(() => {
     if (query) {
       const term = query.toLowerCase();
-      return HOME_SHOWS.filter(s => matchesQuery(s, term));
+      return shows.filter(s => matchesQuery(s, term));
     }
-    if (category !== 'For You') return HOME_SHOWS.filter(s => s.category === category);
-    return HOME_SHOWS;
-  }, [query, category]);
+    if (category !== 'For You') return shows.filter(s => s.category === category);
+    return shows;
+  }, [query, category, shows]);
 
   const groupedShows = useMemo(() => {
     if (!isBrowsing) return {};
-    return HOME_SHOWS.reduce<Record<string, HomeShow[]>>((groups, show) => {
+    return shows.reduce<Record<string, HomeShow[]>>((groups, show) => {
       (groups[show.category] ??= []).push(show);
       return groups;
     }, {});
-  }, [isBrowsing]);
+  }, [isBrowsing, shows]);
 
-  // Reset paging whenever the query or category changes.
-  useEffect(() => { setVisibleCount(INITIAL_COUNT); }, [query, category]);
+  // Reset paging whenever the query, category, or status filter changes.
+  useEffect(() => { setVisibleCount(INITIAL_COUNT); }, [query, category, statusFilter]);
 
   useEffect(() => {
     if (isBrowsing) return;
@@ -58,7 +66,7 @@ export const useHomeFeed = (query: string, category: string) => {
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [isBrowsing, query, category]);
+  }, [isBrowsing, query, category, statusFilter]);
 
   return {
     isBrowsing,
@@ -68,5 +76,7 @@ export const useHomeFeed = (query: string, category: string) => {
     displayShows: isBrowsing ? [] : filteredShows.slice(0, visibleCount),
     hasMore: filteredShows.length > visibleCount,
     loaderRef,
+    loading,
+    error,
   };
 };

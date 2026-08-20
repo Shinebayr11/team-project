@@ -8,6 +8,13 @@ export const getUsers = async (c: Context) => {
         return c.json({ message: "aldaa garlaa" }, 500)
     }
 }
+export const getCurrentUser = async (c: Context) => {
+    try {
+        return c.json({ data: c.get("user") })
+    } catch (error) {
+        return c.json({ message: "aldaa garlaa" }, 500)
+    }
+}
 export const postUsers = async (c: Context) => {
     try {
         const clerk_user_id = c.get("clerkUserId") as string

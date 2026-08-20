@@ -1,10 +1,11 @@
 import { Hono } from "hono";
-import { getUsers, postUsers } from "../controllers/userController.js";
-import { verifyClerkToken } from "../middleware/auth.js";
+import { getCurrentUser, getUsers, postUsers } from "../controllers/userController.js";
+import { requireAuth, verifyClerkToken } from "../middleware/auth.js";
 
 const userRoutes = new Hono()
 
 userRoutes.get("/", getUsers)
+userRoutes.get("/me", requireAuth, getCurrentUser)
 userRoutes.post("/", verifyClerkToken, postUsers)
 
 export default userRoutes

@@ -43,5 +43,7 @@ export interface HomeShow {
   live?: number;
   at?: string;
   saved?: number;
+  /** LiveKit room name — lets a card link into the real broadcast at /live/[roomId]. */
+  roomId?: string;
 }
 
