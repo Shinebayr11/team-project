@@ -9,9 +9,11 @@ interface ChatPanelProps {
   viewers: number;
   hostName: string;
   onSend: (text: string) => void;
+  /** Replaces the input with a prompt — used when a visitor must sign in first. */
+  lockedNotice?: React.ReactNode;
 }
 
-export const ChatPanel: React.FC<ChatPanelProps> = ({ lines, viewers, hostName, onSend }) => {
+export const ChatPanel: React.FC<ChatPanelProps> = ({ lines, viewers, hostName, onSend, lockedNotice }) => {
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -50,16 +52,18 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ lines, viewers, hostName, 
       </div>
 
       <div className="p-2 border-t border-[var(--wn-line)] bg-[var(--wn-surface-4)]">
-        <form onSubmit={handleSubmit} className="relative flex items-center w-full h-[36px] rounded-xl bg-white border border-[var(--wn-line)] px-3">
-          <input
-            type="text"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="Say something..."
-            aria-label="Chat message"
-            className="bg-transparent border-none outline-none w-full text-[13px] text-[var(--wn-ink)]"
-          />
-        </form>
+        {lockedNotice ?? (
+          <form onSubmit={handleSubmit} className="relative flex items-center w-full h-[36px] rounded-xl bg-white border border-[var(--wn-line)] px-3">
+            <input
+              type="text"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              placeholder="Say something..."
+              aria-label="Chat message"
+              className="bg-transparent border-none outline-none w-full text-[13px] text-[var(--wn-ink)]"
+            />
+          </form>
+        )}
       </div>
     </div>
   );

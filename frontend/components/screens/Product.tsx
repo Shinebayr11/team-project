@@ -6,6 +6,7 @@ import { ChevronLeft } from "lucide-react"
 import { SellerProduct, SellerRecord } from "@/types"
 import { SELLERS } from "@/data"
 import { useStore } from "@/store"
+import { useRequireAuth } from "@/hooks/useRequireAuth"
 import { ReviewSummary } from "@/components/reviews/ReviewSummary"
 import { ReviewList } from "@/components/reviews/ReviewList"
 import { ProductGallery } from "@/components/product/ProductGallery"
@@ -28,6 +29,7 @@ export const Product: React.FC = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { openModal, addToCart, addToast } = useStore()
+  const { requireAuth } = useRequireAuth()
 
   const slug = searchParams.get("seller") || FALLBACK_SELLER
   const productName = searchParams.get("product") || ""
@@ -65,10 +67,16 @@ export const Product: React.FC = () => {
           description={buildDescription(seller, product)}
           qty={qty}
           onQtyChange={setQty}
-          onBuy={() => openModal("buy", { product, seller: seller.slug, qty })}
-          onAddToCart={handleAddToCart}
+          onBuy={() =>
+            requireAuth(() =>
+              openModal("buy", { product, seller: seller.slug, qty })
+            )
+          }
+          onAddToCart={() => requireAuth(handleAddToCart)}
           onWatchLive={() => navigate(`/live-show?show=${seller.slug}`)}
-          onEnterGiveaway={() => openModal("giveaway", { product })}
+          onEnterGiveaway={() =>
+            requireAuth(() => openModal("giveaway", { product }))
+          }
         />
       </div>
 
