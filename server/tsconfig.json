@@ -6,9 +6,7 @@
     "skipLibCheck": true,
     "types": ["node"],
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
-    "rootDir": "./src",
-    "outDir": "./dist"
+    "jsxImportSource": "hono/jsx"
   },
   "exclude": ["node_modules"]
 }

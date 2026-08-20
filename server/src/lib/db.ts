@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 import 'dotenv/config'
 export const connectDb = async () => {
 
+    if (mongoose.connection.readyState !== 0) {
+        return;
+    }
+
     try {
         const URI = process.env.MONGODB_URI;
         if (!URI) {
