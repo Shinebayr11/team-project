@@ -5,12 +5,14 @@ import { AccessToken } from "livekit-server-sdk";
 const app = new Hono();
 
 app.post("/token", async (c) => {
-  const { roomName, identity, canPublish } = await c.req.json();
+  const { roomName, identity, name, canPublish } = await c.req.json();
 
   const at = new AccessToken(
     process.env.LIVEKIT_API_KEY!,
     process.env.LIVEKIT_API_SECRET!,
-    { identity, ttl: "2h" },
+    // identity өрөөнд давхцахгүй байх ёстой тул санамсаргүй үлдээнэ; name нь
+    // чат зэрэгт харагдах хүний нэр.
+    { identity, name, ttl: "2h" },
   );
 
   at.addGrant({

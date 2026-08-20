@@ -12,7 +12,9 @@ export function LiveChat({ hostName }: { hostName: string }) {
   const participants = useRemoteParticipants()
 
   const lines = chatMessages.map((message) => ({
-    name: message.from?.identity ?? "guest",
+    // `name` is what the sender typed for themselves; identity is the random
+    // per-connection id we only fall back to.
+    name: message.from?.name || message.from?.identity || "Зочин",
     text: message.message,
   }))
 
