@@ -2,6 +2,7 @@ import { Eye } from "lucide-react"
 
 import { Link } from "@/lib/router"
 import { LiveDot } from "@/components/ui/LiveDot"
+import { getWatchPath } from "@/lib/liveShows"
 import type { HomeShow } from "@/types"
 
 /**
@@ -10,7 +11,7 @@ import type { HomeShow } from "@/types"
  */
 export function LiveShowCard({ show }: { show: HomeShow }) {
   return (
-    <Link to={`/live-show?show=${show.seller}`} className="group flex flex-col">
+    <Link to={getWatchPath(show)} className="group flex flex-col">
       <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[18px] bg-[var(--wn-shot)]">
         {show.thumbnail && (
           <img

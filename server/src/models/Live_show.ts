@@ -11,7 +11,10 @@ const Live_showsSchema = new Schema(
         ended_at: { type: Date },
         livekit_room_name: { type: String },
         viewer_count: { type: Number },
-        started_at: { type: Date }
+        started_at: { type: Date },
+        category: { type: String },
+        tags: { type: String },
+        sponsored: { type: Boolean, default: false }
     },
     { timestamps: true }
 )

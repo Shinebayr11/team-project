@@ -2,6 +2,7 @@ import { Play } from "lucide-react"
 
 import { Link } from "@/lib/router"
 import { LiveDot } from "@/components/ui/LiveDot"
+import { getWatchPath } from "@/lib/liveShows"
 import type { HomeShow } from "@/types"
 
 interface HeroProps {
@@ -54,7 +55,7 @@ export function Hero({ liveCount, watching, featured }: HeroProps) {
 
       {featured && (
         <Link
-          to={`/live-show?show=${featured.seller}`}
+          to={getWatchPath(featured)}
           className="group relative block aspect-[4/5] overflow-hidden rounded-[28px] bg-[var(--wn-shot)] lg:aspect-[4/4.4]"
         >
           {featured.thumbnail && (

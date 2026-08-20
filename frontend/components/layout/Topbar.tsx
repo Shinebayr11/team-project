@@ -1,8 +1,9 @@
 "use client"
 
 import React from 'react';
-import { useLocation } from '@/lib/router';
+import { useLocation, Link } from '@/lib/router';
 import { Search } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
 import { useStore } from '../../store';
 import { TopbarNav } from './TopbarNav';
 import { TopbarActions } from './TopbarActions';
@@ -10,6 +11,7 @@ import { TopbarActions } from './TopbarActions';
 export const Topbar: React.FC = () => {
   const { creditsLabel, cartCount, unread, openModal } = useStore();
   const { pathname } = useLocation();
+  const { user } = useUser();
 
   return (
     <div className="sticky top-0 z-50 h-[68px] border-b border-[var(--wn-line)] bg-white flex items-center px-6 justify-between">
@@ -27,12 +29,21 @@ export const Topbar: React.FC = () => {
         </div>
       </div>
 
-      <TopbarActions
-        creditsLabel={creditsLabel()}
-        cartCount={cartCount()}
-        unreadCount={unread()}
-        onOpenCart={() => openModal('cart')}
-      />
+      {user ? (
+        <TopbarActions
+          creditsLabel={creditsLabel()}
+          cartCount={cartCount()}
+          unreadCount={unread()}
+          onOpenCart={() => openModal('cart')}
+        />
+      ) : (
+        <Link
+          to="/sign-in"
+          className="ml-2 rounded-full bg-[var(--wn-accent)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-accent-hover)]"
+        >
+          Нэвтрэх
+        </Link>
+      )}
     </div>
   );
 };

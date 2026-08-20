@@ -3,6 +3,7 @@
 import React from 'react';
 import { useNavigate } from '@/lib/router';
 import { HomeShow } from '../../types';
+import { getWatchPath } from '../../lib/liveShows';
 import { Avatar } from '../ui/Avatar';
 import { LiveDot } from '../ui/LiveDot';
 
@@ -24,7 +25,7 @@ export const ShowCard: React.FC<{ show: HomeShow }> = ({ show }) => {
 
       <div
         className="relative w-full aspect-[3/4] bg-[var(--wn-shot)] rounded-[16px] cursor-pointer overflow-hidden group"
-        onClick={() => navigate(`/live-show?show=${show.seller}`)}
+        onClick={() => navigate(getWatchPath(show))}
       >
         {show.thumbnail && (
           <img src={show.thumbnail} alt={show.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />

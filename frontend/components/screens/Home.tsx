@@ -1,8 +1,9 @@
 "use client"
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from '@/lib/router';
-import { useHomeFeed } from '@/hooks/useHomeFeed';
+import { useHomeFeed, StatusFilter } from '@/hooks/useHomeFeed';
+import { getWatchPath } from '@/lib/liveShows';
 import { HomeSidebar } from '@/components/home/HomeSidebar';
 import { HomeFeedHeader } from '@/components/home/HomeFeedHeader';
 import { FeaturedShow } from '@/components/home/FeaturedShow';
@@ -15,21 +16,36 @@ export const Home: React.FC = () => {
 
   const category = searchParams.get('cat') || 'For You';
   const query = searchParams.get('q') || '';
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(null);
 
-  const { isBrowsing, hottestShow, groupedShows, displayShows, hasMore, loaderRef } =
-    useHomeFeed(query, category);
+  const { isBrowsing, hottestShow, groupedShows, displayShows, hasMore, loaderRef, loading } =
+    useHomeFeed(query, category, statusFilter);
 
   const clearSearch = () => setSearchParams(prev => { prev.delete('q'); return prev; });
+
+  if (loading) {
+    return (
+      <div className="max-w-[1440px] mx-auto flex items-center justify-center px-7 py-24">
+        <div className="w-8 h-8 border-2 border-[var(--wn-ink-3)] border-t-transparent rounded-full animate-spin opacity-50" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-[1440px] mx-auto flex gap-8 px-7 py-8">
       <HomeSidebar />
 
       <main className="flex-1 flex flex-col min-w-0">
-        <HomeFeedHeader query={query} category={category} onClearSearch={clearSearch} />
+        <HomeFeedHeader
+          query={query}
+          category={category}
+          onClearSearch={clearSearch}
+          activeFilter={statusFilter}
+          onFilterChange={setStatusFilter}
+        />
 
         {isBrowsing && hottestShow && (
-          <FeaturedShow show={hottestShow} onWatch={() => navigate(`/live-show?show=${hottestShow.seller}`)} />
+          <FeaturedShow show={hottestShow} onWatch={() => navigate(getWatchPath(hottestShow))} />
         )}
 
         {isBrowsing ? (

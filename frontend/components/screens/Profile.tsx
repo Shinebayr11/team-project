@@ -1,9 +1,11 @@
 "use client"
 
-import React, { useRef } from "react"
+import React, { useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
+import { useUser } from "@clerk/nextjs"
 import { useSearchParams } from "@/lib/router"
 import { useStore } from "@/store"
-import { HOME_SHOWS } from "@/data"
+import { useLiveShows } from "@/hooks/useLiveShows"
 import {
   ProfileSidebar,
   ProfileTab,
@@ -16,14 +18,22 @@ import { SettingsTab } from "@/components/profile/SettingsTab"
 import { PaymentTab } from "@/components/profile/PaymentTab"
 import { AddressesTab } from "@/components/profile/AddressesTab"
 
-const SAVED_SHOWS = HOME_SHOWS.filter((show) => show.saved)
-
 export const Profile: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { state, followingCount, addToast } = useStore()
+  const { shows } = useLiveShows()
+  const savedShows = shows.filter((show) => show.saved)
+  const { user, isLoaded } = useUser()
+  const router = useRouter()
+  const nameInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (isLoaded && !user) router.replace("/sign-in")
+  }, [isLoaded, user, router])
+
+  if (!isLoaded || !user) return null
 
   const tab = (searchParams.get("tab") || "overview") as ProfileTab
-  const nameInputRef = useRef<HTMLInputElement>(null)
 
   const goToTab = (next: ProfileTab) => setSearchParams({ tab: next })
 
@@ -40,7 +50,7 @@ export const Profile: React.FC = () => {
       case "following":
         return <FollowingTab />
       case "saved":
-        return <SavedTab shows={SAVED_SHOWS} />
+        return <SavedTab shows={savedShows} />
       case "settings":
         return (
           <SettingsTab
@@ -56,7 +66,7 @@ export const Profile: React.FC = () => {
         return (
           <OverviewTab
             purchases={state.purchases}
-            savedShows={SAVED_SHOWS}
+            savedShows={savedShows}
             followingCount={followingCount()}
             onNavigate={goToTab}
           />
