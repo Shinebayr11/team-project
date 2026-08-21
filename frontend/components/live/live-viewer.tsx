@@ -44,6 +44,7 @@ const productsFromListing = (
     price,
     tag: isActive(listing) ? "Live now" : "Sold",
     live: isActive(listing),
+    image: product.images?.[0],
   }
 
   return isActive(listing)
