@@ -20,17 +20,39 @@ import { Avatar } from "@/components/ui/Avatar"
 import { LiveDot } from "@/components/ui/LiveDot"
 import { ShowProductList } from "@/components/liveshow/ShowProductList"
 import { LiveChat } from "@/components/live/live-chat"
+import { AuctionBidPanel } from "@/components/live/auction-bid-panel"
+import { Listing, isActive, useAuction } from "@/hooks/useAuction"
 
-// Real shows have no catalogue wired up yet, but the tabs still render so the
-// panel matches the browse layout rather than collapsing.
-const NO_PRODUCTS: Record<ReelTab, ReelProduct[]> = {
+const EMPTY_PRODUCTS: Record<ReelTab, ReelProduct[]> = {
   buynow: [],
   giveaways: [],
   sold: [],
 }
 
-/** The host's camera, filling the stage. */
-function Stage() {
+/** The lot on the block becomes the panel's "Buy Now" row; sold lots move down. */
+const productsFromListing = (
+  listing: Listing | null
+): Record<ReelTab, ReelProduct[]> => {
+  const product = listing && typeof listing.product_id === "object" ? listing.product_id : null
+  if (!listing || !product) return EMPTY_PRODUCTS
+
+  const price = String(
+    listing.current_highest_bid_coins ?? listing.starting_price_coins ?? 0
+  )
+  const row: ReelProduct = {
+    name: product.name,
+    price,
+    tag: isActive(listing) ? "Live now" : "Sold",
+    live: isActive(listing),
+  }
+
+  return isActive(listing)
+    ? { ...EMPTY_PRODUCTS, buynow: [row] }
+    : { ...EMPTY_PRODUCTS, sold: [row] }
+}
+
+/** The host's camera, filling the stage. Any auction UI overlays it. */
+function Stage({ children }: { children?: React.ReactNode }) {
   const tracks = useTracks([Track.Source.Camera], { onlySubscribed: false })
   const track = tracks[0]
   const participants = useRemoteParticipants()
@@ -50,6 +72,8 @@ function Stage() {
         <span>Live</span>
         <span className="ml-1 opacity-60">{participants.length} watching</span>
       </div>
+
+      {children}
     </div>
   )
 }
@@ -122,6 +146,7 @@ export function LiveViewer({
 }) {
   const { token, error } = useLiveKitToken(roomName, false)
   const show = useLiveShowDetail(showId)
+  const { listing, placeBid } = useAuction(showId)
   const [tab, setTab] = useState<ReelTab>("buynow")
 
   const seller =
@@ -157,14 +182,16 @@ export function LiveViewer({
             category={category}
           />
           <ShowProductList
-            products={NO_PRODUCTS}
+            products={productsFromListing(listing)}
             activeTab={tab}
             onTabChange={setTab}
             onSelect={() => {}}
           />
         </div>
 
-        <Stage />
+        <Stage>
+          <AuctionBidPanel listing={listing} onBid={placeBid} />
+        </Stage>
 
         <LiveChat hostName={seller} />
       </div>

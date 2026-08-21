@@ -18,6 +18,7 @@ import { useApiClient } from "@/hooks/useApiClient"
 import { writeActiveStream } from "@/hooks/useActiveStream"
 import { useLiveKitToken } from "@/hooks/useLiveKitToken"
 import { useDisplayName } from "@/hooks/useDisplayName"
+import { useAuction } from "@/hooks/useAuction"
 import { LiveChat } from "@/components/live/live-chat"
 import { BidsPanel } from "@/components/live/bids-panel"
 
@@ -66,6 +67,7 @@ export function VideoStage({
   const { callApi } = useApiClient()
   const { token, error } = useLiveKitToken(roomName, isHost)
   const { displayName } = useDisplayName()
+  const { listing, bids, startAuction, closeAuction } = useAuction(showId)
   const [confirming, setConfirming] = useState(false)
 
   const endStream = () => {
@@ -147,7 +149,12 @@ export function VideoStage({
         </div>
 
         <LiveChat hostName={displayName} />
-        <BidsPanel />
+        <BidsPanel
+          listing={listing}
+          bids={bids}
+          onStart={startAuction}
+          onClose={closeAuction}
+        />
       </div>
 
       <RoomAudioRenderer />
