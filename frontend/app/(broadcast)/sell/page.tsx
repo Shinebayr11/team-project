@@ -8,6 +8,7 @@ import { Video, Clock, Radio } from "lucide-react"
 import { useApiClient } from "@/hooks/useApiClient"
 import { useActiveStream, writeActiveStream } from "@/hooks/useActiveStream"
 import { EXPLORE_CATEGORIES } from "@/data/exploreCategories"
+import { ProductCatalog } from "@/components/sell/product-catalog"
 
 export default function SellPage() {
   const { user, isLoaded } = useUser()
@@ -171,6 +172,8 @@ export default function SellPage() {
           </Button>
         </>
       )}
+
+      <ProductCatalog />
     </div>
   )
 }
