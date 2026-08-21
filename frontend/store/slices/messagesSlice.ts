@@ -12,11 +12,14 @@ export const createMessagesSlice = (state: StoreState, update: StateUpdater): Me
   thread: (slug) => state.threads.find(t => t.slug === slug),
   unread: () => state.threads.reduce((acc, t) => acc + t.unread, 0),
 
+  // Returns the same state when the thread is already read. Callers include an
+  // effect whose deps hold this very function, and the provider rebuilds the
+  // slices on every state change — so handing back a fresh object regardless
+  // would spin: setState -> new markRead -> effect -> setState.
   markRead: (slug) => {
-    update(s => ({
-      ...s,
-      threads: s.threads.map(t => t.slug === slug ? { ...t, unread: 0 } : t),
-    }));
+    update(s => s.threads.some(t => t.slug === slug && t.unread > 0)
+      ? { ...s, threads: s.threads.map(t => t.slug === slug ? { ...t, unread: 0 } : t) }
+      : s);
   },
 
   send: (slug, text) => {
