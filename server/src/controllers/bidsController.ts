@@ -1,8 +1,13 @@
 import { Context } from "hono"
 import { Bid } from "../models/Bid.js"
 import { ProductListing } from "../models/ProductListing.js"
-import { Wallet } from "../models/Wallet.js"
-import { LISTING_STATUS, minimumBid, settleExpiredListings } from "../lib/auction.js"
+import {
+    LISTING_STATUS,
+    holdCoins,
+    minimumBid,
+    releaseCoins,
+    settleExpiredListings,
+} from "../lib/auction.js"
 
 const MAX_BIDS_RETURNED = 50
 
@@ -66,15 +71,18 @@ export const postbids = async (c: Context) => {
             )
         }
 
-        const wallet = await Wallet.findOne({ user_id: buyerId })
-        if (!wallet || (wallet.coin_balance ?? 0) < amount) {
+        // Дүнг барьцаанд авна. Зарцуулж болох үлдэгдлээр нөхцөлддөг тул нэг
+        // зоосыг хэд хэдэн аукционд давхар амлах боломжгүй.
+        const held = await holdCoins(buyerId, amount)
+        if (!held) {
             return c.json({ message: "Үлдэгдэл хүрэлцэхгүй байна" }, 402)
         }
 
         // Хоёр хүн зэрэг санал өгвөл аль нэг нь л ялах ёстой. Уншаад дараа нь
         // бичих нь хоёуланг нь давхар ялагч болгож мэднэ — иймд нөхцөлийг
-        // шинэчлэлтийн дотор нь шалгуулж, атомаар солино.
-        const claimed = await ProductListing.findOneAndUpdate(
+        // шинэчлэлтийн дотор нь шалгуулж, атомаар солино. Шинэчлэхээс өмнөх
+        // баримт буцаж ирэх тул өмнөх тэргүүлэгчийг эндээс салгаж авна.
+        const previous = await ProductListing.findOneAndUpdate(
             {
                 _id: listing_id,
                 status: LISTING_STATUS.active,
@@ -92,11 +100,12 @@ export const postbids = async (c: Context) => {
                 },
             },
             { current_highest_bid_coins: amount, current_winner_id: buyerId },
-            { new: true },
         )
 
-        if (!claimed) {
-            // Энэ хооронд өөр хэн нэгэн илүү өндөр санал өгсөн эсвэл хугацаа дууссан.
+        if (!previous) {
+            // Энэ хооронд өөр хэн нэгэн илүү өндөр санал өгсөн эсвэл хугацаа
+            // дууссан — барьцааг эргүүлж чөлөөлнө.
+            await releaseCoins(buyerId, amount)
             const latest = await ProductListing.findById(listing_id)
             return c.json(
                 {
@@ -107,14 +116,24 @@ export const postbids = async (c: Context) => {
             )
         }
 
+        // Давуулагдсан тэргүүлэгчийн зоос тэр даруй чөлөөтэй болно.
+        if (previous.current_winner_id && previous.current_highest_bid_coins) {
+            await releaseCoins(
+                previous.current_winner_id,
+                previous.current_highest_bid_coins,
+            )
+        }
+
         const data = await Bid.create({
             listing_id,
             buyer_id: buyerId,
             amount_coins: amount,
         })
 
+        const listingNow = await ProductListing.findById(listing_id)
+
         return c.json(
-            { message: "Amjilttai hadgallaa", data, listing: claimed },
+            { message: "Amjilttai hadgallaa", data, listing: listingNow },
             201,
         )
     } catch (error) {
