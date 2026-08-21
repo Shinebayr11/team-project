@@ -50,10 +50,19 @@ export const holdCoins = async (userId: UserRef, amount: number) => {
     return !!wallet
 }
 
-/** Барьцааг сулруулна — давуулагдсан, эсвэл аукцион цуцлагдсан үед. */
+/**
+ * Барьцааг сулруулна — давуулагдсан, эсвэл аукцион цуцлагдсан үед.
+ *
+ * Бодитоор барьцаалагдсанаас илүүг сулруулбал held_coins сөрөг болж,
+ * зарцуулж болох үлдэгдэл (coin_balance - held_coins) бодит үлдэгдлээс
+ * давах буюу байхгүй зоос үүснэ — иймд барьцаа хүрэлцэхэд л хасна.
+ */
 export const releaseCoins = async (userId: UserRef, amount: number) => {
     if (!userId || !amount) return
-    await Wallet.updateOne({ user_id: userId }, { $inc: { held_coins: -amount } })
+    await Wallet.updateOne(
+        { user_id: userId, held_coins: { $gte: amount } },
+        { $inc: { held_coins: -amount } },
+    )
 }
 
 /**
@@ -72,6 +81,9 @@ export const settleExpiredListings = async (filter: Record<string, unknown> = {}
     })
 
     for (const listing of expired) {
+      // Нэг аукционы алдаа бусдыг нь хаалтгүй үлдээх ёсгүй — тус тусад нь
+      // тусгаарлана.
+      try {
         // Хоёр хүсэлт зэрэг хаахыг оролдвол зөвхөн нэг нь амжилттай болно —
         // status-ыг нөхцөлтэйгээр солино.
         const claimed = await ProductListing.findOneAndUpdate(
@@ -101,13 +113,16 @@ export const settleExpiredListings = async (filter: Record<string, unknown> = {}
         )
 
         if (!buyerWallet) {
-            // Барьцаа алга болсон (жишээ нь гараар өөрчлөгдсөн) — борлуулалт
-            // биш гэж тэмдэглэж, дутуу төлбөрөөр хаахаас сэргийлнэ.
+            // Барьцаа нь олдсонгүй — тэгэхээр сулруулах зүйл ч алга. Энд
+            // releaseCoins дуудвал байхгүй барьцааг хасаж, зоос үүсгэнэ.
+            // Борлуулалт биш гэж тэмдэглээд орхино.
+            console.error(
+                `Аукцион ${claimed._id}: ялагчийн барьцаа олдсонгүй, төлбөр хийгдсэнгүй`,
+            )
             await ProductListing.updateOne(
                 { _id: claimed._id },
                 { status: LISTING_STATUS.unsold },
             )
-            await releaseCoins(claimed.current_winner_id, amount)
             continue
         }
 
@@ -133,5 +148,8 @@ export const settleExpiredListings = async (filter: Record<string, unknown> = {}
             type: "auction_sale",
             amount,
         })
+      } catch (error) {
+        console.error(`Аукцион ${listing._id} хаахад алдаа гарлаа:`, error)
+      }
     }
 }
