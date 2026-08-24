@@ -21,34 +21,53 @@ import { LiveDot } from "@/components/ui/LiveDot"
 import { ShowProductList } from "@/components/liveshow/ShowProductList"
 import { LiveChat } from "@/components/live/live-chat"
 import { AuctionBidPanel } from "@/components/live/auction-bid-panel"
-import { Listing, isActive, useAuction } from "@/hooks/useAuction"
+import { AuctionProduct, Listing, isActive, useAuction } from "@/hooks/useAuction"
+import { ShowProduct, productOfEntry, useShowProducts } from "@/hooks/useShowProducts"
 
-const EMPTY_PRODUCTS: Record<ReelTab, ReelProduct[]> = {
-  buynow: [],
-  giveaways: [],
-  sold: [],
-}
-
-/** The lot on the block becomes the panel's "Buy Now" row; sold lots move down. */
-const productsFromListing = (
+/**
+ * Худалдагчийн урьдчилан эмхэлсэн жагсаалт панелийн үндэс болно; аукционд
+ * гарсан бараа нь "Live now", дуусcан нь "Sold" болж доошоо шилжинэ.
+ */
+const buildProducts = (
+  entries: ShowProduct[],
   listing: Listing | null
 ): Record<ReelTab, ReelProduct[]> => {
-  const product = listing && typeof listing.product_id === "object" ? listing.product_id : null
-  if (!listing || !product) return EMPTY_PRODUCTS
-
-  const price = String(
-    listing.current_highest_bid_coins ?? listing.starting_price_coins ?? 0
+  const onBlock =
+    listing && typeof listing.product_id === "object" ? listing.product_id : null
+  const running = isActive(listing)
+  const livePrice = String(
+    listing?.current_highest_bid_coins ?? listing?.starting_price_coins ?? 0
   )
-  const row: ReelProduct = {
-    name: product.name,
-    price,
-    tag: isActive(listing) ? "Live now" : "Sold",
-    live: isActive(listing),
+
+  const buynow: ReelProduct[] = []
+  const sold: ReelProduct[] = []
+
+  const push = (product: AuctionProduct) => {
+    const current = onBlock?._id === product._id
+    const row: ReelProduct = {
+      name: product.name,
+      price: current ? livePrice : String(product.price_coins ?? 0),
+      tag: current ? (running ? "Live now" : "Sold") : "Удахгүй",
+      live: current && running,
+      image: product.images?.[0],
+    }
+    if (current && !running) sold.push(row)
+    else buynow.push(row)
   }
 
-  return isActive(listing)
-    ? { ...EMPTY_PRODUCTS, buynow: [row] }
-    : { ...EMPTY_PRODUCTS, sold: [row] }
+  const listed = new Set<string>()
+  for (const entry of entries) {
+    const product = productOfEntry(entry)
+    if (!product) continue
+    listed.add(product._id)
+    push(product)
+  }
+
+  // Жагсаалтад ороогүй бараагаар аукцион явж байвал түүнийг ч гэсэн харуулна —
+  // /sell дээр жагсаалт эмхлээгүй байсан ч панель хоосон харагдахгүй.
+  if (onBlock && !listed.has(onBlock._id)) push(onBlock)
+
+  return { buynow, giveaways: [], sold }
 }
 
 /** The host's camera, filling the stage. Any auction UI overlays it. */
@@ -147,6 +166,7 @@ export function LiveViewer({
   const { token, error } = useLiveKitToken(roomName, false)
   const show = useLiveShowDetail(showId)
   const { listing, placeBid } = useAuction(showId)
+  const { entries } = useShowProducts(showId)
   const [tab, setTab] = useState<ReelTab>("buynow")
 
   const seller =
@@ -182,7 +202,7 @@ export function LiveViewer({
             category={category}
           />
           <ShowProductList
-            products={productsFromListing(listing)}
+            products={buildProducts(entries, listing)}
             activeTab={tab}
             onTabChange={setTab}
             onSelect={() => {}}

@@ -171,14 +171,23 @@ export function BidsPanel({
         </div>
       ) : (
         <>
-          <div className="border-b border-[var(--wn-line)] p-3">
-            <div className="truncate text-[14px] font-[700] text-[var(--wn-ink)]">
-              {product?.name ?? "Бараа"}
-            </div>
-            <div className="mt-1 text-[13px] font-[600] text-[var(--wn-ink-3)]">
-              {listing?.current_highest_bid_coins != null
-                ? `Одоогийн санал ₮${listing.current_highest_bid_coins}`
-                : `Эхлэх үнэ ₮${listing?.starting_price_coins ?? 0}`}
+          <div className="flex items-center gap-3 border-b border-[var(--wn-line)] p-3">
+            {product?.images?.[0] && (
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                className="size-12 shrink-0 rounded-lg object-cover"
+              />
+            )}
+            <div className="min-w-0">
+              <div className="truncate text-[14px] font-[700] text-[var(--wn-ink)]">
+                {product?.name ?? "Бараа"}
+              </div>
+              <div className="mt-1 text-[13px] font-[600] text-[var(--wn-ink-3)]">
+                {listing?.current_highest_bid_coins != null
+                  ? `Одоогийн санал ₮${listing.current_highest_bid_coins}`
+                  : `Эхлэх үнэ ₮${listing?.starting_price_coins ?? 0}`}
+              </div>
             </div>
           </div>
 

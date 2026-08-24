@@ -74,6 +74,22 @@ export const getliveshow = async (c: Context) => {
     }
 
 }
+// Seller /sell дээрээс шоу эхлүүлэхийн өмнө өмнөх дүнгээ харах — дууссан
+// шоунуудаас хамгийн их үзэлттэй 3-ыг буцаана.
+export const getMyLiveshows = async (c: Context) => {
+    try {
+        const userId = c.get("userId")
+        const data = await Live_Show.find({ seller_id: userId, status: "ended" })
+            .sort({ viewer_count: -1 })
+            .limit(3)
+        return c.json({ data }, 200)
+    } catch (error) {
+        return c.json({
+            message: "Aldaa garlaa"
+        }, 500)
+    }
+}
+
 export const getliveshowById = async (c: Context) => {
     try {
         const id = c.req.param("id")

@@ -21,6 +21,8 @@ export interface ReelProduct {
   price: string;
   tag: string;
   live?: boolean;
+  /** Mock reel-д зураг байдаггүй тул сонголттой. */
+  image?: string;
 }
 
 export interface ReelShow {

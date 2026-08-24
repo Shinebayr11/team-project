@@ -58,6 +58,14 @@ export function AuctionBidPanel({
   return (
     <div className="absolute inset-x-4 bottom-4 z-20 rounded-2xl bg-white/95 p-3 shadow-lg backdrop-blur">
       <div className="flex items-center gap-3">
+        {productOf(listing)?.images?.[0] && (
+          <img
+            src={productOf(listing)!.images![0]}
+            alt={productOf(listing)?.name ?? "Бараа"}
+            className="size-14 shrink-0 rounded-xl object-cover"
+          />
+        )}
+
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <span className="rounded bg-[var(--wn-accent-soft)] px-1.5 py-0.5 text-[10px] font-[800] tracking-wider text-[var(--wn-accent)] uppercase">
