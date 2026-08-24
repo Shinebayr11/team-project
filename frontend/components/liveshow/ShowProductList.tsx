@@ -52,9 +52,11 @@ export const ShowProductList: React.FC<ShowProductListProps> = ({
     </div>
 
     <div className="flex-1 overflow-y-auto p-2">
-      {products[activeTab].map(product => (
+      {/* Ижил нэртэй бараа жагсаалтад орж болох тул нэрийг ганцаараа key болгож
+          болохгүй. */}
+      {products[activeTab].map((product, index) => (
         <div
-          key={product.name}
+          key={`${product.name}-${index}`}
           onClick={() => onSelect(product)}
           className="flex items-center gap-3 p-2 rounded-xl hover:bg-[var(--wn-surface-2)] cursor-pointer transition-colors"
         >
