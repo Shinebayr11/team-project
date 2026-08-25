@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
-import { Video, Clock } from "lucide-react"
+import { Video } from "lucide-react"
 import { LiveDot } from "@/components/ui/LiveDot"
 import { useApiClient } from "@/hooks/useApiClient"
 import { useActiveStream, writeActiveStream } from "@/hooks/useActiveStream"
 import { useCategories } from "@/hooks/useCategories"
+import { useSellerProfile } from "@/hooks/useSellerProfile"
+import { SELLER_GATE_PARAM, SELLER_GATE_RETURN } from "@/hooks/useSellerGate"
 import { EXPLORE_CATEGORIES } from "@/data/exploreCategories"
 import { ProductCatalog } from "@/components/sell/product-catalog"
 import { ShowLineup } from "@/components/sell/show-lineup"
@@ -36,6 +38,7 @@ export default function SellPage() {
   const [starting, setStarting] = useState(false)
   const active = useActiveStream()
   const { categories, addCategory } = useCategories()
+  const { isActive: isSeller, isLoading: sellerLoading } = useSellerProfile()
 
   const [addingCategory, setAddingCategory] = useState(false)
   const [newCategory, setNewCategory] = useState("")
@@ -72,53 +75,14 @@ export default function SellPage() {
     if (isLoaded && !user) router.replace("/sign-in")
   }, [isLoaded, user, router])
 
-  if (!isLoaded || !user) return null
+  // Худалдагч биш бол идэвхжүүлэх хуудсыг нээнэ. Хянах дараалал БАЙХГҮЙ —
+  // гарын үсэг зурмагц энэ хуудас руу шууд буцаж орно.
+  useEffect(() => {
+    if (!isLoaded || !user || sellerLoading || isSeller) return
+    router.replace(`${SELLER_GATE_RETURN}?${SELLER_GATE_PARAM}=1`)
+  }, [isLoaded, user, sellerLoading, isSeller, router])
 
-  const status = user.publicMetadata?.sellerStatus as
-    "approved" | "pending" | undefined
-
-  if (status === "pending") {
-    return (
-      <div className="mx-auto max-w-md px-6 py-24">
-        <div className="rounded-[28px] border border-[var(--wn-line)] bg-[linear-gradient(160deg,#ffffff_0%,#f5f0ff_55%,#fdf2f8_100%)] p-10 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[radial-gradient(circle_at_30%_30%,#c4b5fd,#5b3fe0)] shadow-[0_8px_24px_rgba(91,63,224,0.35)]">
-            <Clock className="size-7 text-white" />
-          </div>
-          <h1 className="font-display mt-5 text-[24px] font-[800] tracking-tight text-[var(--wn-ink)]">
-            Хүсэлт хянагдаж байна
-          </h1>
-          <p className="mt-2 text-[15px] text-[var(--wn-ink-3)]">
-            Худалдагчийн хүсэлтийг баталгаажуулсны дараа мэдэгдэл очно.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  if (status !== "approved") {
-    return (
-      <div className="mx-auto max-w-md px-6 py-24">
-        <div className="relative overflow-hidden rounded-[28px] bg-[radial-gradient(140%_140%_at_50%_0%,#7c3aed_0%,#5b3fe0_35%,#d946ef_70%,#fb923c_100%)] p-10 text-center shadow-[0_20px_50px_rgba(91,63,224,0.35)]">
-          <GradientOrbs />
-          <div className="relative">
-            <h1 className="font-display text-[24px] font-[800] tracking-tight text-white">
-              Худалдагч болох
-            </h1>
-            <p className="mt-2 text-[15px] text-white/85">
-              Шоу хийж бараагаа зарахын тулд эхлээд бүртгүүлнэ үү.
-            </p>
-            <button
-              type="button"
-              onClick={() => router.push("/sell/onboarding")}
-              className="mt-6 h-[48px] rounded-full bg-white px-8 text-[15px] font-[700] text-[var(--wn-accent)] transition-colors hover:bg-white/90"
-            >
-              Эхлэх
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  if (!isLoaded || !user || sellerLoading || !isSeller) return null
 
   const startLive = async () => {
     setStarting(true)

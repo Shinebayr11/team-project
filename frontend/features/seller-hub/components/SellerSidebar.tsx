@@ -10,11 +10,11 @@ interface SellerSidebarProps {
 }
 
 const NAVS = [
-  { label: 'Home', to: '/admin', icon: Home },
-  { label: 'Inventory', to: '/admin/products', icon: Package },
-  { label: 'Orders & Shipping', to: '/admin/orders', icon: ShoppingBag, badgeKey: 'pendingOrders' },
-  { label: 'Shows', to: '/admin/shows', icon: Video },
-  { label: 'Analytics', to: '/admin/analytics', icon: BarChart2 },
+  { label: 'Home', to: '/seller', icon: Home },
+  { label: 'Inventory', to: '/seller/products', icon: Package },
+  { label: 'Orders & Shipping', to: '/seller/orders', icon: ShoppingBag, badgeKey: 'pendingOrders' },
+  { label: 'Shows', to: '/seller/shows', icon: Video },
+  { label: 'Analytics', to: '/seller/analytics', icon: BarChart2 },
 ] as const;
 
 const linkClass = (active: boolean) =>
@@ -25,8 +25,8 @@ const linkClass = (active: boolean) =>
 const ActiveRail = () => <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#F5A623]" />;
 
 export const SellerSidebar: React.FC<SellerSidebarProps> = ({ path, pendingOrders }) => {
-  const isActive = (to: string) => (to === '/admin' ? path === to : path.startsWith(to));
-  const settingsActive = path === '/admin/settings';
+  const isActive = (to: string) => (to === '/seller' ? path === to : path.startsWith(to));
+  const settingsActive = path === '/seller/settings';
 
   return (
     <aside className="w-[240px] shrink-0 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0 z-30">
@@ -63,7 +63,7 @@ export const SellerSidebar: React.FC<SellerSidebarProps> = ({ path, pendingOrder
       </nav>
 
       <div className="p-3 border-t border-gray-200 flex flex-col gap-1 shrink-0">
-        <Link to="/admin/settings" className={linkClass(settingsActive)}>
+        <Link to="/seller/settings" className={linkClass(settingsActive)}>
           {settingsActive && <ActiveRail />}
           <div className="flex items-center gap-3">
             <Settings className={`w-4 h-4 ${settingsActive ? 'text-white' : 'text-gray-500'}`} />

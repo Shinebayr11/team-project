@@ -1,5 +1,5 @@
 /**
- * Seller Hub — the seller-facing dashboard, served at /admin/*.
+ * Seller Hub — the seller-facing dashboard, served at /seller/*.
  *
  * This barrel is the feature's public surface: the route-level screens and
  * nothing else. Everything under components/, hooks/ and data/ is internal.

@@ -4,7 +4,7 @@
  * react-router-dom compatibility shim for the Next.js App Router.
  *
  * The WhyNot UI was authored against react-router with absolute paths ("/shop",
- * "/admin/orders"), and it is mounted at those same paths here. WHYNOT_BASE
+ * "/seller/orders"), and it is mounted at those same paths here. WHYNOT_BASE
  * stays as a single knob in case the UI ever needs to move under a prefix —
  * set it to e.g. "/whynot" and every Link/navigate follows.
  */
@@ -27,7 +27,7 @@ export const withBase = (to: string): string => {
   return to === "/" ? WHYNOT_BASE : `${WHYNOT_BASE}${to}`
 }
 
-/** Inverse of withBase, so route-matching logic inside the UI still sees "/admin". */
+/** Inverse of withBase, so route-matching logic inside the UI still sees "/seller". */
 export const stripBase = (path: string): string => {
   if (!WHYNOT_BASE) return path
   if (path === WHYNOT_BASE) return "/"
