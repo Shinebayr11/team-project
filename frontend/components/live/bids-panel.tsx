@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { MessageSquare, Trophy } from "lucide-react"
 import { Avatar } from "@/components/ui/Avatar"
 import { Button } from "@/components/ui/button"
 import { useApiClient } from "@/hooks/useApiClient"
@@ -14,6 +15,52 @@ const productOf = (listing: Listing): AuctionProduct | undefined =>
 
 const bidderName = (bid: AuctionBid) =>
   (typeof bid.buyer_id === "object" && bid.buyer_id?.display_name) || "Хэрэглэгч"
+
+const winnerOf = (listing: Listing) =>
+  typeof listing.current_winner_id === "object" && listing.current_winner_id
+    ? listing.current_winner_id
+    : undefined
+
+/**
+ * Дуусаж зарагдсан лотын ялагч. Худалдагч хүргэлт, төлбөрөө тохирохын тулд
+ * шууд чат бичих боломжтой байх ёстой тул нэр дээр нь дарж болно.
+ *
+ * Чат шинэ таб дээр нээгдэнэ: энэ самбар шууд дамжуулалтын дотор байдаг тул
+ * тухайн таб дээрээ шилжвэл LiveKit-ийн холболт тасарч, шоу унана.
+ */
+function WinnerBanner({ listing }: { listing: Listing }) {
+  const winner = winnerOf(listing)
+  const name = winner?.display_name ?? "Хэрэглэгч"
+  const product = productOf(listing)
+
+  return (
+    <a
+      href={`/messages?seller=${encodeURIComponent(name)}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex w-full items-center gap-3 border-b border-[var(--wn-line)] bg-[var(--wn-accent-soft)] p-3 text-left transition-colors hover:bg-[var(--wn-accent-soft-hover)]"
+    >
+      <Avatar name={name} size={36} tint="white" />
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5">
+          <Trophy className="size-3.5 shrink-0 text-[var(--wn-accent)]" />
+          <span className="text-[11px] font-[800] tracking-wider text-[var(--wn-accent)] uppercase">
+            Ялагч
+          </span>
+        </div>
+        <div className="mt-0.5 truncate text-[14px] font-[800] text-[var(--wn-ink)]">
+          {name}
+        </div>
+        <div className="truncate text-[12px] font-[600] text-[var(--wn-ink-3)]">
+          {product?.name ?? "Бараа"} · ₮{listing.current_highest_bid_coins ?? 0}
+        </div>
+      </div>
+
+      <MessageSquare className="size-4 shrink-0 text-[var(--wn-accent)]" />
+    </a>
+  )
+}
 
 /** Худалдагч аукционд гаргах бараагаа сонгох хэсэг. */
 function StartAuctionForm({
@@ -158,14 +205,20 @@ export function BidsPanel({
 
       {!running ? (
         <div className="flex-1 overflow-y-auto">
-          {listing && (
-            <div className="border-b border-[var(--wn-line)] p-3 text-[12px] text-[var(--wn-ink-3)]">
-              Сүүлийн лот{" "}
-              <span className="font-[700] text-[var(--wn-ink-2)]">
-                {productOf(listing)?.name}
-              </span>{" "}
-              — {listing.status === "sold" ? `₮${listing.current_highest_bid_coins} -өөр зарагдсан` : "саналгүй дууссан"}
-            </div>
+          {/* Аукцион дуусаад ялагчтай гарсан бол хамгийн дээр нь харуулна —
+              худалдагчийн дараагийн алхам бол түүнтэй холбогдох. */}
+          {listing && listing.status === "sold" && winnerOf(listing) ? (
+            <WinnerBanner listing={listing} />
+          ) : (
+            listing && (
+              <div className="border-b border-[var(--wn-line)] p-3 text-[12px] text-[var(--wn-ink-3)]">
+                Сүүлийн лот{" "}
+                <span className="font-[700] text-[var(--wn-ink-2)]">
+                  {productOf(listing)?.name}
+                </span>{" "}
+                — саналгүй дууссан
+              </div>
+            )
           )}
           <StartAuctionForm onStart={onStart} />
         </div>
