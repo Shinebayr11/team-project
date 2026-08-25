@@ -324,12 +324,13 @@ export default function SellPage() {
           {active && <ShowLineup showId={active.showId} />}
         </div>
 
-        {/* Баруун багана — хоёр карт зүүн талын өндрийг тэн хуваана.
-            lg-ээс доош нэг багана болох тул хуваалт хамаарахгүй: тэнд
-            `flex-1`/`min-h-0` хэрэглэвэл өндөр нь 0 болж хумигдана. */}
+        {/* Баруун багана — хоёр карт зүүн талын өндрийг тэн хуваана. `min-h-0`
+            зориуд тавиагүй: агуулга (жишээ нь бараа нэмэх форм) хуваасан
+            өндрөөс их бол карт томорч, мөр нь дагаж сунана. Эс тэгвээс форм
+            таслагдаж, зураг оруулах хэсэг нь харагдахаа болино. */}
         <div className="flex flex-col gap-8">
-          <ProductCatalog className="lg:min-h-0 lg:flex-1" />
-          <PastShows className="lg:min-h-0 lg:flex-1" />
+          <ProductCatalog className="lg:flex-1" />
+          <PastShows className="lg:flex-1" />
         </div>
       </div>
     </div>

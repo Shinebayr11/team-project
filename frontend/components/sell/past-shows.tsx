@@ -25,7 +25,7 @@ export function PastShows({ className = "" }: { className?: string }) {
 
   return (
     <div
-      className={`relative overflow-x-hidden overflow-y-auto rounded-[24px] border border-[var(--wn-line)] bg-[linear-gradient(160deg,#ffffff_0%,#eff6ff_50%,#f5f0ff_100%)] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${className}`}
+      className={`relative overflow-hidden rounded-[24px] border border-[var(--wn-line)] bg-[linear-gradient(160deg,#ffffff_0%,#eff6ff_50%,#f5f0ff_100%)] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${className}`}
     >
       <div className="pointer-events-none absolute -top-12 -right-12 size-40 rounded-full bg-[#6366f1]/10 blur-3xl" />
       <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#0ea5e9_0%,#6366f1_50%,#5b3fe0_100%)]" />
