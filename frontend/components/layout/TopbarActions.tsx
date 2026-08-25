@@ -2,9 +2,10 @@
 
 import React from "react"
 import { Link } from "@/lib/router"
-import { ShoppingCart, MessageSquare, Heart, Bell, Radio } from "lucide-react"
+import { ShoppingCart, MessageSquare, Heart, Radio } from "lucide-react"
 import { useActiveStream } from "@/hooks/useActiveStream"
 import { useDisplayName } from "@/hooks/useDisplayName"
+import { NotificationsMenu } from "@/components/layout/NotificationsMenu"
 
 interface TopbarActionsProps {
   creditsLabel: string
@@ -64,9 +65,7 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
         {unreadCount > 0 && <div className={badge} />}
       </Link>
 
-      <button className={iconButton} aria-label="Notifications">
-        <Bell className="h-5 w-5" />
-      </button>
+      <NotificationsMenu />
 
       <Link
         to="/wallet"
