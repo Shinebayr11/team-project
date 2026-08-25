@@ -94,7 +94,7 @@ export function ProductCatalog({ className = "" }: { className?: string }) {
 
   return (
     <div
-      className={`relative overflow-x-hidden overflow-y-auto rounded-[24px] border border-[var(--wn-line)] bg-[linear-gradient(160deg,#ffffff_0%,#f7f2ff_55%,#fdf2f8_100%)] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${className}`}
+      className={`relative overflow-hidden rounded-[24px] border border-[var(--wn-line)] bg-[linear-gradient(160deg,#ffffff_0%,#f7f2ff_55%,#fdf2f8_100%)] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${className}`}
     >
       <div className="pointer-events-none absolute -top-12 -right-12 size-40 rounded-full bg-[var(--wn-accent)]/10 blur-3xl" />
       <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#7c3aed_0%,#5b3fe0_35%,#d946ef_70%,#fb923c_100%)]" />
