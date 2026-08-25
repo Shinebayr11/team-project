@@ -7,6 +7,8 @@ import { useLocation } from "@/lib/router"
 import { Topbar } from "@/components/layout/Topbar"
 import { ModalsRenderer } from "@/components/modals/ModalsRenderer"
 import { ToastContainer } from "@/components/ui/ToastContainer"
+import { SellerProfileProvider } from "@/hooks/useSellerProfile"
+import { SellerGateProvider } from "@/components/seller/SellerGateProvider"
 
 /**
  * Chrome shared by every screen. The seller hub brings its own sidebar, so it
@@ -14,7 +16,7 @@ import { ToastContainer } from "@/components/ui/ToastContainer"
  */
 const Chrome: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { pathname } = useLocation()
-  const isSellerHub = pathname.startsWith("/admin")
+  const isSellerHub = pathname.startsWith("/seller")
 
   return (
     <>
@@ -34,7 +36,11 @@ const Chrome: React.FC<{ children: ReactNode }> = ({ children }) => {
 export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => (
   <div className="whynot-root min-h-svh">
     <StoreProvider>
-      <Chrome>{children}</Chrome>
+      <SellerProfileProvider>
+        <SellerGateProvider>
+          <Chrome>{children}</Chrome>
+        </SellerGateProvider>
+      </SellerProfileProvider>
     </StoreProvider>
   </div>
 )

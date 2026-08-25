@@ -3,7 +3,8 @@
 Худалдагчийн самбар. **Seller Hub-ын бүх код энэ фолдерт байна** — өөр газар хайх
 шаардлагагүй.
 
-URL нь `/admin/*` хэвээр (`app/(shop)/admin/**`). Route файлууд нь зөвхөн бүрхүүл:
+URL нь `/seller/*` (`app/(shop)/seller/**`). Өмнө нь `/admin/*` байсныг
+нэрийг нь үнэн зөв болгохын тулд зөөв — энэ бол админы бус, худалдагчийн самбар. Route файлууд нь зөвхөн бүрхүүл:
 `Suspense` дотор энэ фолдерын screen-ийг render хийдэг, өөр логик агуулдаггүй.
 
 ## Бүтэц
@@ -29,7 +30,7 @@ features/seller-hub/
 хил алдагдана.
 
 ```
-app/(shop)/admin/orders/page.tsx     route бүрхүүл
+app/(shop)/seller/orders/page.tsx     route бүрхүүл
   └── screens/SellerOrders.tsx       useStore() ← ганц холбоос
         └── components/orders/OrdersTable.tsx   props: { orders, onSelect }
 ```

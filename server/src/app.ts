@@ -54,6 +54,9 @@ app.route("/api/showproduct", showproductRoutes);
 app.route("/api/bids", bidRoutes);
 app.route("/api/wallet", WalletRoutes);
 app.route("/api/cointransaction", CointransactionRoutes);
+// Шинэ клиент /api/seller-ийг ашиглана. /sellers нь хуучин холбоосуудад
+// зориулж хэвээр үлдэв.
+app.route("/api/seller", sellerRoutes);
 app.route("/sellers", sellerRoutes);
 
 export default app;

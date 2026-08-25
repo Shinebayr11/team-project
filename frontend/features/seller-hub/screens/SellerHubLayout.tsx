@@ -1,8 +1,10 @@
 "use client"
 
 import React from "react"
-import { useLocation } from "@/lib/router"
+import { useLocation, useNavigate } from "@/lib/router"
 import { useStore } from "@/store"
+import { useSellerProfile } from "@/hooks/useSellerProfile"
+import { SELLER_GATE_PARAM, SELLER_GATE_RETURN } from "@/hooks/useSellerGate"
 import { SellerSidebar } from "@/features/seller-hub/components/SellerSidebar"
 import { SellerTopbar } from "@/features/seller-hub/components/SellerTopbar"
 
@@ -14,10 +16,23 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
 }) => {
   const { pathname } = useLocation()
   const { state } = useStore()
+  const { isActive, isLoading } = useSellerProfile()
+  const navigate = useNavigate()
+
+  // Идэвхгүй худалдагчийг нүүр рүү буцааж, идэвхжүүлэх хуудсыг нээнэ.
+  // Нэвтрээгүй тохиолдлыг proxy.ts аль хэдийн барьсан байна.
+  React.useEffect(() => {
+    if (isLoading || isActive) return
+    navigate(`${SELLER_GATE_RETURN}?${SELLER_GATE_PARAM}=1`, { replace: true })
+  }, [isLoading, isActive, navigate])
 
   const pendingOrders = state.sellerOrders.filter((o) =>
     OPEN_FULFILLMENT.includes(o.fulfillmentStatus)
   ).length
+
+  // Шалгаж дуустал самбарыг харуулахгүй — эс тэгвээс идэвхгүй хэрэглэгчид
+  // хормын зуур самбар харагдчихна.
+  if (isLoading || !isActive) return null
 
   return (
     <div className="flex min-h-screen bg-[#FAFAFA] font-[var(--wn-font)] text-[var(--wn-admin-ink)]">

@@ -86,11 +86,11 @@ export const SellerAnalytics: React.FC = () => {
         <TopProductsTable
           products={stats.topProducts}
           grossSales={stats.grossSales}
-          onViewInventory={() => navigate("/admin/products")}
+          onViewInventory={() => navigate("/seller/products")}
         />
         <ShowPerformanceTable
           shows={stats.completedShows}
-          onViewShows={() => navigate("/admin/shows")}
+          onViewShows={() => navigate("/seller/shows")}
         />
       </div>
 

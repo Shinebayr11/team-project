@@ -27,7 +27,7 @@ export const ActionRequired: React.FC<ActionRequiredProps> = ({
           tone="red"
           title={`${pendingOrders} orders need fulfillment`}
           description="Process and ship pending orders."
-          onClick={() => navigate('/admin/orders')}
+          onClick={() => navigate('/seller/orders')}
         />
       )}
 
@@ -37,7 +37,7 @@ export const ActionRequired: React.FC<ActionRequiredProps> = ({
           tone="amber"
           title={`${lowStockCount} items are low in stock`}
           description="Update inventory to prevent stockouts."
-          onClick={() => navigate('/admin/products')}
+          onClick={() => navigate('/seller/products')}
         />
       )}
 
@@ -47,7 +47,7 @@ export const ActionRequired: React.FC<ActionRequiredProps> = ({
           tone="red"
           title="Next show is not ready"
           description={showBlocker}
-          onClick={() => navigate('/admin/shows')}
+          onClick={() => navigate('/seller/shows')}
         />
       )}
 
