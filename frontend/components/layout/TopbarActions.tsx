@@ -8,11 +8,11 @@ import { useDisplayName } from "@/hooks/useDisplayName"
 import { useSellerGate } from "@/hooks/useSellerGate"
 import { useSellerGateTrigger } from "@/components/seller/SellerGateProvider"
 import { NotificationsMenu } from "@/components/layout/NotificationsMenu"
+import { useConversations } from "@/hooks/useConversations"
 
 interface TopbarActionsProps {
   creditsLabel: string
   cartCount: number
-  unreadCount: number
   onOpenCart: () => void
 }
 
@@ -24,13 +24,14 @@ const badge =
 export const TopbarActions: React.FC<TopbarActionsProps> = ({
   creditsLabel,
   cartCount,
-  unreadCount,
   onOpenCart,
 }) => {
   const activeStream = useActiveStream()
   const { initial } = useDisplayName()
   const sellerGate = useSellerGate()
   const gateTriggerRef = useSellerGateTrigger<HTMLButtonElement>()
+  // Зурвасын уншаагүй тоо серверээс ирнэ — store доторх mock тоо биш.
+  const { unreadTotal } = useConversations()
 
   return (
     <div className="flex items-center gap-2">
@@ -73,7 +74,7 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
         aria-label="Messages"
       >
         <MessageSquare className="h-5 w-5" />
-        {unreadCount > 0 && <div className={badge} />}
+        {unreadTotal > 0 && <div className={badge} />}
       </Link>
 
       <NotificationsMenu />

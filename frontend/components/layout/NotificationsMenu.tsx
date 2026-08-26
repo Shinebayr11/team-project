@@ -59,8 +59,8 @@ function WinRow({
           </span>
         </div>
         <p className="mt-0.5 text-[14px] font-[600] text-[var(--wn-ink)]">
-          <span className="font-[800]">{product?.name ?? "Бараа"}</span> авах эрх
-          үүслээ
+          <span className="font-[800]">{product?.name ?? "Бараа"}</span> авах
+          эрх үүслээ
         </p>
         <p className="mt-0.5 text-[12px] text-[var(--wn-ink-3)]">
           ₮{win.current_highest_bid_coins ?? 0}
@@ -113,10 +113,10 @@ export const NotificationsMenu: React.FC = () => {
   const openWin = (win: AuctionWin) => {
     setOpen(false)
     const seller = winSeller(win)
-    const sellerName = seller?.shop_name || seller?.display_name
     // Худалдан авалтаа баталгаажуулах, хүргэлтээ тохирох гол суваг нь
-    // худалдагчтай хийх чат.
-    if (sellerName) navigate(`/messages?seller=${encodeURIComponent(sellerName)}`)
+    // худалдагчтай хийх чат. Нэрээр биш id-гаар нээнэ — ижил нэртэй
+    // хэрэглэгчид ялгарах ба сервер ярианы мөрөө id-гаар л олдог.
+    if (seller?._id) navigate(`/messages?user=${seller._id}`)
     else navigate("/profile?tab=purchases")
   }
 
