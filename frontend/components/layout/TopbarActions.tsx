@@ -7,6 +7,7 @@ import { useActiveStream } from "@/hooks/useActiveStream"
 import { useDisplayName } from "@/hooks/useDisplayName"
 import { useSellerGate } from "@/hooks/useSellerGate"
 import { useSellerGateTrigger } from "@/components/seller/SellerGateProvider"
+import { NotificationsMenu } from "@/components/layout/NotificationsMenu"
 
 interface TopbarActionsProps {
   creditsLabel: string
