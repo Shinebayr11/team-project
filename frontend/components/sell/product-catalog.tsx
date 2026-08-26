@@ -6,13 +6,15 @@ import { useApiClient } from "@/hooks/useApiClient"
 import { AuctionProduct } from "@/hooks/useAuction"
 import { isImageUploadReady, uploadImage } from "@/lib/cloudinary"
 
+// Хүрээ нь `--wn-ink-4`: `--wn-line-2` цагаан дээр 1.49:1 буюу SC 1.4.11-ийн
+// 3:1-ийг давдаггүй (`components/ui/input.tsx`-тэй ижил шалтгаан).
 const fieldClass =
-  "mt-1 h-[44px] w-full rounded-xl border border-[var(--wn-line-2)] px-4 text-[15px] text-[var(--wn-ink)] outline-none focus:border-[var(--wn-accent)] transition-colors"
+  "mt-1 h-[44px] w-full rounded-xl border border-[var(--wn-ink-4)] px-4 text-[15px] text-[var(--wn-ink)] outline-none transition-colors focus:border-[var(--wn-accent)] focus:ring-2 focus:ring-[var(--wn-accent)]/25"
 const pillOutline =
-  "inline-flex items-center rounded-full border border-[var(--wn-line-2)] px-3.5 py-1.5 text-[13px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-surface-2)]"
+  "inline-flex items-center rounded-full border border-gray-300 px-3.5 py-1.5 text-[13px] font-[700] text-black transition-colors hover:bg-gray-50"
 
 /**
- * Худалдагчийн барааны сан. Шоуны үед аукционд гаргах бараа эндээс сонгогдох
+ * Худалдагчийн барааны сан. Лайвын үед дуудлага худалдаанд гаргах бараа эндээс сонгогдох
  * тул дамжуулалт эхлэхээс өмнө бүртгэсэн байх ёстой.
  */
 export function ProductCatalog({ className = "" }: { className?: string }) {
@@ -94,18 +96,13 @@ export function ProductCatalog({ className = "" }: { className?: string }) {
 
   return (
     <div
-      className={`relative overflow-x-hidden overflow-y-auto rounded-[24px] border border-[var(--wn-line)] bg-[linear-gradient(160deg,#ffffff_0%,#f7f2ff_55%,#fdf2f8_100%)] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${className}`}
+      className={`overflow-x-hidden overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ${className}`}
     >
-      <div className="pointer-events-none absolute -top-12 -right-12 size-40 rounded-full bg-[var(--wn-accent)]/10 blur-3xl" />
-      <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#7c3aed_0%,#5b3fe0_35%,#d946ef_70%,#fb923c_100%)]" />
-
-      <div className="relative flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-display text-[18px] font-[800] tracking-tight text-[var(--wn-ink)]">
-            Миний бараа
-          </h2>
-          <p className="mt-1 text-[14px] text-[var(--wn-ink-3)]">
-            Шоуны үед эндээс сонгож аукционд гаргана.
+          <h2 className="text-[16px] font-[800] text-black">Миний бараа</h2>
+          <p className="mt-1 text-[14px] font-[500] text-gray-500">
+            Лайвын үед эндээс сонгож дуудлага худалдаанд гаргана.
           </p>
         </div>
         {!adding && (
@@ -117,7 +114,7 @@ export function ProductCatalog({ className = "" }: { className?: string }) {
       </div>
 
       {adding && (
-        <div className="mt-4 rounded-2xl border border-[var(--wn-line)] bg-[var(--wn-surface-3)] p-4">
+        <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
           <label className="block text-[13px] font-[700] text-[var(--wn-ink-2)]" htmlFor="product-name">
             Барааны нэр
             <input
@@ -199,14 +196,14 @@ export function ProductCatalog({ className = "" }: { className?: string }) {
             </div>
           )}
 
-          {error && <p className="mt-2 text-[13px] text-[var(--wn-live)]">{error}</p>}
+          {error && <p className="mt-2 text-[13px] font-[600] text-[var(--wn-live-deep)]">{error}</p>}
 
           <div className="mt-4 flex gap-2">
             <button
               type="button"
               onClick={save}
               disabled={!name.trim() || busy || uploading}
-              className="h-9 rounded-full bg-[var(--wn-accent)] px-4 text-[13px] font-[700] text-white transition-colors hover:bg-[var(--wn-accent-hover)] disabled:opacity-50"
+              className="h-9 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-[700] text-white transition-colors hover:bg-black disabled:opacity-50"
             >
               {busy ? "Хадгалж байна..." : "Хадгалах"}
             </button>
@@ -238,7 +235,7 @@ export function ProductCatalog({ className = "" }: { className?: string }) {
           products.map((product) => (
             <div
               key={product._id}
-              className="flex items-center gap-3 rounded-xl border border-[var(--wn-line)] px-4 py-3"
+              className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3"
             >
               {product.images?.[0] ? (
                 <img

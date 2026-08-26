@@ -45,7 +45,7 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
         <div className="flex flex-col gap-5">
           <TextField label="Show Title *" value={draft.title} onChange={e => patch({ title: e.target.value })} />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <SelectField
               label="Category *"
               options={CATEGORIES}

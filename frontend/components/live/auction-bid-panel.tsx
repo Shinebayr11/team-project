@@ -50,7 +50,7 @@ export function AuctionBidPanel({
     setBusy(true)
     setError(null)
     const result = await onBid(myBid)
-    if (!result.ok) setError(result.message ?? "Санал өгч чадсангүй")
+    if (!result.ok) setError(result.message ?? "Үнэ санал болгож чадсангүй")
     else setIncrement(0)
     setBusy(false)
   }
@@ -69,7 +69,7 @@ export function AuctionBidPanel({
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <span className="rounded bg-[var(--wn-accent-soft)] px-1.5 py-0.5 text-[10px] font-[800] tracking-wider text-[var(--wn-accent)] uppercase">
-              Аукцион
+              Дуудлага худалдаа
             </span>
             <span
               className={`text-[12px] font-[800] ${
@@ -114,7 +114,7 @@ export function AuctionBidPanel({
               ))}
             </div>
             <Button onClick={submit} disabled={busy}>
-              {busy ? "..." : `₮${myBid} санал`}
+              {busy ? "..." : `₮${myBid} санал болгох`}
             </Button>
           </div>
         )}

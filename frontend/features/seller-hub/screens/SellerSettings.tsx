@@ -24,7 +24,7 @@ export const SellerSettings: React.FC = () => {
   };
 
   return (
-    <div className="flex gap-12 max-w-[1100px]">
+    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 max-w-[1100px]">
       <SettingsNav activeTab={activeTab} onSelect={setActiveTab} />
       <div className="flex-1 pt-2">{renderPanel()}</div>
     </div>

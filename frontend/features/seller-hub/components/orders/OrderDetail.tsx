@@ -26,13 +26,13 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({
       onBack={onBack}
     />
 
-    <div className="flex gap-6 max-w-[1100px]">
+    <div className="flex flex-col lg:flex-row gap-6 max-w-[1100px]">
       <div className="flex-1 flex flex-col gap-6">
         <OrderItemsCard items={order.items} />
         <OrderPaymentCard order={order} />
       </div>
 
-      <div className="w-[340px] shrink-0 flex flex-col gap-6">
+      <div className="w-full lg:w-[340px] lg:shrink-0 flex flex-col gap-6">
         <FulfillmentPanel
           order={order}
           onAdvance={onAdvance}

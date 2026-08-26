@@ -17,7 +17,7 @@ export const PayoutsPanel: React.FC = () => (
       <p className="text-[14px] text-gray-500 font-[500]">Manage your balance and payout history.</p>
     </div>
 
-    <div className="grid grid-cols-3 gap-6 mb-10">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
       <BalanceCard label="Available" value={SELLER_WALLET.available} />
       <BalanceCard label="Pending clearance" value={SELLER_WALLET.pending} />
       <BalanceCard label="Paid out all time" value={SELLER_WALLET.lifetime} />

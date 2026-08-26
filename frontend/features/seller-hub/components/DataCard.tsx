@@ -11,7 +11,7 @@ interface DataCardProps {
 export const DataCard: React.FC<DataCardProps> = ({ children, toolbar }) => (
   <div className="border border-gray-200 rounded-2xl bg-white shadow-sm overflow-hidden flex flex-col">
     {toolbar && (
-      <div className="p-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between gap-4">
+      <div className="p-4 border-b border-gray-200 bg-gray-50 flex flex-wrap items-center justify-between gap-4">
         {toolbar}
       </div>
     )}

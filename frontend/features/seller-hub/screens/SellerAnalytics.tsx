@@ -128,7 +128,7 @@ export const SellerAnalytics: React.FC = () => {
           ]}
         />
         <InsightPanel
-          title="Auction Performance"
+          title="Дуудлага худалдааны үзүүлэлт"
           icon={Tag}
           rows={[
             {

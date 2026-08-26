@@ -7,7 +7,7 @@ import { AuctionProduct } from "@/hooks/useAuction"
 import { productOfEntry, useShowProducts } from "@/hooks/useShowProducts"
 
 const pillOutline =
-  "inline-flex items-center rounded-full border border-[var(--wn-line-2)] px-3.5 py-1.5 text-[13px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-surface-2)]"
+  "inline-flex items-center rounded-full border border-gray-300 px-3.5 py-1.5 text-[13px] font-[700] text-black transition-colors hover:bg-gray-50"
 
 /** Барааны зураг, эсвэл зураггүй бол орлуулах хайрцаг. */
 function ProductThumb({ product }: { product?: AuctionProduct }) {
@@ -25,8 +25,8 @@ function ProductThumb({ product }: { product?: AuctionProduct }) {
 }
 
 /**
- * Шоун дээр гарах барааны жагсаалт. Худалдагч бараагаа урьдчилан эмхэлж
- * тавьснаар үзэгчид шоуны туршид бүтэн жагсаалтыг харна — аукционд гарсан
+ * Лайв дээр гарах барааны жагсаалт. Худалдагч бараагаа урьдчилан эмхэлж
+ * тавьснаар үзэгчид лайвын туршид бүтэн жагсаалтыг харна — дуудлага худалдаанд гарсан
  * ганц лот биш.
  */
 export function ShowLineup({ showId }: { showId: string }) {
@@ -74,17 +74,12 @@ export function ShowLineup({ showId }: { showId: string }) {
   }
 
   return (
-    <div className="relative overflow-hidden rounded-[24px] border border-[var(--wn-line)] bg-[linear-gradient(160deg,#ffffff_0%,#fff1f2_50%,#f5f0ff_100%)] p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-      <div className="pointer-events-none absolute -top-12 -right-12 size-40 rounded-full bg-[var(--wn-live)]/10 blur-3xl" />
-      <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#fb7185_0%,#e5484d_28%,#7c3aed_68%,#4338ca_100%)]" />
-
-      <div className="relative flex items-center justify-between">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-display text-[18px] font-[800] tracking-tight text-[var(--wn-ink)]">
-            Шоуны бараа
-          </h2>
-          <p className="mt-1 text-[14px] text-[var(--wn-ink-3)]">
-            Энэ шоун дээр үзэгчдэд харагдах жагсаалт.
+          <h2 className="text-[16px] font-[800] text-black">Лайвын бараа</h2>
+          <p className="mt-1 text-[14px] font-[500] text-gray-500">
+            Энэ лайв дээр үзэгчдэд харагдах жагсаалт.
           </p>
         </div>
         {!picking && available.length > 0 && (
@@ -96,7 +91,7 @@ export function ShowLineup({ showId }: { showId: string }) {
       </div>
 
       {picking && (
-        <div className="mt-4 rounded-2xl border border-[var(--wn-line)] bg-[var(--wn-surface-3)] p-4">
+        <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
           <span className="text-[13px] font-[700] text-[var(--wn-ink-2)]">Бараагаа сонгоно уу</span>
           <div className="mt-3 flex flex-col gap-2">
             {available.map((product) => (
@@ -105,7 +100,7 @@ export function ShowLineup({ showId }: { showId: string }) {
                 type="button"
                 onClick={() => addProduct(product._id)}
                 disabled={busyId === product._id}
-                className="flex items-center gap-3 rounded-xl border border-[var(--wn-line)] bg-white px-4 py-3 text-left transition-colors hover:bg-[var(--wn-surface-2)] disabled:opacity-50"
+                className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-left transition-colors hover:bg-gray-50 disabled:opacity-50"
               >
                 <ProductThumb product={product} />
                 <span className="flex-1 truncate text-[14px] font-[600] text-[var(--wn-ink)]">
@@ -118,7 +113,7 @@ export function ShowLineup({ showId }: { showId: string }) {
             ))}
           </div>
 
-          {error && <p className="mt-2 text-[13px] text-[var(--wn-live)]">{error}</p>}
+          {error && <p className="mt-2 text-[13px] font-[600] text-[var(--wn-live-deep)]">{error}</p>}
 
           <button
             type="button"
@@ -134,14 +129,14 @@ export function ShowLineup({ showId }: { showId: string }) {
       )}
 
       {!picking && error && (
-        <p className="mt-2 text-[13px] text-[var(--wn-live)]">{error}</p>
+        <p className="mt-2 text-[13px] font-[600] text-[var(--wn-live-deep)]">{error}</p>
       )}
 
       <div className="mt-4 flex flex-col gap-2">
         {loading ? (
           <p className="text-[14px] text-[var(--wn-ink-3)]">Уншиж байна...</p>
         ) : entries.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-[var(--wn-line-3)] p-6 text-center">
+          <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center">
             <ListOrdered className="mx-auto size-6 text-[var(--wn-ink-3)]" />
             <p className="mt-2 text-[14px] text-[var(--wn-ink-3)]">
               {catalog.length === 0
@@ -155,7 +150,7 @@ export function ShowLineup({ showId }: { showId: string }) {
             return (
               <div
                 key={entry._id}
-                className="flex items-center gap-3 rounded-xl border border-[var(--wn-line)] px-4 py-3"
+                className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3"
               >
                 <span className="w-4 shrink-0 text-[14px] font-[700] text-[var(--wn-ink-3)]">
                   {index + 1}

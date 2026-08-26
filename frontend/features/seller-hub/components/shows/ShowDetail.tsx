@@ -13,12 +13,13 @@ interface ShowDetailProps {
   availableInventory: InventoryProduct[];
   onBack: () => void;
   onChangeStatus: (status: SellerShow['status']) => void;
+  onGoLive: () => void;
   onAddProduct: (inventoryId: string) => void;
   onRemoveProduct: (showProductId: string) => void;
 }
 
 export const ShowDetail: React.FC<ShowDetailProps> = ({
-  show, availableInventory, onBack, onChangeStatus, onAddProduct, onRemoveProduct,
+  show, availableInventory, onBack, onChangeStatus, onGoLive, onAddProduct, onRemoveProduct,
 }) => {
   const [pickerOpen, setPickerOpen] = useState(false);
   const showsStats = show.status === 'COMPLETED' || show.status === 'LIVE';
@@ -31,7 +32,7 @@ export const ShowDetail: React.FC<ShowDetailProps> = ({
         onBack={onBack}
       />
 
-      <div className="flex gap-6 max-w-[1100px]">
+      <div className="flex flex-col lg:flex-row gap-6 max-w-[1100px]">
         <div className="flex-1 flex flex-col gap-6">
           <ShowProductsCard
             products={show.products}
@@ -40,8 +41,8 @@ export const ShowDetail: React.FC<ShowDetailProps> = ({
           />
         </div>
 
-        <div className="w-[340px] shrink-0 flex flex-col gap-6">
-          <ShowStatusPanel show={show} onChangeStatus={onChangeStatus} />
+        <div className="w-full lg:w-[340px] lg:shrink-0 flex flex-col gap-6">
+          <ShowStatusPanel show={show} onChangeStatus={onChangeStatus} onGoLive={onGoLive} />
           {showsStats && <ShowStatsPanel stats={show.stats} />}
         </div>
       </div>

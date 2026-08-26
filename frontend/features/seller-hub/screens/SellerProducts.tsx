@@ -123,7 +123,7 @@ export const SellerProducts: React.FC = () => {
         </button>
       </PageHeader>
 
-      <div className="mb-8 grid grid-cols-4 gap-6">
+      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
         <KpiCard
           title="Total Items"
           value={state.inventory.length}

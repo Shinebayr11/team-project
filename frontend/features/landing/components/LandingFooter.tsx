@@ -1,7 +1,7 @@
 import { Link } from "@/lib/router"
 
 const LINKS = [
-  { to: "/live-show", label: "Шууд шоу" },
+  { to: "/live-show", label: "Лайв" },
   { to: "/explore", label: "Судлах" },
   { to: "/home", label: "Дэлгүүр" },
   { to: "/sell", label: "Худалдагч болох" },

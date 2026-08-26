@@ -18,7 +18,7 @@ export const FeaturedShow: React.FC<FeaturedShowProps> = ({ show, onWatch }) => 
 
     <div className="absolute top-6 left-6 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md text-white text-[14px] font-[700]">
       <LiveDot className="w-2 h-2" />
-      <span>Live</span>
+      <span>Лайв</span>
       <span className="opacity-80 ml-1">{show.live} watching</span>
     </div>
 

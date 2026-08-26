@@ -17,17 +17,17 @@ export function Hero({ liveCount, watching, featured }: HeroProps) {
       <div>
         <div className="inline-flex items-center gap-2 rounded-full bg-[var(--wn-live-soft)] px-3.5 py-1.5 text-[13px] font-[700] text-[var(--wn-live)]">
           <LiveDot />
-          {liveCount} шоу яг одоо эфирт
+          {liveCount} лайв яг одоо эфирт
         </div>
 
         <h1 className="font-display mt-5 text-[44px] leading-[1.05] font-[800] tracking-[-0.045em] text-[var(--wn-ink)] sm:text-[56px] lg:text-[64px]">
-          Шууд эфирээс
+          Лайваас
           <br />
           шууд худалдан ав
         </h1>
 
         <p className="mt-5 max-w-[520px] text-[17px] leading-relaxed text-[var(--wn-ink-2)]">
-          Дуудлага худалдаа, ховор эд, шинэ бараа — бүгд шууд дамжуулалтаар.
+          Дуудлага худалдаа, ховор эд, шинэ бараа — бүгд лайваар.
           Худалдагчтай ярилцаж, үнэ хаялцаж, тухайн агшинд нь аваарай.
         </p>
 
@@ -37,7 +37,7 @@ export function Hero({ liveCount, watching, featured }: HeroProps) {
             className="inline-flex items-center gap-2 rounded-full bg-[var(--wn-accent)] px-6 py-3.5 text-[16px] font-[700] text-white transition-colors hover:bg-[var(--wn-accent-hover)]"
           >
             <Play className="h-4 w-4 fill-current" />
-            Шууд шоу үзэх
+            Лайв үзэх
           </Link>
           <Link
             to="/sign-up"
