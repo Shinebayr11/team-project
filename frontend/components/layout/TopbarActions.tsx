@@ -5,7 +5,8 @@ import { Link } from "@/lib/router"
 import { ShoppingCart, MessageSquare, Heart, Radio } from "lucide-react"
 import { useActiveStream } from "@/hooks/useActiveStream"
 import { useDisplayName } from "@/hooks/useDisplayName"
-import { NotificationsMenu } from "@/components/layout/NotificationsMenu"
+import { useSellerGate } from "@/hooks/useSellerGate"
+import { useSellerGateTrigger } from "@/components/seller/SellerGateProvider"
 
 interface TopbarActionsProps {
   creditsLabel: string
@@ -27,11 +28,13 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
 }) => {
   const activeStream = useActiveStream()
   const { initial } = useDisplayName()
+  const sellerGate = useSellerGate()
+  const gateTriggerRef = useSellerGateTrigger<HTMLButtonElement>()
 
   return (
     <div className="flex items-center gap-2">
-      {/* Seller hub (mock data). Going live itself now lives in Seller Hub > Shows. */}
-      {activeStream ? (
+      {/* Шууд дамжуулалт явж байвал түүн рүү нь буцах богино зам. */}
+      {activeStream && (
         <Link
           to={`/live/${activeStream.roomName}?host=1&title=${encodeURIComponent(activeStream.title)}&showId=${activeStream.showId}`}
           className="mr-2 flex items-center gap-1.5 rounded-full bg-[var(--wn-live)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:opacity-90"
@@ -39,14 +42,21 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
           <Radio className="h-4 w-4" />
           Миний Live
         </Link>
-      ) : (
-        <Link
-          to="/admin"
-          className="mr-2 rounded-full bg-[var(--wn-surface-2)] px-5 py-2.5 text-[14px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-line)]"
-        >
-          Become a Seller
-        </Link>
       )}
+
+      {/*
+        Үргэлж харагдана, үргэлж дарагдана — түгжээний тэмдэг ч, идэвхгүй
+        төлөв ч байхгүй. Идэвхтэй худалдагчийг шууд самбар руу, бусдыг
+        идэвхжүүлэх хуудас руу аваачна.
+      */}
+      <button
+        ref={gateTriggerRef}
+        type="button"
+        onClick={sellerGate.open}
+        className="mr-2 rounded-full bg-[var(--wn-surface-2)] px-5 py-2.5 text-[14px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-line)]"
+      >
+        Seller Hub
+      </button>
 
       <Link
         to="/profile?tab=following"

@@ -146,10 +146,17 @@
 
    Every custom property below is `--wn-` prefixed on purpose: the source app
    used bare names like --accent and --line, which would otherwise overwrite the
-   shadcn tokens above (bg-accent, border-border, ...) for the whole site.
-   Nothing here applies outside a `.whynot-root` subtree.
+   shadcn tokens (bg-accent, border-border, ...) for the whole site. The prefix
+   is what keeps them from colliding, so the definitions live on :root.
+
+   They MUST be on :root rather than .whynot-root: portal-based components
+   (Base UI Dialog/Select render into document.body) land outside the
+   .whynot-root subtree, and a `var(--wn-accent)` that resolves to nothing there
+   silently becomes `transparent`. Everything that actually *changes* the
+   cascade — fonts, page background, the shadcn token overrides, the Tailwind
+   v3 compatibility classes — stays scoped to .whynot-root below.
    =========================================================================== */
-.whynot-root {
+:root {
   --wn-accent: #5b3fe0;
   --wn-accent-hover: #4a31c4;
   --wn-accent-soft: #f1edfe;
@@ -200,6 +207,9 @@
   --wn-admin-live: #e5484d;
   --wn-admin-live-soft: #fdecec;
 
+}
+
+.whynot-root {
   /* This UI is light-only, so neutralise the app's dark-mode shadcn tokens for
      any bare `border` / `outline-ring` that @layer base applies inside it. */
   --background: var(--wn-page);
@@ -213,6 +223,17 @@
   color: var(--wn-ink);
   color-scheme: light;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Portal-аар document.body руу гарсан цонхнууд ч аппын үсгийн хэлбэрийг
+   хэвээр авч явна (өнгө нь :root дээрх токеноос аль хэдийн ирнэ). */
+[data-base-ui-portal] {
+  font-family: var(--wn-font);
+  color-scheme: light;
+}
+
+[data-base-ui-portal] .font-display {
+  font-family: var(--wn-font-display);
 }
 
 .whynot-root .font-display {
@@ -229,33 +250,42 @@
    different sizes here. These rules restore the v3 values inside the ported
    subtree only — measured against the original app, not assumed.
 --------------------------------------------------------------------------- */
-.whynot-root .rounded {
+.whynot-root .rounded,
+[data-base-ui-portal] .rounded {
   border-radius: 0.25rem;
 }
-.whynot-root .rounded-sm {
+.whynot-root .rounded-sm,
+[data-base-ui-portal] .rounded-sm {
   border-radius: 0.125rem;
 }
-.whynot-root .rounded-md {
+.whynot-root .rounded-md,
+[data-base-ui-portal] .rounded-md {
   border-radius: 0.375rem;
 }
-.whynot-root .rounded-lg {
+.whynot-root .rounded-lg,
+[data-base-ui-portal] .rounded-lg {
   border-radius: 0.5rem;
 }
-.whynot-root .rounded-xl {
+.whynot-root .rounded-xl,
+[data-base-ui-portal] .rounded-xl {
   border-radius: 0.75rem;
 }
-.whynot-root .rounded-2xl {
+.whynot-root .rounded-2xl,
+[data-base-ui-portal] .rounded-2xl {
   border-radius: 1rem;
 }
-.whynot-root .rounded-3xl {
+.whynot-root .rounded-3xl,
+[data-base-ui-portal] .rounded-3xl {
   border-radius: 1.5rem;
 }
 
-.whynot-root .shadow-sm {
+.whynot-root .shadow-sm,
+[data-base-ui-portal] .shadow-sm {
   --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
-.whynot-root .backdrop-blur-sm {
+.whynot-root .backdrop-blur-sm,
+[data-base-ui-portal] .backdrop-blur-sm {
   --tw-backdrop-blur: blur(4px);
   backdrop-filter: blur(4px);
 }
@@ -294,4 +324,19 @@
 
 .whynot-root .animate-slide-up {
   animation: wn-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Хөдөлгөөнийг багасгах тохиргоог хүндэтгэнэ. Идэвхжүүлэх хуудас нь өөрөө
+   `motion-reduce:transition-none`-ыг ашигладаг; энэ блок нь ported UI-ийн
+   keyframe анимацуудыг (toast, live цэг, modal) мөн намжаана. */
+@media (prefers-reduced-motion: reduce) {
+  .whynot-root .animate-slide-up,
+  .whynot-root .animate-pulse-dot,
+  [data-base-ui-portal] .animate-slide-up {
+    animation: none;
+  }
+  .whynot-root .animate-slide-up,
+  [data-base-ui-portal] .animate-slide-up {
+    opacity: 1;
+  }
 }

@@ -19,7 +19,7 @@ export const SellerOverview: React.FC = () => {
   const navigate = useNavigate()
   const overview = useSellerOverview(state)
 
-  const goToShows = () => navigate("/admin/shows")
+  const goToShows = () => navigate("/seller/shows")
 
   return (
     <>
@@ -82,7 +82,7 @@ export const SellerOverview: React.FC = () => {
             icon={Calendar}
             actionLabel="Manage"
             onAction={goToShows}
-            viewAllTo="/admin/shows"
+            viewAllTo="/seller/shows"
             subtitle={(show) => new Date(show.scheduledAt).toLocaleString()}
             emptyMessage="No other upcoming shows scheduled."
             emptyAction={{ label: "Schedule a Show", onClick: goToShows }}
@@ -93,7 +93,7 @@ export const SellerOverview: React.FC = () => {
           {overview.lastShow && (
             <LastShowPerformance
               show={overview.lastShow}
-              onViewAnalytics={() => navigate("/admin/analytics")}
+              onViewAnalytics={() => navigate("/seller/analytics")}
             />
           )}
 
