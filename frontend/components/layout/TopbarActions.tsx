@@ -2,16 +2,17 @@
 
 import React from "react"
 import { Link } from "@/lib/router"
-import { ShoppingCart, MessageSquare, Heart, Bell, Radio } from "lucide-react"
+import { ShoppingCart, MessageSquare, Heart, Radio } from "lucide-react"
 import { useActiveStream } from "@/hooks/useActiveStream"
 import { useDisplayName } from "@/hooks/useDisplayName"
 import { useSellerGate } from "@/hooks/useSellerGate"
 import { useSellerGateTrigger } from "@/components/seller/SellerGateProvider"
+import { NotificationsMenu } from "@/components/layout/NotificationsMenu"
+import { useConversations } from "@/hooks/useConversations"
 
 interface TopbarActionsProps {
   creditsLabel: string
   cartCount: number
-  unreadCount: number
   onOpenCart: () => void
 }
 
@@ -23,13 +24,14 @@ const badge =
 export const TopbarActions: React.FC<TopbarActionsProps> = ({
   creditsLabel,
   cartCount,
-  unreadCount,
   onOpenCart,
 }) => {
   const activeStream = useActiveStream()
   const { initial } = useDisplayName()
   const sellerGate = useSellerGate()
   const gateTriggerRef = useSellerGateTrigger<HTMLButtonElement>()
+  // Зурвасын уншаагүй тоо серверээс ирнэ — store доторх mock тоо биш.
+  const { unreadTotal } = useConversations()
 
   return (
     <div className="flex shrink-0 items-center gap-1 sm:gap-2">
@@ -72,12 +74,12 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
         aria-label="Messages"
       >
         <MessageSquare className="h-5 w-5" />
-        {unreadCount > 0 && <div className={badge} />}
+        {unreadTotal > 0 && <div className={badge} />}
       </Link>
 
-      <button className={`hidden lg:flex ${iconButton}`} aria-label="Notifications">
-        <Bell className="h-5 w-5" />
-      </button>
+      <div className="hidden lg:block">
+        <NotificationsMenu />
+      </div>
 
       <Link
         to="/wallet"

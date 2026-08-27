@@ -249,7 +249,7 @@ export const SellerActivationSheet: React.FC<SellerActivationSheetProps> = ({
     return (
       <p className="flex flex-wrap items-center gap-1.5 text-[12.5px]">
         <span className="font-[600] text-[var(--wn-ink-3)]">
-          reelshop.mn/@{slug}
+          whynot.mn/@{slug}
         </span>
         {slugState === "checking" && (
           <span className="text-[var(--wn-ink-4)]">шалгаж байна…</span>

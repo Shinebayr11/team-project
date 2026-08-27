@@ -9,7 +9,7 @@ import { TopbarNav } from './TopbarNav';
 import { TopbarActions } from './TopbarActions';
 
 export const Topbar: React.FC = () => {
-  const { creditsLabel, cartCount, unread, openModal } = useStore();
+  const { creditsLabel, cartCount, openModal } = useStore();
   const { pathname } = useLocation();
   const { user } = useUser();
 
@@ -33,7 +33,6 @@ export const Topbar: React.FC = () => {
         <TopbarActions
           creditsLabel={creditsLabel()}
           cartCount={cartCount()}
-          unreadCount={unread()}
           onOpenCart={() => openModal('cart')}
         />
       ) : (

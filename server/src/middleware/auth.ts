@@ -34,15 +34,23 @@ export const requireAuth = createMiddleware(async (c, next) => {
         return c.json({ message: "Нэвтрэх шаардлагатай" }, 401);
     }
 
+    // Токен шалгах болон хэрэглэгч хайх хоёрыг тусад нь барина: өмнө нь нэг
+    // try дотор байсан тул өгөгдлийн сангийн алдаа ч "Токен буруу" гэж
+    // харагдаж, шалтгааныг нь буруу зүг рүү хөтөлдөг байв.
+    let clerkUserId: string;
     try {
         const payload = await verifyToken(token, {
             secretKey: process.env.CLERK_SECRET_KEY!,
         });
+        clerkUserId = payload.sub;
+    } catch (error) {
+        console.error("Токен шалгахад алдаа:", error);
+        return c.json({ message: "Токен буруу эсвэл хугацаа дууссан байна" }, 401);
+    }
 
-        const clerkUserId = payload.sub;
-        c.set("clerkUserId", clerkUserId);
+    c.set("clerkUserId", clerkUserId);
 
-        // Mongo-ийн хэрэглэгчийг олох
+    try {
         const user = await User.findOne({ clerk_user_id: clerkUserId });
         if (!user) {
             return c.json({ message: "Хэрэглэгч бүртгэгдээгүй байна" }, 404);
@@ -50,10 +58,10 @@ export const requireAuth = createMiddleware(async (c, next) => {
 
         c.set("user", user);
         c.set("userId", user._id);
-
-        await next();
     } catch (error) {
-        console.error("Auth middleware error:", error);
-        return c.json({ message: "Токен буруу эсвэл хугацаа дууссан байна" }, 401);
+        console.error("Хэрэглэгч уншихад алдаа:", error);
+        return c.json({ message: "Өгөгдлийн сантай холбогдож чадсангүй" }, 503);
     }
+
+    await next();
 });

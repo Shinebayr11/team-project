@@ -16,15 +16,30 @@ import bidRoutes from "./route/bidRoute.js";
 import WalletRoutes from "./route/walletRoute.js";
 import CointransactionRoutes from "./route/cointransactionRoute.js";
 import sellerRoutes from "./route/sellerRoute.js";
+import messageRoutes from "./route/messageRoute.js";
 
 const app = new Hono();
-
-connectDb();
 
 app.use("*", cors({ origin: "*" }));
 
 app.get("/", (c) => {
   return c.text("Server is running successfully! 🚀");
+});
+
+// Өгөгдлийн сан хэрэглэдэг бүх зам холболтоо хүлээнэ. Ингэснээр холболт
+// унасан үед query нь буферт 10 секунд хүлээгээд бүрхэг "aldaa garlaa"
+// болохын оронд, шалтгааныг нь хэлсэн шуурхай хариу буцаана.
+app.use("/api/*", async (c, next) => {
+  try {
+    await connectDb();
+  } catch (error) {
+    console.error("DB холбогдсонгүй:", error);
+    return c.json(
+      { message: "Өгөгдлийн сантай холбогдож чадсангүй" },
+      503,
+    );
+  }
+  await next();
 });
 
 app.route("/livekit", livekit);
@@ -42,6 +57,7 @@ app.route("/api/wallet", WalletRoutes);
 app.route("/api/cointransaction", CointransactionRoutes);
 // Шинэ клиент /api/seller-ийг ашиглана. /sellers нь хуучин холбоосуудад
 // зориулж хэвээр үлдэв.
+app.route("/api/messages", messageRoutes);
 app.route("/api/seller", sellerRoutes);
 app.route("/sellers", sellerRoutes);
 

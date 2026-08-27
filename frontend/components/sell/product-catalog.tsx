@@ -96,7 +96,7 @@ export function ProductCatalog({ className = "" }: { className?: string }) {
 
   return (
     <div
-      className={`overflow-x-hidden overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ${className}`}
+      className={`overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ${className}`}
     >
       <div className="flex items-center justify-between">
         <div>

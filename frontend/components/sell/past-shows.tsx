@@ -25,7 +25,7 @@ export function PastShows({ className = "" }: { className?: string }) {
 
   return (
     <div
-      className={`overflow-x-hidden overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ${className}`}
+      className={`overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ${className}`}
     >
       <div>
         <h2 className="text-[16px] font-[800] text-black">

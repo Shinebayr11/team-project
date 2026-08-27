@@ -31,6 +31,39 @@ export const getProductlisting = async (c: Context) => {
 }
 
 /**
+ * Нэвтэрсэн хэрэглэгчийн хожсон аукционууд — "барааг авах эрх үүссэн"
+ * мэдэгдлүүд эндээс уншигдана.
+ *
+ * Хугацаа нь дуусаад хараахан хаагдаагүй аукцион байвал эхлээд хаана,
+ * ингэснээр дөнгөж дууссан хожил шууд харагдана.
+ */
+export const getMyWonListings = async (c: Context) => {
+    try {
+        const userId = c.get("userId")
+
+        await settleExpiredListings({ current_winner_id: userId })
+
+        const data = await ProductListing.find({
+            current_winner_id: userId,
+            status: LISTING_STATUS.sold,
+        })
+            .sort({ updatedAt: -1 })
+            .limit(20)
+            .populate("product_id", "name description price_coins images")
+            .populate({
+                path: "live_show_id",
+                select: "title seller_id",
+                populate: { path: "seller_id", select: "display_name shop_name avatar_url" },
+            })
+
+        return c.json({ data }, 200)
+    } catch (error) {
+        console.error("getMyWonListings алдаа:", error)
+        return c.json({ message: "Aldaa garlaa" }, 500)
+    }
+}
+
+/**
  * Шоун дээр бараагаа аукционд гаргах. Зөвхөн тухайн шоуны эзэн, зөвхөн
  * өөрийн бараагаар.
  */

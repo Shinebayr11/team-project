@@ -5,7 +5,7 @@ import { Video, Users, ShoppingBag, CreditCard } from 'lucide-react';
 import { LiveDot } from '@/components/ui/LiveDot';
 
 /**
- * Бүтэн `SellerShow` биш, харагдах талбаруудыг нь л авна: шууд дамжуулалт нь
+ * Бүтэн `SellerShow` биш, харагдах талбаруудыг нь л авна: лайв нь
  * самбарын шоутай холбоогүй ч (дээд талын "Go Live" товчноос эхэлсэн)
  * үзүүлэх боломжтой байх ёстой.
  */
