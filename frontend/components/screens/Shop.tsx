@@ -27,6 +27,10 @@ export const Shop: React.FC = () => {
 
   const hasReel = REEL_SHOWS.some((s) => s.slug === seller.slug)
 
+  // SELLERS нь жишээ өгөгдөл тул бодит хэрэглэгчийн id байхгүй. Чат нь
+  // id-гаар нээгддэг болсон учир зурвасын жагсаалт руу л аваачна —
+  // хуучин ?seller=<нэр> параметр одоо хүчингүй.
+
   return (
     <div className="mx-auto max-w-[1120px] pb-20">
       <ShopHeader
@@ -35,7 +39,7 @@ export const Shop: React.FC = () => {
         showWatchLive={hasReel && seller.live.type === "live"}
         onToggleFollow={() => toggleFollow(seller.slug)}
         onWatchLive={() => navigate(`/live-show?show=${seller.slug}`)}
-        onMessage={() => navigate(`/messages?seller=${seller.slug}`)}
+        onMessage={() => navigate("/messages")}
       />
 
       <ShopStats seller={seller} />

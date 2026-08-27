@@ -33,13 +33,8 @@ function WinnerBanner({ listing }: { listing: Listing }) {
   const name = winner?.display_name ?? "Хэрэглэгч"
   const product = productOf(listing)
 
-  return (
-    <a
-      href={`/messages?seller=${encodeURIComponent(name)}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex w-full items-center gap-3 border-b border-[var(--wn-line)] bg-[var(--wn-accent-soft)] p-3 text-left transition-colors hover:bg-[var(--wn-accent-soft-hover)]"
-    >
+  const body = (
+    <>
       <Avatar name={name} size={36} tint="white" />
 
       <div className="min-w-0 flex-1">
@@ -58,6 +53,26 @@ function WinnerBanner({ listing }: { listing: Listing }) {
       </div>
 
       <MessageSquare className="size-4 shrink-0 text-[var(--wn-accent)]" />
+    </>
+  )
+
+  const rowClass =
+    "flex w-full items-center gap-3 border-b border-[var(--wn-line)] bg-[var(--wn-accent-soft)] p-3 text-left"
+
+  // Ялагчийн id байхгүй бол чат нээх боломжгүй — холбоосгүй мөр болгоно.
+  // Эс бөгөөс хоосон ?user= үүсч, хэрэглэгч хоосон хуудсанд очно.
+  if (!winner?._id) {
+    return <div className={rowClass}>{body}</div>
+  }
+
+  return (
+    <a
+      href={`/messages?user=${winner._id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`${rowClass} transition-colors hover:bg-[var(--wn-accent-soft-hover)]`}
+    >
+      {body}
     </a>
   )
 }
