@@ -344,3 +344,47 @@
     opacity: 1;
   }
 }
+
+/* Дэлгэцийн голд гарч ирэх modal. `wn-slide-up` нь X тэнхлэгт -50% шилжүүлдэг
+   тул flex-ээр төвлөрүүлсэн цонхыг өөрийнх нь өргөний хагасаар зүүн тийш
+   татдаг — голлуулах шаардлагатай цонхнууд үүнийг оронд нь ашиглана. */
+@keyframes wn-modal-in {
+  from {
+    transform: translateY(12px) scale(0.97);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.whynot-root .animate-modal-in,
+[data-base-ui-portal] .animate-modal-in {
+  animation: wn-modal-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes wn-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.whynot-root .animate-fade-in,
+[data-base-ui-portal] .animate-fade-in {
+  animation: wn-fade-in 0.2s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .whynot-root .animate-modal-in,
+  .whynot-root .animate-fade-in,
+  [data-base-ui-portal] .animate-modal-in,
+  [data-base-ui-portal] .animate-fade-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
