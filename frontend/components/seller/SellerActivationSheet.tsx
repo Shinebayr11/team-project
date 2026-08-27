@@ -283,7 +283,7 @@ export const SellerActivationSheet: React.FC<SellerActivationSheetProps> = ({
               Дэлгүүр идэвхжлээ
             </h2>
             <p className="mt-1.5 text-[14px] text-[var(--wn-ink-3)]">
-              Одоо шууд Лайв хийж эхлээрэй.
+              Одоо шууд дамжуулалтаа эхлүүлээрэй.
             </p>
           </div>
         ) : (

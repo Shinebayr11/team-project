@@ -15,7 +15,7 @@ const NAVS = [
   { label: 'Home', to: '/seller', icon: Home },
   { label: 'Inventory', to: '/seller/products', icon: Package },
   { label: 'Orders & Shipping', to: '/seller/orders', icon: ShoppingBag, badgeKey: 'pendingOrders' },
-  { label: 'Лайв', to: '/seller/shows', icon: Video },
+  { label: 'Шууд', to: '/seller/shows', icon: Video },
   { label: 'Analytics', to: '/seller/analytics', icon: BarChart2 },
 ] as const;
 

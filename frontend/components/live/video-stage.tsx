@@ -74,7 +74,7 @@ function Stage() {
 
       <div className="absolute top-4 left-4 z-10 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-[12px] font-[600] text-white backdrop-blur-md">
         <LiveDot className="h-2 w-2" />
-        <span>Лайв</span>
+        <span>Шууд</span>
         <span className="ml-1 opacity-60">{participants.length} watching</span>
       </div>
     </>
@@ -161,7 +161,7 @@ export function VideoStage({
               {confirming ? (
                 <div className="flex items-center gap-2 rounded-full bg-white p-1.5 pl-4 shadow-lg">
                   <span className="text-[14px] font-[700] text-black">
-                    Лайвыг дуусгах уу?
+                    Дамжуулалтыг дуусгах уу?
                   </span>
                   <button
                     type="button"
@@ -185,7 +185,7 @@ export function VideoStage({
                   className="flex h-11 items-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 text-[14px] font-[700] text-white shadow-lg transition-colors hover:bg-[var(--wn-live)]"
                 >
                   <Square className="size-4 fill-white" />
-                  Лайв дуусгах
+                  Дамжуулалт дуусгах
                 </button>
               )}
             </div>

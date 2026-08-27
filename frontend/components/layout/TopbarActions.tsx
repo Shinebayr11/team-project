@@ -35,14 +35,14 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
 
   return (
     <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-      {/* Лайв явж байвал түүн рүү нь буцах богино зам. */}
+      {/* Шууд дамжуулалт явж байвал түүн рүү нь буцах богино зам. */}
       {activeStream && (
         <Link
           to={`/live/${activeStream.roomName}?host=1&title=${encodeURIComponent(activeStream.title)}&showId=${activeStream.showId}`}
           className="mr-1 flex items-center gap-1.5 rounded-full bg-[var(--wn-live)] px-3 sm:px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:opacity-90"
         >
           <Radio className="h-4 w-4" />
-          Миний Лайв
+          Миний дамжуулалт
         </Link>
       )}
 

@@ -93,13 +93,13 @@ export default function LivePage({
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="text-[24px] font-[800] tracking-tight text-black">
-            {show?.title ?? title ?? "Лайв"}
+            {show?.title ?? title ?? "Шууд дамжуулалт"}
           </h1>
 
           <div className="mt-1 flex flex-wrap items-center gap-4 text-[14px] font-[500] text-gray-500">
             <span className="flex items-center gap-1.5 font-[700] text-[var(--wn-live-deep)]">
               <LiveDot />
-              Лайв
+              Шууд
             </span>
             {category && <ShowMeta icon={Tag}>{category}</ShowMeta>}
             {elapsed && <ShowMeta icon={Clock}>{elapsed}</ShowMeta>}

@@ -89,7 +89,7 @@ export function StartShowScreen() {
     setStarting(true)
     try {
       const roomName = `stream-${Math.random().toString(36).slice(2, 8)}`
-      const streamTitle = title || "Лайв"
+      const streamTitle = title || "Шууд дамжуулалт"
 
       const { data: me } = await callApi<{ data: { _id: string } }>(
         "/api/users/me"
@@ -141,13 +141,13 @@ export function StartShowScreen() {
   return (
     <>
       <PageHeader
-        title="Лайв эхлэх"
-        description="Гарчиг, ангиллаа сонгоод лайв эхлээрэй."
+        title="Шууд дамжуулалт эхлэх"
+        description="Гарчиг, ангиллаа сонгоод дамжуулалтаа эхлээрэй."
         onBack={() => router.push("/seller/shows")}
       />
 
       {/* Тэнцүү өргөнтэй 2 багана: зүүн талд эхлүүлэх/удирдах хэсэг, баруун
-          талд бараа болон өмнөх лайвууд. */}
+          талд бараа болон өмнөх дамжуулалтууд. */}
       <div className="grid max-w-[1100px] grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="flex flex-col gap-8">
           {active ? (
@@ -156,13 +156,13 @@ export function StartShowScreen() {
               <div className="flex items-center gap-2">
                 <LiveDot className="h-2.5 w-2.5" />
                 <span className="text-[13px] font-[800] tracking-wider text-[var(--wn-live)] uppercase">
-                  Лайв явж байна
+                  Шууд дамжуулалт явж байна
                 </span>
               </div>
 
               <h2 className="mt-2 text-[22px] font-[800]">{active.title}</h2>
               <p className="mt-2 text-[14px] font-[500] text-gray-300">
-                Лайв үргэлжилж байна. Дуусгасны дараа шинэ лайв эхлэх боломжтой.
+                Дамжуулалт үргэлжилж байна. Дуусгасны дараа шинэ дамжуулалт эхлэх боломжтой.
               </p>
 
               <div className="mt-6 flex gap-3">
@@ -178,14 +178,14 @@ export function StartShowScreen() {
                   onClick={endStream}
                   className="flex-1 rounded-full border border-white/30 px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-white/10"
                 >
-                  Лайв дуусгах
+                  Дамжуулалт дуусгах
                 </button>
               </div>
             </div>
           ) : (
-            <Panel title="Лайвын мэдээлэл">
+            <Panel title="Дамжуулалтын мэдээлэл">
               <div className="flex flex-col gap-4">
-                <Field label="Лайвын гарчиг">
+                <Field label="Дамжуулалтын гарчиг">
                   <Input
                     id="show-title"
                     value={title}
@@ -270,7 +270,7 @@ export function StartShowScreen() {
             </Panel>
           )}
 
-          {/* Лайвын жагсаалт зөвхөн лайв байгаа үед утгатай — эхлүүлээгүй бол
+          {/* Дамжуулалтын жагсаалт зөвхөн дамжуулалт байгаа үед утгатай — эхлүүлээгүй бол
               холбогдох showId байхгүй. */}
           {active && <ShowLineup showId={active.showId} />}
         </div>

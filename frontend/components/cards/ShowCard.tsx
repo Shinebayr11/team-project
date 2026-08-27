@@ -36,7 +36,7 @@ export const ShowCard: React.FC<{ show: HomeShow }> = ({ show }) => {
           {show.live !== undefined ? (
             <>
               <LiveDot />
-              <span>Лайв</span>
+              <span>Шууд</span>
               <span className="opacity-60 ml-1">{show.live} watching</span>
             </>
           ) : (
