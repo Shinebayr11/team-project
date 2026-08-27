@@ -23,7 +23,7 @@ const DOCS: Record<
   },
   rules: {
     title: "Платформын дүрэм",
-    subtitle: "Шоу, дуудлага худалдаа, харилцаа",
+    subtitle: "Лайв, дуудлага худалдаа, харилцаа",
     sections: PLATFORM_RULES,
   },
 }

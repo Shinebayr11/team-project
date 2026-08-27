@@ -34,15 +34,15 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
   const { unreadTotal } = useConversations()
 
   return (
-    <div className="flex items-center gap-2">
-      {/* Шууд дамжуулалт явж байвал түүн рүү нь буцах богино зам. */}
+    <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+      {/* Лайв явж байвал түүн рүү нь буцах богино зам. */}
       {activeStream && (
         <Link
           to={`/live/${activeStream.roomName}?host=1&title=${encodeURIComponent(activeStream.title)}&showId=${activeStream.showId}`}
-          className="mr-2 flex items-center gap-1.5 rounded-full bg-[var(--wn-live)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:opacity-90"
+          className="mr-1 flex items-center gap-1.5 rounded-full bg-[var(--wn-live)] px-3 sm:px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:opacity-90"
         >
           <Radio className="h-4 w-4" />
-          Миний Live
+          Миний Лайв
         </Link>
       )}
 
@@ -55,14 +55,14 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
         ref={gateTriggerRef}
         type="button"
         onClick={sellerGate.open}
-        className="mr-2 rounded-full bg-[var(--wn-surface-2)] px-5 py-2.5 text-[14px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-line)]"
+        className="hidden lg:block mr-2 rounded-full bg-[var(--wn-surface-2)] px-5 py-2.5 text-[14px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-line)]"
       >
         Seller Hub
       </button>
 
       <Link
         to="/profile?tab=following"
-        className={iconButton}
+        className={`hidden lg:flex ${iconButton}`}
         aria-label="Following"
       >
         <Heart className="h-5 w-5" />
@@ -77,11 +77,13 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
         {unreadTotal > 0 && <div className={badge} />}
       </Link>
 
-      <NotificationsMenu />
+      <div className="hidden lg:block">
+        <NotificationsMenu />
+      </div>
 
       <Link
         to="/wallet"
-        className="ml-2 flex h-[38px] items-center rounded-full bg-[var(--wn-accent)] px-1 pr-4 text-white transition-colors hover:bg-[var(--wn-accent-hover)]"
+        className="hidden sm:flex ml-2 h-[38px] items-center rounded-full bg-[var(--wn-accent)] px-1 pr-4 text-white transition-colors hover:bg-[var(--wn-accent-hover)]"
       >
         <div className="mr-2 flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white/20">
           <span className="text-[14px] font-[700]">₮</span>
@@ -91,7 +93,7 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
 
       <button
         onClick={onOpenCart}
-        className={`relative ${iconButton} ml-2`}
+        className={`relative ${iconButton} sm:ml-2`}
         aria-label="Cart"
       >
         <ShoppingCart className="h-5 w-5" />
@@ -100,7 +102,7 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
 
       <Link
         to="/profile"
-        className="ml-2 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--wn-ink)] text-[15px] font-[700] text-white uppercase transition-opacity hover:opacity-80"
+        className="ml-1 sm:ml-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--wn-ink)] text-[15px] font-[700] text-white uppercase transition-opacity hover:opacity-80"
       >
         {initial}
       </Link>

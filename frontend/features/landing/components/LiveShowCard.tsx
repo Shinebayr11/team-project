@@ -24,7 +24,7 @@ export function LiveShowCard({ show }: { show: HomeShow }) {
 
         <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-full bg-black/45 px-2.5 py-1 text-[12px] font-[600] text-white backdrop-blur-md">
           <LiveDot />
-          <span>Шууд</span>
+          <span>Лайв</span>
         </div>
 
         <div className="absolute right-3 bottom-3 z-10 flex items-center gap-1 rounded-full bg-black/45 px-2.5 py-1 text-[12px] font-[600] text-white backdrop-blur-md">

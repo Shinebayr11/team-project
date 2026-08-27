@@ -163,6 +163,10 @@
   --wn-accent-soft-hover: #f4f3fb;
   --wn-live: #e5484d;
   --wn-live-soft: #fdecec;
+  /* Цагаан текст --wn-live дээр 3.91:1 — AA (4.5:1) давдаггүй. Дүүргэлт болж
+     ажиллах гүн хувилбар нь 5.42:1 өгнө. --wn-live нь хүрээ, цэг, дүрс,
+     hover зэрэг текст биш элементэд хэвээр үлдэнэ. */
+  --wn-live-deep: #c43338;
 
   --wn-canvas: #f1f1f5;
   --wn-page: #fafafa;

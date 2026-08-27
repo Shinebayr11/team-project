@@ -4,8 +4,8 @@ import type { LucideIcon } from "lucide-react"
 const STEPS: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: Play,
-    title: "Шоуг нээ",
-    body: "Бүртгэлгүйгээр ч шууд эфирт орж, юу зарж байгааг хараарай.",
+    title: "Лайвыг нээ",
+    body: "Бүртгэлгүйгээр ч лайв руу орж, юу зарж байгааг хараарай.",
   },
   {
     icon: Gavel,

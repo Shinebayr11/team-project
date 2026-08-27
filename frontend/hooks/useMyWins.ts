@@ -55,7 +55,7 @@ const readSeen = (userId?: string): string[] => {
 const POLL_MS = 20000
 
 /**
- * Хэрэглэгчийн хожсон аукционууд — мэдэгдлийн жагсаалт. Аукцион дуусахад
+ * Хэрэглэгчийн хожсон дуудлага худалдаанууд — мэдэгдлийн жагсаалт. Дуудлага худалдаа дуусахад
  * сервер лазигаар хаадаг тул push биш, тогтмол татах замаар шинэчилнэ.
  */
 export function useMyWins() {
@@ -81,7 +81,7 @@ export function useMyWins() {
       )
       setWins(data)
     } catch (error) {
-      console.error("Хожсон аукцион уншиж чадсангүй:", error)
+      console.error("Хожсон дуудлага худалдаа уншиж чадсангүй:", error)
     } finally {
       setLoading(false)
     }

@@ -61,7 +61,7 @@ const NavGroup: React.FC<{ title: string; links: SettingsLink[]; activeTab: stri
 );
 
 export const SettingsNav: React.FC<SettingsNavProps> = ({ activeTab, onSelect }) => (
-  <div className="w-[280px] shrink-0">
+  <div className="w-full lg:w-[280px] lg:shrink-0">
     <h1 className="text-[24px] font-[800] text-black mb-2">Account Center</h1>
     <p className="text-[14px] text-gray-500 font-[500] mb-8 leading-relaxed">
       Manage your account, preferences, payments, and seller settings.

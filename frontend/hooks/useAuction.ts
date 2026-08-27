@@ -44,13 +44,13 @@ export const minimumBid = (listing: Listing) =>
 export const isActive = (listing?: Listing | null) =>
   !!listing && listing.status === "active"
 
-// Аукцион явж байх үед хурдан, бусад үед удаан шалгана. Vercel serverless дээр
+// Дуудлага худалдаа явж байх үед хурдан, бусад үед удаан шалгана. Vercel serverless дээр
 // байнга ажилладаг процесс байхгүй тул push биш, татах замаар шинэчилнэ.
 const POLL_ACTIVE_MS = 2000
 const POLL_IDLE_MS = 10000
 
 /**
- * Нэг шоуны аукционы төлөв: одоо явж буй лот, түүний саналууд.
+ * Нэг лайвын дуудлага худалдааны төлөв: одоо явж буй лот, түүний саналууд.
  * Host болон үзэгч хоёулаа ижил эх сурвалжаас уншина.
  */
 export function useAuction(liveShowId?: string) {
@@ -82,7 +82,7 @@ export function useAuction(liveShowId?: string) {
         setBids([])
       }
     } catch (error) {
-      console.error("Аукцион уншиж чадсангүй:", error)
+      console.error("Дуудлага худалдаа уншиж чадсангүй:", error)
     } finally {
       setLoading(false)
     }
@@ -115,7 +115,7 @@ export function useAuction(liveShowId?: string) {
 
   const placeBid = useCallback(
     async (amount: number) => {
-      if (!listing) return { ok: false, message: "Аукцион алга" }
+      if (!listing) return { ok: false, message: "Дуудлага худалдаа алга" }
       try {
         await callApi(`/api/bids`, {
           method: "POST",
@@ -139,7 +139,7 @@ export function useAuction(liveShowId?: string) {
       starting_price_coins: number
       duration_seconds: number
     }) => {
-      if (!liveShowId) return { ok: false, message: "Шоу тодорхойгүй" }
+      if (!liveShowId) return { ok: false, message: "Лайв тодорхойгүй" }
       try {
         await callApi(`/api/productlisting`, {
           method: "POST",
@@ -149,7 +149,7 @@ export function useAuction(liveShowId?: string) {
         return { ok: true }
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : "Аукцион эхлүүлж чадсангүй"
+          error instanceof Error ? error.message : "Дуудлага худалдаа эхлүүлж чадсангүй"
         return { ok: false, message }
       }
     },
@@ -161,7 +161,7 @@ export function useAuction(liveShowId?: string) {
     try {
       await callApi(`/api/productlisting/${listing._id}/close`, { method: "POST" })
     } catch (error) {
-      console.error("Аукцион хааж чадсангүй:", error)
+      console.error("Дуудлага худалдаа хааж чадсангүй:", error)
     }
     await refresh()
   }, [callApi, listing, refresh])

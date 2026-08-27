@@ -25,7 +25,7 @@ import { AuctionProduct, Listing, isActive, useAuction } from "@/hooks/useAuctio
 import { ShowProduct, productOfEntry, useShowProducts } from "@/hooks/useShowProducts"
 
 /**
- * Худалдагчийн урьдчилан эмхэлсэн жагсаалт панелийн үндэс болно; аукционд
+ * Худалдагчийн урьдчилан эмхэлсэн жагсаалт панелийн үндэс болно; дуудлага худалдаанд
  * гарсан бараа нь "Live now", дуусcан нь "Sold" болж доошоо шилжинэ.
  */
 const buildProducts = (
@@ -63,7 +63,7 @@ const buildProducts = (
     push(product)
   }
 
-  // Жагсаалтад ороогүй бараагаар аукцион явж байвал түүнийг ч гэсэн харуулна —
+  // Жагсаалтад ороогүй бараагаар дуудлага худалдаа явж байвал түүнийг ч гэсэн харуулна —
   // /sell дээр жагсаалт эмхлээгүй байсан ч панель хоосон харагдахгүй.
   if (onBlock && !listed.has(onBlock._id)) push(onBlock)
 
@@ -88,7 +88,7 @@ function Stage({ children }: { children?: React.ReactNode }) {
 
       <div className="absolute top-4 left-4 z-10 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-[12px] font-[600] text-white backdrop-blur-md">
         <LiveDot className="h-2 w-2" />
-        <span>Live</span>
+        <span>Лайв</span>
         <span className="ml-1 opacity-60">{participants.length} watching</span>
       </div>
 
@@ -173,7 +173,7 @@ export function LiveViewer({
     typeof show?.seller_id === "object" && show.seller_id?.display_name
       ? show.seller_id.display_name
       : "Seller"
-  const shownTitle = show?.title ?? title ?? "Шууд шоу"
+  const shownTitle = show?.title ?? title ?? "Лайв"
   const category = show?.category || "General"
 
   if (error || !token) {

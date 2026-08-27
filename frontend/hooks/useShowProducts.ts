@@ -42,7 +42,7 @@ export function useShowProducts(liveShowId?: string) {
       )
       setEntries(data)
     } catch (error) {
-      console.error("Шоуны бараа уншиж чадсангүй:", error)
+      console.error("Лайвын бараа уншиж чадсангүй:", error)
     } finally {
       setLoading(false)
     }
@@ -54,7 +54,7 @@ export function useShowProducts(liveShowId?: string) {
 
   const add = useCallback(
     async (productId: string): Promise<{ ok: boolean; message?: string }> => {
-      if (!liveShowId) return { ok: false, message: "Шоу олдсонгүй" }
+      if (!liveShowId) return { ok: false, message: "Лайв олдсонгүй" }
       try {
         await callApi("/api/showproduct", {
           method: "POST",

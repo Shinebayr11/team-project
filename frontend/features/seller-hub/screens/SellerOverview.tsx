@@ -1,9 +1,11 @@
 "use client"
 
 import React from "react"
+import { useRouter } from "next/navigation"
 import { useNavigate } from "@/lib/router"
 import { Calendar, CheckCircle2 } from "lucide-react"
 import { useStore } from "@/store"
+import { useActiveStream } from "@/hooks/useActiveStream"
 import { useSellerOverview, formatCountdown } from "@/features/seller-hub/hooks/useSellerOverview"
 import { PageHeader } from "@/features/seller-hub/components/PageHeader"
 import { KpiCard } from "@/features/seller-hub/components/KpiCard"
@@ -17,9 +19,33 @@ import { LastShowPerformance } from "@/features/seller-hub/components/overview/L
 export const SellerOverview: React.FC = () => {
   const { state } = useStore()
   const navigate = useNavigate()
+  const router = useRouter()
+  const active = useActiveStream()
   const overview = useSellerOverview(state)
 
   const goToShows = () => navigate("/seller/shows")
+
+  // Шууд эфир нь store-ын mock статусаас биш, жинхэнэ дамжуулалтаас тодорхойлогдоно.
+  const linkedShow = active?.sellerShowId
+    ? state.sellerShows.find((s) => s.id === active.sellerShowId)
+    : undefined
+
+  const resumeLive = () => {
+    if (!active) return
+    router.push(
+      `/live/${active.roomName}?host=1&title=${encodeURIComponent(active.title)}&showId=${active.showId}`
+    )
+  }
+
+  const startShow = () => {
+    if (!overview.nextShow) return navigate("/seller/shows/start")
+    const params = new URLSearchParams({
+      showId: overview.nextShow.id,
+      title: overview.nextShow.title,
+      category: overview.nextShow.category,
+    })
+    navigate(`/seller/shows/start?${params.toString()}`)
+  }
 
   return (
     <>
@@ -28,8 +54,12 @@ export const SellerOverview: React.FC = () => {
         description="Here's what's happening with your shop today."
       />
 
-      {overview.liveShow ? (
-        <LiveShowBanner show={overview.liveShow} onOpen={goToShows} />
+      {active ? (
+        <LiveShowBanner
+          title={linkedShow?.title ?? active.title}
+          stats={linkedShow?.stats ?? { viewers: 0, sales: 0, revenue: 0 }}
+          onOpen={resumeLive}
+        />
       ) : overview.nextShow ? (
         <NextShowBanner
           show={overview.nextShow}
@@ -39,12 +69,13 @@ export const SellerOverview: React.FC = () => {
           )}
           ready={overview.nextShowReady}
           onOpen={goToShows}
+          onGoLive={startShow}
         />
       ) : null}
 
       <QuickActions />
 
-      <div className="mb-10 grid grid-cols-3 gap-6">
+      <div className="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
         <KpiCard
           title="Total Revenue"
           value={`₮${overview.totalRevenue.toLocaleString()}`}
@@ -64,7 +95,7 @@ export const SellerOverview: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="flex flex-col gap-8">
           <ActionRequired
             pendingOrders={overview.ordersToFulfill.length}

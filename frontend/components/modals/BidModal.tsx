@@ -34,13 +34,13 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
   };
 
   return (
-    <Modal title="Place a bid" onClose={closeModal}>
+    <Modal title="Үнэ санал болгох" onClose={closeModal}>
       <div className="px-6 py-4 flex flex-col gap-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-xl bg-[var(--wn-shot)] shrink-0" />
           <div className="flex-1 min-w-0">
             <div className="text-[15px] font-[700] text-[var(--wn-ink)] truncate">{show.item.name}</div>
-            <div className="text-[14px] font-[600] text-[var(--wn-ink-3)] mt-0.5">Current bid: ₮{show.item.price}</div>
+            <div className="text-[14px] font-[600] text-[var(--wn-ink-3)] mt-0.5">Одоогийн үнэ: ₮{show.item.price}</div>
           </div>
           <div className="w-[42px] h-[42px] rounded-full border-2 border-[var(--wn-line-2)] flex items-center justify-center text-[15px] font-[800] text-[var(--wn-ink)] shrink-0">
             {show.item.seconds}
@@ -48,7 +48,7 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
         </div>
 
         <div className="flex flex-col items-center py-4">
-          <div className="text-[12px] font-[800] tracking-wider text-[var(--wn-ink-4)] uppercase mb-2">Your Bid</div>
+          <div className="text-[12px] font-[800] tracking-wider text-[var(--wn-ink-4)] uppercase mb-2">Таны санал</div>
           <div className="text-[48px] font-[800] text-[var(--wn-ink)] tracking-tight leading-none mb-6">₮{myBid.toLocaleString()}</div>
           <div className="flex items-center gap-3">
             {INCREMENTS.map(({ value, label }) => (
@@ -72,7 +72,7 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
         <ModalActionButton
           onClick={handleBid}
           enabled={balance >= myBid}
-          label={`Place bid — ₮${myBid.toLocaleString()}`}
+          label={`Үнэ санал болгох — ₮${myBid.toLocaleString()}`}
         />
       </div>
     </Modal>

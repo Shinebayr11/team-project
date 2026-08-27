@@ -38,7 +38,7 @@ export const ThreadList: React.FC<ThreadListProps> = ({
         <p className="p-4 text-[14px] text-[var(--wn-ink-3)]">Уншиж байна...</p>
       ) : conversations.length === 0 ? (
         <p className="p-4 text-[14px] text-[var(--wn-ink-3)]">
-          Одоогоор яриа алга. Аукцион хожсоны дараа худалдагчтайгаа энд холбогдоно.
+          Одоогоор яриа алга. Дуудлага худалдаа хожсоны дараа худалдагчтайгаа энд холбогдоно.
         </p>
       ) : (
         conversations.map(conversation => {

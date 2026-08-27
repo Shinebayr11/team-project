@@ -25,7 +25,7 @@ const winnerOf = (listing: Listing) =>
  * Дуусаж зарагдсан лотын ялагч. Худалдагч хүргэлт, төлбөрөө тохирохын тулд
  * шууд чат бичих боломжтой байх ёстой тул нэр дээр нь дарж болно.
  *
- * Чат шинэ таб дээр нээгдэнэ: энэ самбар шууд дамжуулалтын дотор байдаг тул
+ * Чат шинэ таб дээр нээгдэнэ: энэ самбар лайвын дотор байдаг тул
  * тухайн таб дээрээ шилжвэл LiveKit-ийн холболт тасарч, шоу унана.
  */
 function WinnerBanner({ listing }: { listing: Listing }) {
@@ -77,7 +77,7 @@ function WinnerBanner({ listing }: { listing: Listing }) {
   )
 }
 
-/** Худалдагч аукционд гаргах бараагаа сонгох хэсэг. */
+/** Худалдагч дуудлага худалдаанд гаргах бараагаа сонгох хэсэг. */
 function StartAuctionForm({
   onStart,
 }: {
@@ -126,7 +126,7 @@ function StartAuctionForm({
   if (!products.length) {
     return (
       <div className="p-4 text-[13px] text-[var(--wn-ink-3)]">
-        {error ?? "Бараа алга. Эхлээд /sell хуудсаас бараагаа бүртгээрэй."}
+        {error ?? "Бараа алга. Эхлээд лайв эхлэх хуудсаас бараагаа бүртгээрэй."}
       </div>
     )
   }
@@ -176,14 +176,14 @@ function StartAuctionForm({
       {error && <p className="text-[12px] text-red-500">{error}</p>}
 
       <Button size="sm" onClick={start} disabled={busy || !productId}>
-        {busy ? "Эхэлж байна..." : "Аукцион эхлүүлэх"}
+        {busy ? "Эхэлж байна..." : "Дуудлага худалдаа эхлүүлэх"}
       </Button>
     </div>
   )
 }
 
 /**
- * Худалдагчийн аукционы самбар: явж буй лот, ирсэн саналууд, эсвэл шинэ лот
+ * Худалдагчийн дуудлага худалдааны самбар: явж буй лот, ирсэн саналууд, эсвэл шинэ лот
  * гаргах хэсэг.
  */
 export function BidsPanel({
@@ -209,7 +209,7 @@ export function BidsPanel({
     <div className="flex h-full w-[280px] shrink-0 flex-col overflow-hidden rounded-[20px] border border-[var(--wn-line)] bg-white">
       <div className="flex items-center justify-between border-b border-[var(--wn-line)] p-3">
         <h2 className="text-[14px] font-[800] text-[var(--wn-ink)]">
-          {running ? "Аукцион" : "Бараа гаргах"}
+          {running ? "Дуудлага худалдаа" : "Бараа гаргах"}
         </h2>
         {running && (
           <span className="rounded-full bg-[var(--wn-accent-soft)] px-2 py-0.5 text-[12px] font-[800] text-[var(--wn-accent)]">
@@ -220,7 +220,7 @@ export function BidsPanel({
 
       {!running ? (
         <div className="flex-1 overflow-y-auto">
-          {/* Аукцион дуусаад ялагчтай гарсан бол хамгийн дээр нь харуулна —
+          {/* Дуудлага худалдаа дуусаад ялагчтай гарсан бол хамгийн дээр нь харуулна —
               худалдагчийн дараагийн алхам бол түүнтэй холбогдох. */}
           {listing && listing.status === "sold" && winnerOf(listing) ? (
             <WinnerBanner listing={listing} />
@@ -231,7 +231,7 @@ export function BidsPanel({
                 <span className="font-[700] text-[var(--wn-ink-2)]">
                   {productOf(listing)?.name}
                 </span>{" "}
-                — саналгүй дууссан
+                — үнийн саналгүй дууссан
               </div>
             )
           )}
@@ -253,7 +253,7 @@ export function BidsPanel({
               </div>
               <div className="mt-1 text-[13px] font-[600] text-[var(--wn-ink-3)]">
                 {listing?.current_highest_bid_coins != null
-                  ? `Одоогийн санал ₮${listing.current_highest_bid_coins}`
+                  ? `Одоогийн үнэ ₮${listing.current_highest_bid_coins}`
                   : `Эхлэх үнэ ₮${listing?.starting_price_coins ?? 0}`}
               </div>
             </div>
@@ -262,7 +262,7 @@ export function BidsPanel({
           <div className="flex-1 overflow-y-auto p-2">
             {bids.length === 0 ? (
               <p className="px-2 py-3 text-[13px] text-[var(--wn-ink-3)]">
-                Одоогоор санал алга.
+                Одоогоор үнийн санал алга.
               </p>
             ) : (
               bids.map((bid, index) => {
@@ -282,7 +282,7 @@ export function BidsPanel({
                       </div>
                       {highest && (
                         <div className="text-[11px] font-[700] text-[var(--wn-accent)]">
-                          Хамгийн өндөр
+                          Хамгийн өндөр үнэ санал болгогч
                         </div>
                       )}
                     </div>

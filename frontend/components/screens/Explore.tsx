@@ -36,7 +36,7 @@ export const Explore: React.FC = () => {
           />
         </ExploreSection>
 
-        <ExploreSection title="Live Now" badge={LiveBadge} onViewAll={() => navigate('/live-show')}>
+        <ExploreSection title="Лайв" badge={LiveBadge} onViewAll={() => navigate('/live-show')}>
           <ShowGrid shows={liveShows.slice(0, 4)} />
         </ExploreSection>
 

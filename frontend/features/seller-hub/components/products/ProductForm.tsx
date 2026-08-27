@@ -23,7 +23,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
     <>
       <PageHeader title={title} onBack={onCancel} />
 
-      <div className="flex gap-6 max-w-[1000px]">
+      <div className="flex flex-col lg:flex-row gap-6 max-w-[1000px]">
         <div className="flex-1 flex flex-col gap-6">
           <ProductMediaCard />
 
@@ -31,7 +31,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
             <div className="flex flex-col gap-4">
               <TextField label="Title *" value={draft.name} onChange={e => patch({ name: e.target.value })} />
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <TextField label="SKU *" value={draft.sku} onChange={e => patch({ sku: e.target.value })} />
                 <SelectField
                   label="Category *"
@@ -51,7 +51,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
           </Panel>
         </div>
 
-        <div className="w-[320px] shrink-0 flex flex-col gap-6">
+        <div className="w-full lg:w-[320px] lg:shrink-0 flex flex-col gap-6">
           <ProductPricingCard draft={draft} onPatch={patch} />
 
           <Panel title="Shipping">
