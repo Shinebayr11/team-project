@@ -16,6 +16,7 @@ import bidRoutes from "./route/bidRoute.js";
 import WalletRoutes from "./route/walletRoute.js";
 import CointransactionRoutes from "./route/cointransactionRoute.js";
 import sellerRoutes from "./route/sellerRoute.js";
+import messageRoutes from "./route/messageRoute.js";
 
 const app = new Hono();
 
@@ -56,6 +57,7 @@ app.route("/api/wallet", WalletRoutes);
 app.route("/api/cointransaction", CointransactionRoutes);
 // Шинэ клиент /api/seller-ийг ашиглана. /sellers нь хуучин холбоосуудад
 // зориулж хэвээр үлдэв.
+app.route("/api/messages", messageRoutes);
 app.route("/api/seller", sellerRoutes);
 app.route("/sellers", sellerRoutes);
 
