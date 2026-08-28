@@ -6,6 +6,7 @@ import { useStore, parsePrice } from '../../store';
 import { Modal } from '../ui/Modal';
 import { BalanceSummary } from './BalanceSummary';
 import { ModalActionButton } from './ModalActionButton';
+import { CountdownRing, useCountdown } from '../live/auction-countdown';
 
 export interface BidModalData {
   show: ReelShow;
@@ -21,6 +22,14 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
   const { closeModal, credits, bid, addToast } = useStore();
   const [increment, setIncrement] = useState(25);
   const { show } = data;
+
+  // Демо өгөгдөлд дуусах мөч байхгүй тул цонх нээгдэх агшнаас тоолж эхэлнэ.
+  // `useMemo` биш `useState`-ийн залхуу эхлүүлэлт: memo хаягдвал тоолуур
+  // дахин эхлэх байсан бөгөөд `Date.now()` нь render-ийн цэвэр үйлдэл биш.
+  const [endsAt] = useState(
+    () => new Date(Date.now() + show.item.seconds * 1000).toISOString()
+  );
+  const { seconds, progress, urgent } = useCountdown(endsAt);
 
   const currentBid = parsePrice(show.item.price);
   const minimumBid = parsePrice(show.item.next);
@@ -42,9 +51,7 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
             <div className="text-[15px] font-[700] text-[var(--wn-ink)] truncate">{show.item.name}</div>
             <div className="text-[14px] font-[600] text-[var(--wn-ink-3)] mt-0.5">Одоогийн үнэ: ₮{show.item.price}</div>
           </div>
-          <div className="w-[42px] h-[42px] rounded-full border-2 border-[var(--wn-line-2)] flex items-center justify-center text-[15px] font-[800] text-[var(--wn-ink)] shrink-0">
-            {show.item.seconds}
-          </div>
+          <CountdownRing seconds={seconds} progress={progress} urgent={urgent} />
         </div>
 
         <div className="flex flex-col items-center py-4">
@@ -71,7 +78,8 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
 
         <ModalActionButton
           onClick={handleBid}
-          enabled={balance >= myBid}
+          enabled={balance >= myBid && seconds > 0}
+          disabledLabel={seconds > 0 ? 'Үлдэгдэл хүрэлцэхгүй' : 'Хугацаа дууслаа'}
           label={`Үнэ санал болгох — ₮${myBid.toLocaleString()}`}
         />
       </div>
