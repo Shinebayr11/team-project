@@ -1,50 +1,39 @@
-import { apiFetch } from "@/lib/api"
-import { LiveShowDoc, toHomeShow } from "@/lib/liveShows"
-
-import { Hero } from "../components/Hero"
-import { HowItWorks } from "../components/HowItWorks"
-import { JoinCta } from "../components/JoinCta"
-import { LandingFooter } from "../components/LandingFooter"
-import { LandingHeader } from "../components/LandingHeader"
-import { LiveNow } from "../components/LiveNow"
-
-/** Shows in the grid below the hero (the featured one is pulled out of it). */
-const GRID_SIZE = 8
+"use client"
 
 /**
- * The public front door at "/". Everything here is readable signed out: the
- * live grid links straight into /live-show, and the header always offers
- * Нэвтрэх / Бүртгүүлэх — the page never branches on auth state, so it stays
- * fully static.
+ * "/" дээрх нэвтрээгүй хүнд зориулсан marketing хуудас.
+ *
+ * Зургаан section нь доош гүйлгэх явцад хуудсын дэвсгэр өнгийг тасралтгүй
+ * шилжүүлнэ (`BackgroundMorph`). Хуудас бүхэлдээ статик — өгөгдөл татдаггүй,
+ * auth төлөвөөр салаалдаггүй. Ганц зорилго нь "Үнэгүй бүртгүүлэх" эсвэл
+ * "Худалдагч болох" руу оруулах.
  */
-export async function Landing() {
-  const shows = await apiFetch<{ data: LiveShowDoc[] }>("/api/liveshow")
-    .then((res) => res.data.map(toHomeShow))
-    .catch(() => [])
 
-  const liveShows = shows.filter((show) => show.live).sort(
-    (a, b) => (b.live ?? 0) - (a.live ?? 0)
-  )
-  const [featured, ...rest] = liveShows
-  const watching = liveShows.reduce(
-    (total, show) => total + (show.live ?? 0),
-    0
-  )
+import { AuctionSection } from "../components/AuctionSection"
+import { BackgroundMorph } from "../components/BackgroundMorph"
+import { CategoriesSection } from "../components/CategoriesSection"
+import { CtaSection } from "../components/CtaSection"
+import { HeroSection } from "../components/HeroSection"
+import { MarketingHeader } from "../components/MarketingHeader"
+import { ScrollProvider } from "../components/ScrollProvider"
+import { SectionNavPill } from "../components/SectionNavPill"
+import { SellerSection } from "../components/SellerSection"
+import { WalletSection } from "../components/WalletSection"
 
+export function Landing() {
   return (
-    <>
-      <LandingHeader />
+    <ScrollProvider>
+      <BackgroundMorph />
+      <MarketingHeader />
       <main>
-        <Hero
-          liveCount={liveShows.length}
-          watching={watching}
-          featured={featured}
-        />
-        <LiveNow shows={rest.slice(0, GRID_SIZE)} />
-        <HowItWorks />
-        <JoinCta />
+        <HeroSection />
+        <AuctionSection />
+        <WalletSection />
+        <SellerSection />
+        <CategoriesSection />
+        <CtaSection />
       </main>
-      <LandingFooter />
-    </>
+      <SectionNavPill />
+    </ScrollProvider>
   )
 }

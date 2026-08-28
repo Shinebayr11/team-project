@@ -1,7 +1,7 @@
-/* Typefaces for the WhyNot UI (see the .whynot-root block at the bottom).
-   Must stay above the Tailwind import: that one is inlined, which would leave
-   this @import sitting after real rules. */
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+/* Typefaces for the WhyNot UI (--wn-font / --wn-font-display below) are loaded
+   with next/font in app/layout.tsx, NOT with an @import here: Tailwind v4's
+   `@import "tailwindcss"` swallowed the Google Fonts @import that used to sit
+   above it, so the request was never actually made. */
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -188,9 +188,10 @@
   --wn-line-3: #d3d3dd;
   --wn-line-soft: #f0f0f5;
 
-  --wn-font: "Plus Jakarta Sans", system-ui, sans-serif;
+  --wn-font: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --wn-font-display:
-    "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif;
+    var(--font-bricolage), "Bricolage Grotesque", var(--font-jakarta),
+    "Plus Jakarta Sans", system-ui, sans-serif;
 
   /* Seller hub palette */
   --wn-admin-ink: #0e0b18;
@@ -383,6 +384,117 @@
   .whynot-root .animate-fade-in,
   [data-base-ui-portal] .animate-modal-in,
   [data-base-ui-portal] .animate-fade-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Landing (marketing) — "/" дээрх scroll-driven хуудасны нэмэлт токенууд.
+
+   Байгаа --wn-* токенуудыг ДАРЖ БИЧИХГҮЙ: --wn-accent (#5b3fe0),
+   --wn-accent-soft (#f1edfe = purple-wash), --wn-live (#e5484d) нь landing-ийн
+   палетртэй аль хэдийн таарч байгаа тул зөвхөн дутууг нь нэмэв.
+
+   Near-black нь --wn-noir нэртэй: --wn-ink нь аппын турш #1a1a2e хэвээр үлдэх
+   ёстой тул түүнийг дарж болохгүй.
+--------------------------------------------------------------------------- */
+:root {
+  --wn-accent-deep: #3a22a8;
+  --wn-paper: #fbfaff;
+  --wn-noir: #0e0b18;
+}
+
+/* Lenis-ийн шаардлагатай суурь дүрмүүд (lenis/dist/lenis.css-ийн хуулбар —
+   node_modules-ээс CSS import хийхгүйн тулд энд шууд бичив). */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Категорийн chip-үүдийн marquee. Жагсаалт нь 2 удаа давхарлагдсан тул
+   -50% хүрэхэд эхнээсээ ижил кадр дээр эргэж ирнэ. */
+@keyframes wn-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.wn-marquee {
+  animation: wn-marquee var(--wn-marquee-duration, 42s) linear infinite;
+  will-change: transform;
+}
+
+.wn-marquee-reverse {
+  animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wn-marquee {
+    animation: none;
+  }
+}
+
+/* Hero-гийн reveal — CSS-ээр.
+
+   Яагаад framer-motion биш вэ: hero-гийн гарчиг бол хуудсын LCP элемент.
+   `initial="hidden"` нь түүнийг hydration болтол opacity 0-оор барьдаг тул
+   удаан утсан дээр LCP нь JS-ийн ард 6 секунд хүртэл хойшилдог. Эдгээр
+   keyframe нь эхний paint дээрээ асдаг — JS хүлээхгүй.
+
+   Scroll-оор өдөөгддөг доод section-ууд framer-motion дээрээ хэвээр: тэд
+   viewport-оос гадна тул LCP-д огт нөлөөлдөггүй. */
+@keyframes wn-rise {
+  from {
+    transform: translateY(110%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes wn-lift {
+  from {
+    transform: translateY(var(--wn-lift-from, 24px));
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.wn-rise {
+  animation: wn-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--wn-delay, 0s);
+}
+
+.wn-lift {
+  animation: wn-lift 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--wn-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wn-rise,
+  .wn-lift {
     animation: none;
     opacity: 1;
     transform: none;

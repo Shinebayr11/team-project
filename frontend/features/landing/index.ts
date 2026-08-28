@@ -1,10 +1,10 @@
 /**
- * Landing — the marketing page, served at /landing.
+ * Landing — "/" дээр үйлчлэх marketing хуудас.
  *
- * This barrel is the feature's public surface: route-level screens and nothing
- * else. Everything under components/ and data/ is internal to the feature.
+ * Энэ barrel бол feature-ийн нийтийн гадаргуу: route-ийн түвшний screen л
+ * гарна. components/ доторх бүхэн дотоод.
  *
- * See ./README.md for the layering rules.
+ * Давхаргын дүрмийг ./README.md-ээс үзнэ үү.
  */
 
 export { Landing } from "./screens/Landing"
