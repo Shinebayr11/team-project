@@ -37,7 +37,7 @@ export const ReelStage: React.FC<ReelStageProps> = ({
 
           <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md text-white text-[12px] font-[600] z-10">
             <LiveDot className="w-2 h-2" />
-            <span>Лайв</span>
+            <span>Шууд</span>
             <span className="opacity-60 ml-1">{i === currentIndex ? viewers : show.viewers} watching</span>
           </div>
 

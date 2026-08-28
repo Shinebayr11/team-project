@@ -5,7 +5,7 @@ import { Video, Users, ShoppingBag, CreditCard } from 'lucide-react';
 import { LiveDot } from '@/components/ui/LiveDot';
 
 /**
- * Бүтэн `SellerShow` биш, харагдах талбаруудыг нь л авна: лайв нь
+ * Бүтэн `SellerShow` биш, харагдах талбаруудыг нь л авна: шууд дамжуулалт нь
  * самбарын шоутай холбоогүй ч (дээд талын "Go Live" товчноос эхэлсэн)
  * үзүүлэх боломжтой байх ёстой.
  */
@@ -24,7 +24,7 @@ export const LiveShowBanner: React.FC<LiveShowBannerProps> = ({ title, stats, on
       <div>
         <div className="flex items-center gap-2 mb-1">
           <LiveDot className="w-2.5 h-2.5" />
-          <div className="text-[13px] font-[800] text-[var(--wn-live)] uppercase tracking-wider">Лайв</div>
+          <div className="text-[13px] font-[800] text-[var(--wn-live)] uppercase tracking-wider">Шууд</div>
         </div>
         <div className="text-[22px] font-[800] mb-2">{title}</div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] font-[600] text-gray-300">

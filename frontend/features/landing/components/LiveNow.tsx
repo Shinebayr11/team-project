@@ -14,7 +14,7 @@ export function LiveNow({ shows }: { shows: HomeShow[] }) {
         <div className="flex items-end justify-between gap-4">
           <div>
             <h2 className="font-display text-[30px] font-[800] tracking-[-0.03em] text-[var(--wn-ink)]">
-              Одоо лайв явж байна
+              Одоо шууд явж байна
             </h2>
             <p className="mt-1.5 text-[15px] text-[var(--wn-ink-3)]">
               Нэвтрэхгүйгээр шууд орж үзээрэй.

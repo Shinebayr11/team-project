@@ -121,7 +121,7 @@ export const SellerShows: React.FC = () => {
   return (
     <>
       <PageHeader
-        title="Лайв"
+        title="Шууд"
         description="Schedule and manage your live events."
       >
         {/* Жинхэнэ LiveKit дамжуулалт — Seller Hub-ын chrome дотор. */}

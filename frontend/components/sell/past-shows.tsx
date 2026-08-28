@@ -17,7 +17,7 @@ function formatRelativeTime(dateStr?: string) {
 }
 
 /**
- * Худалдагчийн хамгийн их үзэлттэй 3 лайв. Шинэ лайв эхлэхийн өмнө хамгийн
+ * Худалдагчийн хамгийн их үзэлттэй 3 дамжуулалт. Шинэ дамжуулалт эхлэхийн өмнө хамгийн
  * амжилттай байснаа санах боломж өгнө.
  */
 export function PastShows({ className = "" }: { className?: string }) {
@@ -29,10 +29,10 @@ export function PastShows({ className = "" }: { className?: string }) {
     >
       <div>
         <h2 className="text-[16px] font-[800] text-black">
-          Хамгийн их үзэлттэй лайвууд
+          Хамгийн их үзэлттэй дамжуулалтууд
         </h2>
         <p className="mt-1 text-[14px] font-[500] text-gray-500">
-          Өмнөх лайвуудаасаа хамгийн амжилттай 3-ыг харна уу.
+          Өмнөх дамжуулалтуудаасаа хамгийн амжилттай 3-ыг харна уу.
         </p>
       </div>
 
@@ -43,7 +43,7 @@ export function PastShows({ className = "" }: { className?: string }) {
           <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center">
             <BarChart3 className="mx-auto size-6 text-gray-500" />
             <p className="mt-2 text-[14px] font-[500] text-gray-500">
-              Дуусгасан лайв байхгүй байна.
+              Дуусгасан дамжуулалт байхгүй байна.
             </p>
           </div>
         ) : (

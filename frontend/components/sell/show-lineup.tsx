@@ -25,8 +25,8 @@ function ProductThumb({ product }: { product?: AuctionProduct }) {
 }
 
 /**
- * Лайв дээр гарах барааны жагсаалт. Худалдагч бараагаа урьдчилан эмхэлж
- * тавьснаар үзэгчид лайвын туршид бүтэн жагсаалтыг харна — дуудлага худалдаанд гарсан
+ * Шууд дамжуулалт дээр гарах барааны жагсаалт. Худалдагч бараагаа урьдчилан эмхэлж
+ * тавьснаар үзэгчид дамжуулалтын туршид бүтэн жагсаалтыг харна — дуудлага худалдаанд гарсан
  * ганц лот биш.
  */
 export function ShowLineup({ showId }: { showId: string }) {
@@ -77,9 +77,9 @@ export function ShowLineup({ showId }: { showId: string }) {
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[16px] font-[800] text-black">Лайвын бараа</h2>
+          <h2 className="text-[16px] font-[800] text-black">Дамжуулалтын бараа</h2>
           <p className="mt-1 text-[14px] font-[500] text-gray-500">
-            Энэ лайв дээр үзэгчдэд харагдах жагсаалт.
+            Энэ дамжуулалт дээр үзэгчдэд харагдах жагсаалт.
           </p>
         </div>
         {!picking && available.length > 0 && (

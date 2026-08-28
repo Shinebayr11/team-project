@@ -14,7 +14,7 @@ const pillOutline =
   "inline-flex items-center rounded-full border border-gray-300 px-3.5 py-1.5 text-[13px] font-[700] text-black transition-colors hover:bg-gray-50"
 
 /**
- * Худалдагчийн барааны сан. Лайвын үед дуудлага худалдаанд гаргах бараа эндээс сонгогдох
+ * Худалдагчийн барааны сан. Дамжуулалтын үед дуудлага худалдаанд гаргах бараа эндээс сонгогдох
  * тул дамжуулалт эхлэхээс өмнө бүртгэсэн байх ёстой.
  */
 export function ProductCatalog({ className = "" }: { className?: string }) {
@@ -102,7 +102,7 @@ export function ProductCatalog({ className = "" }: { className?: string }) {
         <div>
           <h2 className="text-[16px] font-[800] text-black">Миний бараа</h2>
           <p className="mt-1 text-[14px] font-[500] text-gray-500">
-            Лайвын үед эндээс сонгож дуудлага худалдаанд гаргана.
+            Дамжуулалтын үед эндээс сонгож дуудлага худалдаанд гаргана.
           </p>
         </div>
         {!adding && (

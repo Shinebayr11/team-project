@@ -50,7 +50,7 @@ const POLL_ACTIVE_MS = 2000
 const POLL_IDLE_MS = 10000
 
 /**
- * Нэг лайвын дуудлага худалдааны төлөв: одоо явж буй лот, түүний саналууд.
+ * Нэг дамжуулалтын дуудлага худалдааны төлөв: одоо явж буй лот, түүний саналууд.
  * Host болон үзэгч хоёулаа ижил эх сурвалжаас уншина.
  */
 export function useAuction(liveShowId?: string) {
@@ -139,7 +139,7 @@ export function useAuction(liveShowId?: string) {
       starting_price_coins: number
       duration_seconds: number
     }) => {
-      if (!liveShowId) return { ok: false, message: "Лайв тодорхойгүй" }
+      if (!liveShowId) return { ok: false, message: "Дамжуулалт тодорхойгүй" }
       try {
         await callApi(`/api/productlisting`, {
           method: "POST",

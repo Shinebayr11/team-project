@@ -16,7 +16,7 @@ export function LandingHeader() {
 
         <nav className="hidden items-center gap-1 md:flex">
           <Link to="/live-show" className={navLink}>
-            Лайв
+            Шууд
           </Link>
           <Link to="/explore" className={navLink}>
             Судлах

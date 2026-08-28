@@ -88,7 +88,7 @@ function Stage({ children }: { children?: React.ReactNode }) {
 
       <div className="absolute top-4 left-4 z-10 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-[12px] font-[600] text-white backdrop-blur-md">
         <LiveDot className="h-2 w-2" />
-        <span>Лайв</span>
+        <span>Шууд</span>
         <span className="ml-1 opacity-60">{participants.length} watching</span>
       </div>
 
@@ -173,7 +173,7 @@ export function LiveViewer({
     typeof show?.seller_id === "object" && show.seller_id?.display_name
       ? show.seller_id.display_name
       : "Seller"
-  const shownTitle = show?.title ?? title ?? "Лайв"
+  const shownTitle = show?.title ?? title ?? "Шууд дамжуулалт"
   const category = show?.category || "General"
 
   if (error || !token) {

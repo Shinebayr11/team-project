@@ -29,7 +29,7 @@ export const SellerRow: React.FC<SellerRowProps> = ({ seller, onClick, forceOffl
         <div className="text-[13px] font-[700] text-[var(--wn-ink)] truncate">{seller.slug}</div>
         <div className="text-[11px] text-[var(--wn-ink-3)] truncate">
           {isLive
-            ? <span className="text-[var(--wn-live)] font-[600]">Лайв</span>
+            ? <span className="text-[var(--wn-live)] font-[600]">Шууд</span>
             : (forceOffline ? 'Offline' : seller.cat1)}
         </div>
       </div>

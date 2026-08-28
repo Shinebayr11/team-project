@@ -12,7 +12,7 @@ const fontMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export const metadata: Metadata = {
   title: "WhyNot",
-  description: "Лайв дамжуулалттай дуудлага худалдаа",
+  description: "Шууд дамжуулалттай дуудлага худалдаа",
 }
 
 export default function RootLayout({
