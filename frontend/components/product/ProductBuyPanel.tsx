@@ -23,7 +23,7 @@ interface ProductBuyPanelProps {
 export const ProductBuyPanel: React.FC<ProductBuyPanelProps> = ({
   seller, product, description, qty, onQtyChange, ...actions
 }) => (
-  <div className="w-[420px] shrink-0 flex flex-col">
+  <div className="w-full flex flex-col lg:w-[420px] lg:shrink-0">
     <Link to={`/shop?seller=${seller.slug}`} className="flex items-center gap-3 mb-6 group">
       <Avatar name={seller.slug} initial={seller.initial} tint={seller.tint} />
       <div>

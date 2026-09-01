@@ -52,15 +52,21 @@ export const Messages: React.FC = () => {
 
   return (
     <div className="mx-auto max-w-[1180px] px-6 py-8">
-      <div className="flex h-[720px] overflow-hidden rounded-[24px] border border-[var(--wn-line)] bg-white shadow-sm">
-        <ThreadList
-          conversations={conversations}
-          activeId={conversationId}
-          loading={loading}
-          onSelect={(id) => navigate(`/messages?c=${id}`)}
-        />
+      <div className="flex h-[calc(100vh-140px)] overflow-hidden rounded-[24px] border border-[var(--wn-line)] bg-white shadow-sm md:h-[720px]">
+        <div className={conversationId ? "hidden md:flex" : "flex flex-1 md:flex-none"}>
+          <ThreadList
+            conversations={conversations}
+            activeId={conversationId}
+            loading={loading}
+            onSelect={(id) => navigate(`/messages?c=${id}`)}
+          />
+        </div>
 
-        <div className="flex flex-1 flex-col bg-white">
+        <div
+          className={`flex-col bg-white ${
+            conversationId ? "flex flex-1" : "hidden md:flex md:flex-1"
+          }`}
+        >
           {opening ? (
             <div className="flex flex-1 items-center justify-center text-[15px] font-[500] text-[var(--wn-ink-4)]">
               Яриаг нээж байна...

@@ -60,7 +60,7 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
   const { displayName, handle, initial } = useDisplayName()
 
   return (
-    <aside className="flex w-[240px] shrink-0 flex-col gap-8">
+    <aside className="flex w-full flex-col gap-8 lg:w-[240px] lg:shrink-0">
       <div className="flex flex-col items-center text-center">
         <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-[#E6E6EE] text-[32px] font-[700] text-[var(--wn-ink)] uppercase">
           {initial}

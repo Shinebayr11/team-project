@@ -77,22 +77,7 @@ export const LiveShow: React.FC = () => {
     })
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-68px)] max-w-[1440px] gap-4 px-4 py-4">
-      <div className="flex h-full w-[280px] shrink-0 flex-col overflow-hidden rounded-[20px] border border-[var(--wn-line)] bg-white">
-        <ShowInfoPanel
-          show={currentShow}
-          following={isFollowing(currentShow.slug)}
-          onToggleFollow={() => toggleFollow(currentShow.slug)}
-          onOpenShop={() => navigate(`/shop?seller=${currentShow.slug}`)}
-        />
-        <ShowProductList
-          products={currentShow.products}
-          activeTab={tab}
-          onTabChange={setTab}
-          onSelect={handleProductSelect}
-        />
-      </div>
-
+    <div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-4 py-4 lg:h-[calc(100vh-68px)] lg:flex-row">
       <ReelStage
         shows={REEL_SHOWS}
         currentIndex={currentIndex}
@@ -104,12 +89,31 @@ export const LiveShow: React.FC = () => {
         onItemAction={handleItemAction}
       />
 
-      <ChatPanel
-        lines={chatLines}
-        viewers={viewers}
-        hostName={currentShow.seller}
-        onSend={(text) => pushChatLine({ name: VIEWER_NAME, text })}
-      />
+      {/* `lg:contents` — дэлгэц дээр энэ бүрхүүл layout-аас арилж, гурван
+          самбар мөрийн шууд хүүхэд болно. Гар утсан дээр л өндөр өгнө. */}
+      <div className="flex h-[360px] gap-4 overflow-x-auto lg:contents">
+        <div className="flex h-full w-[280px] shrink-0 flex-col overflow-hidden rounded-[20px] border border-[var(--wn-line)] bg-white">
+          <ShowInfoPanel
+            show={currentShow}
+            following={isFollowing(currentShow.slug)}
+            onToggleFollow={() => toggleFollow(currentShow.slug)}
+            onOpenShop={() => navigate(`/shop?seller=${currentShow.slug}`)}
+          />
+          <ShowProductList
+            products={currentShow.products}
+            activeTab={tab}
+            onTabChange={setTab}
+            onSelect={handleProductSelect}
+          />
+        </div>
+
+        <ChatPanel
+          lines={chatLines}
+          viewers={viewers}
+          hostName={currentShow.seller}
+          onSend={(text) => pushChatLine({ name: VIEWER_NAME, text })}
+        />
+      </div>
     </div>
   )
 }

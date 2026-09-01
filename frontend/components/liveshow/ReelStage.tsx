@@ -22,7 +22,7 @@ export const ReelStage: React.FC<ReelStageProps> = ({
   shows, currentIndex, countdown, viewers, showScrollHint, onWheel, onGoTo, onItemAction,
 }) => (
   <div
-    className="flex-1 h-full relative rounded-[20px] overflow-hidden bg-[var(--wn-shot-deep)]"
+    className="relative aspect-video w-full shrink-0 rounded-[20px] overflow-hidden bg-[var(--wn-shot-deep)] lg:aspect-auto lg:h-full lg:w-auto lg:flex-1 lg:shrink"
     onWheel={e => onWheel(e.deltaY)}
   >
     <div

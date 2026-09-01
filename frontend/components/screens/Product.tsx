@@ -59,7 +59,7 @@ export const Product: React.FC = () => {
         <ChevronLeft className="h-4 w-4" /> Back to {seller.slug}'s shop
       </button>
 
-      <div className="mb-16 flex gap-10">
+      <div className="mb-16 flex flex-col gap-10 lg:flex-row">
         <ProductGallery tag={product.tag} />
         <ProductBuyPanel
           seller={seller}
