@@ -77,7 +77,7 @@ function Stage({ children }: { children?: React.ReactNode }) {
   const participants = useRemoteParticipants()
 
   return (
-    <div className="relative h-full flex-1 overflow-hidden rounded-[20px] bg-[var(--wn-shot-deep)]">
+    <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-[20px] bg-[var(--wn-shot-deep)] lg:aspect-auto lg:h-full lg:w-auto lg:flex-1 lg:shrink">
       {track ? (
         <VideoTrack trackRef={track} className="size-full object-cover" />
       ) : (
@@ -194,26 +194,30 @@ export function LiveViewer({
       video={false}
       audio={false}
     >
-      <div className="mx-auto flex h-[calc(100vh-68px)] max-w-[1440px] gap-4 px-4 py-4">
-        <div className="flex h-full w-[280px] shrink-0 flex-col overflow-hidden rounded-[20px] border border-[var(--wn-line)] bg-white">
-          <SellerPanel
-            title={shownTitle}
-            seller={seller}
-            category={category}
-          />
-          <ShowProductList
-            products={buildProducts(entries, listing)}
-            activeTab={tab}
-            onTabChange={setTab}
-            onSelect={() => {}}
-          />
-        </div>
-
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-4 py-4 lg:h-[calc(100vh-68px)] lg:flex-row">
         <Stage>
           <AuctionBidPanel listing={listing} onBid={placeBid} />
         </Stage>
 
-        <LiveChat hostName={seller} />
+        {/* `lg:contents` — дэлгэц дээр энэ бүрхүүл layout-аас арилж, гурван
+            самбар мөрийн шууд хүүхэд болно. Гар утсан дээр л өндөр өгнө. */}
+        <div className="flex h-[360px] gap-4 overflow-x-auto lg:contents">
+          <div className="flex h-full w-[280px] shrink-0 flex-col overflow-hidden rounded-[20px] border border-[var(--wn-line)] bg-white">
+            <SellerPanel
+              title={shownTitle}
+              seller={seller}
+              category={category}
+            />
+            <ShowProductList
+              products={buildProducts(entries, listing)}
+              activeTab={tab}
+              onTabChange={setTab}
+              onSelect={() => {}}
+            />
+          </div>
+
+          <LiveChat hostName={seller} />
+        </div>
       </div>
 
       <RoomAudioRenderer />
