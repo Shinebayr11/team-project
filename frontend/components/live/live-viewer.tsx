@@ -20,6 +20,7 @@ import { Avatar } from "@/components/ui/Avatar"
 import { LiveDot } from "@/components/ui/LiveDot"
 import { ShowProductList } from "@/components/liveshow/ShowProductList"
 import { LiveChat } from "@/components/live/live-chat"
+import { LiveChatOverlay } from "@/components/live/live-chat-overlay"
 import { AuctionBidPanel } from "@/components/live/auction-bid-panel"
 import { AuctionProduct, Listing, isActive, useAuction } from "@/hooks/useAuction"
 import { ShowProduct, productOfEntry, useShowProducts } from "@/hooks/useShowProducts"
@@ -91,6 +92,8 @@ function Stage({ children }: { children?: React.ReactNode }) {
         <span>Лайв</span>
         <span className="ml-1 opacity-60">{participants.length} watching</span>
       </div>
+
+      <LiveChatOverlay className="inset-x-3 top-16 bottom-28 lg:hidden" />
 
       {children}
     </div>

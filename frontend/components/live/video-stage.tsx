@@ -21,6 +21,7 @@ import { useLiveKitToken } from "@/hooks/useLiveKitToken"
 import { useDisplayName } from "@/hooks/useDisplayName"
 import { useAuction } from "@/hooks/useAuction"
 import { LiveChat } from "@/components/live/live-chat"
+import { LiveChatOverlay } from "@/components/live/live-chat-overlay"
 import { BidsPanel } from "@/components/live/bids-panel"
 
 /**
@@ -139,6 +140,8 @@ export function VideoStage({
       <div className="flex flex-col gap-4 lg:h-full lg:flex-row">
         <div className="relative aspect-video overflow-hidden rounded-[20px] bg-black lg:aspect-auto lg:flex-1">
           <Stage />
+
+          <LiveChatOverlay className="inset-x-3 top-16 bottom-24 lg:hidden" />
 
           {isHost && (
             <div className="absolute inset-x-0 bottom-4 flex flex-wrap items-center justify-center gap-3 px-4">
