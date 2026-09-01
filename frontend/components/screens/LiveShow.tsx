@@ -88,7 +88,7 @@ export const LiveShow: React.FC = () => {
     <>
       {/* Mobile layout (below lg) */}
       <div
-        className="lg:hidden w-screen fixed inset-0 bg-black overflow-hidden"
+        className="lg:hidden w-screen fixed inset-0 bg-black"
         style={{ height: '100dvh', maxHeight: '100dvh' }}
       >
         <ReelStage
