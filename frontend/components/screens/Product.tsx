@@ -12,17 +12,17 @@ import { ReviewList } from "@/components/reviews/ReviewList"
 import { ProductGallery } from "@/components/product/ProductGallery"
 import { ProductBuyPanel } from "@/components/product/ProductBuyPanel"
 
-const FALLBACK_SELLER = "amyperrin"
+// const FALLBACK_SELLER = "amyperrin"
 
-const buildDescription = (seller: SellerRecord, product: SellerProduct) => {
-  const intro = `A hand-picked ${seller.cat2.toLowerCase()} piece from ${seller.slug}'s ${seller.cat1} collection. `
-  if (product.tag === "Live now")
-    return `${intro}Currently live — up for grabs while the show is on air.`
-  if (product.tag === "Giveaway")
-    return `${intro}One lucky entrant wins this for free — follow the show to enter.`
-  if (product.tag === "Sold")
-    return `${intro}This exact piece already found a home, but more like it show up in every stream.`
-  return `${intro}Ships within 1–2 business days, carefully packed to survive the trip.`
+// const buildDescription = (seller: SellerRecord, product: SellerProduct) => {
+//   const intro = `A hand-picked ${seller.cat2.toLowerCase()} piece from ${seller.slug}'s ${seller.cat1} collection. `
+//   if (product.tag === "Live now")
+//     return `${intro}Currently live — up for grabs while the show is on air.`
+//   if (product.tag === "Giveaway")
+//     return `${intro}One lucky entrant wins this for free — follow the show to enter.`
+//   if (product.tag === "Sold")
+//     return `${intro}This exact piece already found a home, but more like it show up in every stream.`
+//   return `${intro}Ships within 1–2 business days, carefully packed to survive the trip.`
 }
 
 export const Product: React.FC = () => {
