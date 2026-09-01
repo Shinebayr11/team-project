@@ -29,7 +29,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ lines, viewers, hostName, 
   };
 
   return (
-    <div className="w-[280px] shrink-0 flex flex-col h-full bg-white rounded-[20px] border border-[var(--wn-line)] overflow-hidden">
+    <div className="hidden lg:flex w-[280px] shrink-0 flex-col h-full bg-white rounded-[20px] border border-[var(--wn-line)] overflow-hidden">
       <div className="p-3 border-b border-[var(--wn-line)] flex items-center justify-between">
         <h2 className="text-[14px] font-[800] text-[var(--wn-ink)]">Chat</h2>
         <div className="flex items-center gap-1.5 text-[12px] font-[600] text-[var(--wn-ink-3)]">

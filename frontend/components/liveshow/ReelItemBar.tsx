@@ -14,7 +14,7 @@ export const ReelItemBar: React.FC<ReelItemBarProps> = ({ item, seconds, onActio
 
   return (
     <div
-      className="absolute bottom-4 left-4 right-12 bg-white rounded-[16px] p-2.5 flex items-center gap-3 z-10"
+      className="hidden lg:flex absolute bottom-4 left-4 right-12 bg-white rounded-[16px] p-2.5 items-center gap-3 z-10"
       style={{ boxShadow: '0 12px 32px rgba(12,12,24,0.24)' }}
     >
       <div className="w-[60px] h-[60px] rounded-[10px] bg-[var(--wn-shot)] shrink-0" />
