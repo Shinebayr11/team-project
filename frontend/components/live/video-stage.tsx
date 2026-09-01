@@ -141,7 +141,7 @@ export function VideoStage({
         <div className="relative aspect-video overflow-hidden rounded-[20px] bg-black lg:aspect-auto lg:flex-1">
           <Stage />
 
-          <LiveChatOverlay className="inset-x-3 top-16 bottom-24 lg:hidden" />
+          <LiveChatOverlay className="left-3 right-3 top-16 bottom-24 lg:hidden" />
 
           {isHost && (
             <div className="absolute inset-x-0 bottom-4 flex flex-wrap items-center justify-center gap-3 px-4">

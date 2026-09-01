@@ -16,10 +16,12 @@ interface ReelStageProps {
   onWheel: (deltaY: number) => void;
   onGoTo: (index: number) => void;
   onItemAction: (show: ReelShow) => void;
+  /** Mobile дээрх Facebook Live шиг chat overlay — `<ChatOverlay />`. */
+  chatOverlay?: React.ReactNode;
 }
 
 export const ReelStage: React.FC<ReelStageProps> = ({
-  shows, currentIndex, countdown, viewers, showScrollHint, onWheel, onGoTo, onItemAction,
+  shows, currentIndex, countdown, viewers, showScrollHint, onWheel, onGoTo, onItemAction, chatOverlay,
 }) => (
   <div
     className="relative aspect-video w-full shrink-0 rounded-[20px] overflow-hidden bg-[var(--wn-shot-deep)] lg:aspect-auto lg:h-full lg:w-auto lg:flex-1 lg:shrink"
@@ -64,6 +66,8 @@ export const ReelStage: React.FC<ReelStageProps> = ({
         Scroll for the next live
       </div>
     </div>
+
+    {chatOverlay}
 
     <ReelNavRail count={shows.length} currentIndex={currentIndex} onGoTo={onGoTo} />
   </div>

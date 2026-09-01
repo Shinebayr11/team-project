@@ -11,6 +11,7 @@ import { ShowInfoPanel } from "@/components/liveshow/ShowInfoPanel"
 import { ShowProductList } from "@/components/liveshow/ShowProductList"
 import { ReelStage } from "@/components/liveshow/ReelStage"
 import { ChatPanel } from "@/components/liveshow/ChatPanel"
+import { ChatOverlay } from "@/components/liveshow/ChatOverlay"
 
 const VIEWER_NAME = "junglefinds"
 const SCROLL_HINT_MS = 4200
@@ -87,6 +88,13 @@ export const LiveShow: React.FC = () => {
         onWheel={handleWheel}
         onGoTo={goTo}
         onItemAction={handleItemAction}
+        chatOverlay={
+          <ChatOverlay
+            lines={chatLines}
+            onSend={(text) => pushChatLine({ name: VIEWER_NAME, text })}
+            className="left-3 right-16 top-16 bottom-28 lg:hidden"
+          />
+        }
       />
 
       {/* `lg:contents` — дэлгэц дээр энэ бүрхүүл layout-аас арилж, гурван

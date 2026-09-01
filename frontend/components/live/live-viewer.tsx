@@ -93,7 +93,7 @@ function Stage({ children }: { children?: React.ReactNode }) {
         <span className="ml-1 opacity-60">{participants.length} watching</span>
       </div>
 
-      <LiveChatOverlay className="inset-x-3 top-16 bottom-28 lg:hidden" />
+      <LiveChatOverlay className="left-3 right-3 top-16 bottom-28 lg:hidden" />
 
       {children}
     </div>
