@@ -14,10 +14,10 @@ import { cn } from "@/lib/utils"
  * (0.3s / cubic-bezier(0.16, 1, 0.3, 1)). Ялгаа нь Base UI Dialog дээр
  * суурилсан тул фокус баригдана, ESC ажиллана, фокус буцаж очно.
  *
- * Modal.tsx-ийн `animate-slide-up`-ийг ЗОРИУДААР ашиглаагүй: тэр keyframe нь
- * toast-д зориулж `translate(-50%, …)`-ээр бичигдсэн бөгөөд `forwards` тул
- * flex-ээр төвлөрүүлсэн цонхыг өөрийн өргөний хагасаар зүүн тийш шилжүүлдэг.
- * Энд байрлуулалтыг Dialog.Viewport хийж, Popup нь зөвхөн гулсалтаа эзэмшинэ.
+ * `animate-slide-up`-ийг (toast-д зориулж `translate(-50%, …)`-ээр бичигдсэн
+ * keyframe) ЗОРИУДААР ашиглаагүй — Modal.tsx мөн адил алдаанд орж байсан тул
+ * тэнд `animate-modal-in` болгож засав. Энд байрлуулалтыг Dialog.Viewport
+ * хийж, Popup нь зөвхөн гулсалтаа эзэмшинэ.
  */
 
 const TRANSITION =

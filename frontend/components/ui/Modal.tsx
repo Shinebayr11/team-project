@@ -23,7 +23,7 @@ export const Modal: React.FC<ModalProps> = ({ title, onClose, children, eyebrow,
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-[#0E0C1A]/44 backdrop-blur-sm" onClick={onClose} />
       <div
-        className={`relative bg-white rounded-[22px] w-full ${wide ? 'max-w-[520px]' : 'max-w-[420px]'} flex flex-col overflow-hidden animate-slide-up`}
+        className={`relative bg-white rounded-[22px] w-full ${wide ? 'max-w-[520px]' : 'max-w-[420px]'} flex flex-col overflow-hidden animate-modal-in`}
         style={{ boxShadow: '0 24px 64px rgba(12,12,24,0.28)' }}
       >
         <div className="px-6 pt-6 pb-4 flex items-start justify-between">

@@ -330,16 +330,38 @@
   animation: wn-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* `Modal.tsx`-д зориулсан хувилбар: `wn-slide-up`-ийн `translate(-50%, …)`
+   нь toast шиг `left: 50%`-аар байрлуулсан элементэд зориулагдсан — Modal-ийн
+   цонх бол flex-ээр төвлөрдөг тул тэр X offset-ийг өвлөвөл `forwards`-ийн
+   ачаар байнга өөрийн өргөний хагасаар зүүн тийш шилжчихдэг байсан (bug).
+   Энд зөвхөн босоо чиглэлд шилжинэ. */
+@keyframes wn-modal-in {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.whynot-root .animate-modal-in {
+  animation: wn-modal-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* Хөдөлгөөнийг багасгах тохиргоог хүндэтгэнэ. Идэвхжүүлэх хуудас нь өөрөө
    `motion-reduce:transition-none`-ыг ашигладаг; энэ блок нь ported UI-ийн
    keyframe анимацуудыг (toast, live цэг, modal) мөн намжаана. */
 @media (prefers-reduced-motion: reduce) {
   .whynot-root .animate-slide-up,
+  .whynot-root .animate-modal-in,
   .whynot-root .animate-pulse-dot,
   [data-base-ui-portal] .animate-slide-up {
     animation: none;
   }
   .whynot-root .animate-slide-up,
+  .whynot-root .animate-modal-in,
   [data-base-ui-portal] .animate-slide-up {
     opacity: 1;
   }
