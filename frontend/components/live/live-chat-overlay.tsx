@@ -27,7 +27,7 @@ export function LiveChatOverlay({ className }: LiveChatOverlayProps) {
     isLoaded && !isSignedIn ? (
       <Link
         to="/sign-in"
-        className="pointer-events-auto flex h-10 w-fit items-center rounded-full bg-black/40 px-4 text-[13px] font-[700] text-white backdrop-blur-sm"
+        className="pointer-events-auto flex h-12 w-fit items-center rounded-full bg-black/45 px-4 text-[15px] font-[700] text-white backdrop-blur-sm"
       >
         Нэвтэрч сэтгэгдэл бичих
       </Link>

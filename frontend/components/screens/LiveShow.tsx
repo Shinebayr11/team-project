@@ -92,7 +92,7 @@ export const LiveShow: React.FC = () => {
           <ChatOverlay
             lines={chatLines}
             onSend={(text) => pushChatLine({ name: VIEWER_NAME, text })}
-            className="left-3 right-16 top-16 bottom-28 lg:hidden"
+            className="left-3 right-16 top-14 bottom-28 lg:hidden"
           />
         }
       />
@@ -115,12 +115,16 @@ export const LiveShow: React.FC = () => {
           />
         </div>
 
-        <ChatPanel
-          lines={chatLines}
-          viewers={viewers}
-          hostName={currentShow.seller}
-          onSend={(text) => pushChatLine({ name: VIEWER_NAME, text })}
-        />
+        {/* Mobile дээр видеоны дээрх `chatOverlay` үүнийг орлодог тул зөвхөн
+            desktop дээр харагдана. */}
+        <div className="hidden lg:contents">
+          <ChatPanel
+            lines={chatLines}
+            viewers={viewers}
+            hostName={currentShow.seller}
+            onSend={(text) => pushChatLine({ name: VIEWER_NAME, text })}
+          />
+        </div>
       </div>
     </div>
   )

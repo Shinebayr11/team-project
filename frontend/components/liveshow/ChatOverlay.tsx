@@ -16,7 +16,7 @@ interface ChatOverlayProps {
   className?: string
 }
 
-const VISIBLE_COUNT = 6
+const VISIBLE_COUNT = 8
 
 /**
  * Facebook Live шиг видеоны дээр давхарласан chat feed. Presentational —
@@ -27,7 +27,7 @@ export function ChatOverlay({
   lines,
   onSend,
   lockedNotice,
-  className = "left-3 right-3 top-16 bottom-28",
+  className = "left-3 right-3 top-14 bottom-28",
 }: ChatOverlayProps) {
   const [input, setInput] = useState("")
   const listRef = useRef<HTMLDivElement>(null)
@@ -48,11 +48,11 @@ export function ChatOverlay({
     <div
       className={`pointer-events-none absolute z-10 flex flex-col justify-end gap-3 ${className}`}
     >
-      <div ref={listRef} className="flex flex-col gap-1.5 overflow-hidden">
+      <div ref={listRef} className="flex flex-col gap-2 overflow-hidden">
         {visible.map((line, i) => (
           <div
             key={i}
-            className="max-w-[80%] truncate rounded-2xl bg-black/40 px-3 py-1.5 text-[13px] text-white backdrop-blur-sm"
+            className="max-w-[85%] truncate rounded-2xl bg-black/45 px-4 py-2 text-[15px] leading-snug text-white backdrop-blur-sm"
           >
             <span className="font-[700]">{line.name}</span>{" "}
             <span className="font-[500]">{line.text}</span>
@@ -63,7 +63,7 @@ export function ChatOverlay({
       {lockedNotice ?? (
         <form
           onSubmit={handleSubmit}
-          className="pointer-events-auto flex h-10 items-center rounded-full bg-black/40 px-4 backdrop-blur-sm"
+          className="pointer-events-auto flex h-12 items-center rounded-full bg-black/45 px-4 backdrop-blur-sm"
         >
           <input
             type="text"
@@ -71,7 +71,7 @@ export function ChatOverlay({
             onChange={(e) => setInput(e.target.value)}
             placeholder="Сэтгэгдэл бичих..."
             aria-label="Chat message"
-            className="w-full bg-transparent text-[13px] text-white placeholder:text-white/60 outline-none"
+            className="w-full bg-transparent text-[15px] text-white placeholder:text-white/60 outline-none"
           />
         </form>
       )}

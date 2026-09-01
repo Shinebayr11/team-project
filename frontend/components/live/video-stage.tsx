@@ -141,7 +141,7 @@ export function VideoStage({
         <div className="relative aspect-video overflow-hidden rounded-[20px] bg-black lg:aspect-auto lg:flex-1">
           <Stage />
 
-          <LiveChatOverlay className="left-3 right-3 top-16 bottom-24 lg:hidden" />
+          <LiveChatOverlay className="left-3 right-3 top-14 bottom-24 lg:hidden" />
 
           {isHost && (
             <div className="absolute inset-x-0 bottom-4 flex flex-wrap items-center justify-center gap-3 px-4">
@@ -198,7 +198,11 @@ export function VideoStage({
         {/* `lg:contents` — дэлгэц дээр энэ бүрхүүл layout-аас арилж, хоёр
             самбар мөрийн шууд хүүхэд болно. Гар утсан дээр л өндөр өгнө. */}
         <div className="flex h-[360px] gap-4 overflow-x-auto lg:contents">
-          <LiveChat hostName={displayName} />
+          {/* Mobile дээр видеоны дээрх `LiveChatOverlay` үүнийг орлодог тул
+              зөвхөн desktop дээр харагдана. */}
+          <div className="hidden lg:contents">
+            <LiveChat hostName={displayName} />
+          </div>
           <BidsPanel
             listing={listing}
             bids={bids}

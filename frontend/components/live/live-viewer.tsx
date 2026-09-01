@@ -93,7 +93,7 @@ function Stage({ children }: { children?: React.ReactNode }) {
         <span className="ml-1 opacity-60">{participants.length} watching</span>
       </div>
 
-      <LiveChatOverlay className="left-3 right-3 top-16 bottom-28 lg:hidden" />
+      <LiveChatOverlay className="left-3 right-3 top-14 bottom-28 lg:hidden" />
 
       {children}
     </div>
@@ -219,7 +219,11 @@ export function LiveViewer({
             />
           </div>
 
-          <LiveChat hostName={seller} />
+          {/* Mobile дээр видеоны дээрх `LiveChatOverlay` үүнийг орлодог тул
+              зөвхөн desktop дээр харагдана. */}
+          <div className="hidden lg:contents">
+            <LiveChat hostName={seller} />
+          </div>
         </div>
       </div>
 
