@@ -12,15 +12,21 @@ import { SellerGateProvider } from "@/components/seller/SellerGateProvider"
 
 /**
  * Chrome shared by every screen. The seller hub brings its own sidebar, so it
- * opts out of the shopper topbar.
+ * opts out of the shopper topbar. The live-show page hides the topbar on mobile
+ * to maximize the video stage.
  */
 const Chrome: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { pathname } = useLocation()
   const isSellerHub = pathname.startsWith("/seller")
+  const isLiveShowMobile = pathname === "/live-show"
 
   return (
     <>
-      {!isSellerHub && <Topbar />}
+      {!isSellerHub && (
+        <div className={isLiveShowMobile ? "hidden lg:block" : ""}>
+          <Topbar />
+        </div>
+      )}
       {children}
       <ModalsRenderer />
       <ToastContainer />
