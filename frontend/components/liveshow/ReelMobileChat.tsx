@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { ReelChatLine } from '../../types';
 
 interface ReelMobileChatProps {
@@ -13,12 +13,6 @@ export const ReelMobileChat: React.FC<ReelMobileChatProps> = ({
   hostName,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [lines]);
 
   const recentLines = lines.slice(-6);
 
