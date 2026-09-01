@@ -15,16 +15,16 @@ const DEFAULT_DISTRIBUTION = [72, 19, 6, 2, 1];
 export const ReviewSummary: React.FC<ReviewSummaryProps> = ({
   rating, count, distribution = DEFAULT_DISTRIBUTION,
 }) => (
-  <div className="flex items-center gap-12 py-8 border-b border-[var(--wn-line)]">
-    <div className="flex flex-col items-center">
-      <div className="text-[40px] font-[800] text-[var(--wn-ink)] tracking-tight leading-none">{rating}</div>
+  <div className="flex flex-col items-center gap-6 py-8 border-b border-[var(--wn-line)] sm:flex-row sm:gap-12">
+    <div className="flex shrink-0 flex-col items-center">
+      <div className="text-[32px] sm:text-[40px] font-[800] text-[var(--wn-ink)] tracking-tight leading-none">{rating}</div>
       <div className="flex items-center gap-1 my-2">
         {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-4 h-4 fill-[var(--wn-accent)] text-[var(--wn-accent)]" />)}
       </div>
       <div className="text-[14px] text-[var(--wn-ink-3)]">{count} reviews</div>
     </div>
 
-    <div className="flex-1 flex flex-col gap-2 max-w-[300px]">
+    <div className="w-full flex flex-col gap-2 sm:flex-1 sm:max-w-[300px]">
       {distribution.map((pct, i) => (
         <div key={i} className="flex items-center gap-3 text-[13px] font-[600] text-[var(--wn-ink-2)]">
           <span className="w-4">{5 - i}★</span>

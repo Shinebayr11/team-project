@@ -51,7 +51,7 @@ export const Product: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto max-w-[1120px] px-8 py-8 pb-24">
+    <div className="mx-auto max-w-[1120px] px-4 py-6 pb-20 sm:px-6 lg:px-8 lg:py-8 lg:pb-24">
       <button
         onClick={() => navigate(`/shop?seller=${seller.slug}`)}
         className="mb-8 flex items-center gap-1 text-[14px] font-[600] text-[var(--wn-ink-3)] transition-colors hover:text-[var(--wn-ink)]"
@@ -59,7 +59,7 @@ export const Product: React.FC = () => {
         <ChevronLeft className="h-4 w-4" /> Back to {seller.slug}'s shop
       </button>
 
-      <div className="mb-16 flex gap-10">
+      <div className="mb-12 lg:mb-16 flex flex-col gap-8 lg:flex-row lg:gap-10">
         <ProductGallery tag={product.tag} />
         <ProductBuyPanel
           seller={seller}

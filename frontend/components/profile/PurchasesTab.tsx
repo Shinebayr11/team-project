@@ -45,7 +45,10 @@ export const PurchasesTab: React.FC<PurchasesTabProps> = ({ purchases, bids }) =
       <h3 className="text-[16px] font-[800] text-[var(--wn-ink)] mb-4">Order history</h3>
       {purchases.length > 0 ? (
         <div className="w-full border border-[var(--wn-line)] rounded-[16px] overflow-hidden">
-          <table className="w-full text-left border-collapse">
+          {/* Дөрвөн баганатай хүснэгт 320px дээр багтахгүй — хуудсыг биш,
+              хүрээнийхээ дотор гүйдэг болгоно. */}
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] text-left border-collapse">
             <thead>
               <tr className="bg-[var(--wn-surface-2)] text-[13px] font-[700] text-[var(--wn-ink-3)] uppercase tracking-wider">
                 <th className="p-4 font-[700]">Item</th>
@@ -72,6 +75,7 @@ export const PurchasesTab: React.FC<PurchasesTabProps> = ({ purchases, bids }) =
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       ) : (
         <div className="py-12 text-center text-[15px] font-[600] text-[var(--wn-ink-3)] border border-[var(--wn-line)] rounded-[16px]">

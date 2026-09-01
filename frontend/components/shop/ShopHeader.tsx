@@ -31,10 +31,12 @@ export const ShopHeader: React.FC<ShopHeaderProps> = ({
       </div>
     </div>
 
-    <div className="px-8 -mt-12 relative z-10 flex items-end justify-between mb-8">
-      <div className="flex items-end gap-5">
+    {/* Аватар + нэр + гурван товч 320px дээр ~370px шаарддаг тул нэг мөрөнд
+        багтахгүй — sm-ээс доош хоёр давхар болно. */}
+    <div className="px-4 sm:px-6 lg:px-8 -mt-10 sm:-mt-12 relative z-10 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between mb-8">
+      <div className="flex min-w-0 items-end gap-4 sm:gap-5">
         <div
-          className="w-[104px] h-[104px] rounded-full border-[5px] border-[var(--wn-page)] flex items-center justify-center text-[40px] font-[700] text-[var(--wn-ink)]"
+          className="w-20 h-20 sm:w-[104px] sm:h-[104px] shrink-0 rounded-full border-[5px] border-[var(--wn-page)] flex items-center justify-center text-[30px] sm:text-[40px] font-[700] text-[var(--wn-ink)]"
           style={{ backgroundColor: seller.tint }}
         >
           {seller.initial}
@@ -47,7 +49,7 @@ export const ShopHeader: React.FC<ShopHeaderProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-3 pb-2">
+      <div className="flex w-full sm:w-auto flex-wrap items-center gap-2 sm:gap-3 pb-2">
         {showWatchLive && (
           <button onClick={onWatchLive} className="h-[40px] px-5 rounded-full bg-[var(--wn-shot)] text-white text-[14px] font-[700] flex items-center gap-2 hover:bg-[var(--wn-shot-deep)] transition-colors">
             ▶ Watch live

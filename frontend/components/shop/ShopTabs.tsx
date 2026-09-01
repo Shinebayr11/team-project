@@ -12,7 +12,7 @@ interface ShopTabsProps {
 const TABS: ShopTab[] = ['products', 'reviews'];
 
 export const ShopTabs: React.FC<ShopTabsProps> = ({ active, onChange }) => (
-  <div className="px-8 border-b border-[var(--wn-line)] flex items-center gap-8 mb-8">
+  <div className="px-4 sm:px-6 lg:px-8 border-b border-[var(--wn-line)] flex items-center gap-6 sm:gap-8 mb-8">
     {TABS.map(tab => (
       <button
         key={tab}

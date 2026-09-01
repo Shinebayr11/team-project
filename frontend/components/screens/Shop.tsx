@@ -45,7 +45,7 @@ export const Shop: React.FC = () => {
       <ShopStats seller={seller} />
       <ShopTabs active={tab} onChange={setTab} />
 
-      <div className="px-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         {tab === "products" ? (
           <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {seller.products.map((product) => (

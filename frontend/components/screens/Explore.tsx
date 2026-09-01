@@ -28,7 +28,7 @@ export const Explore: React.FC = () => {
     <div className="min-h-screen bg-[var(--wn-page)] pb-20">
       <ExploreHeader query={query} onQueryChange={setQuery} />
 
-      <div className="max-w-[1200px] mx-auto px-6 md:px-12 py-10 flex flex-col gap-16">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-12 py-8 md:py-10 flex flex-col gap-10 md:gap-16">
         <ExploreSection title="Categories" onViewAll={() => navigate('/home')}>
           <CategoryGrid
             categories={EXPLORE_CATEGORIES}

@@ -25,14 +25,14 @@ export const Home: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="max-w-[1440px] mx-auto flex items-center justify-center px-7 py-24">
+      <div className="max-w-[1440px] mx-auto flex items-center justify-center px-4 py-16 sm:px-6 lg:px-7 lg:py-24">
         <div className="w-8 h-8 border-2 border-[var(--wn-ink-3)] border-t-transparent rounded-full animate-spin opacity-50" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-[1440px] mx-auto flex gap-8 px-7 py-8">
+    <div className="max-w-[1440px] mx-auto flex gap-8 px-4 py-6 sm:px-6 lg:px-7 lg:py-8">
       <HomeSidebar />
 
       <main className="flex-1 flex flex-col min-w-0">

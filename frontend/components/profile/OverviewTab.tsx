@@ -36,7 +36,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   <div className="flex flex-col gap-10">
     <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Overview</h2>
 
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
       <StatCard value={purchases.length} label="Purchases" onClick={() => onNavigate('purchases')} />
       <StatCard value={savedShows.length} label="Saved Shows" onClick={() => onNavigate('saved')} />
       <StatCard value={followingCount} label="Following" onClick={() => onNavigate('following')} />

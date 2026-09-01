@@ -23,7 +23,7 @@ export const CartLineRow: React.FC<CartLineRowProps> = ({ line, onQtyChange, onR
         <button
           onClick={() => onQtyChange(line.qty - 1)}
           aria-label="Decrease quantity"
-          className="w-7 h-7 flex items-center justify-center text-[var(--wn-ink-2)] hover:bg-white rounded-md transition-colors"
+          className="w-9 h-9 sm:w-7 sm:h-7 flex items-center justify-center text-[var(--wn-ink-2)] hover:bg-white rounded-md transition-colors"
         >
           <Minus className="w-3 h-3" />
         </button>
@@ -31,7 +31,7 @@ export const CartLineRow: React.FC<CartLineRowProps> = ({ line, onQtyChange, onR
         <button
           onClick={() => onQtyChange(line.qty + 1)}
           aria-label="Increase quantity"
-          className="w-7 h-7 flex items-center justify-center text-[var(--wn-ink-2)] hover:bg-white rounded-md transition-colors"
+          className="w-9 h-9 sm:w-7 sm:h-7 flex items-center justify-center text-[var(--wn-ink-2)] hover:bg-white rounded-md transition-colors"
         >
           <Plus className="w-3 h-3" />
         </button>
@@ -39,7 +39,7 @@ export const CartLineRow: React.FC<CartLineRowProps> = ({ line, onQtyChange, onR
       <button
         onClick={onRemove}
         aria-label={`Remove ${line.name}`}
-        className="w-8 h-8 flex items-center justify-center text-[var(--wn-ink-4)] hover:text-[var(--wn-live)] transition-colors"
+        className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center text-[var(--wn-ink-4)] hover:text-[var(--wn-live)] transition-colors"
       >
         <Trash2 className="w-4 h-4" />
       </button>

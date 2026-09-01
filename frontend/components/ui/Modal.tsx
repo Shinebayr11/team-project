@@ -91,19 +91,26 @@ export const Modal: React.FC<ModalProps> = ({ title, onClose, children, eyebrow,
   return createPortal(
     <div
       data-base-ui-portal=""
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-label={title}
     >
       <div className="absolute inset-0 bg-[#0E0C1A]/44 backdrop-blur-sm animate-fade-in" onClick={onClose} />
+      {/*
+        Өндрийг хязгаарлаж, толгойг байрандаа үлдээгээд биеийг нь гүйлгэнэ:
+        энэ бүрхүүл `document.body`-г `overflow: hidden` болгодог тул цонх
+        дэлгэцээс өндөр байвал хуудас ч гүйлгэгдэхгүй — хэвтээ байрлалтай
+        утсан дээр доод талын товч бүрмөсөн хүрч болдоггүй болно.
+        Гар утсан дээр доороос гарах хуудас хэлбэртэй — `ui/sheet.tsx`-тэй ижил.
+      */}
       <div
         ref={panelRef}
         tabIndex={-1}
-        className={`relative bg-white rounded-[22px] w-full ${wide ? 'max-w-[520px]' : 'max-w-[420px]'} flex flex-col overflow-hidden animate-modal-in outline-none`}
+        className={`relative bg-white rounded-t-[22px] sm:rounded-[22px] w-full ${wide ? 'sm:max-w-[520px]' : 'sm:max-w-[420px]'} max-h-[92dvh] sm:max-h-[85dvh] flex flex-col overflow-hidden animate-modal-in outline-none`}
         style={{ boxShadow: '0 24px 64px rgba(12,12,24,0.28)' }}
       >
-        <div className="px-6 pt-6 pb-4 flex items-start justify-between">
+        <div className="px-6 pt-6 pb-4 flex items-start justify-between shrink-0">
           <div>
             {eyebrow && <div className="text-[11px] font-[800] tracking-wider uppercase text-[var(--wn-accent)] mb-1">{eyebrow}</div>}
             <h2 className="text-[19px] font-[800] text-[var(--wn-ink)] tracking-tight">{title}</h2>
@@ -117,7 +124,7 @@ export const Modal: React.FC<ModalProps> = ({ title, onClose, children, eyebrow,
             <X className="w-4 h-4" />
           </button>
         </div>
-        {children}
+        <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
       </div>
     </div>,
     document.body

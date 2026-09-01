@@ -26,10 +26,11 @@ export const StockModal: React.FC<StockModalProps> = ({ onClose, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center sm:p-4" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative bg-white rounded-2xl w-full max-w-[400px] p-6 shadow-xl">
+      {/* Гар утсан дээр доороос гарна; өндөр нь дэлгэцээс хэтэрвэл дотроо гүйнэ. */}
+      <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-[400px] max-h-[92dvh] sm:max-h-[85dvh] overflow-y-auto p-6 shadow-xl">
         <h2 className="text-[18px] font-[800] text-black mb-4">Adjust Stock</h2>
 
         <div className="flex p-1 bg-gray-100 rounded-xl mb-6">

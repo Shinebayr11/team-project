@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import {
   Bricolage_Grotesque,
   Geist_Mono,
@@ -36,6 +36,18 @@ const bricolage = Bricolage_Grotesque({
 export const metadata: Metadata = {
   title: "WhyNot",
   description: "Шууд дамжуулалттай дуудлага худалдаа",
+}
+
+/**
+ * Next-ийн анхны утга нь `width=device-width, initial-scale=1` — тэр нь байсан.
+ * Дутуу байсан нь `viewportFit: "cover"`: үүнгүйгээр `env(safe-area-inset-*)`
+ * бүр 0 болж уншигддаг тул `components/ui/sheet.tsx`-ийн доод талын аюулгүй
+ * бүсийн тооцоо notch-той төхөөрөмж дээр огт ажиллахгүй байв.
+ */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 }
 
 export default function RootLayout({
