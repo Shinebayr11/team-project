@@ -1,5 +1,6 @@
 import { Context } from "hono";
 import { Live_Show } from "../models/Live_show.js";
+import { AccessToken, IngressClient, IngressInput } from "livekit-server-sdk";
 
 const liveKitUrl = (process.env.LIVEKIT_URL || "")
   .replace(/^wss?:\/\//, "")
@@ -34,10 +35,9 @@ export const createIngress = async (c: Context) => {
     const roomName = `show-${showId}`;
     console.log("[createIngress] Room name:", roomName);
 
-    // Try to create real RTMP ingress via REST API
-    console.log("[createIngress] Creating RTMP ingress via REST API...");
+    // Try to create real RTMP ingress via SDK
+    console.log("[createIngress] Creating RTMP ingress via LiveKit SDK...");
 
-    const liveKitUrl = process.env.LIVEKIT_URL || "";
     const apiKey = process.env.LIVEKIT_API_KEY || "";
     const apiSecret = process.env.LIVEKIT_API_SECRET || "";
 
@@ -46,38 +46,25 @@ export const createIngress = async (c: Context) => {
     let ingressUrl = `rtmp://rtmp.livekit.cloud/live`;
 
     try {
-      // Use REST API to create ingress
-      const rtmpEndpoint = `https://${liveKitUrl.replace(/^wss?:\/\//, '')}/twirp/livekit.Ingress/CreateIngress`;
+      const client = new IngressClient(
+        `https://${liveKitUrl}`,
+        apiKey,
+        apiSecret
+      );
 
-      const token = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
-
-      const response = await fetch(rtmpEndpoint, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          input_type: 'RTMP_INPUT',
-          name: `ingress-${showId}`,
-          room_name: roomName,
-          participant_identity: `seller-${showId}`,
-          participant_name: sellerName,
-        }),
+      const ingress = await client.createIngress(IngressInput.RTMP_INPUT, {
+        name: `ingress-${showId}`,
+        roomName: roomName,
+        participantIdentity: `seller-${showId}`,
+        participantName: sellerName,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("[createIngress] Real ingress created:", data);
-        ingressId = data.ingress_id || ingressId;
-        ingressUrl = data.rtmp_server || ingressUrl;
-        streamKey = data.stream_key || streamKey;
-      } else {
-        const error = await response.text();
-        console.error("[createIngress] REST API error:", response.status, error);
-      }
-    } catch (e) {
-      console.error("[createIngress] REST API failed, using mock:", e);
+      console.log("[createIngress] Real ingress created via SDK:", ingress);
+      ingressId = ingress.ingressId || ingressId;
+      ingressUrl = ingress.url || ingressUrl;
+      streamKey = ingress.streamKey || streamKey;
+    } catch (e: any) {
+      console.error("[createIngress] SDK failed, using fallback:", e.message);
     }
 
     console.log("[createIngress] Ingress created:", { ingressId, ingressUrl });
