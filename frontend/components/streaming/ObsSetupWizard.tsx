@@ -95,7 +95,7 @@ export const ObsSetupWizard: React.FC<ObsSetupWizardProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 lg:hidden">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
         {/* Header */}
         <div className="mb-6">

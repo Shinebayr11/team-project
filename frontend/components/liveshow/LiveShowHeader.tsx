@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useAuth } from '@clerk/nextjs'
 import { Heart, Users } from 'lucide-react'
 
 interface LiveShowHeaderProps {
@@ -8,16 +9,21 @@ interface LiveShowHeaderProps {
 }
 
 interface ShowData {
+  _id?: string
   title?: string
-  seller?: { display_name?: string; avatar_url?: string }
+  seller?: { _id?: string; display_name?: string; avatar_url?: string }
+  seller_id?: string
   viewer_count?: number
   category?: string
 }
 
 export function LiveShowHeader({ showId }: LiveShowHeaderProps) {
+  const { userId } = useAuth()
   const [show, setShow] = useState<ShowData | null>(null)
   const [viewerCount, setViewerCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [isFollowing, setIsFollowing] = useState(false)
+  const [followLoading, setFollowLoading] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +52,28 @@ export function LiveShowHeader({ showId }: LiveShowHeaderProps) {
     const interval = setInterval(fetchData, 5000) // Refresh every 5 seconds
     return () => clearInterval(interval)
   }, [showId])
+
+  const handleFollow = async () => {
+    if (!userId || !show?.seller_id) return
+
+    setFollowLoading(true)
+    try {
+      const endpoint = isFollowing ? '/api/users/unfollow' : '/api/users/follow'
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sellerId: show.seller_id }),
+      })
+
+      if (res.ok) {
+        setIsFollowing(!isFollowing)
+      }
+    } catch (err) {
+      console.error('Failed to follow:', err)
+    } finally {
+      setFollowLoading(false)
+    }
+  }
 
   if (loading) return null
 
@@ -85,7 +113,15 @@ export function LiveShowHeader({ showId }: LiveShowHeaderProps) {
           </div>
 
           {/* Follow Button */}
-          <button className="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-colors">
+          <button
+            onClick={handleFollow}
+            disabled={followLoading}
+            className={`rounded-full p-2 transition-colors ${
+              isFollowing
+                ? 'bg-red-600 hover:bg-red-700'
+                : 'bg-red-500 hover:bg-red-600'
+            } text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
             <Heart className="w-5 h-5" fill="currentColor" />
           </button>
         </div>
