@@ -19,11 +19,7 @@ streamingRoutes.post("/:showId/ingress/create", requireAuth, createIngress);
  * POST /api/streaming/:showId/egress/facebook
  * Start Facebook Egress (after OBS connects)
  */
-streamingRoutes.post(
-  "/:showId/egress/facebook",
-  requireAuth,
-  startFacebookEgress
-);
+streamingRoutes.post("/:showId/egress/facebook", requireAuth, startFacebookEgress);
 
 /**
  * POST /api/streaming/:showId/stop
