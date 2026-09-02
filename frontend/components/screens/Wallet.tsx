@@ -67,7 +67,7 @@ export const Wallet: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto max-w-[1120px] px-6 py-10">
+    <div className="mx-auto max-w-[1120px] px-4 py-8 sm:px-6 lg:py-10">
       <div className="mb-10">
         <h1 className="mb-2 text-[32px] font-[800] tracking-tight text-[var(--wn-ink)]">
           Wallet

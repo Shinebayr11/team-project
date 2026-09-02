@@ -28,7 +28,7 @@ export const ThreadList: React.FC<ThreadListProps> = ({
   loading,
   onSelect,
 }) => (
-  <div className="w-[340px] shrink-0 border-r border-[var(--wn-line)] flex flex-col bg-[var(--wn-surface-4)]">
+  <div className="w-full shrink-0 border-r border-[var(--wn-line)] flex flex-col bg-[var(--wn-surface-4)] md:w-[340px]">
     <div className="p-5 border-b border-[var(--wn-line)] bg-white">
       <h1 className="text-[20px] font-[800] text-[var(--wn-ink)] tracking-tight">Зурвас</h1>
     </div>

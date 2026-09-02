@@ -75,7 +75,7 @@ export const Profile: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto flex max-w-[1200px] gap-12 px-6 py-10">
+    <div className="mx-auto flex max-w-[1200px] flex-col gap-8 px-4 py-8 lg:flex-row lg:gap-12 lg:px-6 lg:py-10">
       <ProfileSidebar
         activeTab={tab}
         onSelect={goToTab}

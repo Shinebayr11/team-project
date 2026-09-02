@@ -29,7 +29,8 @@ export const CartModal: React.FC = () => {
 
   return (
     <Modal title="Your Cart" wide onClose={closeModal}>
-      <div className="flex flex-col max-h-[70vh]">
+      {/* Өндрийн хязгаарыг `ui/Modal.tsx`-ийн бүрхүүл эзэмшинэ (dvh-ээр). */}
+      <div className="flex flex-col">
         <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-8">
           {items.length > 0 && (
             <Section title="To Checkout">

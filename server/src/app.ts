@@ -17,6 +17,7 @@ import WalletRoutes from "./route/walletRoute.js";
 import CointransactionRoutes from "./route/cointransactionRoute.js";
 import sellerRoutes from "./route/sellerRoute.js";
 import messageRoutes from "./route/messageRoute.js";
+import streamingRoutes from "./route/streamingRoute.js";
 
 const app = new Hono();
 
@@ -59,6 +60,7 @@ app.route("/api/cointransaction", CointransactionRoutes);
 // зориулж хэвээр үлдэв.
 app.route("/api/messages", messageRoutes);
 app.route("/api/seller", sellerRoutes);
+app.route("/api/streaming", streamingRoutes);
 app.route("/sellers", sellerRoutes);
 
 export default app;

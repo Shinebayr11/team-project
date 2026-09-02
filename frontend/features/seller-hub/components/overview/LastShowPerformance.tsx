@@ -24,7 +24,7 @@ export const LastShowPerformance: React.FC<LastShowPerformanceProps> = ({ show, 
         {new Date(show.scheduledAt).toLocaleDateString()}
       </div>
 
-      <div className="grid grid-cols-2 gap-y-6 gap-x-4">
+      <div className="grid grid-cols-1 gap-y-5 gap-x-4 min-[380px]:grid-cols-2 sm:gap-y-6">
         <Metric label="Revenue" value={`₮${show.stats.revenue.toLocaleString()}`} />
         <Metric label="Items Sold" value={show.stats.sales} />
         <Metric label="Orders" value={show.stats.orders ?? show.stats.sales} />

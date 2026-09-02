@@ -19,7 +19,7 @@ export const SalesChart: React.FC<SalesChartProps> = ({ data, metric, onMetricCh
 
   return (
     <div className="p-6 rounded-2xl border border-gray-200 bg-white shadow-sm mb-8">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h3 className="text-[16px] font-[800] text-black">Sales Performance</h3>
         <div className="flex p-1 bg-gray-100 rounded-lg">
           {METRICS.map(m => (
@@ -36,7 +36,7 @@ export const SalesChart: React.FC<SalesChartProps> = ({ data, metric, onMetricCh
         </div>
       </div>
 
-      <div className="h-[300px] w-full">
+      <div className="h-[220px] sm:h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />

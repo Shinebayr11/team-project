@@ -23,8 +23,11 @@ export const PayoutsPanel: React.FC = () => (
       <BalanceCard label="Paid out all time" value={SELLER_WALLET.lifetime} />
     </div>
 
+    {/* `overflow-hidden` ганцаараа байхад хүснэгт тайрагддаг байв — булангийн
+        радиусыг хадгалж, дотор нь гүйдэг давхарга нэмнэ. */}
     <div className="border border-gray-200 rounded-2xl bg-white shadow-sm overflow-hidden">
-      <table className="w-full text-left border-collapse">
+      <div className="overflow-x-auto">
+      <table className="w-full min-w-[520px] text-left border-collapse">
         <thead>
           <tr className="bg-gray-50 text-[12px] font-[800] text-gray-500 uppercase tracking-wider border-b border-gray-200">
             <th className="p-5">Date</th>
@@ -44,6 +47,7 @@ export const PayoutsPanel: React.FC = () => (
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   </div>
 );

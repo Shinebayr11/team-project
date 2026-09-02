@@ -16,7 +16,7 @@ const NEUTRAL_ACTIONS: { action: BulkAction; label: string }[] = [
 ];
 
 export const BulkActionBar: React.FC<BulkActionBarProps> = ({ count, onAction }) => (
-  <div className="flex items-center gap-2">
+  <div className="flex flex-wrap items-center gap-2">
     <span className="text-[13px] font-[600] text-gray-600 mr-2">{count} selected</span>
 
     {NEUTRAL_ACTIONS.map(({ action, label }) => (

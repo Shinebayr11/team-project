@@ -14,7 +14,7 @@ export const Topbar: React.FC = () => {
   const { user } = useUser();
 
   return (
-    <div className="sticky top-0 z-50 h-[68px] border-b border-[var(--wn-line)] bg-white flex items-center gap-2 px-4 lg:px-6 justify-between">
+    <div className="sticky top-0 z-50 h-[68px] border-b border-[var(--wn-line)] bg-white flex items-center gap-1 px-3 sm:gap-2 sm:px-4 lg:px-6 justify-between">
       <TopbarNav path={pathname} />
 
       <div className="hidden md:block flex-1 max-w-[600px] mx-3 lg:mx-6">

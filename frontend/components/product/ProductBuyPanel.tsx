@@ -23,7 +23,7 @@ interface ProductBuyPanelProps {
 export const ProductBuyPanel: React.FC<ProductBuyPanelProps> = ({
   seller, product, description, qty, onQtyChange, ...actions
 }) => (
-  <div className="w-[420px] shrink-0 flex flex-col">
+  <div className="w-full flex flex-col lg:w-[420px] lg:shrink-0">
     <Link to={`/shop?seller=${seller.slug}`} className="flex items-center gap-3 mb-6 group">
       <Avatar name={seller.slug} initial={seller.initial} tint={seller.tint} />
       <div>
@@ -32,13 +32,13 @@ export const ProductBuyPanel: React.FC<ProductBuyPanelProps> = ({
       </div>
     </Link>
 
-    <h1 className="text-[25px] font-[800] text-[var(--wn-ink)] leading-tight mb-4">{product.name}</h1>
+    <h1 className="text-[20px] sm:text-[25px] font-[800] text-[var(--wn-ink)] leading-tight mb-4 break-words">{product.name}</h1>
 
     <div className="flex items-center gap-3 mb-6">
       {product.price !== 'Free' && (
         <div className="w-8 h-8 rounded-full bg-[var(--wn-accent)] flex items-center justify-center text-white font-[700] text-[14px]">₮</div>
       )}
-      <span className="text-[32px] font-[800] text-[var(--wn-ink)] tracking-tight">{product.price}</span>
+      <span className="text-[26px] sm:text-[32px] font-[800] text-[var(--wn-ink)] tracking-tight">{product.price}</span>
     </div>
 
     {product.tag === 'Buy now' && (

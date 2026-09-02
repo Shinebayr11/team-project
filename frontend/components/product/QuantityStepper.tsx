@@ -19,7 +19,7 @@ export const QuantityStepper: React.FC<QuantityStepperProps> = ({
       <button
         onClick={() => onChange(Math.max(min, qty - 1))}
         aria-label="Decrease quantity"
-        className="w-8 h-8 flex items-center justify-center text-[var(--wn-ink-2)] hover:bg-white rounded-md transition-colors"
+        className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center text-[var(--wn-ink-2)] hover:bg-white rounded-md transition-colors"
       >
         <Minus className="w-4 h-4" />
       </button>
@@ -27,7 +27,7 @@ export const QuantityStepper: React.FC<QuantityStepperProps> = ({
       <button
         onClick={() => onChange(Math.min(max, qty + 1))}
         aria-label="Increase quantity"
-        className="w-8 h-8 flex items-center justify-center text-[var(--wn-ink-2)] hover:bg-white rounded-md transition-colors"
+        className="w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center text-[var(--wn-ink-2)] hover:bg-white rounded-md transition-colors"
       >
         <Plus className="w-4 h-4" />
       </button>

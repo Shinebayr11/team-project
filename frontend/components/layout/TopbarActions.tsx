@@ -39,10 +39,13 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
       {activeStream && (
         <Link
           to={`/live/${activeStream.roomName}?host=1&title=${encodeURIComponent(activeStream.title)}&showId=${activeStream.showId}`}
-          className="mr-1 flex items-center gap-1.5 rounded-full bg-[var(--wn-live)] px-3 sm:px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:opacity-90"
+          className="mr-1 flex h-10 w-10 shrink-0 items-center justify-center gap-1.5 rounded-full bg-[var(--wn-live)] text-[14px] font-[700] text-white transition-colors hover:opacity-90 sm:h-auto sm:w-auto sm:px-5 sm:py-2.5"
+          aria-label="Миний дамжуулалт"
         >
-          <Radio className="h-4 w-4" />
-          Миний дамжуулалт
+          <Radio className="h-4 w-4 shrink-0" />
+          {/* Гар утсан дээр Topbar-т зай байхгүй — тэмдэг нь өөрөө ойлгомжтой
+              тул шошгыг зөвхөн sm-ээс дээш харуулна. */}
+          <span className="hidden sm:inline">Миний дамжуулалт</span>
         </Link>
       )}
 

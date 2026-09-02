@@ -41,8 +41,8 @@ export const NamePrompt: React.FC = () => {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50 backdrop-blur-sm sm:items-center sm:p-4">
+      <div className="w-full max-h-[92dvh] overflow-y-auto rounded-t-2xl bg-white p-6 shadow-xl sm:max-w-sm sm:rounded-2xl">
         <h2 className="text-xl font-bold tracking-tight text-[var(--wn-ink)]">
           Тавтай морил!
         </h2>

@@ -22,7 +22,7 @@ export const HomeSidebar: React.FC = () => {
   const goToShop = (slug: string) => navigate(`/shop?seller=${slug}`);
 
   return (
-    <aside className="w-[236px] shrink-0 flex flex-col sticky top-[100px] h-[calc(100vh-100px)] overflow-y-auto pb-8">
+    <aside className="hidden w-[236px] shrink-0 flex-col sticky top-[100px] h-[calc(100vh-100px)] overflow-y-auto pb-8 lg:flex">
       <div className="mb-6">
         <div className="text-[11px] font-[800] tracking-wider text-[var(--wn-ink-4)] uppercase mb-1">Welcome back</div>
         <div className="text-[18px] font-[800] text-[var(--wn-ink)]">{displayName}</div>

@@ -26,7 +26,9 @@ export const AnalyticsTableCard: React.FC<AnalyticsTableCardProps> = ({
     </div>
 
     <div className="border border-gray-200 rounded-2xl bg-white shadow-sm overflow-hidden">
-      <table className="w-full text-left border-collapse">
+      {/* Хүснэгт нарийн дэлгэц дээр тайрагдахгүй, дотроо гүйнэ. */}
+      <div className="overflow-x-auto">
+      <table className="w-full min-w-[420px] text-left border-collapse">
         <thead>
           <tr className="bg-gray-50 text-[11px] font-[800] text-gray-500 uppercase tracking-wider border-b border-gray-200">
             {headers.map((header, i) => (
@@ -44,6 +46,7 @@ export const AnalyticsTableCard: React.FC<AnalyticsTableCardProps> = ({
           ) : children}
         </tbody>
       </table>
+      </div>
     </div>
   </div>
 );

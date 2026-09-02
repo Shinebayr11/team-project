@@ -11,10 +11,11 @@ interface InventoryPickerModalProps {
 }
 
 export const InventoryPickerModal: React.FC<InventoryPickerModalProps> = ({ products, onAdd, onClose }) => (
-  <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+  <div className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center sm:p-4" role="dialog" aria-modal="true">
     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
-    <div className="relative bg-white rounded-2xl w-full max-w-[600px] flex flex-col max-h-[80vh] shadow-xl">
+    {/* `vh` нь гар утсан дээр хөтчийн мөрийн ард хэмжигддэг тул `dvh`. */}
+    <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-[600px] flex flex-col max-h-[92dvh] sm:max-h-[80dvh] shadow-xl">
       <div className="p-5 border-b border-gray-200 flex items-center justify-between">
         <h2 className="text-[18px] font-[800] text-black">Add Products to Show</h2>
         <button onClick={onClose} aria-label="Close" className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">

@@ -56,7 +56,7 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
 
         <div className="flex flex-col items-center py-4">
           <div className="text-[12px] font-[800] tracking-wider text-[var(--wn-ink-4)] uppercase mb-2">Таны санал</div>
-          <div className="text-[48px] font-[800] text-[var(--wn-ink)] tracking-tight leading-none mb-6">₮{myBid.toLocaleString()}</div>
+          <div className="text-[32px] sm:text-[48px] font-[800] text-[var(--wn-ink)] tracking-tight leading-none mb-6 break-all">₮{myBid.toLocaleString()}</div>
           <div className="flex items-center gap-3">
             {INCREMENTS.map(({ value, label }) => (
               <button
