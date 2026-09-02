@@ -191,8 +191,8 @@ export function LiveViewer({
       token={token}
       serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
       connect
-      video={false}
-      audio={false}
+      video={true}
+      audio={true}
     >
       <div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-4 py-4 lg:h-[calc(100vh-68px)] lg:flex-row">
         <Stage>
