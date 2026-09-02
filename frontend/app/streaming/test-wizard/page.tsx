@@ -3,10 +3,37 @@
 import { ObsSetupWizard } from "@/components/streaming/ObsSetupWizard"
 import { StreamingStatusBar } from "@/components/streaming/StreamingStatusBar"
 import { useState } from "react"
+import { useAuth } from "@clerk/nextjs"
+import { SignInButton } from "@clerk/nextjs"
 
 export default function TestWizardPage() {
+  const { isLoaded, isSignedIn } = useAuth()
   const [showWizard, setShowWizard] = useState(true)
   const [liveStatus, setLiveStatus] = useState<string>("idle")
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <p className="text-gray-600">Loading...</p>
+      </div>
+    )
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-6">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">📡 OBS Setup Wizard Test</h1>
+          <p className="text-gray-600 mb-6">Sign in to test the streaming wizard</p>
+        </div>
+        <SignInButton mode="modal">
+          <button className="px-6 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600">
+            Sign In with Clerk
+          </button>
+        </SignInButton>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-white">
