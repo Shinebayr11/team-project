@@ -61,9 +61,9 @@ export const ObsSetupWizard: React.FC<ObsSetupWizardProps> = ({
 
   // Poll ingress status
   const pollStatus = async (ingressId: string) => {
-    const token = await getToken()
     const interval = setInterval(async () => {
       try {
+        const token = await getToken()
         const res = await fetch(`/api/streaming/${showId}/status`, {
           headers: {
             Authorization: `Bearer ${token}`,

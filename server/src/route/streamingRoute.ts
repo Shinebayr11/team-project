@@ -31,6 +31,6 @@ streamingRoutes.post("/:showId/stop", requireAuth, stopStreaming);
  * GET /api/streaming/:showId/status
  * Get current streaming status
  */
-streamingRoutes.get("/:showId/status", getStreamStatus);
+streamingRoutes.get("/:showId/status", requireAuth, getStreamStatus);
 
 export default streamingRoutes;

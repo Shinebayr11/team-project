@@ -1,13 +1,66 @@
 import { Context } from "hono";
 import { Live_Show } from "../models/Live_show.js";
-import { AccessToken, IngressClient, IngressInput } from "livekit-server-sdk";
+import { AccessToken, IngressClient, IngressInput, IngressState, EgressClient } from "livekit-server-sdk";
 
 const liveKitUrl = (process.env.LIVEKIT_URL || "")
   .replace(/^wss?:\/\//, "")
   .replace(/\/$/, "");
 
+const apiKey = process.env.LIVEKIT_API_KEY || "";
+const apiSecret = process.env.LIVEKIT_API_SECRET || "";
+
 console.log("[streaming] LiveKit URL (hostname):", liveKitUrl);
-console.log("[streaming] Using mock RTMP for OBS ingress");
+console.log("[streaming] Using RTMP for OBS ingress");
+
+type LiveStatus = "idle" | "ingress_created" | "streaming" | "ingress_failed" | "stopped";
+
+/**
+ * Check OBS ingress status from LiveKit API
+ * Checks if RTMP source is actively streaming
+ */
+const checkIngressStatus = async (ingressId: string, roomName: string): Promise<LiveStatus> => {
+  if (!ingressId || !apiKey || !apiSecret) {
+    console.log("[checkIngressStatus] Missing credentials or ingressId");
+    return "ingress_created";
+  }
+
+  try {
+    const client = new IngressClient(`https://${liveKitUrl}`, apiKey, apiSecret);
+    const ingresses = await client.listIngress(roomName);
+
+    if (!ingresses || ingresses.length === 0) {
+      console.log("[checkIngressStatus] No ingress found for room:", roomName);
+      return "ingress_created";
+    }
+
+    const ingress = ingresses.find((ing: any) => ing.ingressId === ingressId);
+    if (!ingress) {
+      console.log("[checkIngressStatus] Ingress not found:", ingressId);
+      return "ingress_created";
+    }
+
+    console.log(`[checkIngressStatus] Ingress state for ${ingressId}:`, ingress.state);
+
+    // Check ingress state - if it's receiving data, OBS is connected
+    // IngressState.ACTIVE = 2, IngressState.FAILED = 3
+    const state = ingress.state as any;
+    const status = typeof state === 'number' ? state : state?.status || state?.value || 0;
+    console.log(`[checkIngressStatus] Raw state: ${JSON.stringify(state)}, Converted status: ${status}`);
+
+    if (status === 2 || String(status).includes('ACTIVE')) {
+      console.log(`[checkIngressStatus] ✅ Returning STREAMING for ${ingressId}`);
+      return "streaming";
+    } else if (status === 3 || String(status).includes('FAILED')) {
+      console.log(`[checkIngressStatus] ❌ Returning FAILED for ${ingressId}`);
+      return "ingress_failed";
+    }
+    console.log(`[checkIngressStatus] Returning CREATED for ${ingressId}`);
+    return "ingress_created";
+  } catch (e: any) {
+    console.error("[checkIngressStatus] Error:", e.message);
+    return "ingress_created";
+  }
+};
 
 /**
  * Create RTMP Ingress for OBS streaming
@@ -35,15 +88,10 @@ export const createIngress = async (c: Context) => {
     const roomName = `show-${showId}`;
     console.log("[createIngress] Room name:", roomName);
 
-    // Try to create real RTMP ingress via SDK
-    console.log("[createIngress] Creating RTMP ingress via LiveKit SDK...");
-
-    const apiKey = process.env.LIVEKIT_API_KEY || "";
-    const apiSecret = process.env.LIVEKIT_API_SECRET || "";
-
     let ingressId = `ingress-${showId}`;
-    let streamKey = `${roomName}-key-${Math.random().toString(36).slice(2, 8)}`;
-    let ingressUrl = `rtmp://rtmp.livekit.cloud/live`;
+    const rtmpHost = liveKitUrl.replace(/^([^.]+)\./, '$1.rtmp.');
+    let ingressUrl = `rtmps://${rtmpHost}/live`;
+    let streamKey = "";
 
     try {
       const client = new IngressClient(
@@ -52,22 +100,34 @@ export const createIngress = async (c: Context) => {
         apiSecret
       );
 
-      const ingress = await client.createIngress(IngressInput.RTMP_INPUT, {
-        name: `ingress-${showId}`,
-        roomName: roomName,
-        participantIdentity: `seller-${showId}`,
-        participantName: sellerName,
-      });
+      console.log("[createIngress] Checking for existing ingress...");
+      const existingIngresses = await client.listIngress(roomName);
+      let ingress = existingIngresses?.[0];
 
-      console.log("[createIngress] Real ingress created via SDK:", ingress);
-      ingressId = ingress.ingressId || ingressId;
-      ingressUrl = ingress.url || ingressUrl;
-      streamKey = ingress.streamKey || streamKey;
+      if (ingress) {
+        console.log("[createIngress] ✅ Reusing existing ingress:", ingress.ingressId);
+        ingressId = ingress.ingressId;
+        streamKey = ingress.streamKey;
+      } else {
+        console.log("[createIngress] Creating new RTMP ingress via SDK...");
+        ingress = await client.createIngress(IngressInput.RTMP_INPUT, {
+          name: `ingress-${showId}`,
+          roomName: roomName,
+          participantIdentity: `seller-${showId}`,
+          participantName: sellerName,
+        });
+
+        console.log("[createIngress] Real ingress created via SDK:", ingress);
+        ingressId = ingress.ingressId || ingressId;
+        streamKey = ingress.streamKey || streamKey;
+        console.log("[createIngress] ✅ Using SDK streamKey:", streamKey);
+      }
     } catch (e: any) {
       console.error("[createIngress] SDK failed, using fallback:", e.message);
+      streamKey = `${Math.random().toString(36).slice(2, 12)}`;
     }
 
-    console.log("[createIngress] Ingress created:", { ingressId, ingressUrl });
+    console.log("[createIngress] Ingress created:", { ingressId, ingressUrl, streamKey });
 
     // Log to database (skip if showId is not a valid ObjectId)
     try {
@@ -143,8 +203,39 @@ export const startFacebookEgress = async (c: Context) => {
       return c.json({ error: "Show not found or ingress not created" }, 404);
     }
 
-    // Mock Facebook Egress (TODO: implement with real LiveKit API when available)
-    const egressId = `egress-${showId}-${Math.random().toString(36).slice(2, 8)}`;
+    console.log("[startFacebookEgress] Starting for room:", show.roomName);
+    console.log("[startFacebookEgress] Facebook Stream Key:", facebookStreamKey.substring(0, 10) + "...");
+
+    let egressId: string | undefined;
+
+    // Try to create real egress via LiveKit SDK
+    if (apiKey && apiSecret) {
+      try {
+        const egressClient = new EgressClient(`https://${liveKitUrl}`, apiKey, apiSecret);
+
+        // Facebook RTMP URL
+        const facebookRtmpUrl = `rtmps://live-api-s.facebook.com:443/rtmp/${facebookStreamKey}`;
+
+        console.log("[startFacebookEgress] Creating egress to:", facebookRtmpUrl);
+
+        // Create egress with RTMP output
+        const egress = await egressClient.startRoomCompositeEgress(show.roomName,
+          {
+            rtmp: {
+              urls: [facebookRtmpUrl],
+            },
+          } as any
+        );
+
+        egressId = egress.egressId;
+        console.log("[startFacebookEgress] Real egress created:", egressId);
+      } catch (e: any) {
+        console.error("[startFacebookEgress] SDK failed, using fallback:", e.message);
+        egressId = `egress-${showId}-${Math.random().toString(36).slice(2, 8)}`;
+      }
+    } else {
+      egressId = `egress-${showId}-${Math.random().toString(36).slice(2, 8)}`;
+    }
 
     // Log to database
     await Live_Show.updateOne(
@@ -162,10 +253,10 @@ export const startFacebookEgress = async (c: Context) => {
       success: true,
       egressId,
       status: "started",
-      message: "Facebook Egress started (mock)",
+      message: "Facebook Egress started",
     });
   } catch (error: any) {
-    console.error("StartFacebookEgress error:", error);
+    console.error("[startFacebookEgress] ERROR:", error);
 
     const { showId } = await c.req.json().catch(() => ({}));
     if (showId) {
@@ -238,6 +329,7 @@ export const stopStreaming = async (c: Context) => {
 
 /**
  * Get streaming status
+ * Checks actual LiveKit ingress status to detect if OBS is streaming
  */
 export const getStreamStatus = async (c: Context) => {
   try {
@@ -252,27 +344,43 @@ export const getStreamStatus = async (c: Context) => {
     try {
       show = await Live_Show.findById(showId);
     } catch (e) {
-      // Invalid ObjectId format, return mock status for testing
-      console.log("Invalid showId format, returning test status:", showId);
+      console.log("Invalid showId format, skipping DB lookup:", showId);
     }
 
-    // For testing: if no show found, return mock status
-    let liveStatus = show?.liveStatus || "ingress_created";
+    if (!show) {
+      return c.json({ error: "Show not found" }, 404);
+    }
+
+    // Check actual LiveKit ingress status if ingress exists
+    let liveStatus = show.liveStatus || "idle";
+    if (show.ingressId && show.roomName && liveStatus !== "stopped") {
+      const realStatus = await checkIngressStatus(show.ingressId, show.roomName);
+
+      // Update database if status changed
+      if (realStatus !== liveStatus) {
+        console.log(`[getStreamStatus] Status changed from ${liveStatus} to ${realStatus}`);
+        liveStatus = realStatus;
+        await Live_Show.updateOne(
+          { _id: showId },
+          { $set: { liveStatus: realStatus } }
+        );
+      }
+    }
 
     // Return status
     return c.json({
       showId,
       liveStatus,
-      roomName: show?.roomName || `show-${showId}`,
-      ingressId: show?.ingressId || "test-ingress",
-      egressId: show?.egressId || null,
-      facebookEgressStatus: show?.facebookEgressStatus || "idle",
-      createdAt: show?.createdAt || new Date(),
-      stoppedAt: show?.stoppedAt || null,
-      errors: show ? {
-        liveError: show.liveError,
-        facebookEgressError: show.facebookEgressError,
-      } : null,
+      roomName: show.roomName || `show-${showId}`,
+      ingressId: show.ingressId || null,
+      egressId: show.egressId || null,
+      facebookEgressStatus: show.facebookEgressStatus || "idle",
+      createdAt: show.createdAt || new Date(),
+      stoppedAt: show.stoppedAt || null,
+      errors: {
+        liveError: show.liveError || null,
+        facebookEgressError: show.facebookEgressError || null,
+      },
     });
   } catch (error: any) {
     console.error("GetStreamStatus error:", error);
