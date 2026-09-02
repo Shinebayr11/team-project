@@ -18,10 +18,11 @@ export const ObsSetupWizard: React.FC<ObsSetupWizardProps> = ({
   onClose,
 }) => {
   const { getToken } = useAuth()
-  const [step, setStep] = useState<"loading" | "display" | "connected" | "error">("loading")
+  const [step, setStep] = useState<"loading" | "display" | "connected" | "disconnected" | "error">("loading")
   const [ingressUrl, setIngressUrl] = useState("")
   const [streamKey, setStreamKey] = useState("")
   const [roomName, setRoomName] = useState("")
+  const [ingressId, setIngressId] = useState("")
   const [error, setError] = useState("")
   const [copied, setCopied] = useState<"url" | "key" | null>(null)
 
@@ -45,6 +46,7 @@ export const ObsSetupWizard: React.FC<ObsSetupWizardProps> = ({
         setIngressUrl(data.ingressUrl)
         setStreamKey(data.streamKey)
         setRoomName(data.roomName)
+        setIngressId(data.ingressId)
         setStep("display")
 
         // Start polling for connection
@@ -59,8 +61,9 @@ export const ObsSetupWizard: React.FC<ObsSetupWizardProps> = ({
     createIngress()
   }, [showId, sellerName, getToken])
 
-  // Poll ingress status
+  // Poll ingress status - continue monitoring for connect/disconnect
   const pollStatus = async (ingressId: string) => {
+    let isConnected = false
     const interval = setInterval(async () => {
       try {
         const token = await getToken()
@@ -72,20 +75,28 @@ export const ObsSetupWizard: React.FC<ObsSetupWizardProps> = ({
         if (!res.ok) return
 
         const data = await res.json()
+        const streaming = data.liveStatus === "streaming" || data.liveStatus === "connected"
 
-        // Check if OBS is connected (ingress status = streaming or active)
-        if (data.liveStatus === "streaming" || data.liveStatus === "connected") {
+        // Detect connection (was not connected, now is)
+        if (streaming && !isConnected) {
+          console.log("[ObsSetupWizard] OBS connected")
+          isConnected = true
           setStep("connected")
-          clearInterval(interval)
           setTimeout(() => onComplete?.(), 2000)
+        }
+        // Detect disconnection (was connected, now is not)
+        else if (!streaming && isConnected) {
+          console.log("[ObsSetupWizard] OBS disconnected")
+          isConnected = false
+          setStep("disconnected")
         }
       } catch (err) {
         console.error("Poll status error:", err)
       }
     }, 2000) // Poll every 2 seconds
 
-    // Cleanup after 5 minutes
-    setTimeout(() => clearInterval(interval), 5 * 60 * 1000)
+    // Cleanup after 10 minutes
+    setTimeout(() => clearInterval(interval), 10 * 60 * 1000)
   }
 
   const copyToClipboard = (text: string, type: "url" | "key") => {
@@ -198,6 +209,28 @@ export const ObsSetupWizard: React.FC<ObsSetupWizardProps> = ({
               <p className="text-lg font-bold text-[var(--wn-ink)]">✅ OBS Connected!</p>
               <p className="text-sm text-[var(--wn-ink-3)] mt-1">Live streaming started</p>
             </div>
+          </div>
+        )}
+
+        {/* Disconnected State */}
+        {step === "disconnected" && (
+          <div className="flex flex-col items-center gap-4 py-8">
+            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
+              <AlertCircle className="w-8 h-8 text-orange-600" />
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-bold text-orange-600">⏸️ OBS Disconnected</p>
+              <p className="text-sm text-[var(--wn-ink-3)] mt-1">Stream has stopped</p>
+            </div>
+            <button
+              onClick={() => {
+                setStep("display")
+                pollStatus(ingressId)
+              }}
+              className="mt-4 px-4 py-2 bg-[var(--wn-accent)] text-white rounded-lg font-semibold hover:bg-[var(--wn-accent-hover)] transition-colors"
+            >
+              Wait for Reconnection
+            </button>
           </div>
         )}
 

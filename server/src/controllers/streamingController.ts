@@ -1,6 +1,6 @@
 import { Context } from "hono";
 import { Live_Show } from "../models/Live_show.js";
-import { AccessToken, IngressClient, IngressInput, IngressState, EgressClient } from "livekit-server-sdk";
+import { AccessToken, IngressClient, IngressInput, IngressState, EgressClient, RoomServiceClient } from "livekit-server-sdk";
 
 const liveKitUrl = (process.env.LIVEKIT_URL || "")
   .replace(/^wss?:\/\//, "")
@@ -16,17 +16,17 @@ type LiveStatus = "idle" | "ingress_created" | "streaming" | "ingress_failed" | 
 
 /**
  * Check OBS ingress status from LiveKit API
- * Checks if RTMP source is actively streaming
+ * Also checks if seller participant is still in room (indicates active stream)
  */
-const checkIngressStatus = async (ingressId: string, roomName: string): Promise<LiveStatus> => {
+const checkIngressStatus = async (ingressId: string, roomName: string, showId?: string): Promise<LiveStatus> => {
   if (!ingressId || !apiKey || !apiSecret) {
     console.log("[checkIngressStatus] Missing credentials or ingressId");
     return "ingress_created";
   }
 
   try {
-    const client = new IngressClient(`https://${liveKitUrl}`, apiKey, apiSecret);
-    const ingresses = await client.listIngress(roomName);
+    const ingressClient = new IngressClient(`https://${liveKitUrl}`, apiKey, apiSecret);
+    const ingresses = await ingressClient.listIngress(roomName);
 
     if (!ingresses || ingresses.length === 0) {
       console.log("[checkIngressStatus] No ingress found for room:", roomName);
@@ -41,19 +41,51 @@ const checkIngressStatus = async (ingressId: string, roomName: string): Promise<
 
     console.log(`[checkIngressStatus] Ingress state for ${ingressId}:`, ingress.state);
 
-    // Check ingress state - if it's receiving data, OBS is connected
-    // IngressState.ACTIVE = 2, IngressState.FAILED = 3
+    // Check ingress state
     const state = ingress.state as any;
     const status = typeof state === 'number' ? state : state?.status || state?.value || 0;
     console.log(`[checkIngressStatus] Raw state: ${JSON.stringify(state)}, Converted status: ${status}`);
 
-    if (status === 2 || String(status).includes('ACTIVE')) {
-      console.log(`[checkIngressStatus] ✅ Returning STREAMING for ${ingressId}`);
-      return "streaming";
+    // If ingress status is PUBLISHING (2), check if video/audio is actually streaming
+    if (status === 2) {
+      // Check if video state exists and has valid data - indicates active stream
+      const hasVideo = (ingress.state as any)?.video?.mimeType && (ingress.state as any)?.video?.width;
+      console.log(`[checkIngressStatus] Video state: ${hasVideo ? 'YES' : 'NO'}`, hasVideo ? (ingress.state as any).video : 'none');
+
+      // Try to check room participants if video is active
+      if (hasVideo) {
+        try {
+          const roomClient = new RoomServiceClient(`https://${liveKitUrl}`, apiKey, apiSecret);
+          const participants = await roomClient.listParticipants(roomName);
+          console.log(`[checkIngressStatus] Room has ${participants.length} participants`);
+
+          // Look for seller participant (created by ingress)
+          const sellerParticipant = participants.find((p: any) =>
+            p.identity.includes('seller-')
+          );
+
+          if (sellerParticipant) {
+            console.log(`[checkIngressStatus] ✅ Seller participant FOUND - STREAMING`);
+            return "streaming";
+          } else {
+            console.log(`[checkIngressStatus] ⏸️ Seller participant NOT FOUND - stopped`);
+            return "ingress_created";
+          }
+        } catch (roomErr: any) {
+          console.log(`[checkIngressStatus] Room check error (OK): ${roomErr.message}`);
+          // If room check fails, still return streaming since video exists
+          console.log(`[checkIngressStatus] ✅ Returning STREAMING (video active, room check failed)`);
+          return "streaming";
+        }
+      } else {
+        console.log(`[checkIngressStatus] ⏸️ No video data - OBS stopped`);
+        return "ingress_created";
+      }
     } else if (status === 3 || String(status).includes('FAILED')) {
       console.log(`[checkIngressStatus] ❌ Returning FAILED for ${ingressId}`);
       return "ingress_failed";
     }
+
     console.log(`[checkIngressStatus] Returning CREATED for ${ingressId}`);
     return "ingress_created";
   } catch (e: any) {
@@ -354,7 +386,7 @@ export const getStreamStatus = async (c: Context) => {
     // Check actual LiveKit ingress status if ingress exists
     let liveStatus = show.liveStatus || "idle";
     if (show.ingressId && show.roomName && liveStatus !== "stopped") {
-      const realStatus = await checkIngressStatus(show.ingressId, show.roomName);
+      const realStatus = await checkIngressStatus(show.ingressId, show.roomName, showId);
 
       // Update database if status changed
       if (realStatus !== liveStatus) {
