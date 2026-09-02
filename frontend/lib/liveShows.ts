@@ -43,12 +43,7 @@ export const toHomeShow = (doc: LiveShowDoc): HomeShow => {
   }
 }
 
-// Browse (`/live-show`) ямар ч LiveKit өгөгдөл ашигладаггүй, зөвхөн хатуу
-// тогтоосон REEL_SHOWS mock-оор ажилладаг тул бодит дамжуулалтыг зөв
-// харуулж чадахгүй — тиймээс бодит room-той (roomId) шоуг зөвхөн жинхэнэ
-// видео дэлгэц рүү, roomId-гүй (mock/жишээ) шоуг Browse рүү оруулна.
 export const getWatchPath = (show: HomeShow): string =>
-  show.roomId
-    ? `/live/${show.roomId}?host=0&title=${encodeURIComponent(show.title)}` +
-      (show.showId ? `&showId=${show.showId}` : "")
-    : `/live-show?show=${show.seller}`
+  show.showId
+    ? `/live-view/${show.showId}`
+    : `/`
