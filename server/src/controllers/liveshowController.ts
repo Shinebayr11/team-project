@@ -158,3 +158,42 @@ export const postliveshow = async (c: Context) => {
     }
 
 }
+
+export const getParticipants = async (c: Context) => {
+    try {
+        const showId = c.req.param("id")
+
+        const show = await Live_Show.findById(showId)
+        if (!show) {
+            return c.json({ error: "Live show not found" }, 404)
+        }
+
+        let viewerCount = 0
+
+        if (show.livekit_room_name && show.status === "live") {
+            try {
+                const room = await roomService.listRooms()
+                const activeRoom = room.find((r) => r.name === show.livekit_room_name)
+
+                if (activeRoom) {
+                    viewerCount = activeRoom.numParticipants || 0
+                    show.viewer_count = viewerCount
+                    await show.save()
+                }
+            } catch (error) {
+                console.log("Could not get LiveKit room info:", (error as any).message)
+            }
+        }
+
+        return c.json({
+            showId,
+            viewerCount,
+            participantCount: viewerCount,
+            status: show.status
+        }, 200)
+    } catch (error) {
+        return c.json({
+            error: "Failed to get participants"
+        }, 500)
+    }
+}
