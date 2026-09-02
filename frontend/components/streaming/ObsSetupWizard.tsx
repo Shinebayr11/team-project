@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
+import { useAuth } from "@clerk/nextjs"
 import { Copy, Check, AlertCircle, Loader } from "lucide-react"
 
 interface ObsSetupWizardProps {
@@ -16,6 +17,7 @@ export const ObsSetupWizard: React.FC<ObsSetupWizardProps> = ({
   onComplete,
   onClose,
 }) => {
+  const { getToken } = useAuth()
   const [step, setStep] = useState<"loading" | "display" | "connected" | "error">("loading")
   const [ingressUrl, setIngressUrl] = useState("")
   const [streamKey, setStreamKey] = useState("")
@@ -27,9 +29,13 @@ export const ObsSetupWizard: React.FC<ObsSetupWizardProps> = ({
   useEffect(() => {
     const createIngress = async () => {
       try {
+        const token = await getToken()
         const res = await fetch(`/api/streaming/${showId}/ingress/create`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ showId, sellerName }),
         })
 
@@ -51,13 +57,18 @@ export const ObsSetupWizard: React.FC<ObsSetupWizardProps> = ({
     }
 
     createIngress()
-  }, [showId, sellerName])
+  }, [showId, sellerName, getToken])
 
   // Poll ingress status
-  const pollStatus = (ingressId: string) => {
+  const pollStatus = async (ingressId: string) => {
+    const token = await getToken()
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`/api/streaming/${showId}/status`)
+        const res = await fetch(`/api/streaming/${showId}/status`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         if (!res.ok) return
 
         const data = await res.json()
