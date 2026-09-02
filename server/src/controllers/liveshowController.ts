@@ -163,7 +163,13 @@ export const getParticipants = async (c: Context) => {
     try {
         const showId = c.req.param("id")
 
-        const show = await Live_Show.findById(showId)
+        let show = null
+        try {
+            show = await Live_Show.findById(showId)
+        } catch (e) {
+            console.log("Invalid showId format, trying fallback query:", showId)
+        }
+
         if (!show) {
             return c.json({ error: "Live show not found" }, 404)
         }
@@ -189,11 +195,14 @@ export const getParticipants = async (c: Context) => {
             showId,
             viewerCount,
             participantCount: viewerCount,
-            status: show.status
+            status: show.status,
+            roomName: show.livekit_room_name
         }, 200)
     } catch (error) {
+        console.error("GetParticipants error:", (error as any).message)
         return c.json({
-            error: "Failed to get participants"
+            error: "Failed to get participants",
+            details: (error as any).message
         }, 500)
     }
 }
