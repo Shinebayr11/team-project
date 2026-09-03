@@ -16,6 +16,23 @@ const roomService = new RoomServiceClient(
 // болзошгүй тул — үүссэнээс хойш GRACE хугацаанд шалгалтад оруулахгүй.
 const STALE_CHECK_GRACE_MS = 30_000
 
+/**
+ * Шоу staleness шалгалтад орох хангалттай хуучин болсон эсэх.
+ *
+ * `createdAt` нь Mongoose-ийн `timestamps` -аас ирдэг ч Mongo руу шууд (жишээ нь
+ * гар аргаар, эсвэл тестийн script-ээр) оруулсан баримтад огт байхгүй байж
+ * болно. Тэр үед `new Date(undefined).getTime()` нь `NaN` буцаадаг ба ямар ч
+ * харьцуулалт `false` болдог тул тийм мөр staleness шалгалтаас МӨНХӨД мултарч,
+ * LiveKit дээр өрөө нь хэзээ ч байгаагүй ч "live" хэвээр үлддэг байв.
+ * Огноогүй баримтыг "хуучин" гэж үзэж, шалгалтад оруулна.
+ */
+const isPastGrace = (show: { createdAt?: unknown; started_at?: unknown }) => {
+    const raw = show.createdAt ?? show.started_at
+    const ms = raw ? new Date(raw as string).getTime() : NaN
+    if (Number.isNaN(ms)) return true
+    return Date.now() - ms > STALE_CHECK_GRACE_MS
+}
+
 // `listRooms()` нь үзэгч бүр 5 секунд тутам оролцогчийн тоог асуухад дуудагддаг
 // тул үзэгчийн тоо өсөх тусам LiveKit рүү хийх дуудлага шугаман өснө. Хариуг нь
 // богино хугацаанд кэшлэж, зэрэг ирсэн хүсэлтүүд нэг дуудлага хуваалцана.
@@ -55,10 +72,7 @@ export const getliveshow = async (c: Context) => {
         // (жишээ нь mock/demo өгөгдөл) тул шалгах room алга — эдгээрийг алгасна.
         // Дөнгөж үүссэн (GRACE хугацаанаас цөөн) мөрүүдийг ч алгасна — race condition-оос сэргийлнэ.
         const liveDocs = data.filter(
-            (show) =>
-                show.status === "live" &&
-                show.livekit_room_name &&
-                Date.now() - new Date(show.createdAt).getTime() > STALE_CHECK_GRACE_MS,
+            (show) => show.status === "live" && show.livekit_room_name && isPastGrace(show),
         )
         if (liveDocs.length > 0) {
             try {
