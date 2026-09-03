@@ -12,6 +12,7 @@ import {
 import { Track } from "livekit-client"
 import "@livekit/components-styles"
 import { useNavigate } from "@/lib/router"
+import { cn } from "@/lib/utils"
 import { useStore } from "@/store"
 import { useLiveKitToken } from "@/hooks/useLiveKitToken"
 import { useLiveShowDetail } from "@/hooks/useLiveShowDetail"
@@ -71,13 +72,39 @@ const buildProducts = (
 }
 
 /** The host's camera, filling the stage. Any auction UI overlays it. */
-function Stage({ children }: { children?: React.ReactNode }) {
+function Stage({
+  shareLabel,
+  className,
+  children,
+}: {
+  shareLabel: string
+  className?: string
+  children?: React.ReactNode
+}) {
   const tracks = useTracks([Track.Source.Camera], { onlySubscribed: false })
   const track = tracks[0]
   const participants = useRemoteParticipants()
+  const [copied, setCopied] = useState(false)
+
+  // Browse дээрх тайзтай ижил байрлалд хуваалцах товч. Тэнд зөвхөн чимэглэл
+  // байсан бол энд бодит холбоосыг хуулна.
+  const copyLink = () => {
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => {
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      })
+      .catch(() => {})
+  }
 
   return (
-    <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-[20px] bg-[var(--wn-shot-deep)] lg:aspect-auto lg:h-full lg:w-auto lg:flex-1 lg:shrink">
+    <div
+      className={cn(
+        "relative aspect-video w-full shrink-0 overflow-hidden rounded-[20px] bg-[var(--wn-shot-deep)] lg:aspect-auto lg:h-full lg:w-auto lg:flex-1 lg:shrink",
+        className
+      )}
+    >
       {track ? (
         <VideoTrack trackRef={track} className="size-full object-cover" />
       ) : (
@@ -91,6 +118,14 @@ function Stage({ children }: { children?: React.ReactNode }) {
         <span>Шууд</span>
         <span className="ml-1 opacity-60">{participants.length} watching</span>
       </div>
+
+      <button
+        type="button"
+        onClick={copyLink}
+        className="absolute top-4 right-4 z-10 flex h-8 max-w-[45%] items-center gap-2 truncate rounded-full bg-black/40 px-3 text-[12px] font-[600] text-white backdrop-blur-md transition-colors hover:bg-black/60"
+      >
+        {copied ? "Холбоос хуулагдлаа" : shareLabel}
+      </button>
 
       {children}
     </div>
@@ -166,7 +201,7 @@ export function LiveViewer({
 
   const { token: liveKitToken, error } = useLiveKitToken(roomName, false)
   const show = useLiveShowDetail(showId)
-  const { listing, placeBid } = useAuction(showId)
+  const { listing, bids, placeBid } = useAuction(showId)
   const { entries } = useShowProducts(showId)
   const [tab, setTab] = useState<ReelTab>("buynow")
 
@@ -195,15 +230,19 @@ export function LiveViewer({
       video={false}
       audio={false}
     >
+      {/* Дэлгэц дээрх баганын дараалал Browse (`screens/LiveShow.tsx`)-тэй
+          ижил байх ёстой: худалдагчийн самбар → видео → чат. DOM дараалал нь
+          гар утсанд зориулж видеог эхэнд байлгадаг тул зөвхөн lg дээр `order`-оор
+          сольж байна. */}
       <div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-4 py-4 lg:h-[calc(100vh-68px)] lg:flex-row">
-        <Stage>
-          <AuctionBidPanel listing={listing} onBid={placeBid} />
+        <Stage shareLabel={`whynot.live/${seller}`} className="lg:order-2">
+          <AuctionBidPanel listing={listing} bids={bids} onBid={placeBid} />
         </Stage>
 
         {/* `lg:contents` — дэлгэц дээр энэ бүрхүүл layout-аас арилж, гурван
             самбар мөрийн шууд хүүхэд болно. Гар утсан дээр л өндөр өгнө. */}
         <div className="flex h-[360px] gap-4 overflow-x-auto lg:contents">
-          <div className="flex h-full w-[280px] shrink-0 flex-col overflow-hidden rounded-[20px] border border-[var(--wn-line)] bg-white">
+          <div className="flex h-full w-[280px] shrink-0 flex-col overflow-hidden rounded-[20px] border border-[var(--wn-line)] bg-white lg:order-1">
             <SellerPanel
               title={shownTitle}
               seller={seller}
@@ -217,7 +256,7 @@ export function LiveViewer({
             />
           </div>
 
-          <LiveChat hostName={seller} />
+          <LiveChat hostName={seller} className="lg:order-3" />
         </div>
       </div>
 
