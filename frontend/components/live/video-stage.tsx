@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import type React from "react"
 import { useRouter } from "next/navigation"
 import {
@@ -18,6 +18,7 @@ import { LiveDot } from "@/components/ui/LiveDot"
 import { useApiClient } from "@/hooks/useApiClient"
 import { writeActiveStream } from "@/hooks/useActiveStream"
 import { useLiveKitToken } from "@/hooks/useLiveKitToken"
+import { useLiveThumbnail } from "@/hooks/useLiveThumbnail"
 import { useDisplayName } from "@/hooks/useDisplayName"
 import { useAuction } from "@/hooks/useAuction"
 import { LiveChat } from "@/components/live/live-chat"
@@ -53,15 +54,23 @@ const controlBarTheme = {
   "--lk-font-size": "14px",
 } as React.CSSProperties
 
-function Stage() {
+function Stage({ showId, isHost }: { showId?: string; isHost: boolean }) {
   const tracks = useTracks([Track.Source.Camera], { onlySubscribed: false })
   const track = tracks[0]
   const participants = useRemoteParticipants()
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  // Зөвхөн дамжуулж буй худалдагчийн хөтөч зураг авна — үзэгчид ямар ч
+  // нэмэлт ажил унахгүй. Камераа түр унтраасан үед track үлддэг ч кадр нь хар
+  // болдог тул зураг авахаа зогсооно — эс тэгвэл өмнөх сайн зургийг хараар
+  // дарж бичнэ.
+  useLiveThumbnail(videoRef, showId, isHost && !!track && !track.publication?.isMuted)
 
   return (
     <>
       {track ? (
         <VideoTrack
+          ref={videoRef}
           trackRef={track}
           className="size-full object-cover"
           style={{ transform: "scaleX(-1)" }}
@@ -138,7 +147,7 @@ export function VideoStage({
     >
       <div className="flex flex-col gap-4 lg:h-full lg:flex-row">
         <div className="relative aspect-video overflow-hidden rounded-[20px] bg-black lg:aspect-auto lg:flex-1">
-          <Stage />
+          <Stage showId={showId} isHost={isHost} />
 
           {isHost && (
             <div className="absolute inset-x-0 bottom-4 flex flex-wrap items-center justify-center gap-3 px-4">

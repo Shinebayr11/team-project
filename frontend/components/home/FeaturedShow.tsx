@@ -14,6 +14,18 @@ export const FeaturedShow: React.FC<FeaturedShowProps> = ({ show, onWatch }) => 
     onClick={onWatch}
     className="relative w-full h-[260px] sm:h-[320px] lg:h-[360px] rounded-[24px] bg-[var(--wn-shot-deep)] overflow-hidden mb-8 lg:mb-12 cursor-pointer group"
   >
+    {/* Доорх градиент нь ард нь зураг байхаар зохиогдсон боловч энэ карт
+        `show.thumbnail`-ыг огт зурдаггүй байсан тул үргэлж хоосон бараан
+        дөрвөлжин харагддаг байв. Дамжуулалтын үед худалдагчийн хөтөч
+        (`useLiveThumbnail`) энэ хаягийг 20 секунд тутам шинэчилдэг. */}
+    {show.thumbnail && (
+      <img
+        src={show.thumbnail}
+        alt={show.title}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    )}
+
     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10" />
 
     <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md text-white text-[13px] sm:text-[14px] font-[700]">

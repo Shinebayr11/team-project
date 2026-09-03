@@ -146,7 +146,7 @@ export const patchliveshow = async (c: Context) => {
         const id = c.req.param("id")
         const userId = c.get("userId")
         const body = await c.req.json()
-        const { status, viewer_count, ended_at } = body
+        const { status, viewer_count, ended_at, thumbnail_url } = body
 
         const show = await Live_Show.findById(id)
         if (!show) {
@@ -159,6 +159,9 @@ export const patchliveshow = async (c: Context) => {
         if (status !== undefined) show.status = status
         if (viewer_count !== undefined) show.viewer_count = viewer_count
         if (ended_at !== undefined) show.ended_at = ended_at
+        // Дамжуулалтын явцад худалдагчийн хөтөч камерын кадрыг тогтмол илгээж
+        // байдаг (`useLiveThumbnail`) — картууд үүнийг зурна.
+        if (thumbnail_url !== undefined) show.thumbnail_url = thumbnail_url
 
         await show.save()
 
