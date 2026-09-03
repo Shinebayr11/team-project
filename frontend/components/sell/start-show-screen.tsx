@@ -18,7 +18,6 @@ import { LiveDot } from "@/components/ui/LiveDot"
 import { ProductCatalog } from "@/components/sell/product-catalog"
 import { ShowLineup } from "@/components/sell/show-lineup"
 import { PastShows } from "@/components/sell/past-shows"
-import { ObsSetupWizard } from "@/components/streaming/ObsSetupWizard"
 
 /** Самбарын үндсэн товч — NextShowBanner / SellerShows-тэй ижил хэмжээ. */
 const primaryBtn =
@@ -54,10 +53,6 @@ export function StartShowScreen() {
   const [newCategory, setNewCategory] = useState("")
   const [categoryBusy, setCategoryBusy] = useState(false)
   const [categoryError, setCategoryError] = useState<string | null>(null)
-
-  // OBS wizard state
-  const [showObsWizard, setShowObsWizard] = useState(false)
-  const [obsShowId, setObsShowId] = useState<string | null>(null)
 
   const categoryOptions = [
     ...EXPLORE_CATEGORIES,
@@ -110,30 +105,19 @@ export function StartShowScreen() {
         }
       )
 
-      console.log("Live show created:", show)
-      setObsShowId(show._id)
       writeActiveStream({
         roomName,
         title: streamTitle,
         showId: show._id,
         sellerShowId,
       })
-      console.log("Setting showObsWizard to true")
-      setShowObsWizard(true)
+      router.push(
+        `/live/${roomName}?host=1&title=${encodeURIComponent(streamTitle)}&showId=${show._id}`
+      )
     } catch (error) {
       console.error("startLive error:", error)
     } finally {
       setStarting(false)
-    }
-  }
-
-  const handleObsConnected = () => {
-    const activeStream = active
-    if (activeStream) {
-      setShowObsWizard(false)
-      router.push(
-        `/live/${activeStream.roomName}?host=1&title=${encodeURIComponent(activeStream.title)}&showId=${activeStream.showId}`
-      )
     }
   }
 
@@ -156,18 +140,6 @@ export function StartShowScreen() {
 
   return (
     <>
-      {showObsWizard && obsShowId && (
-        <ObsSetupWizard
-          showId={obsShowId}
-          sellerName="Seller"
-          onComplete={handleObsConnected}
-          onClose={() => {
-            setShowObsWizard(false)
-            setObsShowId(null)
-          }}
-        />
-      )}
-
       <PageHeader
         title="Шууд дамжуулалт эхлэх"
         description="Гарчиг, ангиллаа сонгоод дамжуулалтаа эхлээрэй."

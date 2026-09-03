@@ -65,7 +65,8 @@ export default function LivePage({
   if (isHost && (!isLoaded || !user)) return null
 
   // Viewers get the browse-style stage (seller, products, chat); the host keeps
-  // the focused broadcast console with its own controls.
+  // the focused broadcast console with its own controls. Both join the same
+  // LiveKit room — the `id` path segment — so the host's camera reaches viewers.
   if (!isHost) {
     return <LiveViewer roomName={id} showId={showId} title={title} />
   }

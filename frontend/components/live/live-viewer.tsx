@@ -1,7 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useAuth } from "@clerk/nextjs"
+import { useState } from "react"
 import { Star } from "lucide-react"
 import {
   LiveKitRoom,
@@ -72,16 +71,14 @@ const buildProducts = (
 }
 
 /** The host's camera, filling the stage. Any auction UI overlays it. */
-function Stage({ children, isStreaming = true }: { children?: React.ReactNode; isStreaming?: boolean }) {
+function Stage({ children }: { children?: React.ReactNode }) {
   const tracks = useTracks([Track.Source.Camera], { onlySubscribed: false })
   const track = tracks[0]
   const participants = useRemoteParticipants()
 
-  console.log(`[Stage] track: ${track ? "EXISTS" : "NONE"}, isStreaming: ${isStreaming}`)
-
   return (
     <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-[20px] bg-[var(--wn-shot-deep)] lg:aspect-auto lg:h-full lg:w-auto lg:flex-1 lg:shrink">
-      {track && isStreaming ? (
+      {track ? (
         <VideoTrack trackRef={track} className="size-full object-cover" />
       ) : (
         <div className="flex size-full items-center justify-center text-sm text-white/60">
@@ -168,53 +165,10 @@ export function LiveViewer({
 }) {
 
   const { token: liveKitToken, error } = useLiveKitToken(roomName, false)
-  const { getToken } = useAuth()
   const show = useLiveShowDetail(showId)
   const { listing, placeBid } = useAuction(showId)
   const { entries } = useShowProducts(showId)
   const [tab, setTab] = useState<ReelTab>("buynow")
-  const [isStreaming, setIsStreaming] = useState(true)
-
-  // Monitor ingress status - detect when OBS stops streaming
-  useEffect(() => {
-    console.log(`[LiveViewer] useEffect started, showId=${showId}`)
-    if (!showId) {
-      console.log(`[LiveViewer] showId is falsy, returning`)
-      return
-    }
-
-    const checkStatus = async () => {
-      console.log(`[LiveViewer] Calling /api/streaming/${showId}/status`)
-      try {
-        const authToken = await getToken()
-        const res = await fetch(`/api/streaming/${showId}/status`, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        })
-        console.log(`[LiveViewer] Response status: ${res.status}`)
-        if (!res.ok) {
-          console.log(`[LiveViewer] Response not ok, returning`)
-          return
-        }
-        const data = await res.json()
-        const streaming = data.liveStatus === "streaming" || data.liveStatus === "connected"
-        console.log(`[LiveViewer] Status check: ${data.liveStatus}, isStreaming: ${streaming}`)
-        setIsStreaming(streaming)
-      } catch (err) {
-        console.error(`[LiveViewer] Status check error:`, err)
-      }
-    }
-
-    // Check immediately and then every 2 seconds
-    console.log(`[LiveViewer] Starting status checks`)
-    checkStatus()
-    const interval = setInterval(checkStatus, 2000)
-    return () => {
-      console.log(`[LiveViewer] Cleaning up interval`)
-      clearInterval(interval)
-    }
-  }, [showId])
 
   const seller =
     typeof show?.seller_id === "object" && show.seller_id?.display_name
@@ -238,11 +192,11 @@ export function LiveViewer({
       token={liveKitToken}
       serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
       connect
-      video={true}
-      audio={true}
+      video={false}
+      audio={false}
     >
       <div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-4 py-4 lg:h-[calc(100vh-68px)] lg:flex-row">
-        <Stage isStreaming={isStreaming}>
+        <Stage>
           <AuctionBidPanel listing={listing} onBid={placeBid} />
         </Stage>
 

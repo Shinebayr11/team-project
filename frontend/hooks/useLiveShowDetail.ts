@@ -15,17 +15,23 @@ export function useLiveShowDetail(showId?: string) {
     if (!showId) return
     let cancelled = false
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/liveshow/${showId}`)
-      .then((r) => r.json())
-      .then((d) => {
+    const fetchShow = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/liveshow/${showId}`)
+        const d = await res.json()
         if (!cancelled) setShow(d.data ?? null)
-      })
-      .catch(() => {
+      } catch {
         // A missing show just means the side panel falls back to URL params.
-      })
+      }
+    }
+
+    // Үзэгчийн тоо зэрэг шууд өөрчлөгддөг өгөгдлийг сэргээж байхын тулд давтан татна.
+    fetchShow()
+    const interval = setInterval(fetchShow, 2000)
 
     return () => {
       cancelled = true
+      clearInterval(interval)
     }
   }, [showId])
 
