@@ -45,6 +45,7 @@ export function StartShowScreen() {
     params.get("category") || EXPLORE_CATEGORIES[0].name
   )
   const [starting, setStarting] = useState(false)
+  const [startError, setStartError] = useState<string | null>(null)
 
   // Самбарын шоунаас ирсэн бол дамжуулалтыг тэр шоутай холбоно.
   const sellerShowId = params.get("showId") ?? undefined
@@ -87,11 +88,11 @@ export function StartShowScreen() {
 
   const startLive = async () => {
     setStarting(true)
+    setStartError(null)
     try {
       const roomName = `stream-${Math.random().toString(36).slice(2, 8)}`
       const streamTitle = title || "Шууд дамжуулалт"
 
-      console.log("Creating live show:", { streamTitle, roomName, category })
       const { data: show } = await callApi<{ data: { _id: string } }>(
         "/api/liveshow",
         {
@@ -101,6 +102,10 @@ export function StartShowScreen() {
             livekit_room_name: roomName,
             status: "live",
             category,
+            // Хэзээ эхэлснийг тэмдэглэнэ: нүүрний том карт хамгийн сүүлийн
+            // дамжуулалтыг үүгээр сонгодог, host дэлгэцийн үргэлжлэх хугацаа
+            // (`useElapsed`) ч үүнийг уншдаг.
+            started_at: new Date().toISOString(),
           }),
         }
       )
@@ -115,7 +120,12 @@ export function StartShowScreen() {
         `/live/${roomName}?host=1&title=${encodeURIComponent(streamTitle)}&showId=${show._id}`
       )
     } catch (error) {
+      // Алдааг зөвхөн console руу бичих нь товч дарсан хэрэглэгчид юу ч
+      // болоогүй мэт харагдуулдаг — шалтгааныг нь товчны доор ил гаргана.
       console.error("startLive error:", error)
+      setStartError(
+        error instanceof Error ? error.message : "Дамжуулалт эхлүүлж чадсангүй"
+      )
     } finally {
       setStarting(false)
     }
@@ -266,6 +276,12 @@ export function StartShowScreen() {
                   <Radio className="h-4 w-4" />
                   {starting ? "Эхэлж байна..." : "Эхлэх"}
                 </button>
+
+                {startError && (
+                  <p className="text-[13px] font-[600] text-[var(--wn-live-deep)]">
+                    {startError}
+                  </p>
+                )}
               </div>
             </Panel>
           )}

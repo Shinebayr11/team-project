@@ -11,6 +11,7 @@
 
 import { useState } from "react"
 import { useMotionValueEvent, useScroll } from "framer-motion"
+import { useUser } from "@clerk/nextjs"
 
 import { Link } from "@/lib/router"
 import { cn } from "@/lib/utils"
@@ -31,6 +32,10 @@ export function MarketingHeader() {
   const { active } = useLandingScroll()
   const { scrollY } = useScroll()
   const [solid, setSolid] = useState(false)
+  // Landing нь нэвтэрсэн хэрэглэгчид ч "Нэвтрэх / Бүртгүүлэх" гэж харуулсаар
+  // байсан тул нэвтэрсэн хүн энд буцаж ирэхэд орж чадаагүй мэт санагддаг байв.
+  // `isLoaded` болтол нэвтрээгүй хувилбарыг үзүүлнэ — SSR-ийн markup-тай таарна.
+  const { isLoaded, isSignedIn } = useUser()
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const next = y > BLUR_AT
@@ -77,23 +82,39 @@ export function MarketingHeader() {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <Link
-            to="/sign-in"
-            className="rounded-[6px] px-3.5 py-2 text-[15px] font-[600] opacity-90 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-          >
-            Нэвтрэх
-          </Link>
-          <Link
-            to="/sign-up"
-            className={cn(
-              "rounded-[6px] px-4 py-2 text-[15px] font-[700] transition-colors focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-current",
-              light
-                ? "bg-white text-[var(--wn-noir)] hover:bg-white/85"
-                : "bg-[var(--wn-noir)] text-white hover:bg-[#241f35]"
-            )}
-          >
-            Бүртгүүлэх
-          </Link>
+          {isLoaded && isSignedIn ? (
+            <Link
+              to="/home"
+              className={cn(
+                "rounded-[6px] px-4 py-2 text-[15px] font-[700] transition-colors focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-current",
+                light
+                  ? "bg-white text-[var(--wn-noir)] hover:bg-white/85"
+                  : "bg-[var(--wn-noir)] text-white hover:bg-[#241f35]"
+              )}
+            >
+              Дэлгүүр рүү
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/sign-in"
+                className="rounded-[6px] px-3.5 py-2 text-[15px] font-[600] opacity-90 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+              >
+                Нэвтрэх
+              </Link>
+              <Link
+                to="/sign-up"
+                className={cn(
+                  "rounded-[6px] px-4 py-2 text-[15px] font-[700] transition-colors focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-current",
+                  light
+                    ? "bg-white text-[var(--wn-noir)] hover:bg-white/85"
+                    : "bg-[var(--wn-noir)] text-white hover:bg-[#241f35]"
+                )}
+              >
+                Бүртгүүлэх
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

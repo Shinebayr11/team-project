@@ -1,30 +1,38 @@
 'use client'
 
-import { LiveVideoPlayer } from '@/components/liveshow/LiveVideoPlayer'
-import { LiveShowHeader } from '@/components/liveshow/LiveShowHeader'
-import { useAuth } from '@clerk/nextjs'
-import { useParams } from 'next/navigation'
+import { useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 
-export default function LiveViewPage() {
-  const { userId, isLoaded } = useAuth()
+import { useLiveShowDetail } from '@/hooks/useLiveShowDetail'
+
+/**
+ * OBS-ийн үеийн үлдэгдэл зам.
+ *
+ * Энэ хуудас нүцгэн видео тайз + толгойн мөрөөс бүрдэж байсан бөгөөд
+ * `components/live/live-viewer.tsx` доторх бүрэн загварыг (худалдагчийн самбар,
+ * барааны жагсаалт, дуудлага худалдаа, чат) орлож чадахгүй байв. Тиймээс
+ * үзэгчийг жинхэнэ дэлгэц рүү нь дамжуулна — өмнө тараасан холбоос, bookmark
+ * эвдрэхгүй.
+ */
+export default function LiveViewRedirectPage() {
   const params = useParams()
+  const router = useRouter()
   const showId = params.id as string
+  const show = useLiveShowDetail(showId)
 
-  if (!isLoaded) {
-    return (
-      <div className="w-full h-screen bg-black flex items-center justify-center">
-        <p className="text-white">Loading...</p>
-      </div>
+  useEffect(() => {
+    if (!show?.livekit_room_name) return
+    const title = encodeURIComponent(show.title ?? '')
+    router.replace(
+      `/live/${show.livekit_room_name}?host=0&title=${title}&showId=${showId}`
     )
-  }
+  }, [show, showId, router])
 
   return (
-    <div className="w-full h-screen relative">
-      <LiveVideoPlayer
-        showId={showId}
-        userName={`User-${userId?.slice(0, 8) || 'guest'}`}
-      />
-      <LiveShowHeader showId={showId} />
+    <div className="flex min-h-svh items-center justify-center">
+      <p className="text-[15px] font-[500] text-[var(--wn-ink-3)]">
+        Дамжуулалт руу шилжиж байна...
+      </p>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ReelShow } from '../../types';
 import { ReelItemBar } from './ReelItemBar';
 import { ReelNavRail } from './ReelNavRail';
@@ -18,7 +18,31 @@ interface ReelStageProps {
 
 export const ReelStage: React.FC<ReelStageProps> = ({
   shows, currentIndex, countdown, viewers, showScrollHint, onWheel, onGoTo, onItemAction,
-}) => (
+}) => {
+  // Гар утсан дээр гүйлгэлтийг хөтөч өөрөө (snap scroll) хийдэг тул хуруугаар
+  // гүйлгэхэд `onWheel` огт дуудагддаггүй. Иймд идэвхтэй шоуг гүйлгэлтийн
+  // байрлалаас нь уншиж, overlay-ууд (Buy/Bid, чат, худалдагч) үзэж буй шоутай
+  // нь тааруулна — эс тэгвэл тэдгээр нь shows[0] дээр гацна.
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
+
+  const indexFromScroll = (el: HTMLDivElement) =>
+    el.clientHeight > 0 ? Math.round(el.scrollTop / el.clientHeight) : 0;
+
+  const handleMobileScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const next = indexFromScroll(e.currentTarget);
+    if (next !== currentIndex && next >= 0 && next < shows.length) onGoTo(next);
+  };
+
+  // Гаднаас индекс өөрчлөгдсөн үед (deep link, эсвэл desktop-ийн nav rail)
+  // гүйлгэлтийн байрлалыг гүйцээнэ. Хэрэглэгч өөрөө гүйлгэсэн тохиолдолд
+  // байрлал аль хэдийн таарсан байх тул энэ нь юу ч хийхгүй өнгөрнө.
+  useEffect(() => {
+    const el = mobileScrollRef.current;
+    if (!el || indexFromScroll(el) === currentIndex) return;
+    el.scrollTo({ top: currentIndex * el.clientHeight, behavior: 'smooth' });
+  }, [currentIndex]);
+
+  return (
   <>
     {/* Desktop layout (lg and above) */}
     <div
@@ -65,11 +89,14 @@ export const ReelStage: React.FC<ReelStageProps> = ({
       <ReelNavRail count={shows.length} currentIndex={currentIndex} onGoTo={onGoTo} />
     </div>
 
-    {/* Mobile layout (below lg) — full screen with snap scrolling */}
+    {/* Mobile layout (below lg) — full screen with snap scrolling.
+        Гүйлгэлтийг хөтөч өөрөө хийдэг тул `onWheel` энд хэрэггүй — хулганы дугуй
+        ч мөн адил төрөлх гүйлгэлт үүсгэж, `onScroll`-оор баригдана. */}
     <div
+      ref={mobileScrollRef}
       className="lg:hidden w-screen fixed inset-0 overflow-y-scroll snap-y snap-mandatory scroll-smooth"
       style={{ height: '100dvh', maxHeight: '100dvh' }}
-      onWheel={e => onWheel(e.deltaY)}
+      onScroll={handleMobileScroll}
     >
       {shows.map((show, i) => (
         <div
@@ -96,4 +123,5 @@ export const ReelStage: React.FC<ReelStageProps> = ({
       ))}
     </div>
   </>
-);
+  );
+};

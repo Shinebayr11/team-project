@@ -12,7 +12,7 @@ export default async function SignUpPage({
 
   return (
     <div className="flex min-h-svh items-center justify-center p-6">
-      <SignUp fallbackRedirectUrl={redirectUrl} />
+      <SignUp fallbackRedirectUrl={redirectUrl} signInUrl="/sign-in" />
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto"
 import { Context } from "hono"
 import { RoomServiceClient, AccessToken } from "livekit-server-sdk"
 import { Live_Show } from "../models/Live_show.js"
@@ -14,6 +15,27 @@ const roomService = new RoomServiceClient(
 // room хараахан үүсээгүй байгаа тул шинэхэн live-ийг андуураад "ended" болгож
 // болзошгүй тул — үүссэнээс хойш GRACE хугацаанд шалгалтад оруулахгүй.
 const STALE_CHECK_GRACE_MS = 30_000
+
+// `listRooms()` нь үзэгч бүр 5 секунд тутам оролцогчийн тоог асуухад дуудагддаг
+// тул үзэгчийн тоо өсөх тусам LiveKit рүү хийх дуудлага шугаман өснө. Хариуг нь
+// богино хугацаанд кэшлэж, зэрэг ирсэн хүсэлтүүд нэг дуудлага хуваалцана.
+const ROOMS_CACHE_MS = 4_000
+let roomsCache:
+    | { at: number; rooms: ReturnType<typeof roomService.listRooms> }
+    | null = null
+
+const listRoomsCached = () => {
+    if (!roomsCache || Date.now() - roomsCache.at > ROOMS_CACHE_MS) {
+        const rooms = roomService.listRooms()
+        // Амжилтгүй хариу кэшэнд гацвал дараагийн бүх хүсэлт мөн унана — иймд
+        // алдаа гарвал кэшийг шууд цэвэрлэж, дараагийн хүсэлт дахин оролдоно.
+        rooms.catch(() => {
+            roomsCache = null
+        })
+        roomsCache = { at: Date.now(), rooms }
+    }
+    return roomsCache.rooms
+}
 
 export const getliveshow = async (c: Context) => {
     try {
@@ -40,7 +62,7 @@ export const getliveshow = async (c: Context) => {
         )
         if (liveDocs.length > 0) {
             try {
-                const activeRooms = await roomService.listRooms()
+                const activeRooms = await listRoomsCached()
                 const activeRoomNames = new Set(activeRooms.map((r) => r.name))
                 const staleIds = liveDocs
                     .filter((show) => !activeRoomNames.has(show.livekit_room_name ?? ""))
@@ -178,13 +200,17 @@ export const getParticipants = async (c: Context) => {
 
         if (show.livekit_room_name && show.status === "live") {
             try {
-                const room = await roomService.listRooms()
-                const activeRoom = room.find((r) => r.name === show.livekit_room_name)
+                const rooms = await listRoomsCached()
+                const activeRoom = rooms.find((r) => r.name === show.livekit_room_name)
 
                 if (activeRoom) {
                     viewerCount = activeRoom.numParticipants || 0
-                    show.viewer_count = viewerCount
-                    await show.save()
+                    // Тоо өөрчлөгдөөгүй байхад бичих нь үзэгч бүрийн polling тутамд
+                    // нэг бичилт үүсгэдэг — зөвхөн бодитоор өөрчлөгдсөн үед хадгална.
+                    if (show.viewer_count !== viewerCount) {
+                        show.viewer_count = viewerCount
+                        await show.save()
+                    }
                 }
             } catch (error) {
                 console.log("Could not get LiveKit room info:", (error as any).message)
@@ -210,11 +236,21 @@ export const getParticipants = async (c: Context) => {
 export const getAccessToken = async (c: Context) => {
     try {
         const showId = c.req.param("id")
-        const { identity, name } = await c.req.json()
+        const body = await c.req.json().catch(() => ({}))
+        const user = c.get("user")
 
-        if (!identity || !name) {
-            return c.json({ error: "identity and name required" }, 400)
-        }
+        // Identity-г ХЭЗЭЭ Ч клиентээс авахгүй: өмнө нь бие дэх `identity`-г
+        // шууд token-д бичдэг байсан тул хэн ч эвэнтийн эзний identity-г дуурайж
+        // дамжуулж буй худалдагчийг өрөөнөөс шахаж гаргах боломжтой байв.
+        // LiveKit-д нэг өрөөнд identity давхцвал өмнөх холболт таслагддаг.
+        const identity = `viewer-${randomUUID()}`
+
+        // Нэр зөвхөн харагдацын зориулалттай — нэвтэрсэн бол профайлаас нь авна,
+        // зочны өгсөн нэрийг хязгаарлаж цэвэрлэнэ.
+        const name =
+            user?.display_name ||
+            (typeof body?.name === "string" ? body.name.trim().slice(0, 40) : "") ||
+            "Зочин"
 
         let show = null
         try {
@@ -224,17 +260,23 @@ export const getAccessToken = async (c: Context) => {
         }
 
         if (!show) {
-            return c.json({ error: "Live show not found" }, 404)
+            return c.json({ message: "Live show olsongvi" }, 404)
         }
 
         if (!show.livekit_room_name) {
-            return c.json({ error: "Room not configured" }, 400)
+            return c.json({ message: "Энэ шоу дамжуулалттай холбогдоогүй байна" }, 400)
+        }
+
+        // Дуусаагүй/эхлээгүй шоуны хувьд token гаргах нь утгагүй — хоосон өрөө рүү
+        // холбогдож хар дэлгэц үзүүлэхийн оронд ойлгомжтой хариу буцаана.
+        if (show.status !== "live") {
+            return c.json({ message: "Дамжуулалт одоогоор явагдаагүй байна" }, 409)
         }
 
         const at = new AccessToken(
             process.env.LIVEKIT_API_KEY!,
             process.env.LIVEKIT_API_SECRET!,
-            { identity, name, ttl: "2h" }
+            { identity, name, ttl: "1h" }
         )
 
         at.addGrant({
@@ -254,9 +296,6 @@ export const getAccessToken = async (c: Context) => {
         }, 200)
     } catch (error) {
         console.error("GetAccessToken error:", (error as any).message)
-        return c.json({
-            error: "Failed to generate token",
-            details: (error as any).message
-        }, 500)
+        return c.json({ message: "Дамжуулалтад холбогдож чадсангүй" }, 500)
     }
 }

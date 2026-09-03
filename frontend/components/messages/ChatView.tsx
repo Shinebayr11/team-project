@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { Avatar } from '../ui/Avatar';
 import { ChatParticipant, participantName } from '@/hooks/useConversations';
 import { ChatLine } from '@/hooks/useMessages';
@@ -11,6 +12,9 @@ interface ChatViewProps {
   loading: boolean;
   onSend: (text: string) => Promise<{ ok: boolean; message?: string }>;
   onOpenShop: () => void;
+  /** Нарийн дэлгэц дээр яриа нь жагсаалтыг бүтнээр нь орлодог тул буцах гарц
+   *  зөвхөн энд байна — эс тэгвэл хөтчийн "back" л үлдэнэ. */
+  onBack: () => void;
 }
 
 const clockTime = (iso: string) =>
@@ -22,6 +26,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
   loading,
   onSend,
   onOpenShop,
+  onBack,
 }) => {
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
@@ -50,15 +55,25 @@ export const ChatView: React.FC<ChatViewProps> = ({
   return (
     <>
       <div className="h-[72px] px-4 sm:px-6 gap-3 border-b border-[var(--wn-line)] flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3 cursor-pointer group" onClick={onOpenShop}>
-          <Avatar name={name} />
-          <span className="text-[16px] font-[800] text-[var(--wn-ink)] group-hover:text-[var(--wn-accent)] transition-colors">
-            {name}
-          </span>
+        <div className="flex items-center gap-2 min-w-0">
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label="Яриаг хаах"
+            className="md:hidden -ml-1 shrink-0 p-1.5 rounded-full text-[var(--wn-ink-2)] hover:bg-[var(--wn-surface-2)] transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <div className="flex items-center gap-3 min-w-0 cursor-pointer group" onClick={onOpenShop}>
+            <Avatar name={name} />
+            <span className="truncate text-[16px] font-[800] text-[var(--wn-ink)] group-hover:text-[var(--wn-accent)] transition-colors">
+              {name}
+            </span>
+          </div>
         </div>
         <button
           onClick={onOpenShop}
-          className="px-4 py-2 rounded-full border border-[var(--wn-line-2)] text-[13px] font-[700] text-[var(--wn-ink)] hover:bg-[var(--wn-surface-2)] transition-colors"
+          className="shrink-0 px-4 py-2 rounded-full border border-[var(--wn-line-2)] text-[13px] font-[700] text-[var(--wn-ink)] hover:bg-[var(--wn-surface-2)] transition-colors"
         >
           Дэлгүүр үзэх
         </button>

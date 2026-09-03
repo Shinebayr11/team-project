@@ -1,30 +1,41 @@
+// Ажиллуулах: npx tsx --env-file=.env scripts/deleteOldIngress.ts (server/ дотор)
+//
+// OBS ingress-ийн хувилбарыг буцаасны (commit ac006e7) дараа LiveKit төсөл дээр
+// үлдсэн ingress объектуудыг цэвэрлэнэ. Апп өөрөө одоо ingress үүсгэдэггүй.
+import "dotenv/config";
 import { IngressClient } from "livekit-server-sdk";
 
-const apiKey = process.env.LIVEKIT_API_KEY!;
-const apiSecret = process.env.LIVEKIT_API_SECRET!;
-const liveKitUrl = process.env.LIVEKIT_URL!.replace(/^wss?:\/\//, "").replace(/\/$/, "");
-
 async function deleteAllIngress() {
-  try {
-    const client = new IngressClient(`https://${liveKitUrl}`, apiKey, apiSecret);
-    
-    console.log("Listing all ingress...");
-    const ingresses = await client.listIngress();
-    
-    console.log(`Found ${ingresses.length} ingress objects`);
-    
-    for (const ingress of ingresses) {
-      console.log(`Deleting ${ingress.ingressId}...`);
-      await client.deleteIngress(ingress.ingressId);
-      console.log(`✅ Deleted ${ingress.ingressId}`);
-    }
-    
-    console.log("✅ All ingress deleted!");
-    process.exit(0);
-  } catch (err: any) {
-    console.error("Error:", err.message);
+  // env уншилтыг функц дотор байрлуулсан: модулийн түвшинд `LIVEKIT_URL!` дээр
+  // `.replace()` дуудвал env ачаалагдаагүй үед try/catch хүрэхээс өмнө шидэгдэж,
+  // "Cannot read properties of undefined" гэсэн ойлгомжгүй мессеж гардаг байв.
+  const apiKey = process.env.LIVEKIT_API_KEY;
+  const apiSecret = process.env.LIVEKIT_API_SECRET;
+  const url = process.env.LIVEKIT_URL;
+
+  if (!apiKey || !apiSecret || !url) {
+    console.error(
+      "LIVEKIT_API_KEY, LIVEKIT_API_SECRET, LIVEKIT_URL гурвуулаа тохируулагдсан байх ёстой"
+    );
     process.exit(1);
   }
+
+  const host = url.replace(/^wss?:\/\//, "").replace(/\/$/, "");
+  const client = new IngressClient(`https://${host}`, apiKey, apiSecret);
+
+  console.log("Ingress жагсааж байна...");
+  const ingresses = await client.listIngress();
+  console.log(`${ingresses.length} ingress олдлоо`);
+
+  for (const ingress of ingresses) {
+    await client.deleteIngress(ingress.ingressId);
+    console.log(`✅ Устгав: ${ingress.ingressId}`);
+  }
+
+  console.log("✅ Бүх ingress устлаа!");
 }
 
-deleteAllIngress();
+deleteAllIngress().catch((err: any) => {
+  console.error("Алдаа:", err?.message ?? err);
+  process.exit(1);
+});
