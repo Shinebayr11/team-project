@@ -15,6 +15,12 @@ const matchesQuery = (show: HomeShow, term: string) =>
 
 export type StatusFilter = 'Live now' | 'Starting soon' | 'Most watched' | null;
 
+/** Эрэмбэлэхэд ашиглах эхэлсэн мөч. Огноо буруу/байхгүй бол хамгийн ард орно. */
+const startedMs = (show: HomeShow) => {
+  const parsed = show.startedAt ? Date.parse(show.startedAt) : NaN;
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
+
 /**
  * Home feed state: the browse view groups by category, while search or a picked
  * category switches to a flat, infinitely-scrolled list.
@@ -38,7 +44,13 @@ export const useHomeFeed = (query: string, category: string, statusFilter: Statu
     // filler content while someone is actually live.
     const real = liveShows.filter(s => s.roomId);
     const pool = real.length ? real : liveShows;
-    return [...pool].sort((a, b) => (b.live ?? 0) - (a.live ?? 0))[0];
+    // Дөнгөж эхэлсэн дамжуулалт 0 үзэгчтэй байдаг тул зөвхөн үзэгчээр эрэмбэлбэл
+    // үзэгч хуримтлуулсан хуучин мөрөнд үргэлж хожигдож, ЯГ ОДОО явж байгаа шоу
+    // том картад хэзээ ч гарахгүй. Хамгийн сүүлд эхэлсэн нь тэргүүлнэ; ижил
+    // хугацаатай бол үзэгчийн тоо шийднэ.
+    return [...pool].sort(
+      (a, b) => startedMs(b) - startedMs(a) || (b.live ?? 0) - (a.live ?? 0)
+    )[0];
   }, [shows]);
 
   const filteredShows = useMemo(() => {

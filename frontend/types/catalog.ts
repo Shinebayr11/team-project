@@ -45,6 +45,8 @@ export interface HomeShow {
   saved?: number;
   /** LiveKit room name — lets a card link into the real broadcast at /live/[roomId]. */
   roomId?: string;
+  /** Эхэлсэн мөч (ISO). Нүүрний том картад хамгийн сүүлийн дамжуулалтыг гаргахад. */
+  startedAt?: string;
   /** Live_Show document id — lets the watch page load seller/product details. */
   showId?: string;
 }

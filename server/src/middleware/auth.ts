@@ -26,6 +26,34 @@ export const verifyClerkToken = createMiddleware(async (c, next) => {
     }
 });
 
+// Нэвтрэлт заавал биш, гэхдээ байвал ашигтай endpoint-уудад (жишээ нь шууд
+// дамжуулалт үзэх — зочин ч үзнэ, нэвтэрсэн хүний нэр нь чатад харагдана).
+// Токен байхгүй эсвэл буруу бол алдаа буцаахгүй, зүгээр л `user`-гүй үргэлжилнэ.
+export const optionalAuth = createMiddleware(async (c, next) => {
+    const header = c.req.header("Authorization");
+    const token = header?.startsWith("Bearer ") ? header.slice(7) : null;
+
+    if (token) {
+        try {
+            const payload = await verifyToken(token, {
+                secretKey: process.env.CLERK_SECRET_KEY!,
+            });
+            c.set("clerkUserId", payload.sub);
+
+            const user = await User.findOne({ clerk_user_id: payload.sub });
+            if (user) {
+                c.set("user", user);
+                c.set("userId", user._id);
+            }
+        } catch (error) {
+            // Хугацаа нь дууссан токентой хүнийг зочин мэтээр үзүүлнэ.
+            console.error("optionalAuth: токен шалгахад алдаа:", error);
+        }
+    }
+
+    await next();
+});
+
 export const requireAuth = createMiddleware(async (c, next) => {
     const header = c.req.header("Authorization");
     const token = header?.startsWith("Bearer ") ? header.slice(7) : null;

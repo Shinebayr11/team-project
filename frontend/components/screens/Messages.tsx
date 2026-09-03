@@ -85,6 +85,8 @@ export const Messages: React.FC = () => {
               messages={messages}
               loading={messagesLoading}
               onSend={handleSend}
+              // Нарийн дэлгэц дээр жагсаалт руу буцаах цорын ганц гарц.
+              onBack={() => navigate("/messages")}
               onOpenShop={() =>
                 navigate(`/shop?seller=${encodeURIComponent(shopName)}`)
               }

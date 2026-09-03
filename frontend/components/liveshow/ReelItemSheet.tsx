@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import { X, GripHorizontal } from 'lucide-react';
 import { ShowProductList } from './ShowProductList';
 import { ReelProduct, ReelTab, ReelShow } from '../../types';
@@ -31,41 +31,28 @@ export const ReelItemSheet: React.FC<ReelItemSheetProps> = ({
   onToggleFollow,
 }) => {
   const sheetRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startY, setStartY] = useState(0);
+  // Чирэлтийн эхлэл. Өмнө нь эдгээр сонсогчид `document` дээр сууж байсан тул
+  // дэлгэцийн ХААНА Ч доош чирэхэд (жишээ нь reel-ээ гүйлгэхэд) sheet хаагддаг
+  // байв — иймд зөвхөн sheet дотор болсон хүрэлтийг л сонсоно.
+  const dragStartY = useRef<number | null>(null);
 
-  useEffect(() => {
-    if (!isOpen) return;
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('[data-no-drag]')) return;
+    dragStartY.current = e.touches[0].clientY;
+  };
 
-    const handleTouchStart = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('[data-no-drag]')) return;
-      setIsDragging(true);
-      setStartY(e.touches[0].clientY);
-    };
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (dragStartY.current === null) return;
+    if (e.touches[0].clientY - dragStartY.current > 50) {
+      dragStartY.current = null;
+      onClose();
+    }
+  };
 
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!isDragging || !sheetRef.current) return;
-      const delta = e.touches[0].clientY - startY;
-      if (delta > 50) {
-        onClose();
-      }
-    };
-
-    const handleTouchEnd = () => {
-      setIsDragging(false);
-    };
-
-    document.addEventListener('touchstart', handleTouchStart);
-    document.addEventListener('touchmove', handleTouchMove);
-    document.addEventListener('touchend', handleTouchEnd);
-
-    return () => {
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [isDragging, startY, isOpen, onClose]);
+  const handleTouchEnd = () => {
+    dragStartY.current = null;
+  };
 
   return (
     <>
@@ -78,9 +65,16 @@ export const ReelItemSheet: React.FC<ReelItemSheetProps> = ({
       )}
 
       {/* Sheet */}
+      {/* `flex flex-col` + доорх жагсаалтын `min-h-0` хоёр хамт байж л
+          `overflow-y-auto` ажиллана — эс тэгвэл 85dvh-ээс цааш гарсан бараа
+          хүрэх аргагүй болно. */}
       <div
         ref={sheetRef}
-        className={`fixed bottom-0 inset-x-0 z-50 lg:hidden rounded-t-[24px] bg-white transition-transform duration-300 ease-out ${
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
+        className={`fixed bottom-0 inset-x-0 z-50 lg:hidden flex flex-col rounded-t-[24px] bg-white transition-transform duration-300 ease-out ${
           isOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={{
@@ -89,8 +83,8 @@ export const ReelItemSheet: React.FC<ReelItemSheetProps> = ({
           borderTopRightRadius: '24px',
         }}
       >
-        {/* Drag handle */}
-        <div className="flex justify-center pt-2 pb-4" data-no-drag>
+        {/* Drag handle — sheet-ийг чирж хаах гол барьц. */}
+        <div className="flex justify-center pt-2 pb-4 shrink-0">
           <GripHorizontal className="w-5 h-5 text-[var(--wn-ink-4)]" />
         </div>
 
@@ -105,7 +99,7 @@ export const ReelItemSheet: React.FC<ReelItemSheetProps> = ({
         </button>
 
         {/* Seller info */}
-        <div className="px-4 pb-4 border-b border-[var(--wn-line)]">
+        <div className="px-4 pb-4 border-b border-[var(--wn-line)] shrink-0">
           <div className="text-[10px] font-[800] tracking-wider text-[var(--wn-accent)] uppercase mb-1">
             {show.cat1} • {show.cat2}
           </div>
@@ -141,7 +135,9 @@ export const ReelItemSheet: React.FC<ReelItemSheetProps> = ({
         </div>
 
         {/* Product list */}
-        <div className="flex-1 overflow-y-auto" data-no-drag>
+        {/* `ShowProductList` нь өөрөө flex багана дотор амьдрахаар зохиогдсон —
+            таб, хайлт дээрээ хадгалагдаж, зөвхөн жагсаалт нь гүйнэ. */}
+        <div className="flex flex-1 min-h-0 flex-col" data-no-drag>
           <ShowProductList
             products={products}
             activeTab={activeTab}

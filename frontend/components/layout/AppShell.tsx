@@ -23,9 +23,7 @@ const Chrome: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <>
       {!isSellerHub && (
-        <div className={isLiveShowMobile ? "hidden lg:block" : ""}>
-          <Topbar />
-        </div>
+        <Topbar className={isLiveShowMobile ? "hidden lg:flex" : undefined} />
       )}
       {children}
       <ModalsRenderer />
