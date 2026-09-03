@@ -1,5 +1,5 @@
 import { Context } from "hono"
-import { RoomServiceClient } from "livekit-server-sdk"
+import { RoomServiceClient, AccessToken } from "livekit-server-sdk"
 import { Live_Show } from "../models/Live_show.js"
 
 const roomService = new RoomServiceClient(
@@ -157,4 +157,106 @@ export const postliveshow = async (c: Context) => {
         }, 500)
     }
 
+}
+
+export const getParticipants = async (c: Context) => {
+    try {
+        const showId = c.req.param("id")
+
+        let show = null
+        try {
+            show = await Live_Show.findById(showId)
+        } catch (e) {
+            console.log("Invalid showId format, trying fallback query:", showId)
+        }
+
+        if (!show) {
+            return c.json({ error: "Live show not found" }, 404)
+        }
+
+        let viewerCount = 0
+
+        if (show.livekit_room_name && show.status === "live") {
+            try {
+                const room = await roomService.listRooms()
+                const activeRoom = room.find((r) => r.name === show.livekit_room_name)
+
+                if (activeRoom) {
+                    viewerCount = activeRoom.numParticipants || 0
+                    show.viewer_count = viewerCount
+                    await show.save()
+                }
+            } catch (error) {
+                console.log("Could not get LiveKit room info:", (error as any).message)
+            }
+        }
+
+        return c.json({
+            showId,
+            viewerCount,
+            participantCount: viewerCount,
+            status: show.status,
+            roomName: show.livekit_room_name
+        }, 200)
+    } catch (error) {
+        console.error("GetParticipants error:", (error as any).message)
+        return c.json({
+            error: "Failed to get participants",
+            details: (error as any).message
+        }, 500)
+    }
+}
+
+export const getAccessToken = async (c: Context) => {
+    try {
+        const showId = c.req.param("id")
+        const { identity, name } = await c.req.json()
+
+        if (!identity || !name) {
+            return c.json({ error: "identity and name required" }, 400)
+        }
+
+        let show = null
+        try {
+            show = await Live_Show.findById(showId)
+        } catch (e) {
+            console.log("Invalid showId format:", showId)
+        }
+
+        if (!show) {
+            return c.json({ error: "Live show not found" }, 404)
+        }
+
+        if (!show.livekit_room_name) {
+            return c.json({ error: "Room not configured" }, 400)
+        }
+
+        const at = new AccessToken(
+            process.env.LIVEKIT_API_KEY!,
+            process.env.LIVEKIT_API_SECRET!,
+            { identity, name, ttl: "2h" }
+        )
+
+        at.addGrant({
+            room: show.livekit_room_name,
+            roomJoin: true,
+            canPublish: false,
+            canSubscribe: true,
+            canPublishData: true
+        })
+
+        const token = await at.toJwt()
+
+        return c.json({
+            token,
+            url: process.env.LIVEKIT_URL,
+            roomName: show.livekit_room_name
+        }, 200)
+    } catch (error) {
+        console.error("GetAccessToken error:", (error as any).message)
+        return c.json({
+            error: "Failed to generate token",
+            details: (error as any).message
+        }, 500)
+    }
 }

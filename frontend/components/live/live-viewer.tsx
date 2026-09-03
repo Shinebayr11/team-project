@@ -163,7 +163,8 @@ export function LiveViewer({
   showId?: string
   title?: string
 }) {
-  const { token, error } = useLiveKitToken(roomName, false)
+
+  const { token: liveKitToken, error } = useLiveKitToken(roomName, false)
   const show = useLiveShowDetail(showId)
   const { listing, placeBid } = useAuction(showId)
   const { entries } = useShowProducts(showId)
@@ -176,7 +177,7 @@ export function LiveViewer({
   const shownTitle = show?.title ?? title ?? "Шууд дамжуулалт"
   const category = show?.category || "General"
 
-  if (error || !token) {
+  if (error || !liveKitToken) {
     return (
       <div className="mx-auto flex h-[calc(100vh-68px)] max-w-[1440px] items-center justify-center px-4">
         <p className="text-sm text-[var(--wn-ink-3)]">
@@ -188,7 +189,7 @@ export function LiveViewer({
 
   return (
     <LiveKitRoom
-      token={token}
+      token={liveKitToken}
       serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
       connect
       video={false}

@@ -91,9 +91,7 @@ export function StartShowScreen() {
       const roomName = `stream-${Math.random().toString(36).slice(2, 8)}`
       const streamTitle = title || "Шууд дамжуулалт"
 
-      const { data: me } = await callApi<{ data: { _id: string } }>(
-        "/api/users/me"
-      )
+      console.log("Creating live show:", { streamTitle, roomName, category })
       const { data: show } = await callApi<{ data: { _id: string } }>(
         "/api/liveshow",
         {
@@ -116,6 +114,8 @@ export function StartShowScreen() {
       router.push(
         `/live/${roomName}?host=1&title=${encodeURIComponent(streamTitle)}&showId=${show._id}`
       )
+    } catch (error) {
+      console.error("startLive error:", error)
     } finally {
       setStarting(false)
     }

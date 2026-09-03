@@ -14,20 +14,7 @@ const Live_showsSchema = new Schema(
         started_at: { type: Date },
         category: { type: String },
         tags: { type: String },
-        sponsored: { type: Boolean, default: false },
-        // LiveKit Ingress/Egress fields
-        ingressId: { type: String, sparse: true },
-        egressId: { type: String, sparse: true },
-        roomName: { type: String },
-        liveStatus: { type: String, enum: ["idle", "ingress_created", "streaming", "ingress_failed", "stopped"], default: "idle" },
-        liveError: { type: String },
-        // Facebook Egress
-        facebookEgressStatus: { type: String, enum: ["idle", "started", "failed", "stopped"], default: "idle" },
-        facebookEgressError: { type: String },
-        facebookStartedAt: { type: Date },
-        // Stream session timing
-        ingressCreatedAt: { type: Date },
-        stoppedAt: { type: Date }
+        sponsored: { type: Boolean, default: false }
     },
     { timestamps: true }
 )

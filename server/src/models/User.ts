@@ -30,6 +30,8 @@ const userSchema = new Schema(
         avatar_url: { type: String },
         shop_name: { type: String },
         sellerProfile: { type: sellerProfileSchema, default: undefined },
+        followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+        following: [{ type: Schema.Types.ObjectId, ref: "User" }],
 
     },
     {
