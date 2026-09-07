@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto"
 import { Context } from "hono"
 import { RoomServiceClient, AccessToken } from "livekit-server-sdk"
 import { Live_Show } from "../models/Live_show.js"
+import { ProductListing } from "../models/ProductListing.js"
 
 const roomService = new RoomServiceClient(
     (process.env.LIVEKIT_URL || "").replace(/^ws/, "http"),
@@ -110,16 +111,60 @@ export const getliveshow = async (c: Context) => {
     }
 
 }
-// Seller /sell дээрээс шоу эхлүүлэхийн өмнө өмнөх дүнгээ харах — дууссан
-// шоунуудаас хамгийн их үзэлттэй 3-ыг буцаана.
+/**
+ * GET /api/liveshow/mine
+ *
+ * Худалдагчийн өөрийн шоунууд. Анхдагч нь `/sell` дээрх "хамгийн их үзэлттэй
+ * 3 дууссан шоу" — параметргүй хуучин дуудлагууд хэвээр ажиллана.
+ *
+ *   ?sort=recent   — шинэ нь эхэндээ (анхдагч: үзэгчээр)
+ *   ?limit=6       — хэдийг буцаах (дээд тал нь 50)
+ *   ?stats=1       — шоу тус бүрийн зарагдсан лот, орлогыг хамт тооцно
+ */
 export const getMyLiveshows = async (c: Context) => {
     try {
         const userId = c.get("userId")
-        const data = await Live_Show.find({ seller_id: userId, status: "ended" })
-            .sort({ viewer_count: -1 })
-            .limit(3)
+        const limit = Math.min(Math.max(Number(c.req.query("limit")) || 3, 1), 50)
+        const recent = c.req.query("sort") === "recent"
+
+        const shows = await Live_Show.find({ seller_id: userId, status: "ended" })
+            .sort(recent ? { ended_at: -1, createdAt: -1 } : { viewer_count: -1 })
+            .limit(limit)
+            .lean()
+
+        if (c.req.query("stats") !== "1") {
+            return c.json({ data: shows }, 200)
+        }
+
+        // Шоу тус бүрийн орлого нь тухайн шоун дээр ЗАРАГДСАН лотуудын нийлбэр.
+        const sold = await ProductListing.aggregate([
+            {
+                $match: {
+                    status: "sold",
+                    live_show_id: { $in: shows.map((show) => show._id) },
+                },
+            },
+            {
+                $group: {
+                    _id: "$live_show_id",
+                    soldCount: { $sum: 1 },
+                    revenue: { $sum: { $ifNull: ["$current_highest_bid_coins", 0] } },
+                },
+            },
+        ])
+
+        const statsByShow = new Map(
+            sold.map((row) => [String(row._id), { soldCount: row.soldCount, revenue: row.revenue }])
+        )
+
+        const data = shows.map((show) => ({
+            ...show,
+            ...(statsByShow.get(String(show._id)) ?? { soldCount: 0, revenue: 0 }),
+        }))
+
         return c.json({ data }, 200)
     } catch (error) {
+        console.error("getMyLiveshows алдаа:", error)
         return c.json({
             message: "Aldaa garlaa"
         }, 500)

@@ -2,11 +2,11 @@
 
 import React, { useState } from "react"
 import { useSearchParams, useNavigate } from "@/lib/router"
-import { ChevronLeft } from "lucide-react"
 import { SellerProduct, SellerRecord } from "@/types"
 import { SELLERS } from "@/data"
 import { useStore } from "@/store"
 import { useRequireAuth } from "@/hooks/useRequireAuth"
+import { BackButton } from "@/components/ui/BackButton"
 import { ReviewSummary } from "@/components/reviews/ReviewSummary"
 import { ReviewList } from "@/components/reviews/ReviewList"
 import { ProductGallery } from "@/components/product/ProductGallery"
@@ -52,12 +52,7 @@ export const Product: React.FC = () => {
 
   return (
     <div className="mx-auto max-w-[1120px] px-4 py-6 pb-20 sm:px-6 lg:px-8 lg:py-8 lg:pb-24">
-      <button
-        onClick={() => navigate(`/shop?seller=${seller.slug}`)}
-        className="mb-8 flex items-center gap-1 text-[14px] font-[600] text-[var(--wn-ink-3)] transition-colors hover:text-[var(--wn-ink)]"
-      >
-        <ChevronLeft className="h-4 w-4" /> Back to {seller.slug}'s shop
-      </button>
+      <BackButton className="mb-8" fallback={`/shop?seller=${seller.slug}`} />
 
       <div className="mb-12 lg:mb-16 flex flex-col gap-8 lg:flex-row lg:gap-10">
         <ProductGallery tag={product.tag} />

@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useUser } from "@clerk/nextjs"
 import { useApiClient } from "./useApiClient"
 import { AuctionProduct } from "./useAuction"
@@ -39,19 +39,6 @@ export const winSeller = (win: AuctionWin): WinSeller | undefined => {
   return seller && typeof seller === "object" ? seller : undefined
 }
 
-// Уншсан мэдэгдлийг хэрэглэгч тус бүрээр нь тусад нь хадгална — нэг
-// browser-ээс хэд хэдэн хүн нэвтэрч болно.
-const seenKey = (userId?: string) => `auctionWinsSeen:${userId ?? "anon"}`
-
-const readSeen = (userId?: string): string[] => {
-  try {
-    const raw = localStorage.getItem(seenKey(userId))
-    return raw ? (JSON.parse(raw) as string[]) : []
-  } catch {
-    return []
-  }
-}
-
 const POLL_MS = 20000
 
 /**
@@ -60,14 +47,9 @@ const POLL_MS = 20000
  */
 export function useMyWins() {
   const { callApi } = useApiClient()
-  const { user, isSignedIn } = useUser()
+  const { isSignedIn } = useUser()
   const [wins, setWins] = useState<AuctionWin[]>([])
-  const [seen, setSeen] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    setSeen(readSeen(user?.id))
-  }, [user?.id])
 
   const refresh = useCallback(async () => {
     if (!isSignedIn) {
@@ -110,27 +92,5 @@ export function useMyWins() {
     }
   }, [isSignedIn, refresh])
 
-  const unseenCount = useMemo(
-    () => wins.filter((win) => !seen.includes(win._id)).length,
-    [wins, seen]
-  )
-
-  /** Мэдэгдлийн жагсаалтыг нээхэд бүгдийг уншсанд тооцно. */
-  const markAllSeen = useCallback(() => {
-    const ids = wins.map((win) => win._id)
-    setSeen(ids)
-    try {
-      localStorage.setItem(seenKey(user?.id), JSON.stringify(ids))
-    } catch {
-      // Хувийн горим гэх мэт хадгалах боломжгүй үед мэдэгдэл дахин
-      // тоологдох нь болно — гэхдээ програм ажиллахад саад болохгүй.
-    }
-  }, [wins, user?.id])
-
-  const isUnseen = useCallback(
-    (id: string) => !seen.includes(id),
-    [seen]
-  )
-
-  return { wins, loading, unseenCount, markAllSeen, isUnseen, refresh }
+  return { wins, loading, refresh }
 }

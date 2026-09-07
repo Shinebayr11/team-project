@@ -15,6 +15,9 @@ const matchesQuery = (show: HomeShow, term: string) =>
 
 export type StatusFilter = 'Live now' | 'Starting soon' | 'Most watched' | null;
 
+/** Шүүлтгүй үндсэн харагдац. Ангилал сонгосон эсэхийг эндээс шалгана. */
+export const DEFAULT_CATEGORY = 'Танд санал болгох';
+
 /** Эрэмбэлэхэд ашиглах эхэлсэн мөч. Огноо буруу/байхгүй бол хамгийн ард орно. */
 const startedMs = (show: HomeShow) => {
   const parsed = show.startedAt ? Date.parse(show.startedAt) : NaN;
@@ -32,7 +35,7 @@ export const useHomeFeed = (query: string, category: string, statusFilter: Statu
     if (statusFilter === 'Starting soon') return allShows.filter(s => s.live === undefined);
     return allShows;
   }, [allShows, statusFilter]);
-  const isBrowsing = !query && category === 'For You' && !statusFilter;
+  const isBrowsing = !query && category === DEFAULT_CATEGORY && !statusFilter;
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
   const loaderRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +61,7 @@ export const useHomeFeed = (query: string, category: string, statusFilter: Statu
       const term = query.toLowerCase();
       return shows.filter(s => matchesQuery(s, term));
     }
-    if (category !== 'For You') return shows.filter(s => s.category === category);
+    if (category !== DEFAULT_CATEGORY) return shows.filter(s => s.category === category);
     return shows;
   }, [query, category, shows]);
 

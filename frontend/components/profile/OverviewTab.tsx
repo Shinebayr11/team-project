@@ -1,15 +1,19 @@
 "use client"
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
-import { HomeShow, Purchase } from '../../types';
+import { HomeShow } from '../../types';
+import { MyPurchase } from '@/hooks/useMyPurchases';
+import { ProductThumb } from '@/components/ui/ProductThumb';
 import { ShowCard } from '../cards/ShowCard';
 import { ProfileTab } from './ProfileSidebar';
+import { PurchaseDetailSheet } from './PurchaseDetailSheet';
 
 interface OverviewTabProps {
-  purchases: Purchase[];
+  purchases: MyPurchase[];
   savedShows: HomeShow[];
   followingCount: number;
+  loading: boolean;
   onNavigate: (tab: ProfileTab) => void;
 }
 
@@ -26,48 +30,61 @@ const StatCard: React.FC<{ value: number; label: string; onClick: () => void }> 
 const SectionHeader: React.FC<{ title: string; onViewAll: () => void }> = ({ title, onViewAll }) => (
   <div className="flex items-center justify-between mb-4">
     <h3 className="text-[18px] font-[800] text-[var(--wn-ink)]">{title}</h3>
-    <button onClick={onViewAll} className="text-[13px] font-[700] text-[var(--wn-accent)] hover:underline">View All</button>
+    <button onClick={onViewAll} className="text-[13px] font-[700] text-[var(--wn-accent)] hover:underline">Бүгдийг харах</button>
   </div>
 );
 
 export const OverviewTab: React.FC<OverviewTabProps> = ({
-  purchases, savedShows, followingCount, onNavigate,
-}) => (
+  purchases, savedShows, followingCount, loading, onNavigate,
+}) => {
+  const [selected, setSelected] = useState<MyPurchase | null>(null);
+
+  return (
   <div className="flex flex-col gap-10">
-    <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Overview</h2>
+    <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Ерөнхий тойм</h2>
 
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <StatCard value={purchases.length} label="Purchases" onClick={() => onNavigate('purchases')} />
-      <StatCard value={savedShows.length} label="Saved Shows" onClick={() => onNavigate('saved')} />
-      <StatCard value={followingCount} label="Following" onClick={() => onNavigate('following')} />
+      <StatCard value={purchases.length} label="Худалдан авалт" onClick={() => onNavigate('purchases')} />
+      <StatCard value={savedShows.length} label="Хадгалсан шоу" onClick={() => onNavigate('saved')} />
+      <StatCard value={followingCount} label="Дагаж буй" onClick={() => onNavigate('following')} />
     </div>
 
-    {purchases.length > 0 && (
+    {loading ? (
+      <p className="text-[15px] font-[600] text-[var(--wn-ink-3)]">Уншиж байна...</p>
+    ) : purchases.length > 0 ? (
       <div>
-        <SectionHeader title="Recent Purchases" onViewAll={() => onNavigate('purchases')} />
+        <SectionHeader title="Сүүлийн худалдан авалт" onViewAll={() => onNavigate('purchases')} />
         <div className="flex flex-col gap-3">
           {purchases.slice(0, 3).map(p => (
-            <div key={p.id} className="flex items-center justify-between p-4 rounded-[16px] border border-[var(--wn-line)] hover:border-[var(--wn-line-2)] transition-colors cursor-pointer">
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => setSelected(p)}
+              className="flex w-full items-center justify-between p-4 rounded-[16px] border border-[var(--wn-line)] text-left transition-colors hover:border-[var(--wn-line-2)] hover:bg-[var(--wn-surface-2)]"
+            >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-[var(--wn-shot)] shrink-0" />
+                <ProductThumb product={p.product} size={48} />
                 <div>
                   <div className="font-[700] text-[15px] text-[var(--wn-ink)]">{p.title}</div>
-                  <div className="text-[13px] text-[var(--wn-ink-3)] mt-0.5">from {p.seller} • {p.date}</div>
+                  <div className="text-[13px] text-[var(--wn-ink-3)] mt-0.5">
+                    {p.seller}
+                    {p.date ? ` • ${new Date(p.date).toLocaleDateString()}` : ''}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <div className="text-[15px] font-[700] text-[var(--wn-ink)]">₮{p.price}</div>
+                <div className="text-[15px] font-[700] text-[var(--wn-ink)]">₮{p.price.toLocaleString()}</div>
                 <ChevronRight className="w-4 h-4 text-[var(--wn-ink-4)]" />
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
-    )}
+    ) : null}
 
     {savedShows.length > 0 && (
       <div>
-        <SectionHeader title="Saved Shows" onViewAll={() => onNavigate('saved')} />
+        <SectionHeader title="Хадгалсан шоу" onViewAll={() => onNavigate('saved')} />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {savedShows.slice(0, 3).map(show => (
             <ShowCard key={`${show.seller}-${show.title}`} show={show} />
@@ -75,5 +92,8 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         </div>
       </div>
     )}
+
+    <PurchaseDetailSheet purchase={selected} onClose={() => setSelected(null)} />
   </div>
-);
+  );
+};

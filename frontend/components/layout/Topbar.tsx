@@ -34,8 +34,8 @@ export const Topbar: React.FC<{ className?: string }> = ({ className }) => {
           <Search className="w-5 h-5 text-[var(--wn-ink-4)] mr-2" />
           <input
             type="text"
-            placeholder="Search WhyNot"
-            aria-label="Search WhyNot"
+            placeholder="WhyNot дотор хайх"
+            aria-label="WhyNot дотор хайх"
             className="bg-transparent border-none outline-none w-full text-[15px] text-[var(--wn-ink)] placeholder:text-[var(--wn-ink-4)] font-[500]"
           />
         </div>

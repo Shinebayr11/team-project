@@ -3,32 +3,24 @@
 import React from "react"
 import { useRouter } from "next/navigation"
 import { useNavigate } from "@/lib/router"
-import { Calendar, CheckCircle2 } from "lucide-react"
-import { useStore } from "@/store"
+import { CheckCircle2 } from "lucide-react"
 import { useActiveStream } from "@/hooks/useActiveStream"
-import { useSellerOverview, formatCountdown } from "@/features/seller-hub/hooks/useSellerOverview"
+import { useSellerOverview } from "@/features/seller-hub/hooks/useSellerOverview"
 import { PageHeader } from "@/features/seller-hub/components/PageHeader"
 import { KpiCard } from "@/features/seller-hub/components/KpiCard"
 import { LiveShowBanner } from "@/features/seller-hub/components/overview/LiveShowBanner"
-import { NextShowBanner } from "@/features/seller-hub/components/overview/NextShowBanner"
 import { QuickActions } from "@/features/seller-hub/components/overview/QuickActions"
 import { ActionRequired } from "@/features/seller-hub/components/overview/ActionRequired"
 import { ShowListSection } from "@/features/seller-hub/components/overview/ShowListSection"
 import { LastShowPerformance } from "@/features/seller-hub/components/overview/LastShowPerformance"
 
 export const SellerOverview: React.FC = () => {
-  const { state } = useStore()
   const navigate = useNavigate()
   const router = useRouter()
   const active = useActiveStream()
-  const overview = useSellerOverview(state)
+  const overview = useSellerOverview()
 
   const goToShows = () => navigate("/seller/shows")
-
-  // Шууд эфир нь store-ын mock статусаас биш, жинхэнэ дамжуулалтаас тодорхойлогдоно.
-  const linkedShow = active?.sellerShowId
-    ? state.sellerShows.find((s) => s.id === active.sellerShowId)
-    : undefined
 
   const resumeLive = () => {
     if (!active) return
@@ -37,60 +29,41 @@ export const SellerOverview: React.FC = () => {
     )
   }
 
-  const startShow = () => {
-    if (!overview.nextShow) return navigate("/seller/shows/start")
-    const params = new URLSearchParams({
-      showId: overview.nextShow.id,
-      title: overview.nextShow.title,
-      category: overview.nextShow.category,
-    })
-    navigate(`/seller/shows/start?${params.toString()}`)
-  }
-
   return (
     <>
       <PageHeader
-        title="Overview"
-        description="Here's what's happening with your shop today."
+        title="Ерөнхий тойм"
+        description="Өнөөдөр таны дэлгүүрт болж буй зүйлс."
       />
 
-      {active ? (
+      {/* Шууд эфир нь жинхэнэ дамжуулалтаас тодорхойлогдоно. Дүн нь дуудлага
+          худалдааны бодит үр дүн ирэх хүртэл 0 байхыг зөвшөөрнө. */}
+      {active && (
         <LiveShowBanner
-          title={linkedShow?.title ?? active.title}
-          stats={linkedShow?.stats ?? { viewers: 0, sales: 0, revenue: 0 }}
+          title={active.title}
+          stats={{ viewers: 0, sales: 0, revenue: 0 }}
           onOpen={resumeLive}
         />
-      ) : overview.nextShow ? (
-        <NextShowBanner
-          show={overview.nextShow}
-          countdown={formatCountdown(
-            overview.nextShow.scheduledAt,
-            overview.now
-          )}
-          ready={overview.nextShowReady}
-          onOpen={goToShows}
-          onGoLive={startShow}
-        />
-      ) : null}
+      )}
 
       <QuickActions />
 
       <div className="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
         <KpiCard
-          title="Total Revenue"
+          title="Нийт орлого"
           value={`₮${overview.totalRevenue.toLocaleString()}`}
           tone="amber"
         />
         <KpiCard
-          title="Orders to Fulfill"
-          value={overview.ordersToFulfill.length}
-          caption={`₮${overview.pendingValue.toLocaleString()} total`}
+          title="Хүргэж өгөх лот"
+          value={overview.pendingHandover.length}
+          caption="ялагчтайгаа холбогдоно уу"
           tone="coral"
         />
         <KpiCard
-          title="Low Stock Items"
+          title="Нөөц багассан бараа"
           value={overview.lowStockItems.length}
-          caption={`${overview.outOfStockItems.length} out of stock`}
+          caption={`${overview.outOfStockItems.length} дууссан`}
           tone="blue"
         />
       </div>
@@ -98,25 +71,8 @@ export const SellerOverview: React.FC = () => {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="flex flex-col gap-8">
           <ActionRequired
-            pendingOrders={overview.ordersToFulfill.length}
+            pendingHandover={overview.pendingHandover.length}
             lowStockCount={overview.lowStockItems.length}
-            showBlocker={
-              overview.nextShow && !overview.nextShowReady
-                ? overview.nextShowIssues[0]
-                : undefined
-            }
-          />
-
-          <ShowListSection
-            title="Upcoming Shows"
-            shows={overview.upcomingShows.slice(1, 4)}
-            icon={Calendar}
-            actionLabel="Manage"
-            onAction={goToShows}
-            viewAllTo="/seller/shows"
-            subtitle={(show) => new Date(show.scheduledAt).toLocaleString()}
-            emptyMessage="No other upcoming shows scheduled."
-            emptyAction={{ label: "Schedule a Show", onClick: goToShows }}
           />
         </div>
 
@@ -129,15 +85,19 @@ export const SellerOverview: React.FC = () => {
           )}
 
           <ShowListSection
-            title="Recent Shows"
+            title="Сүүлийн дамжуулалт"
             shows={overview.recentShows.slice(0, 3)}
             icon={CheckCircle2}
-            actionLabel="Summary"
+            actionLabel="Харах"
             onAction={goToShows}
             subtitle={(show) =>
-              `₮${show.stats.revenue.toLocaleString()} • ${show.stats.sales} sold`
+              `₮${show.revenue.toLocaleString()} • ${show.soldCount} лот зарагдсан`
             }
-            emptyMessage="No recent shows."
+            emptyMessage={
+              overview.loading
+                ? "Уншиж байна..."
+                : "Дууссан дамжуулалт алга байна."
+            }
           />
         </div>
       </div>

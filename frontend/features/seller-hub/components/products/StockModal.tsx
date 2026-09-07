@@ -10,9 +10,9 @@ interface StockModalProps {
 }
 
 const TYPES: { value: StockAdjustType; label: string }[] = [
-  { value: 'add', label: 'Add' },
-  { value: 'remove', label: 'Remove' },
-  { value: 'set', label: 'Set' },
+  { value: 'add', label: 'Нэмэх' },
+  { value: 'remove', label: 'Хасах' },
+  { value: 'set', label: 'Тохируулах' },
 ];
 
 export const StockModal: React.FC<StockModalProps> = ({ onClose, onSave }) => {
@@ -31,7 +31,7 @@ export const StockModal: React.FC<StockModalProps> = ({ onClose, onSave }) => {
 
       {/* Гар утсан дээр доороос гарна; өндөр нь дэлгэцээс хэтэрвэл дотроо гүйнэ. */}
       <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-[400px] max-h-[92dvh] sm:max-h-[85dvh] overflow-y-auto p-6 shadow-xl">
-        <h2 className="text-[18px] font-[800] text-black mb-4">Adjust Stock</h2>
+        <h2 className="text-[18px] font-[800] text-black mb-4">Нөөц тохируулах</h2>
 
         <div className="flex p-1 bg-gray-100 rounded-xl mb-6">
           {TYPES.map(option => (
@@ -48,7 +48,7 @@ export const StockModal: React.FC<StockModalProps> = ({ onClose, onSave }) => {
         </div>
 
         <div className="mb-6">
-          <label className="block text-[12px] font-[700] text-gray-500 mb-1" htmlFor="stockAmount">Amount</label>
+          <label className="block text-[12px] font-[700] text-gray-500 mb-1" htmlFor="stockAmount">Тоо хэмжээ</label>
           <input
             id="stockAmount"
             type="number"
@@ -61,10 +61,10 @@ export const StockModal: React.FC<StockModalProps> = ({ onClose, onSave }) => {
 
         <div className="flex items-center justify-end gap-3">
           <button onClick={onClose} className="px-4 py-2 rounded-full text-[14px] font-[700] text-gray-600 hover:bg-gray-100">
-            Cancel
+            Цуцлах
           </button>
           <button onClick={handleSave} className="px-6 py-2 rounded-full bg-black text-white text-[14px] font-[700] hover:bg-gray-800">
-            Save
+            Хадгалах
           </button>
         </div>
       </div>

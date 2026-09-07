@@ -13,7 +13,7 @@ import { Track } from "livekit-client"
 import "@livekit/components-styles"
 import { useNavigate } from "@/lib/router"
 import { cn } from "@/lib/utils"
-import { useStore } from "@/store"
+import { useFollow } from "@/hooks/useFollow"
 import { useLiveKitToken } from "@/hooks/useLiveKitToken"
 import { useLiveShowDetail } from "@/hooks/useLiveShowDetail"
 import { ReelProduct, ReelTab } from "@/types"
@@ -27,7 +27,7 @@ import { ShowProduct, productOfEntry, useShowProducts } from "@/hooks/useShowPro
 
 /**
  * Худалдагчийн урьдчилан эмхэлсэн жагсаалт панелийн үндэс болно; дуудлага худалдаанд
- * гарсан бараа нь "Live now", дуусcан нь "Sold" болж доошоо шилжинэ.
+ * гарсан бараа нь "Шууд явж байна", дуусcан нь "Зарагдсан" болж доошоо шилжинэ.
  */
 const buildProducts = (
   entries: ShowProduct[],
@@ -48,7 +48,7 @@ const buildProducts = (
     const row: ReelProduct = {
       name: product.name,
       price: current ? livePrice : String(product.price_coins ?? 0),
-      tag: current ? (running ? "Live now" : "Sold") : "Удахгүй",
+      tag: current ? (running ? "Шууд явж байна" : "Зарагдсан") : "Удахгүй",
       live: current && running,
       image: product.images?.[0],
     }
@@ -116,7 +116,7 @@ function Stage({
       <div className="absolute top-4 left-4 z-10 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-[12px] font-[600] text-white backdrop-blur-md">
         <LiveDot className="h-2 w-2" />
         <span>Шууд</span>
-        <span className="ml-1 opacity-60">{participants.length} watching</span>
+        <span className="ml-1 opacity-60">{participants.length} үзэж байна</span>
       </div>
 
       <button
@@ -136,15 +136,18 @@ function Stage({
 function SellerPanel({
   title,
   seller,
+  sellerId,
   category,
 }: {
   title: string
   seller: string
+  /** Populate хийгдээгүй/mock шоуны хувьд байхгүй байж болно. */
+  sellerId?: string
   category: string
 }) {
   const navigate = useNavigate()
-  const { isFollowing, toggleFollow } = useStore()
-  const following = isFollowing(seller)
+  const { isFollowing, toggleFollow, pendingId } = useFollow()
+  const following = isFollowing(sellerId)
 
   return (
     <div className="border-b border-[var(--wn-line)] p-4">
@@ -171,16 +174,21 @@ function SellerPanel({
         </div>
       </div>
 
-      <button
-        onClick={() => toggleFollow(seller)}
-        className={`w-full rounded-xl py-2 text-[13px] font-[700] transition-colors ${
-          following
-            ? "bg-[var(--wn-surface-2)] text-[var(--wn-ink)]"
-            : "bg-[var(--wn-ink)] text-white hover:bg-[var(--wn-ink-2)]"
-        }`}
-      >
-        {following ? "Following" : "Follow"}
-      </button>
+      {/* Худалдагчийн id байхгүй бол дагах боломжгүй — сервер зөвхөн id-гаар
+          ажилладаг тул товчийг харуулахгүй. */}
+      {sellerId && (
+        <button
+          onClick={() => toggleFollow({ _id: sellerId, display_name: seller })}
+          disabled={pendingId === sellerId}
+          className={`w-full rounded-xl py-2 text-[13px] font-[700] transition-colors disabled:opacity-60 ${
+            following
+              ? "bg-[var(--wn-surface-2)] text-[var(--wn-ink)]"
+              : "bg-[var(--wn-ink)] text-white hover:bg-[var(--wn-ink-2)]"
+          }`}
+        >
+          {following ? "Дагаж байна" : "Дагах"}
+        </button>
+      )}
     </div>
   )
 }
@@ -205,12 +213,13 @@ export function LiveViewer({
   const { entries } = useShowProducts(showId)
   const [tab, setTab] = useState<ReelTab>("buynow")
 
+  const sellerDoc =
+    typeof show?.seller_id === "object" ? show.seller_id : undefined
   const seller =
-    typeof show?.seller_id === "object" && show.seller_id?.display_name
-      ? show.seller_id.display_name
-      : "Seller"
+    sellerDoc?.shop_name || sellerDoc?.display_name || "Худалдагч"
+  const sellerId = sellerDoc?._id
   const shownTitle = show?.title ?? title ?? "Шууд дамжуулалт"
-  const category = show?.category || "General"
+  const category = show?.category || "Ерөнхий"
 
   if (error || !liveKitToken) {
     return (
@@ -246,6 +255,7 @@ export function LiveViewer({
             <SellerPanel
               title={shownTitle}
               seller={seller}
+              sellerId={sellerId}
               category={category}
             />
             <ShowProductList

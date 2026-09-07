@@ -1,7 +1,10 @@
 import { HomeShow } from "@/types"
 
 export interface LiveShowSeller {
+  /** Дагах/чат зэрэг бодит үйлдлүүд нэрээр биш, зөвхөн үүгээр ажиллана. */
+  _id?: string
   display_name?: string
+  shop_name?: string
   avatar_url?: string
 }
 

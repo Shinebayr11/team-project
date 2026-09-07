@@ -7,6 +7,7 @@ import { Radio } from "lucide-react"
 import { useSearchParams } from "@/lib/router"
 import { useApiClient } from "@/hooks/useApiClient"
 import { useActiveStream, writeActiveStream } from "@/hooks/useActiveStream"
+import { useShowProducts } from "@/hooks/useShowProducts"
 import { useCategories } from "@/hooks/useCategories"
 import { EXPLORE_CATEGORIES } from "@/data/exploreCategories"
 import { PageHeader } from "@/features/seller-hub/components/PageHeader"
@@ -37,6 +38,9 @@ export function StartShowScreen() {
   const { callApi } = useApiClient()
   const [params] = useSearchParams()
   const active = useActiveStream()
+  // Дамжуулалтын бараа — "Миний бараа" ба "Дамжуулалтын бараа" хоёр панель
+  // үүнийг хуваалцана.
+  const lineup = useShowProducts(active?.showId)
   const { categories, addCategory } = useCategories()
 
   // Шоуны дэлгэрэнгүйгээс ирсэн бол гарчиг, ангилал нь бэлдсэн байна.
@@ -288,11 +292,11 @@ export function StartShowScreen() {
 
           {/* Дамжуулалтын жагсаалт зөвхөн дамжуулалт байгаа үед утгатай — эхлүүлээгүй бол
               холбогдох showId байхгүй. */}
-          {active && <ShowLineup showId={active.showId} />}
+          {active && <ShowLineup lineup={lineup} />}
         </div>
 
         <div className="flex flex-col gap-8">
-          <ProductCatalog />
+          <ProductCatalog lineup={active ? lineup : undefined} />
           <PastShows />
         </div>
       </div>

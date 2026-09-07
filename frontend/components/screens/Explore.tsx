@@ -29,7 +29,7 @@ export const Explore: React.FC = () => {
       <ExploreHeader query={query} onQueryChange={setQuery} />
 
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-12 py-8 md:py-10 flex flex-col gap-10 md:gap-16">
-        <ExploreSection title="Categories" onViewAll={() => navigate('/home')}>
+        <ExploreSection title="Ангилал" onViewAll={() => navigate('/home')}>
           <CategoryGrid
             categories={EXPLORE_CATEGORIES}
             onSelect={category => navigate(`/home?cat=${encodeURIComponent(category.name)}`)}
@@ -41,14 +41,14 @@ export const Explore: React.FC = () => {
         </ExploreSection>
 
         <ExploreSection
-          title="Recommended for You"
+          title="Танд санал болгох"
           icon={<Star className="w-5 h-5 text-[var(--wn-accent)] fill-[var(--wn-accent)]" />}
         >
           <ShowGrid shows={recommendedShows.slice(0, 4)} />
         </ExploreSection>
 
         <ExploreSection
-          title="Trending Products"
+          title="Эрэлттэй бараа"
           icon={<TrendingUp className="w-5 h-5 text-[var(--wn-ink-2)]" />}
           onViewAll={() => navigate('/home')}
         >
@@ -56,7 +56,7 @@ export const Explore: React.FC = () => {
         </ExploreSection>
 
         <ExploreSection
-          title="Upcoming Shows"
+          title="Удахгүй болох шоу"
           icon={<Calendar className="w-5 h-5 text-[var(--wn-ink-2)]" />}
           onViewAll={() => navigate('/home')}
         >

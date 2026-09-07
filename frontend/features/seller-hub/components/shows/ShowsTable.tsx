@@ -3,7 +3,7 @@
 import React from 'react';
 import { SellerShow } from '@/features/seller-hub/types';
 import { StatusPill } from '../StatusPill';
-import { showTone } from '../statusTones';
+import { showTone, SHOW_STATUS_LABELS } from '../statusTones';
 import { EmptyRow } from '../DataCard';
 
 interface ShowsTableProps {
@@ -11,7 +11,7 @@ interface ShowsTableProps {
   onSelect: (id: string) => void;
 }
 
-const HEADERS = ['Show', 'When', 'Items', 'Status'];
+const HEADERS = ['Шоу', 'Хэзээ', 'Бараа', 'Төлөв'];
 
 export const ShowsTable: React.FC<ShowsTableProps> = ({ shows, onSelect }) => (
   <table className="w-full text-left border-collapse min-w-[900px]">
@@ -33,11 +33,11 @@ export const ShowsTable: React.FC<ShowsTableProps> = ({ shows, onSelect }) => (
           </td>
           <td className="p-4 font-[600] text-gray-600">{new Date(show.scheduledAt).toLocaleString()}</td>
           <td className="p-4 font-[600] text-black">{show.products.length}</td>
-          <td className="p-4"><StatusPill label={show.status} tone={showTone(show.status)} withDot /></td>
+          <td className="p-4"><StatusPill label={SHOW_STATUS_LABELS[show.status]} tone={showTone(show.status)} withDot /></td>
         </tr>
       ))}
 
-      {shows.length === 0 && <EmptyRow colSpan={4} message="No shows found." />}
+      {shows.length === 0 && <EmptyRow colSpan={4} message="Шоу олдсонгүй." />}
     </tbody>
   </table>
 );

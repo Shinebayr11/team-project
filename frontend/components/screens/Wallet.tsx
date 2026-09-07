@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { useStore, parsePrice } from "@/store"
 import { useApiClient } from "@/hooks/useApiClient"
+import { BackButton } from "@/components/ui/BackButton"
 import { BalanceCard } from "@/components/wallet/BalanceCard"
 import { TopUpPanel, CreditPack } from "@/components/wallet/TopUpPanel"
 import {
@@ -68,6 +69,8 @@ export const Wallet: React.FC = () => {
 
   return (
     <div className="mx-auto max-w-[1120px] px-4 py-8 sm:px-6 lg:py-10">
+      <BackButton className="mb-6" fallback="/home" />
+
       <div className="mb-10">
         <h1 className="mb-2 text-[32px] font-[800] tracking-tight text-[var(--wn-ink)]">
           Wallet

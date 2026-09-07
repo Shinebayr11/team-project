@@ -40,7 +40,7 @@ export const AnalyticsTableCard: React.FC<AnalyticsTableCardProps> = ({
           {isEmpty ? (
             <tr>
               <td colSpan={headers.length} className="p-8 text-center text-[13px] font-[500] text-gray-500">
-                Not enough data yet.
+                Одоогоор хангалттай мэдээлэл алга.
               </td>
             </tr>
           ) : children}

@@ -25,16 +25,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
 
       <div className="flex flex-col lg:flex-row gap-6 max-w-[1000px]">
         <div className="flex-1 flex flex-col gap-6">
-          <ProductMediaCard />
+          <ProductMediaCard
+            images={draft.images}
+            onChange={(images) => patch({ images })}
+          />
 
-          <Panel title="Product Details">
+          <Panel title="Барааны дэлгэрэнгүй">
             <div className="flex flex-col gap-4">
-              <TextField label="Title *" value={draft.name} onChange={e => patch({ name: e.target.value })} />
+              <TextField label="Гарчиг *" value={draft.name} onChange={e => patch({ name: e.target.value })} />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <TextField label="SKU *" value={draft.sku} onChange={e => patch({ sku: e.target.value })} />
                 <SelectField
-                  label="Category *"
+                  label="Ангилал *"
                   options={PRODUCT_CATEGORIES}
                   value={draft.category}
                   onChange={e => patch({ category: e.target.value })}
@@ -42,7 +45,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
               </div>
 
               <TextAreaField
-                label="Description"
+                label="Тайлбар"
                 rows={4}
                 value={draft.description}
                 onChange={e => patch({ description: e.target.value })}
@@ -54,21 +57,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
         <div className="w-full lg:w-[320px] lg:shrink-0 flex flex-col gap-6">
           <ProductPricingCard draft={draft} onPatch={patch} />
 
-          <Panel title="Shipping">
-            <SelectField label="Shipping Profile *" options={['2lbs (Shoebox)']} defaultValue="2lbs (Shoebox)" />
+          <Panel title="Хүргэлт">
+            <SelectField label="Хүргэлтийн профайл *" options={['2кг (Хайрцаг)']} defaultValue="2кг (Хайрцаг)" />
           </Panel>
         </div>
       </div>
 
       <div className="mt-8 flex items-center justify-end gap-3 max-w-[1000px] pt-6 border-t border-gray-200">
         <button onClick={onCancel} className="px-5 py-2 rounded-full text-[14px] font-[700] text-gray-600 hover:bg-gray-100 transition-colors">
-          Cancel
+          Цуцлах
         </button>
         <button onClick={() => onSave(draft, false)} className="px-5 py-2 rounded-full border border-gray-300 text-[14px] font-[700] text-black hover:bg-gray-50 transition-colors">
-          Save Draft
+          Ноороглох
         </button>
         <button onClick={() => onSave(draft, true)} className="px-6 py-2 rounded-full bg-[#C9F73D] text-black text-[14px] font-[800] hover:bg-[#b8e62c] transition-colors">
-          Publish
+          Нийтлэх
         </button>
       </div>
     </>

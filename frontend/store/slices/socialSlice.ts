@@ -3,7 +3,6 @@ import { StateUpdater, SocialSlice } from '../types';
 
 export const createSocialSlice = (state: StoreState, update: StateUpdater): SocialSlice => ({
   isFollowing: (slug) => !!state.following[slug],
-  followingCount: () => Object.keys(state.following).length,
 
   toggleFollow: (slug) => {
     update(s => {

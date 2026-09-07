@@ -13,14 +13,14 @@ const BalanceCard: React.FC<{ label: string; value: string }> = ({ label, value 
 export const PayoutsPanel: React.FC = () => (
   <div>
     <div className="mb-6">
-      <h2 className="text-[24px] font-[800] mb-1 text-black">Payouts</h2>
-      <p className="text-[14px] text-gray-500 font-[500]">Manage your balance and payout history.</p>
+      <h2 className="text-[24px] font-[800] mb-1 text-black">Төлбөр тооцоо</h2>
+      <p className="text-[14px] text-gray-500 font-[500]">Үлдэгдэл болон төлбөрийн түүхээ удирдана уу.</p>
     </div>
 
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
-      <BalanceCard label="Available" value={SELLER_WALLET.available} />
-      <BalanceCard label="Pending clearance" value={SELLER_WALLET.pending} />
-      <BalanceCard label="Paid out all time" value={SELLER_WALLET.lifetime} />
+      <BalanceCard label="Боломжтой үлдэгдэл" value={SELLER_WALLET.available} />
+      <BalanceCard label="Хүлээгдэж буй" value={SELLER_WALLET.pending} />
+      <BalanceCard label="Нийт төлөгдсөн" value={SELLER_WALLET.lifetime} />
     </div>
 
     {/* `overflow-hidden` ганцаараа байхад хүснэгт тайрагддаг байв — булангийн
@@ -30,9 +30,9 @@ export const PayoutsPanel: React.FC = () => (
       <table className="w-full min-w-[520px] text-left border-collapse">
         <thead>
           <tr className="bg-gray-50 text-[12px] font-[800] text-gray-500 uppercase tracking-wider border-b border-gray-200">
-            <th className="p-5">Date</th>
-            <th className="p-5">Description</th>
-            <th className="p-5 text-right">Amount</th>
+            <th className="p-5">Огноо</th>
+            <th className="p-5">Тайлбар</th>
+            <th className="p-5 text-right">Дүн</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">

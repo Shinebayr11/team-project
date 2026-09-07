@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from '@/lib/router';
-import { useHomeFeed, StatusFilter } from '@/hooks/useHomeFeed';
+import { useHomeFeed, StatusFilter, DEFAULT_CATEGORY } from '@/hooks/useHomeFeed';
 import { getWatchPath } from '@/lib/liveShows';
 import { HomeSidebar } from '@/components/home/HomeSidebar';
 import { HomeFeedHeader } from '@/components/home/HomeFeedHeader';
@@ -14,7 +14,7 @@ export const Home: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const category = searchParams.get('cat') || 'For You';
+  const category = searchParams.get('cat') || DEFAULT_CATEGORY;
   const query = searchParams.get('q') || '';
   const [statusFilter, setStatusFilter] = useState<StatusFilter>(null);
 

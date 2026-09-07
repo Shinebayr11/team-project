@@ -93,3 +93,10 @@ export function useShowProducts(liveShowId?: string) {
 
   return { entries, loading, add, remove, refresh }
 }
+
+/** Дамжуулалтын жагсаалтыг хэд хэдэн панель хуваалцдаг тул төрлийг нэрлэв. */
+export type ShowLineupState = ReturnType<typeof useShowProducts>
+
+/** Тухайн бараа жагсаалтад аль хэдийн орсон эсэх. */
+export const lineupEntryOf = (entries: ShowProduct[], productId: string) =>
+  entries.find((entry) => productOfEntry(entry)?._id === productId)

@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { MessageSquare, Trophy } from "lucide-react"
+import { Check, MessageSquare, Trophy } from "lucide-react"
 import { Avatar } from "@/components/ui/Avatar"
+import { ProductThumb } from "@/components/ui/ProductThumb"
 import { Button } from "@/components/ui/button"
 import { useApiClient } from "@/hooks/useApiClient"
 import { useCountdown } from "@/components/live/auction-countdown"
@@ -133,18 +134,42 @@ function StartAuctionForm({
 
   return (
     <div className="flex flex-col gap-3 p-3">
-      <select
-        value={productId}
-        onChange={(e) => setProductId(e.target.value)}
+      {/* Нэрийн жагсаалт (select) байхад аль бараагаа гаргаж байгаагаа
+          дамжуулалтын явцад ялгахад хэцүү — зурагтай нь харуулна. */}
+      <div
+        role="radiogroup"
         aria-label="Бараа"
-        className="h-9 w-full rounded-lg border border-[var(--wn-line)] bg-white px-2 text-[13px] text-[var(--wn-ink)]"
+        className="flex max-h-[220px] flex-col gap-1.5 overflow-y-auto"
       >
-        {products.map((product) => (
-          <option key={product._id} value={product._id}>
-            {product.name}
-          </option>
-        ))}
-      </select>
+        {products.map((product) => {
+          const selected = product._id === productId
+          return (
+            <button
+              key={product._id}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => setProductId(product._id)}
+              className={`flex items-center gap-2.5 rounded-xl border p-2 text-left transition-colors ${
+                selected
+                  ? "border-[var(--wn-accent)] bg-[var(--wn-accent-soft)]"
+                  : "border-[var(--wn-line)] hover:bg-[var(--wn-surface-2)]"
+              }`}
+            >
+              <ProductThumb product={product} size={36} />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[13px] font-[700] text-[var(--wn-ink)]">
+                  {product.name}
+                </span>
+                <span className="block text-[12px] font-[600] text-[var(--wn-ink-3)]">
+                  ₮{product.price_coins ?? 0}
+                </span>
+              </span>
+              {selected && <Check className="size-4 shrink-0 text-[var(--wn-accent)]" />}
+            </button>
+          )
+        })}
+      </div>
 
       <label className="text-[12px] font-[700] text-[var(--wn-ink-3)]">
         Эхлэх үнэ
@@ -240,13 +265,7 @@ export function BidsPanel({
       ) : (
         <>
           <div className="flex items-center gap-3 border-b border-[var(--wn-line)] p-3">
-            {product?.images?.[0] && (
-              <img
-                src={product.images[0]}
-                alt={product.name}
-                className="size-12 shrink-0 rounded-lg object-cover"
-              />
-            )}
+            <ProductThumb product={product} size={48} />
             <div className="min-w-0">
               <div className="truncate text-[14px] font-[700] text-[var(--wn-ink)]">
                 {product?.name ?? "Бараа"}

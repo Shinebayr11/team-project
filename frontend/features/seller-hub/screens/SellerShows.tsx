@@ -13,8 +13,15 @@ import { DataCard } from "@/features/seller-hub/components/DataCard"
 import { ShowsTable } from "@/features/seller-hub/components/shows/ShowsTable"
 import { ShowForm, ShowDraft } from "@/features/seller-hub/components/shows/ShowForm"
 import { ShowDetail } from "@/features/seller-hub/components/shows/ShowDetail"
+import { SHOW_STATUS_LABELS } from "@/features/seller-hub/components/statusTones"
 
-const TABS = ["ALL", "DRAFT", "SCHEDULED", "LIVE", "COMPLETED"] as const
+const TABS = [
+  { value: "ALL", label: "Бүгд" },
+  { value: "DRAFT", label: SHOW_STATUS_LABELS.DRAFT },
+  { value: "SCHEDULED", label: SHOW_STATUS_LABELS.SCHEDULED },
+  { value: "LIVE", label: SHOW_STATUS_LABELS.LIVE },
+  { value: "COMPLETED", label: SHOW_STATUS_LABELS.COMPLETED },
+] as const
 
 /** Шоу эхлэх ганц зам. Гарчиг, ангилал нь бэлдсэн байдлаар нээгдэнэ. */
 const startShowHref = (show?: SellerShow) => {
@@ -68,7 +75,7 @@ export const SellerShows: React.FC = () => {
 
   const handleCreate = (draft: ShowDraft) => {
     if (!draft.title.trim() || !draft.scheduledAt) {
-      addToast("Please fill in all required fields.")
+      addToast("Шаардлагатай бүх талбарыг бөглөнө үү.")
       return
     }
     createSellerShow({
@@ -79,7 +86,7 @@ export const SellerShows: React.FC = () => {
       scheduledAt: new Date(draft.scheduledAt).toISOString(),
       status: "DRAFT",
     })
-    addToast("Show created as draft.")
+    addToast("Шоу ноорог хэлбэрээр үүслээ.")
     setMode("list")
   }
 
@@ -88,7 +95,7 @@ export const SellerShows: React.FC = () => {
     // LIVE нь дамжуулалтаас гаргаж авдаг утга тул энд бичигдэхгүй.
     if (status === "LIVE") return
     updateShowStatus(selectedId, status)
-    addToast(`Show status updated to ${status}.`)
+    addToast(`Шоуны төлөв "${SHOW_STATUS_LABELS[status]}" болж шинэчлэгдлээ.`)
   }
 
   if (mode === "create") {
@@ -111,7 +118,7 @@ export const SellerShows: React.FC = () => {
         onGoLive={() => navigate(startShowHref(selectedShow))}
         onAddProduct={(id) => {
           addShowProduct(selectedShow.id, id)
-          addToast("Product added to show.")
+          addToast("Бараа шоунд нэмэгдлээ.")
         }}
         onRemoveProduct={(id) => removeShowProduct(selectedShow.id, id)}
       />
@@ -122,21 +129,21 @@ export const SellerShows: React.FC = () => {
     <>
       <PageHeader
         title="Шууд"
-        description="Schedule and manage your live events."
+        description="Шууд дамжуулалтуудаа товлож, удирдана уу."
       >
         {/* Жинхэнэ LiveKit дамжуулалт — Seller Hub-ын chrome дотор. */}
         <Link
           to={startShowHref()}
           className="flex items-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-live)]"
         >
-          <Radio className="h-4 w-4" /> Go Live
+          <Radio className="h-4 w-4" /> Дамжуулж эхлэх
         </Link>
 
         <button
           onClick={() => setMode("create")}
           className="flex items-center gap-2 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-black"
         >
-          <Plus className="h-4 w-4" /> Create Show
+          <Plus className="h-4 w-4" /> Шоу үүсгэх
         </button>
       </PageHeader>
 
@@ -147,7 +154,7 @@ export const SellerShows: React.FC = () => {
           <SellerSearchField
             value={search}
             onChange={setSearch}
-            placeholder="Search shows..."
+            placeholder="Шоу хайх..."
           />
         }
       >

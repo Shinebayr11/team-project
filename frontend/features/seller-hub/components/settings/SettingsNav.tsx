@@ -12,20 +12,20 @@ export interface SettingsLink {
 }
 
 export const ACCOUNT_LINKS: SettingsLink[] = [
-  { id: 'profile', label: 'Profile', icon: User },
-  { id: 'preferences', label: 'Preferences', icon: Sliders },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'security', label: 'Security', icon: Shield },
+  { id: 'profile', label: 'Профайл', icon: User },
+  { id: 'preferences', label: 'Тохиргоо', icon: Sliders },
+  { id: 'notifications', label: 'Мэдэгдэл', icon: Bell },
+  { id: 'security', label: 'Аюулгүй байдал', icon: Shield },
 ];
 
 export const SELLER_LINKS: SettingsLink[] = [
-  { id: 'verification', label: 'Verification', icon: CheckCircle2 },
-  { id: 'shop', label: 'Shop Information', icon: Store },
-  { id: 'selling', label: 'Selling Preferences', icon: Sliders },
-  { id: 'listing', label: 'Listing Settings', icon: List },
-  { id: 'shipping', label: 'Shipping Settings', icon: Truck },
-  { id: 'orders', label: 'Order Settings', icon: Package },
-  { id: 'payouts', label: 'Payouts', icon: CreditCard },
+  { id: 'verification', label: 'Баталгаажуулалт', icon: CheckCircle2 },
+  { id: 'shop', label: 'Дэлгүүрийн мэдээлэл', icon: Store },
+  { id: 'selling', label: 'Худалдааны тохиргоо', icon: Sliders },
+  { id: 'listing', label: 'Барааны жагсаалтын тохиргоо', icon: List },
+  { id: 'shipping', label: 'Хүргэлтийн тохиргоо', icon: Truck },
+  { id: 'orders', label: 'Захиалгын тохиргоо', icon: Package },
+  { id: 'payouts', label: 'Төлбөр тооцоо', icon: CreditCard },
 ];
 
 interface SettingsNavProps {
@@ -62,14 +62,14 @@ const NavGroup: React.FC<{ title: string; links: SettingsLink[]; activeTab: stri
 
 export const SettingsNav: React.FC<SettingsNavProps> = ({ activeTab, onSelect }) => (
   <div className="w-full lg:w-[280px] lg:shrink-0">
-    <h1 className="text-[24px] font-[800] text-black mb-2">Account Center</h1>
+    <h1 className="text-[24px] font-[800] text-black mb-2">Хэрэглэгчийн төв</h1>
     <p className="text-[14px] text-gray-500 font-[500] mb-8 leading-relaxed">
-      Manage your account, preferences, payments, and seller settings.
+      Бүртгэл, тохиргоо, төлбөр болон худалдагчийн тохиргоогоо удирдана уу.
     </p>
 
     <div className="mb-8">
-      <NavGroup title="Account" links={ACCOUNT_LINKS} activeTab={activeTab} onSelect={onSelect} />
+      <NavGroup title="Бүртгэл" links={ACCOUNT_LINKS} activeTab={activeTab} onSelect={onSelect} />
     </div>
-    <NavGroup title="Seller" links={SELLER_LINKS} activeTab={activeTab} onSelect={onSelect} />
+    <NavGroup title="Худалдагч" links={SELLER_LINKS} activeTab={activeTab} onSelect={onSelect} />
   </div>
 );

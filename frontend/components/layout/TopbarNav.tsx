@@ -9,9 +9,9 @@ interface TopbarNavProps {
 }
 
 const LINKS = [
-  { to: '/home', label: 'Home', icon: Home, exact: true },
-  { to: '/explore', label: 'Explore', icon: Compass },
-  { to: '/live-show', label: 'Browse', icon: Radio },
+  { to: '/home', label: 'Нүүр', icon: Home, exact: true },
+  { to: '/explore', label: 'Хайх', icon: Compass },
+  { to: '/live-show', label: 'Үзэх', icon: Radio },
 ];
 
 const isActive = (path: string, to: string, exact?: boolean) =>

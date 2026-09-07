@@ -4,9 +4,11 @@ import React from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { SellerOrder } from '@/features/seller-hub/types';
 import { StatusPill } from '../StatusPill';
-import { fulfillmentTone } from '../statusTones';
+import { fulfillmentTone, FULFILLMENT_STATUS_LABELS } from '../statusTones';
 import { Panel } from '../DataCard';
 import { ShippingForm } from './ShippingForm';
+import { useSellerProfile } from '@/hooks/useSellerProfile';
+import { settingsOf } from '@/features/seller-hub/sellerSettings';
 
 interface FulfillmentPanelProps {
   order: SellerOrder;
@@ -19,40 +21,52 @@ const primaryButton = 'w-full py-2.5 rounded-xl bg-black text-white text-[14px] 
 
 export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
   order, onAdvance, onGenerateLabel, onShip,
-}) => (
+}) => {
+  const { profile } = useSellerProfile();
+  const packingSlipNote = settingsOf(profile).orders.packingSlipNote;
+
+  return (
   <Panel
-    title="Fulfillment"
-    action={<StatusPill label={order.fulfillmentStatus} tone={fulfillmentTone(order.fulfillmentStatus)} />}
+    title="Биелэлт"
+    action={<StatusPill label={FULFILLMENT_STATUS_LABELS[order.fulfillmentStatus]} tone={fulfillmentTone(order.fulfillmentStatus)} />}
   >
     <div className="flex flex-col gap-4">
       {order.fulfillmentStatus === 'PENDING' && (
-        <button onClick={() => onAdvance('PROCESSING')} className={primaryButton}>Start Processing</button>
+        <button onClick={() => onAdvance('PROCESSING')} className={primaryButton}>Боловсруулж эхлэх</button>
       )}
 
       {order.fulfillmentStatus === 'PROCESSING' && (
-        <button onClick={() => onAdvance('READY_TO_SHIP')} className={primaryButton}>Mark Ready to Ship</button>
+        <button onClick={() => onAdvance('READY_TO_SHIP')} className={primaryButton}>Хүргэхэд бэлэн гэж тэмдэглэх</button>
       )}
 
       {order.fulfillmentStatus === 'READY_TO_SHIP' && (
-        <ShippingForm onGenerateLabel={onGenerateLabel} onShip={onShip} />
+        <>
+          {packingSlipNote && (
+            <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
+              <div className="text-[12px] font-[700] text-gray-500">Хуудасны тэмдэглэл</div>
+              <div className="mt-0.5 text-[13px] font-[500] text-black">{packingSlipNote}</div>
+            </div>
+          )}
+          <ShippingForm onGenerateLabel={onGenerateLabel} onShip={onShip} />
+        </>
       )}
 
       {order.fulfillmentStatus === 'SHIPPED' && (
         <>
           <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 flex flex-col gap-1 mb-2">
-            <div className="text-[12px] font-[700] text-gray-500">Tracking Information</div>
+            <div className="text-[12px] font-[700] text-gray-500">Хүргэлтийн мэдээлэл</div>
             <div className="text-[14px] font-[700] text-black">{order.carrier} — {order.trackingNumber}</div>
           </div>
           <button onClick={() => onAdvance('DELIVERED')} className={`${primaryButton} flex items-center justify-center gap-2`}>
-            <CheckCircle2 className="w-4 h-4" /> Mark Delivered
+            <CheckCircle2 className="w-4 h-4" /> Хүргэгдсэн гэж тэмдэглэх
           </button>
         </>
       )}
 
       {order.fulfillmentStatus === 'DELIVERED' && (
         <div className="p-4 rounded-xl bg-[#E6F4EA] border border-[#166534]/20 flex flex-col gap-1">
-          <div className="text-[12px] font-[700] text-[#166534]">Status</div>
-          <div className="text-[14px] font-[700] text-[#166534]">Package Delivered</div>
+          <div className="text-[12px] font-[700] text-[#166534]">Төлөв</div>
+          <div className="text-[14px] font-[700] text-[#166534]">Бараа хүргэгдсэн</div>
           {order.trackingNumber && (
             <div className="text-[12px] font-[500] text-[#166534]/80 mt-1">{order.carrier} — {order.trackingNumber}</div>
           )}
@@ -60,4 +74,5 @@ export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
       )}
     </div>
   </Panel>
-);
+  );
+};

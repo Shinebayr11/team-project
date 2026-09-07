@@ -12,11 +12,11 @@ interface SellerNavProps {
 }
 
 const NAVS = [
-  { label: 'Home', to: '/seller', icon: Home },
-  { label: 'Inventory', to: '/seller/products', icon: Package },
-  { label: 'Orders & Shipping', to: '/seller/orders', icon: ShoppingBag, badgeKey: 'pendingOrders' },
+  { label: 'Нүүр', to: '/seller', icon: Home },
+  { label: 'Бараа', to: '/seller/products', icon: Package },
+  { label: 'Захиалга, хүргэлт', to: '/seller/orders', icon: ShoppingBag, badgeKey: 'pendingOrders' },
   { label: 'Шууд', to: '/seller/shows', icon: Video },
-  { label: 'Analytics', to: '/seller/analytics', icon: BarChart2 },
+  { label: 'Аналитик', to: '/seller/analytics', icon: BarChart2 },
 ] as const;
 
 const linkClass = (active: boolean) =>
@@ -30,7 +30,7 @@ export const SellerBrand: React.FC<{ onNavigate?: () => void }> = ({ onNavigate 
   <Link to="/home" onClick={onNavigate} className="flex items-center gap-2">
     <span className="font-display text-[21px] font-[800] tracking-[-0.04em] text-black">WhyNot</span>
     <span className="px-2 py-0.5 border border-gray-200 bg-gray-50 rounded-md text-[11px] font-[700] text-gray-600 uppercase tracking-wider">
-      Seller Hub
+      Худалдагчийн төв
     </span>
   </Link>
 );
@@ -73,12 +73,12 @@ export const SellerNav: React.FC<SellerNavProps> = ({ path, pendingOrders, onNav
           {settingsActive && <ActiveRail />}
           <div className="flex items-center gap-3">
             <Settings className={`w-4 h-4 ${settingsActive ? 'text-white' : 'text-gray-500'}`} />
-            Settings
+            Тохиргоо
           </div>
         </Link>
         <button className="flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-[600] text-gray-600 hover:bg-gray-100 transition-all">
           <AlertTriangle className="w-4 h-4 text-gray-500" />
-          Report a Bug
+          Алдаа мэдээлэх
         </button>
       </div>
     </>

@@ -31,7 +31,7 @@ export const FeaturedShow: React.FC<FeaturedShowProps> = ({ show, onWatch }) => 
     <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md text-white text-[13px] sm:text-[14px] font-[700]">
       <LiveDot className="w-2 h-2" />
       <span>Шууд</span>
-      <span className="opacity-80 ml-1">{show.live} watching</span>
+      <span className="opacity-80 ml-1">{show.live} үзэж байна</span>
     </div>
 
     {/* Гар утсан дээр гарчиг, товч хоёр нэг мөрөнд багтахгүй тул товч нь
@@ -44,14 +44,14 @@ export const FeaturedShow: React.FC<FeaturedShowProps> = ({ show, onWatch }) => 
           </div>
           <span className="text-[16px] font-[700] text-white hover:underline">{show.seller}</span>
           {show.sponsored && (
-            <span className="px-2 py-0.5 rounded bg-white/20 text-white text-[11px] font-[700] uppercase tracking-wider">Sponsored</span>
+            <span className="px-2 py-0.5 rounded bg-white/20 text-white text-[11px] font-[700] uppercase tracking-wider">Сурталчилгаа</span>
           )}
         </div>
         <h2 className="text-[20px] sm:text-[28px] lg:text-[36px] font-[800] text-white leading-tight mb-2 group-hover:text-[var(--wn-accent-soft)] transition-colors">{show.title}</h2>
         <div className="truncate text-[13px] sm:text-[15px] font-[600] text-white/80">{show.category} • {show.tags}</div>
       </div>
       <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-[var(--wn-accent)] text-white text-[15px] sm:text-[16px] font-[800] hover:bg-[var(--wn-accent-hover)] transition-colors shadow-[0_6px_18px_rgba(91,63,224,0.3)] shrink-0">
-        Watch Live
+        Шууд үзэх
       </button>
     </div>
   </div>

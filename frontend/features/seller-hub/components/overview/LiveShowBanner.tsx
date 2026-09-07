@@ -28,14 +28,14 @@ export const LiveShowBanner: React.FC<LiveShowBannerProps> = ({ title, stats, on
         </div>
         <div className="text-[22px] font-[800] mb-2">{title}</div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] font-[600] text-gray-300">
-          <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> {stats.viewers} viewers</span>
-          <span className="flex items-center gap-1.5"><ShoppingBag className="w-4 h-4" /> {stats.sales} sold</span>
+          <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> {stats.viewers} үзэгч</span>
+          <span className="flex items-center gap-1.5"><ShoppingBag className="w-4 h-4" /> {stats.sales} зарагдсан</span>
           <span className="flex items-center gap-1.5"><CreditCard className="w-4 h-4" /> ₮{stats.revenue.toLocaleString()}</span>
         </div>
       </div>
     </div>
     <button onClick={onOpen} className="shrink-0 px-6 py-3 rounded-full bg-white text-black text-[14px] font-[800] hover:bg-gray-200 transition-colors">
-      Open Live Show
+      Дамжуулалт руу очих
     </button>
   </div>
 );

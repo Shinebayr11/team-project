@@ -19,7 +19,7 @@ export const ShowCard: React.FC<{ show: HomeShow }> = ({ show }) => {
         <Avatar name={show.seller} size={26} tint="var(--wn-accent-soft)" className="!text-[var(--wn-accent)]" />
         <div className="flex flex-col">
           <span className="text-[13.5px] font-[700] text-[var(--wn-ink)] group-hover:text-[var(--wn-accent)] transition-colors">{show.seller}</span>
-          {show.sponsored && <span className="text-[11px] text-[var(--wn-ink-4)] font-[500]">Sponsored</span>}
+          {show.sponsored && <span className="text-[11px] text-[var(--wn-ink-4)] font-[500]">Сурталчилгаа</span>}
         </div>
       </div>
 
@@ -37,7 +37,7 @@ export const ShowCard: React.FC<{ show: HomeShow }> = ({ show }) => {
             <>
               <LiveDot />
               <span>Шууд</span>
-              <span className="opacity-60 ml-1">{show.live} watching</span>
+              <span className="opacity-60 ml-1">{show.live} үзэж байна</span>
             </>
           ) : (
             <span>{show.at}</span>
@@ -46,7 +46,7 @@ export const ShowCard: React.FC<{ show: HomeShow }> = ({ show }) => {
 
         {show.saved && (
           <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-md text-[var(--wn-ink)] text-[12px] font-[600] z-10">
-            {show.saved} saved
+            {show.saved} хадгалсан
           </div>
         )}
       </div>

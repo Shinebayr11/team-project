@@ -11,6 +11,7 @@ import {
   SellerSidebar,
 } from "@/features/seller-hub/components/SellerSidebar"
 import { SellerTopbar } from "@/features/seller-hub/components/SellerTopbar"
+import { useInventoryHydration } from "@/features/seller-hub/hooks/useSellerInventory"
 
 const OPEN_FULFILLMENT = ["PENDING", "PROCESSING", "READY_TO_SHIP"]
 
@@ -23,6 +24,10 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
   const { isActive, isLoading } = useSellerProfile()
   const navigate = useNavigate()
   const [navOpen, setNavOpen] = React.useState(false)
+
+  // Барааг бүрхүүл дээр нэг л удаа уншина — бараа, шоу, тойм, аналитик бүгд
+  // store доторх нэг кэшийг хардаг.
+  const inventory = useInventoryHydration()
 
   // Идэвхгүй худалдагчийг нүүр рүү буцааж, идэвхжүүлэх хуудсыг нээнэ.
   // Нэвтрээгүй тохиолдлыг proxy.ts аль хэдийн барьсан байна.
@@ -39,6 +44,16 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
   // хормын зуур самбар харагдчихна.
   if (isLoading || !isActive) return null
 
+  // Бараа уншиж дуустал дэлгэцүүд хоосон тоо (0 бараа, 0 нөөц) харуулах тул
+  // хүлээнэ — эс тэгвээс тойм, аналитик хоромхон зуур худал үзүүлэлт үзүүлнэ.
+  if (inventory.loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--wn-page)]">
+        <div className="size-6 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
+      </div>
+    )
+  }
+
   return (
     <div className="flex min-h-screen bg-[var(--wn-page)] font-[var(--wn-font)] text-[var(--wn-admin-ink)]">
       <SellerSidebar path={pathname} pendingOrders={pendingOrders} />
@@ -52,7 +67,7 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
           `components/ui/sheet.tsx`-ийг дахин ашиглав — фокус баригдана, ESC
           ажиллана, фокус буцаж очно. */}
       <Sheet open={navOpen} onOpenChange={setNavOpen}>
-        <SheetHeader title="Seller Hub" />
+        <SheetHeader title="Худалдагчийн төв" />
         <SheetBody className="flex flex-col px-0 py-0">
           <SellerNav
             path={pathname}

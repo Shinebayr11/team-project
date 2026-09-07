@@ -9,19 +9,26 @@ import { SellerSearchField } from "@/features/seller-hub/components/SellerSearch
 import { DataCard } from "@/features/seller-hub/components/DataCard"
 import { OrdersTable } from "@/features/seller-hub/components/orders/OrdersTable"
 import { OrderDetail } from "@/features/seller-hub/components/orders/OrderDetail"
+import { AuctionSalesPanel } from "@/features/seller-hub/components/orders/AuctionSalesPanel"
+import { FULFILLMENT_STATUS_LABELS } from "@/features/seller-hub/components/statusTones"
+import { useSellerProfile } from "@/hooks/useSellerProfile"
+import { settingsOf } from "@/features/seller-hub/sellerSettings"
 
 const TABS = [
-  "ALL",
-  "PENDING",
-  "PROCESSING",
-  "READY_TO_SHIP",
-  "SHIPPED",
-  "DELIVERED",
+  { value: "ALL", label: "Бүгд" },
+  { value: "PENDING", label: FULFILLMENT_STATUS_LABELS.PENDING },
+  { value: "PROCESSING", label: FULFILLMENT_STATUS_LABELS.PROCESSING },
+  { value: "READY_TO_SHIP", label: FULFILLMENT_STATUS_LABELS.READY_TO_SHIP },
+  { value: "SHIPPED", label: FULFILLMENT_STATUS_LABELS.SHIPPED },
+  { value: "DELIVERED", label: FULFILLMENT_STATUS_LABELS.DELIVERED },
 ] as const
 
 export const SellerOrders: React.FC = () => {
   const { state, updateSellerOrderStatus, setOrderTracking, addToast } =
     useStore()
+
+  const { profile } = useSellerProfile()
+  const autoConfirm = settingsOf(profile).orders.autoConfirm
 
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<string>("ALL")
@@ -41,20 +48,31 @@ export const SellerOrders: React.FC = () => {
 
   const selectedOrder = state.sellerOrders.find((o) => o.id === selectedId)
 
+  // "Захиалгыг шууд баталгаажуулах" тохиргоо асаалттай бол хүлээгдэж буй
+  // захиалгыг нээмэгц боловсруулж эхэлсэнд тооцно.
+  const openOrder = (id: string) => {
+    setSelectedId(id)
+    const order = state.sellerOrders.find((o) => o.id === id)
+    if (autoConfirm && order?.fulfillmentStatus === "PENDING") {
+      updateSellerOrderStatus(id, "PROCESSING")
+      addToast("Захиалгыг автоматаар боловсруулж эхэллээ.")
+    }
+  }
+
   const handleAdvance = (status: SellerOrder["fulfillmentStatus"]) => {
     if (!selectedId) return
     updateSellerOrderStatus(selectedId, status)
-    addToast(`Order marked as ${status.replace(/_/g, " ").toLowerCase()}.`)
+    addToast(`Захиалгыг "${FULFILLMENT_STATUS_LABELS[status]}" төлөвт шилжүүллээ.`)
   }
 
   const handleShip = (carrier: string, trackingNumber: string) => {
     if (!selectedId) return
     if (!trackingNumber) {
-      addToast("Please enter a tracking number.")
+      addToast("Хүргэлтийн код оруулна уу.")
       return
     }
     setOrderTracking(selectedId, carrier, trackingNumber)
-    addToast("Order marked as shipped.")
+    addToast("Захиалгыг илгээсэн гэж тэмдэглэлээ.")
   }
 
   if (selectedOrder) {
@@ -64,7 +82,7 @@ export const SellerOrders: React.FC = () => {
         onBack={() => setSelectedId(null)}
         onAdvance={handleAdvance}
         onGenerateLabel={() =>
-          addToast("Shipping label generated successfully.")
+          addToast("Хүргэлтийн наалт амжилттай үүслээ.")
         }
         onShip={handleShip}
       />
@@ -74,9 +92,13 @@ export const SellerOrders: React.FC = () => {
   return (
     <>
       <PageHeader
-        title="Orders & Shipping"
-        description="Manage and fulfill your recent sales."
+        title="Захиалга, хүргэлт"
+        description="Сүүлийн үеийн худалдан авалтуудаа удирдаж, биелүүлнэ үү."
       />
+      {/* Дуудлага худалдааны ялагчид — жинхэнэ өгөгдөл. Доорх хүснэгт нь
+          одоогоор жишээ захиалгууд. */}
+      <AuctionSalesPanel />
+
       <FilterTabs tabs={TABS} active={activeTab} onChange={setActiveTab} />
 
       <DataCard
@@ -84,11 +106,11 @@ export const SellerOrders: React.FC = () => {
           <SellerSearchField
             value={search}
             onChange={setSearch}
-            placeholder="Search orders..."
+            placeholder="Захиалга хайх..."
           />
         }
       >
-        <OrdersTable orders={filteredOrders} onSelect={setSelectedId} />
+        <OrdersTable orders={filteredOrders} onSelect={openOrder} />
       </DataCard>
     </>
   )

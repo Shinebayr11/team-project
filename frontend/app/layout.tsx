@@ -9,6 +9,7 @@ import { ClerkProvider } from "@clerk/nextjs"
 
 import "./globals.css"
 import { cn } from "@/lib/utils"
+import { clerkMongolian } from "@/lib/clerkLocalization"
 import { UserSync } from "@/components/auth/UserSync"
 import { NamePrompt } from "@/components/auth/NamePrompt"
 
@@ -54,7 +55,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider localization={clerkMongolian}>
       <html
         lang="mn"
         suppressHydrationWarning

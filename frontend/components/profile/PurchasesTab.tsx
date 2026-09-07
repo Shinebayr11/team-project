@@ -1,87 +1,121 @@
 "use client"
 
-import React from 'react';
-import { Bid, Purchase } from '../../types';
+import React, { useState } from 'react';
+import { ChevronRight } from 'lucide-react';
+import { MyActiveBid, MyPurchase } from '@/hooks/useMyPurchases';
+import { ProductThumb } from '@/components/ui/ProductThumb';
 import { LiveDot } from '../ui/LiveDot';
+import { PurchaseDetailSheet } from './PurchaseDetailSheet';
 
 interface PurchasesTabProps {
-  purchases: Purchase[];
-  bids: Bid[];
+  purchases: MyPurchase[];
+  bids: MyActiveBid[];
+  loading: boolean;
 }
 
-const statusClass = (status: Purchase['status']) => {
-  if (status === 'delivered') return 'bg-[#E6F4EA] text-[#166534]';
-  if (status === 'shipped') return 'bg-[var(--wn-accent-soft)] text-[var(--wn-accent)]';
-  return 'bg-[#FEF3C7] text-[#92400E]';
-};
+/** Жагсаалт урт болоход хуудас биш, өөрөө гүйнэ. */
+const scrollList = 'flex flex-col gap-3 max-h-[520px] overflow-y-auto pr-1';
 
-export const PurchasesTab: React.FC<PurchasesTabProps> = ({ purchases, bids }) => (
-  <div className="flex flex-col gap-8">
-    <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Purchases</h2>
+/**
+ * Худалдан авалт — дуудлага худалдаагаар хожсон лотууд. Мөр дээр дарахад
+ * дэлгэрэнгүй нь хажуугийн цонхоор гарч, тэндээсээ худалдагчтай холбогдоно.
+ */
+export const PurchasesTab: React.FC<PurchasesTabProps> = ({ purchases, bids, loading }) => {
+  const [selected, setSelected] = useState<MyPurchase | null>(null);
 
-    {bids.length > 0 && (
-      <div>
-        <h3 className="text-[16px] font-[800] text-[var(--wn-ink)] mb-4">Active bids</h3>
-        <div className="flex flex-col gap-3">
-          {bids.map(b => (
-            <div key={b.id} className="flex items-center justify-between p-4 rounded-[16px] bg-[var(--wn-surface-3)] border border-[var(--wn-line)]">
-              <div>
-                <div className="font-[700] text-[15px] text-[var(--wn-ink)] mb-1">{b.title}</div>
-                <div className="text-[13px] text-[var(--wn-ink-3)]">from {b.seller}</div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="text-[16px] font-[800] text-[var(--wn-ink)]">₮{b.amount}</div>
-                <div className="px-3 py-1 rounded-full bg-[var(--wn-live-soft)] text-[var(--wn-live)] text-[12px] font-[700] flex items-center gap-1.5">
-                  <LiveDot /> Leading
-                </div>
+  return (
+    <div className="flex flex-col gap-8">
+      <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Худалдан авалт</h2>
+
+      {loading ? (
+        <p className="text-[15px] font-[600] text-[var(--wn-ink-3)]">Уншиж байна...</p>
+      ) : (
+        <>
+          {bids.length > 0 && (
+            <div>
+              <h3 className="text-[16px] font-[800] text-[var(--wn-ink)] mb-4">
+                Идэвхтэй үнийн санал
+              </h3>
+              <div className={scrollList}>
+                {bids.map(bid => (
+                  <div
+                    key={bid.id}
+                    className="flex items-center justify-between gap-4 p-4 rounded-[16px] bg-[var(--wn-surface-3)] border border-[var(--wn-line)]"
+                  >
+                    <div className="flex min-w-0 items-center gap-4">
+                      <ProductThumb product={bid.product} size={44} />
+                      <div className="min-w-0">
+                        <div className="truncate font-[700] text-[15px] text-[var(--wn-ink)]">
+                          {bid.title}
+                        </div>
+                        <div className="text-[13px] text-[var(--wn-ink-3)] mt-0.5">{bid.seller}</div>
+                      </div>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-4">
+                      <div className="text-[16px] font-[800] text-[var(--wn-ink)]">
+                        ₮{bid.price.toLocaleString()}
+                      </div>
+                      {bid.leading ? (
+                        <div className="flex items-center gap-1.5 rounded-full bg-[var(--wn-live-soft)] px-3 py-1 text-[12px] font-[700] text-[var(--wn-live)]">
+                          <LiveDot /> Тэргүүлж байна
+                        </div>
+                      ) : (
+                        <div className="rounded-full bg-[var(--wn-surface-2)] px-3 py-1 text-[12px] font-[700] text-[var(--wn-ink-3)]">
+                          Давуулагдсан
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-    )}
+          )}
 
-    <div>
-      <h3 className="text-[16px] font-[800] text-[var(--wn-ink)] mb-4">Order history</h3>
-      {purchases.length > 0 ? (
-        <div className="w-full border border-[var(--wn-line)] rounded-[16px] overflow-hidden">
-          {/* Дөрвөн баганатай хүснэгт 320px дээр багтахгүй — хуудсыг биш,
-              хүрээнийхээ дотор гүйдэг болгоно. */}
-          <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] text-left border-collapse">
-            <thead>
-              <tr className="bg-[var(--wn-surface-2)] text-[13px] font-[700] text-[var(--wn-ink-3)] uppercase tracking-wider">
-                <th className="p-4 font-[700]">Item</th>
-                <th className="p-4 font-[700]">Date</th>
-                <th className="p-4 font-[700]">Total</th>
-                <th className="p-4 font-[700]">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--wn-line)]">
-              {purchases.map(p => (
-                <tr key={p.id} className="text-[14.5px]">
-                  <td className="p-4">
-                    <div className="font-[600] text-[var(--wn-ink)]">{p.title}</div>
-                    <div className="text-[13px] text-[var(--wn-ink-3)] mt-0.5">from {p.seller}</div>
-                  </td>
-                  <td className="p-4 text-[var(--wn-ink-2)]">{p.date}</td>
-                  <td className="p-4 font-[600] text-[var(--wn-ink)]">₮{p.price}</td>
-                  <td className="p-4">
-                    <span className={`px-2.5 py-1 rounded-md text-[12px] font-[700] capitalize ${statusClass(p.status)}`}>
-                      {p.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div>
+            <h3 className="text-[16px] font-[800] text-[var(--wn-ink)] mb-4">
+              Худалдан авалтын түүх
+            </h3>
+            {purchases.length > 0 ? (
+              <div className={scrollList}>
+                {purchases.map(p => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setSelected(p)}
+                    className="flex w-full items-center justify-between gap-4 p-4 rounded-[16px] border border-[var(--wn-line)] text-left transition-colors hover:border-[var(--wn-line-2)] hover:bg-[var(--wn-surface-2)]"
+                  >
+                    <div className="flex min-w-0 flex-1 items-center gap-4">
+                      <ProductThumb product={p.product} size={44} />
+                      <div className="min-w-0">
+                        <div className="truncate font-[700] text-[15px] text-[var(--wn-ink)]">
+                          {p.title}
+                        </div>
+                        <div className="text-[13px] text-[var(--wn-ink-3)] mt-0.5">
+                          {p.seller}
+                          {p.date ? ` • ${new Date(p.date).toLocaleDateString()}` : ''}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex shrink-0 items-center gap-3">
+                      <div className="text-[15px] font-[800] text-[var(--wn-ink)]">
+                        ₮{p.price.toLocaleString()}
+                      </div>
+                      <ChevronRight className="size-4 text-[var(--wn-ink-4)]" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="py-12 text-center text-[15px] font-[600] text-[var(--wn-ink-3)] border border-[var(--wn-line)] rounded-[16px]">
+                Худалдан авалтын түүх алга байна.
+              </div>
+            )}
           </div>
-        </div>
-      ) : (
-        <div className="py-12 text-center text-[15px] font-[600] text-[var(--wn-ink-3)] border border-[var(--wn-line)] rounded-[16px]">
-          No order history yet.
-        </div>
+        </>
       )}
+
+      <PurchaseDetailSheet purchase={selected} onClose={() => setSelected(null)} />
     </div>
-  </div>
-);
+  );
+};

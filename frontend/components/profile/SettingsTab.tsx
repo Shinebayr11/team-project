@@ -10,7 +10,7 @@ interface SettingsTabProps {
   onSave: () => void;
 }
 
-const NOTIFICATIONS = ['Order updates', 'Followed sellers go live', 'Giveaway results'];
+const NOTIFICATIONS = ['Захиалгын шинэчлэл', 'Дагасан худалдагч шууд эфирт гарахад', 'Бэлэг хожсон дүн'];
 
 const fieldClass = 'w-full h-[44px] rounded-xl border border-[var(--wn-line-2)] px-4 text-[15px] text-[var(--wn-ink)] outline-none focus:border-[var(--wn-accent)] transition-colors';
 const labelClass = 'block text-[13px] font-[700] text-[var(--wn-ink-2)] mb-2';
@@ -19,6 +19,8 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ nameInputRef, onSave }
   const { user } = useUser();
   const { displayName } = useDisplayName();
   const [name, setName] = useState(displayName);
+  const email = user?.primaryEmailAddress?.emailAddress;
+  const phone = user?.primaryPhoneNumber?.phoneNumber;
   const [saving, setSaving] = useState(false);
 
   // The name lives on the Clerk user, so every screen (and UserSync) picks the
@@ -42,10 +44,10 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ nameInputRef, onSave }
 
   return (
   <div className="flex flex-col gap-6 max-w-[480px]">
-    <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Settings</h2>
+    <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Тохиргоо</h2>
 
     <div>
-      <label className={labelClass} htmlFor="displayName">Display Name</label>
+      <label className={labelClass} htmlFor="displayName">Харагдах нэр</label>
       <input
         id="displayName"
         ref={nameInputRef}
@@ -57,26 +59,30 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ nameInputRef, onSave }
       />
     </div>
 
+    {/* Утсаар бүртгүүлсэн хэрэглэгчид и-мэйл байхгүй байж болно — тэр үед
+        хоосон хайрцаг харуулахын оронд дугаарыг нь харуулна. */}
     <div>
-      <label className={labelClass} htmlFor="email">Email Address</label>
+      <label className={labelClass} htmlFor="contact">
+        {email ? 'И-мэйл хаяг' : 'Утасны дугаар'}
+      </label>
       <input
-        id="email"
-        type="email"
-        value={user?.primaryEmailAddress?.emailAddress ?? ''}
+        id="contact"
+        type="text"
+        value={email ?? phone ?? ''}
         readOnly
         className={`${fieldClass} bg-[var(--wn-surface-2)] text-[var(--wn-ink-3)]`}
       />
     </div>
 
     <div>
-      <label className={labelClass} htmlFor="bio">Bio</label>
+      <label className={labelClass} htmlFor="bio">Товч танилцуулга</label>
       <textarea id="bio" rows={3} className="w-full rounded-xl border border-[var(--wn-line-2)] p-4 text-[15px] text-[var(--wn-ink)] outline-none focus:border-[var(--wn-accent)] resize-none transition-colors" />
     </div>
 
     <div className="h-px bg-[var(--wn-line)] w-full my-2" />
 
     <div className="flex flex-col gap-4">
-      <h3 className="text-[15px] font-[800] text-[var(--wn-ink)]">Notifications</h3>
+      <h3 className="text-[15px] font-[800] text-[var(--wn-ink)]">Мэдэгдэл</h3>
       {NOTIFICATIONS.map(label => (
         <label key={label} className="flex items-center gap-3 cursor-pointer group">
           <div className="relative flex items-center justify-center">
@@ -95,7 +101,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ nameInputRef, onSave }
       disabled={saving}
       className="mt-4 h-[48px] rounded-xl bg-[var(--wn-ink)] text-white text-[15px] font-[700] hover:bg-[var(--wn-ink-2)] transition-colors disabled:opacity-60"
     >
-      {saving ? 'Saving...' : 'Save changes'}
+      {saving ? 'Хадгалж байна...' : 'Өөрчлөлт хадгалах'}
     </button>
   </div>
   );

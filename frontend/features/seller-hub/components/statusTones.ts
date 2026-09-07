@@ -24,3 +24,37 @@ export const productTone = (status: InventoryProduct['status']): StatusTone => {
   if (status === 'ARCHIVED') return 'muted';
   return 'gray';
 };
+
+/** Дотоод статус утгыг (`PAID`, `SHIPPED` гэх мэт) хэрэглэгчид харуулах монгол нэрэнд буулгана. */
+export const PAYMENT_STATUS_LABELS: Record<SellerOrder['paymentStatus'], string> = {
+  PENDING: 'Хүлээгдэж буй',
+  PAID: 'Төлөгдсөн',
+  REFUNDED: 'Буцаагдсан',
+};
+
+export const FULFILLMENT_STATUS_LABELS: Record<SellerOrder['fulfillmentStatus'], string> = {
+  PENDING: 'Хүлээгдэж буй',
+  PROCESSING: 'Боловсруулж буй',
+  READY_TO_SHIP: 'Хүргэхэд бэлэн',
+  SHIPPED: 'Илгээсэн',
+  DELIVERED: 'Хүргэгдсэн',
+  CANCELLED: 'Цуцлагдсан',
+  RETURNED: 'Буцаагдсан',
+};
+
+export const SHOW_STATUS_LABELS: Record<SellerShow['status'], string> = {
+  DRAFT: 'Ноорог',
+  SCHEDULED: 'Товлогдсон',
+  STARTING_SOON: 'Удахгүй эхэлнэ',
+  LIVE: 'Шууд',
+  ENDING: 'Дуусаж байна',
+  COMPLETED: 'Дууссан',
+  CANCELLED: 'Цуцлагдсан',
+};
+
+export const PRODUCT_STATUS_LABELS: Record<InventoryProduct['status'], string> = {
+  ACTIVE: 'Идэвхтэй',
+  DRAFT: 'Ноорог',
+  ARCHIVED: 'Архивласан',
+  OUT_OF_STOCK: 'Дууссан',
+};

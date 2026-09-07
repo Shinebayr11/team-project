@@ -4,6 +4,9 @@ import React, { useMemo, useState } from "react"
 import { Plus } from "lucide-react"
 import { InventoryProduct } from "@/features/seller-hub/types"
 import { useStore } from "@/store"
+import { useInventoryActions } from "@/features/seller-hub/hooks/useSellerInventory"
+import { useSellerProfile } from "@/hooks/useSellerProfile"
+import { settingsOf } from "@/features/seller-hub/sellerSettings"
 import { PageHeader } from "@/features/seller-hub/components/PageHeader"
 import { KpiCard } from "@/features/seller-hub/components/KpiCard"
 import { DataCard } from "@/features/seller-hub/components/DataCard"
@@ -26,24 +29,26 @@ import {
 } from "@/features/seller-hub/components/products/productDraft"
 
 const STATUS_OPTIONS = [
-  { value: "ALL", label: "All Statuses" },
-  { value: "ACTIVE", label: "Active" },
-  { value: "DRAFT", label: "Draft" },
-  { value: "OUT_OF_STOCK", label: "Out of Stock" },
-  { value: "ARCHIVED", label: "Archived" },
+  { value: "ALL", label: "Бүх төлөв" },
+  { value: "ACTIVE", label: "Идэвхтэй" },
+  { value: "DRAFT", label: "Ноорог" },
+  { value: "OUT_OF_STOCK", label: "Дууссан" },
+  { value: "ARCHIVED", label: "Архивласан" },
 ]
 
 type Editing = { draft: ProductDraft; id: string | null } | null
 
 export const SellerProducts: React.FC = () => {
-  const {
-    state,
-    addInventoryProduct,
-    updateInventoryProduct,
-    adjustStock,
-    bulkAction,
-    addToast,
-  } = useStore()
+  const { state, addToast } = useStore()
+  const inventory = state.inventory
+
+  // Бараа сервер дээр амьдарна — дамжуулалтын "Миний бараа" ЯГ ижил
+  // цуглуулгыг уншдаг тул энд нэмсэн бараа тэнд шууд харагдана.
+  const { create, update, remove } = useInventoryActions()
+
+  // Шинэ барааны маягтын урьдчилсан утгууд худалдагчийн тохиргооноос ирнэ.
+  const { profile } = useSellerProfile()
+  const sellerSettings = settingsOf(profile)
 
   const [editing, setEditing] = useState<Editing>(null)
   const [search, setSearch] = useState("")
@@ -53,7 +58,7 @@ export const SellerProducts: React.FC = () => {
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()
-    return state.inventory.filter((p) => {
+    return inventory.filter((p) => {
       if (filterStatus !== "ALL" && p.status !== filterStatus) return false
       if (!term) return true
       return (
@@ -61,47 +66,82 @@ export const SellerProducts: React.FC = () => {
         p.sku.toLowerCase().includes(term)
       )
     })
-  }, [state.inventory, search, filterStatus])
+  }, [inventory, search, filterStatus])
 
   const countByStatus = (status: InventoryProduct["status"]) =>
-    state.inventory.filter((p) => p.status === status).length
+    inventory.filter((p) => p.status === status).length
 
-  const handleSave = (draft: ProductDraft, publish: boolean) => {
+  const handleSave = async (draft: ProductDraft, publish: boolean) => {
     if (!draft.name.trim() || !draft.sku.trim()) {
-      addToast("Please fill in all required fields.")
+      addToast("Шаардлагатай бүх талбарыг бөглөнө үү.")
       return
     }
 
     const status = statusForDraft(draft, publish)
     const { acceptOffers, ...fields } = draft
 
-    if (editing?.id) {
-      updateInventoryProduct(editing.id, { ...fields, status })
-      addToast("Product updated.")
-    } else {
-      addInventoryProduct({ ...fields, status })
-      addToast(`Product ${publish ? "published" : "saved as draft"}.`)
+    try {
+      if (editing?.id) {
+        await update(editing.id, { ...fields, status })
+        addToast("Бараа шинэчлэгдлээ.")
+      } else {
+        await create({ ...fields, status })
+        addToast(`Бараа ${publish ? "нийтлэгдлээ" : "ноорог хэлбэрээр хадгалагдлаа"}.`)
+      }
+      setEditing(null)
+    } catch {
+      addToast("Хадгалж чадсангүй. Дахин оролдоно уу.")
     }
-    setEditing(null)
   }
 
-  const handleBulk = (action: BulkAction) => {
+  const handleBulk = async (action: BulkAction) => {
     if (selectedIds.length === 0) return
-    bulkAction(selectedIds, action)
-    addToast(`Bulk action applied to ${selectedIds.length} items.`)
-    setSelectedIds([])
+
+    try {
+      if (action === "delete") {
+        await Promise.all(selectedIds.map((id) => remove(id)))
+      } else {
+        const status = action === "activate" ? "ACTIVE" : action === "draft" ? "DRAFT" : "ARCHIVED"
+        await Promise.all(selectedIds.map((id) => update(id, { status })))
+      }
+      addToast(`${selectedIds.length} бараанд бөөнөөр үйлдэл хийгдлээ.`)
+      setSelectedIds([])
+    } catch {
+      addToast("Үйлдэл гүйцэтгэж чадсангүй.")
+    }
   }
 
-  const handleStockSave = (type: StockAdjustType, amount: number) => {
-    if (!stockTargetId) return
-    adjustStock(stockTargetId, type, amount)
-    addToast("Stock updated successfully.")
+  const handleStockSave = async (type: StockAdjustType, amount: number) => {
+    const target = inventory.find((p) => p.id === stockTargetId)
+    if (!target) return
+
+    // Нөөц 0 болбол зарагдсан гэж тэмдэглэнэ, дахин нэмэгдвэл идэвхжүүлнэ —
+    // энэ дүрэм өмнө нь store дотор байсан.
+    const quantity =
+      type === "add"
+        ? target.quantity + amount
+        : type === "remove"
+          ? Math.max(0, target.quantity - amount)
+          : Math.max(0, amount)
+    const status =
+      quantity === 0 && target.status === "ACTIVE"
+        ? "OUT_OF_STOCK"
+        : quantity > 0 && target.status === "OUT_OF_STOCK"
+          ? "ACTIVE"
+          : target.status
+
+    try {
+      await update(target.id, { quantity, status })
+      addToast("Нөөц амжилттай шинэчлэгдлээ.")
+    } catch {
+      addToast("Нөөц шинэчилж чадсангүй.")
+    }
   }
 
   if (editing) {
     return (
       <ProductForm
-        title={editing.id ? "Edit Product" : "Create Product"}
+        title={editing.id ? "Бараа засах" : "Бараа нэмэх"}
         initialDraft={editing.draft}
         onCancel={() => setEditing(null)}
         onSave={handleSave}
@@ -112,27 +152,27 @@ export const SellerProducts: React.FC = () => {
   return (
     <>
       <PageHeader
-        title="Inventory"
-        description="Manage your products and catalog."
+        title="Бараа"
+        description="Бараа, каталогоо удирдана уу."
       >
         <button
-          onClick={() => setEditing({ draft: emptyProductDraft(), id: null })}
+          onClick={() => setEditing({ draft: emptyProductDraft(sellerSettings), id: null })}
           className="flex items-center gap-2 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-black"
         >
-          <Plus className="h-4 w-4" /> Create Product
+          <Plus className="h-4 w-4" /> Бараа нэмэх
         </button>
       </PageHeader>
 
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
         <KpiCard
-          title="Total Items"
-          value={state.inventory.length}
+          title="Нийт бараа"
+          value={inventory.length}
           tone="blue"
         />
-        <KpiCard title="Active" value={countByStatus("ACTIVE")} tone="teal" />
-        <KpiCard title="Drafts" value={countByStatus("DRAFT")} tone="amber" />
+        <KpiCard title="Идэвхтэй" value={countByStatus("ACTIVE")} tone="teal" />
+        <KpiCard title="Ноорог" value={countByStatus("DRAFT")} tone="amber" />
         <KpiCard
-          title="Out of Stock"
+          title="Дууссан"
           value={countByStatus("OUT_OF_STOCK")}
           tone="coral"
         />
@@ -145,12 +185,12 @@ export const SellerProducts: React.FC = () => {
               <SellerSearchField
                 value={search}
                 onChange={setSearch}
-                placeholder="Search by name or SKU"
+                placeholder="Нэр эсвэл SKU-гаар хайх"
               />
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                aria-label="Filter by status"
+                aria-label="Төлвөөр шүүх"
                 className="h-10 rounded-lg border border-gray-300 bg-white px-3 text-[14px] font-[600] text-gray-700 outline-none"
               >
                 {STATUS_OPTIONS.map((o) => (

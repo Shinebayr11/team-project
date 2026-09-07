@@ -1,4 +1,5 @@
 import { InventoryProduct } from '@/features/seller-hub/types';
+import type { SellerSettings } from '@/types/seller';
 
 export interface ProductDraft {
   name: string;
@@ -10,20 +11,27 @@ export interface ProductDraft {
   condition: string;
   listingType: InventoryProduct['listingType'];
   acceptOffers: boolean;
+  images: string[];
 }
 
 export const PRODUCT_CATEGORIES = ['Sneakers', 'Vintage Decor', 'Trading Cards', 'Electronics', 'Other'];
 
-export const emptyProductDraft = (): ProductDraft => ({
+/**
+ * Шинэ барааны хоосон маягт. Урьдчилсан утгууд нь худалдагчийн тохиргооноос
+ * ирнэ (`Тохиргоо → Худалдааны / Барааны жагсаалтын`); тохиргоо байхгүй бол
+ * `settingsOf` default-ууд нь эдгээрийн өмнөх хатуу утгуудтай ижил.
+ */
+export const emptyProductDraft = (defaults: SellerSettings): ProductDraft => ({
   name: '',
   sku: '',
-  category: PRODUCT_CATEGORIES[0],
+  category: defaults.listing.defaultCategory,
   description: '',
   price: 0,
-  quantity: 1,
-  condition: 'New',
-  listingType: 'buy_it_now',
-  acceptOffers: true,
+  quantity: defaults.listing.defaultQuantity,
+  condition: defaults.listing.defaultCondition,
+  listingType: defaults.selling.defaultListingType,
+  acceptOffers: defaults.selling.acceptOffers,
+  images: [],
 });
 
 export const draftFromProduct = (product: InventoryProduct): ProductDraft => ({
@@ -36,6 +44,7 @@ export const draftFromProduct = (product: InventoryProduct): ProductDraft => ({
   condition: product.condition,
   listingType: product.listingType,
   acceptOffers: true,
+  images: product.images ?? [],
 });
 
 /** Published products follow their stock level; unpublished ones stay drafts. */

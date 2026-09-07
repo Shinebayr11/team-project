@@ -2,17 +2,17 @@
 
 import React from 'react';
 import { Link } from '@/lib/router';
-import { SellerShow } from '@/features/seller-hub/types';
+import { SellerShowSummary } from '@/features/seller-hub/hooks/useSellerShows';
 
 interface ShowListSectionProps {
   title: string;
-  shows: SellerShow[];
+  shows: SellerShowSummary[];
   icon: React.ElementType;
   actionLabel: string;
   onAction: () => void;
   emptyMessage: string;
   /** Renders the row subtitle — schedule for upcoming, results for completed. */
-  subtitle: (show: SellerShow) => string;
+  subtitle: (show: SellerShowSummary) => string;
   viewAllTo?: string;
   emptyAction?: { label: string; onClick: () => void };
 }
@@ -24,12 +24,12 @@ export const ShowListSection: React.FC<ShowListSectionProps> = ({
     <div className="flex items-center justify-between mb-2">
       <h2 className="text-[18px] font-[800] text-black">{title}</h2>
       {viewAllTo && (
-        <Link to={viewAllTo} className="text-[14px] font-[700] text-blue-600 hover:underline">View all</Link>
+        <Link to={viewAllTo} className="text-[14px] font-[700] text-blue-600 hover:underline">Бүгдийг харах</Link>
       )}
     </div>
 
     {shows.length > 0 ? shows.map(show => (
-      <div key={show.id} className="p-5 rounded-2xl border border-gray-200 bg-white shadow-sm flex items-center justify-between">
+      <div key={show._id} className="p-5 rounded-2xl border border-gray-200 bg-white shadow-sm flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500">
             <Icon className="w-5 h-5" />

@@ -1,4 +1,5 @@
 import { Context } from "hono"
+import { Bid } from "../models/Bid.js"
 import { ProductListing } from "../models/ProductListing.js"
 import { Product } from "../models/Product.js"
 import { Live_Show } from "../models/Live_show.js"
@@ -59,6 +60,86 @@ export const getMyWonListings = async (c: Context) => {
         return c.json({ data }, 200)
     } catch (error) {
         console.error("getMyWonListings алдаа:", error)
+        return c.json({ message: "Aldaa garlaa" }, 500)
+    }
+}
+
+/**
+ * GET /api/productlisting/bidding
+ *
+ * Хэрэглэгчийн санал өгсөн, ОДОО ХҮРТЭЛ явж буй лотууд. Тэргүүлж байгаа эсэхийг
+ * сервер тооцож өгнө — клиент өөрийн Mongo id-г мэддэггүй.
+ */
+export const getMyActiveBids = async (c: Context) => {
+    try {
+        const userId = c.get("userId")
+
+        const listingIds = await Bid.distinct("listing_id", { buyer_id: userId })
+        if (listingIds.length === 0) {
+            return c.json({ data: [] }, 200)
+        }
+
+        await settleExpiredListings({ _id: { $in: listingIds } })
+
+        const listings = await ProductListing.find({
+            _id: { $in: listingIds },
+            status: LISTING_STATUS.active,
+        })
+            .sort({ timer_ends_at: 1 })
+            .populate("product_id", "name description price_coins images")
+            .populate({
+                path: "live_show_id",
+                select: "title seller_id",
+                populate: { path: "seller_id", select: "display_name shop_name avatar_url" },
+            })
+            .lean()
+
+        const data = listings.map((listing) => ({
+            ...listing,
+            leading: String(listing.current_winner_id) === String(userId),
+        }))
+
+        return c.json({ data }, 200)
+    } catch (error) {
+        console.error("getMyActiveBids алдаа:", error)
+        return c.json({ message: "Aldaa garlaa" }, 500)
+    }
+}
+
+/**
+ * GET /api/productlisting/sales
+ *
+ * Худалдагчийн зарагдсан лотууд, ялагчийнх нь хамт. `/wins`-ийн эсрэг тал:
+ * дамжуулалт дуусмагц худалдагч ялагчтайгаа холбогдох цорын ганц зам нь
+ * эфир дээрх тууз байсан бөгөөд дараагийн лот гармагц алга болдог байв.
+ */
+export const getMySales = async (c: Context) => {
+    try {
+        const userId = c.get("userId")
+
+        // Шоу нь худалдагчийнх эсэхээр шүүнэ — лот дээр эзэмшигч шууд байхгүй.
+        const myShows = await Live_Show.find({ seller_id: userId }).select("_id")
+        const showIds = myShows.map((show) => show._id)
+
+        if (showIds.length === 0) {
+            return c.json({ data: [] }, 200)
+        }
+
+        await settleExpiredListings({ live_show_id: { $in: showIds } })
+
+        const data = await ProductListing.find({
+            live_show_id: { $in: showIds },
+            status: LISTING_STATUS.sold,
+        })
+            .sort({ updatedAt: -1 })
+            .limit(50)
+            .populate("product_id", "name description price_coins images")
+            .populate("current_winner_id", "display_name shop_name avatar_url")
+            .populate({ path: "live_show_id", select: "title started_at" })
+
+        return c.json({ data }, 200)
+    } catch (error) {
+        console.error("getMySales алдаа:", error)
         return c.json({ message: "Aldaa garlaa" }, 500)
     }
 }
