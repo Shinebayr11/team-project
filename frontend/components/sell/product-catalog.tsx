@@ -5,6 +5,8 @@ import { ImagePlus, Package, Plus, X } from "lucide-react"
 import { useApiClient } from "@/hooks/useApiClient"
 import { AuctionProduct } from "@/hooks/useAuction"
 import { isImageUploadReady, uploadImage } from "@/lib/cloudinary"
+import { lineupEntryOf, ShowLineupState } from "@/hooks/useShowProducts"
+import { ProductThumb } from "@/components/ui/ProductThumb"
 
 // Хүрээ нь `--wn-ink-4`: `--wn-line-2` цагаан дээр 1.49:1 буюу SC 1.4.11-ийн
 // 3:1-ийг давдаггүй (`components/ui/input.tsx`-тэй ижил шалтгаан).
@@ -17,8 +19,27 @@ const pillOutline =
  * Худалдагчийн барааны сан. Дамжуулалтын үед дуудлага худалдаанд гаргах бараа эндээс сонгогдох
  * тул дамжуулалт эхлэхээс өмнө бүртгэсэн байх ёстой.
  */
-export function ProductCatalog({ className = "" }: { className?: string }) {
+export function ProductCatalog({
+  className = "",
+  lineup,
+}: {
+  className?: string
+  /** Дамжуулалт явж байвал бараан дээр дарж шууд гаргана. */
+  lineup?: ShowLineupState
+}) {
   const { callApi } = useApiClient()
+  const [addingToShow, setAddingToShow] = useState<string | null>(null)
+  const [showError, setShowError] = useState<string | null>(null)
+
+  const putOnShow = async (productId: string) => {
+    if (!lineup) return
+    setAddingToShow(productId)
+    setShowError(null)
+    const result = await lineup.add(productId)
+    if (!result.ok) setShowError(result.message ?? "Гаргаж чадсангүй")
+    setAddingToShow(null)
+  }
+
   const [products, setProducts] = useState<AuctionProduct[]>([])
   const [loading, setLoading] = useState(true)
   const [adding, setAdding] = useState(false)
@@ -102,7 +123,9 @@ export function ProductCatalog({ className = "" }: { className?: string }) {
         <div>
           <h2 className="text-[16px] font-[800] text-black">Миний бараа</h2>
           <p className="mt-1 text-[14px] font-[500] text-gray-500">
-            Дамжуулалтын үед эндээс сонгож дуудлага худалдаанд гаргана.
+            {lineup
+              ? "Бараан дээрээ дарж дамжуулалт дээр гаргана."
+              : "Дамжуулалт эхлүүлсний дараа эндээс дарж гаргана."}
           </p>
         </div>
         {!adding && (
@@ -232,30 +255,57 @@ export function ProductCatalog({ className = "" }: { className?: string }) {
             </p>
           </div>
         ) : (
-          products.map((product) => (
-            <div
-              key={product._id}
-              className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3"
-            >
-              {product.images?.[0] ? (
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="size-10 shrink-0 rounded-lg object-cover"
-                />
-              ) : (
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[var(--wn-surface-2)]">
-                  <Package className="size-4 text-[var(--wn-ink-3)]" />
-                </div>
-              )}
-              <span className="flex-1 truncate text-[14px] font-[600] text-[var(--wn-ink)]">
-                {product.name}
-              </span>
-              <span className="shrink-0 text-[14px] font-[700] text-[var(--wn-ink-3)]">
-                ₮{product.price_coins ?? 0}
-              </span>
-            </div>
-          ))
+          products.map((product) => {
+            const onShow = lineup && lineupEntryOf(lineup.entries, product._id)
+            const busy = addingToShow === product._id
+
+            const row = (
+              <>
+                <ProductThumb product={product} />
+                <span className="flex-1 truncate text-left text-[14px] font-[600] text-[var(--wn-ink)]">
+                  {product.name}
+                </span>
+                {onShow ? (
+                  <span className="shrink-0 rounded-full bg-[var(--wn-live-soft)] px-2.5 py-1 text-[12px] font-[700] text-[var(--wn-live-deep)]">
+                    Гарсан
+                  </span>
+                ) : busy ? (
+                  <span className="shrink-0 text-[13px] font-[600] text-[var(--wn-ink-3)]">
+                    Гаргаж байна…
+                  </span>
+                ) : null}
+                <span className="shrink-0 text-[14px] font-[700] text-[var(--wn-ink-3)]">
+                  ₮{product.price_coins ?? 0}
+                </span>
+              </>
+            )
+
+            // Дамжуулалт явж байгаа үед мөр нь товч болно — дарахад бараа
+            // дамжуулалтын жагсаалтад орж, үзэгчид шууд харна.
+            return lineup ? (
+              <button
+                key={product._id}
+                type="button"
+                onClick={() => putOnShow(product._id)}
+                disabled={!!onShow || busy}
+                title={onShow ? 'Дамжуулалт дээр гарсан' : 'Дамжуулалт дээр гаргах'}
+                className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3 transition-colors hover:bg-gray-50 disabled:cursor-default disabled:hover:bg-transparent"
+              >
+                {row}
+              </button>
+            ) : (
+              <div
+                key={product._id}
+                className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3"
+              >
+                {row}
+              </div>
+            )
+          })
+        )}
+
+        {showError && (
+          <p className="text-[13px] font-[600] text-[var(--wn-live-deep)]">{showError}</p>
         )}
       </div>
     </div>

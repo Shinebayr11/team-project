@@ -4,7 +4,7 @@ import React from 'react';
 import { Radio } from 'lucide-react';
 import { SellerShow } from '@/features/seller-hub/types';
 import { StatusPill } from '../StatusPill';
-import { showTone } from '../statusTones';
+import { showTone, SHOW_STATUS_LABELS } from '../statusTones';
 import { Panel } from '../DataCard';
 
 interface ShowStatusPanelProps {
@@ -31,28 +31,28 @@ export const ShowStatusPanel: React.FC<ShowStatusPanelProps> = ({ show, onChange
   const isDraftOrScheduled = show.status === 'DRAFT' || show.status === 'SCHEDULED';
 
   return (
-    <Panel title="Show Status" action={<StatusPill label={show.status} tone={showTone(show.status)} />}>
+    <Panel title="Шоуны төлөв" action={<StatusPill label={SHOW_STATUS_LABELS[show.status]} tone={showTone(show.status)} />}>
       <div className="flex flex-col gap-3">
         {show.status === 'DRAFT' && (
-          <button onClick={() => onChangeStatus('SCHEDULED')} className={dark}>Schedule Show</button>
+          <button onClick={() => onChangeStatus('SCHEDULED')} className={dark}>Шоу товлох</button>
         )}
 
         {show.status === 'SCHEDULED' && (
           <>
             <button onClick={onGoLive} className={live}>
-              <Radio className="w-4 h-4" /> Go Live Now
+              <Radio className="w-4 h-4" /> Одоо дамжуулж эхлэх
             </button>
-            <button onClick={() => onChangeStatus('DRAFT')} className={outline}>Revert to Draft</button>
+            <button onClick={() => onChangeStatus('DRAFT')} className={outline}>Ноороглох руу буцаах</button>
           </>
         )}
 
         {show.status === 'LIVE' && (
           <>
             <button onClick={onGoLive} className={live}>
-              <Radio className="w-4 h-4" /> Back to Live Console
+              <Radio className="w-4 h-4" /> Дамжуулалт руу буцах
             </button>
             <p className="text-[13px] font-[500] text-gray-500 text-center">
-              End the show from the live console.
+              Шоуг дамжуулалтын консол дээрээс дуусгана уу.
             </p>
           </>
         )}
@@ -62,7 +62,7 @@ export const ShowStatusPanel: React.FC<ShowStatusPanelProps> = ({ show, onChange
             onClick={() => onChangeStatus('CANCELLED')}
             className="w-full py-2.5 rounded-xl text-[var(--wn-live-deep)] text-[14px] font-[700] hover:bg-[var(--wn-live-soft)] transition-colors"
           >
-            Cancel Show
+            Шоу цуцлах
           </button>
         )}
       </div>

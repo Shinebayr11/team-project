@@ -1,5 +1,6 @@
 import { Context } from "hono"
 import { Bid } from "../models/Bid.js"
+import { Live_Show } from "../models/Live_show.js"
 import { ProductListing } from "../models/ProductListing.js"
 import {
     LISTING_STATUS,
@@ -59,6 +60,15 @@ export const postbids = async (c: Context) => {
         if (listing.status !== LISTING_STATUS.active) {
             return c.json({ message: "Энэ аукцион дууссан байна" }, 409)
         }
+
+        // Худалдагч өөрийнхөө лот дээр санал өгөх ёсгүй: үнээ өөрөө өсгөх
+        // боломжтойгоос гадна, "хожсон" лот нь худалдагч, худалдан авагчийн
+        // мэдэгдэл ХОЁУЛАНД нь орж, холбогдох нөгөө тал нь байхгүй болно.
+        const show = await Live_Show.findById(listing.live_show_id).select("seller_id")
+        if (show && String(show.seller_id) === String(buyerId)) {
+            return c.json({ message: "Өөрийн бараанд санал өгөх боломжгүй" }, 403)
+        }
+
         if (String(listing.current_winner_id) === String(buyerId)) {
             return c.json({ message: "Та аль хэдийн тэргүүлж байна" }, 409)
         }

@@ -7,11 +7,20 @@ import { useWallet } from "@/hooks/useWallet"
 import { CountdownRing, useCountdown } from "@/components/live/auction-countdown"
 import { AuctionBidModal } from "@/components/live/auction-bid-modal"
 import {
+  AuctionBid,
   AuctionProduct,
   Listing,
   isActive,
   minimumBid,
 } from "@/hooks/useAuction"
+
+/** Давхардалгүй санал өгөгчдийн тоо. */
+const bidderCount = (bids: AuctionBid[]) =>
+  new Set(
+    bids.map((bid) =>
+      typeof bid.buyer_id === "object" ? bid.buyer_id?._id : bid.buyer_id
+    )
+  ).size
 
 const productOf = (listing: Listing): AuctionProduct | undefined =>
   typeof listing.product_id === "object" ? listing.product_id : undefined
@@ -28,9 +37,12 @@ const winnerName = (listing: Listing) =>
  */
 export function AuctionBidPanel({
   listing,
+  bids,
   onBid,
 }: {
   listing: Listing | null
+  /** Санал өгсөн хүмүүсийн тоог гаргахад — Browse дэх мөртэй ижил дэд мөр. */
+  bids: AuctionBid[]
   onBid: (amount: number) => Promise<{ ok: boolean; message?: string }>
 }) {
   const { isSignedIn, isLoaded, requireAuth } = useRequireAuth()
@@ -72,58 +84,72 @@ export function AuctionBidPanel({
   const product = productOf(listing)
   const leader = winnerName(listing)
   const current = listing.current_highest_bid_coins
+  const bidders = bidderCount(bids)
 
 
 
   return (
     <>
-      <div className="absolute inset-x-4 bottom-4 z-20 rounded-2xl bg-white/95 p-3 shadow-lg backdrop-blur">
-        <div className="flex items-center gap-3">
-          {product?.images?.[0] && (
-            <img
-              src={product.images[0]}
-              alt=""
-              className="size-14 shrink-0 rounded-xl object-cover"
-            />
-          )}
+      {/* Browse (`ReelItemBar`)-тай ижил хэмжээ, өнгө, сүүдэр — үзэгч хоёр
+          дэлгэцийн хооронд шилжихэд ижил мөр угтана. */}
+      <div
+        className="absolute inset-x-4 bottom-4 z-20 flex items-center gap-3 rounded-[16px] bg-white p-2.5"
+        style={{ boxShadow: "0 12px 32px rgba(12,12,24,0.24)" }}
+      >
+        {product?.images?.[0] ? (
+          <img
+            src={product.images[0]}
+            alt=""
+            className="size-[60px] shrink-0 rounded-[10px] object-cover"
+          />
+        ) : (
+          <div className="size-[60px] shrink-0 rounded-[10px] bg-[var(--wn-shot)]" />
+        )}
 
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <span className="rounded bg-[var(--wn-accent-soft)] px-1.5 py-0.5 text-[10px] font-[800] tracking-wider text-[var(--wn-accent)] uppercase">
-                Дуудлага худалдаа
-              </span>
-            </div>
-            <div className="mt-1 truncate text-[15px] font-[700] text-[var(--wn-ink)]">
-              {product?.name ?? "Бараа"}
-            </div>
-            <div className="truncate text-[13px] font-[600] text-[var(--wn-ink-3)]">
-              {current != null
-                ? `₮${current.toLocaleString()}${leader ? ` · ${leader}` : ""}`
-                : `Эхлэх үнэ ₮${(listing.starting_price_coins ?? 0).toLocaleString()}`}
-            </div>
+        <div className="min-w-0 flex-1">
+          <div className="mb-1 flex items-center gap-2">
+            <span className="rounded bg-[var(--wn-accent-soft)] px-1.5 py-0.5 text-[9px] font-[800] tracking-wider text-[var(--wn-accent)] uppercase">
+              Дуудлага худалдаа
+            </span>
+            <span className="truncate text-[11px] font-[500] text-[var(--wn-ink-3)]">
+              {bidders > 0
+                ? `${bidders} санал${leader ? ` · хамгийн өндөр ${leader}` : ""}`
+                : "Эхний саналыг хүлээж байна"}
+            </span>
           </div>
+          <div className="truncate text-[14px] leading-tight font-[800] text-[var(--wn-ink)]">
+            {product?.name ?? "Бараа"}
+          </div>
+          <div className="mt-0.5 text-[13px] font-[700] text-[var(--wn-ink-2)]">
+            ₮
+            {(current ?? listing.starting_price_coins ?? 0).toLocaleString()}
+          </div>
+        </div>
 
+        <div className="flex shrink-0 items-center gap-2">
           <CountdownRing
             seconds={seconds}
             progress={progress}
             urgent={urgent}
-            size={40}
+            size={36}
           />
 
           {isLoaded && !isSignedIn ? (
             <Link
               to="/sign-in"
-              className="shrink-0 rounded-full bg-[var(--wn-accent)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-accent-hover)]"
+              className="h-[40px] shrink-0 rounded-xl bg-[var(--wn-accent)] px-5 text-[13px] leading-[40px] font-[800] text-white transition-colors hover:bg-[var(--wn-accent-hover)]"
+              style={{ boxShadow: "0 6px 18px rgba(91,63,224,0.3)" }}
             >
-              Нэвтэрч оролцох
+              Нэвтрэх
             </Link>
           ) : (
             <button
               onClick={() => requireAuth(() => setOpenFor(listing._id))}
               disabled={!isLoaded}
-              className="shrink-0 rounded-full bg-[var(--wn-accent)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-accent-hover)] disabled:opacity-60"
+              className="h-[40px] shrink-0 rounded-xl bg-[var(--wn-accent)] px-5 text-[13px] font-[800] text-white transition-colors hover:bg-[var(--wn-accent-hover)] disabled:opacity-60"
+              style={{ boxShadow: "0 6px 18px rgba(91,63,224,0.3)" }}
             >
-              ₮{minimumBid(listing).toLocaleString()}-с санал өгөх
+              ₮{minimumBid(listing).toLocaleString()} санал өгөх
             </button>
           )}
         </div>

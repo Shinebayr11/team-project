@@ -33,9 +33,14 @@ export interface CartSlice {
 }
 
 export interface SocialSlice {
+  /**
+   * Browse (`/live-show`) болон дэлгүүрийн хуудас mock худалдагчаар (SELLERS,
+   * REEL_SHOWS) ажилладаг тул бодит хэрэглэгчийн id байхгүй — тэдгээр нь
+   * localStorage-д нэрээр нь тэмдэглэсээр байна. Бодит худалдагчтай газарт
+   * `hooks/useFollow.ts` серверийн `User.following`-ыг ашиглана.
+   */
   isFollowing: (slug: string) => boolean;
   toggleFollow: (slug: string) => void;
-  followingCount: () => number;
 }
 
 export interface MessagesSlice {
@@ -48,11 +53,8 @@ export interface MessagesSlice {
 }
 
 export interface InventorySlice {
-  addInventoryProduct: (product: Omit<InventoryProduct, 'id' | 'createdAt' | 'reservedQuantity' | 'soldQuantity'>) => void;
-  updateInventoryProduct: (id: string, updates: Partial<InventoryProduct>) => void;
-  deleteInventoryProduct: (id: string) => void;
-  adjustStock: (id: string, type: 'add' | 'remove' | 'set', amount: number) => void;
-  bulkAction: (ids: string[], action: 'archive' | 'delete' | 'activate' | 'draft') => void;
+  /** Серверээс уншсан бараагаар кэшийг бүхэлд нь солино. */
+  setInventory: (products: InventoryProduct[]) => void;
 }
 
 export interface OrdersSlice {

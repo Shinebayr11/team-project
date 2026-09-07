@@ -30,12 +30,12 @@ import type {
   SlugAvailableResponse,
 } from "@/types/seller"
 
-const SELLER_TYPES: ReadonlyArray<SelectOption<SellerType>> = [
+export const SELLER_TYPES: ReadonlyArray<SelectOption<SellerType>> = [
   { value: "individual", label: "Хувь хүн" },
   { value: "business", label: "Бизнес" },
 ]
 
-const CATEGORIES: ReadonlyArray<SelectOption> = [
+export const CATEGORIES: ReadonlyArray<SelectOption> = [
   { value: "Хувцас", label: "Хувцас" },
   { value: "Гоо сайхан", label: "Гоо сайхан" },
   { value: "Электроник", label: "Электроник" },
@@ -44,7 +44,7 @@ const CATEGORIES: ReadonlyArray<SelectOption> = [
   { value: "Бусад", label: "Бусад" },
 ]
 
-const PHONE_PATTERN = /^(\+?976[\s-]?)?\d{8}$/
+export const PHONE_PATTERN = /^(\+?976[\s-]?)?\d{8}$/
 const SLUG_DEBOUNCE_MS = 300
 const SUCCESS_HOLD_MS = 900
 
@@ -117,7 +117,10 @@ export const SellerActivationSheet: React.FC<SellerActivationSheetProps> = ({
   const trimmedName = storeName.trim()
   const slug = slugify(trimmedName)
 
-  const nameValid = trimmedName.length >= 3 && trimmedName.length <= 30
+  // Утасны дугаар зэрэг цэвэр тоог дэлгүүрийн нэр болгож бүртгүүлэхээс сэргийлнэ.
+  const nameHasLetter = /\p{L}/u.test(trimmedName)
+  const nameValid =
+    trimmedName.length >= 3 && trimmedName.length <= 30 && nameHasLetter
   const slugValid = slug.length >= SLUG_MIN && SLUG_PATTERN.test(slug)
   const addressValid = address.trim().length >= 5
   const phoneValid = PHONE_PATTERN.test(phone.trim())
@@ -236,6 +239,13 @@ export const SellerActivationSheet: React.FC<SellerActivationSheetProps> = ({
       return (
         <p className="text-[12.5px] text-[var(--wn-ink-4)]">
           Дэлгүүрийн нэр 3–30 тэмдэгт.
+        </p>
+      )
+    }
+    if (!nameHasLetter) {
+      return (
+        <p className="text-[12.5px] font-[600] text-[var(--wn-live)]">
+          Зөвхөн тооноос бус, ядаж нэг үсэг агуулсан нэр оруулна уу.
         </p>
       )
     }

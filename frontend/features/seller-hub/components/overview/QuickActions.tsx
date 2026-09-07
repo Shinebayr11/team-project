@@ -5,11 +5,11 @@ import { useNavigate } from '@/lib/router';
 import { Plus, Calendar, Package, ShoppingBag, BarChart2 } from 'lucide-react';
 
 const ACTIONS = [
-  { label: 'Create Product', to: '/seller/products', icon: Plus },
-  { label: 'Schedule Show', to: '/seller/shows', icon: Calendar },
-  { label: 'View Inventory', to: '/seller/products', icon: Package },
-  { label: 'View Orders', to: '/seller/orders', icon: ShoppingBag },
-  { label: 'View Analytics', to: '/seller/analytics', icon: BarChart2 },
+  { label: 'Бараа нэмэх', to: '/seller/products', icon: Plus },
+  { label: 'Шоу товлох', to: '/seller/shows', icon: Calendar },
+  { label: 'Бараа харах', to: '/seller/products', icon: Package },
+  { label: 'Захиалга харах', to: '/seller/orders', icon: ShoppingBag },
+  { label: 'Тайлан харах', to: '/seller/analytics', icon: BarChart2 },
 ];
 
 export const QuickActions: React.FC = () => {

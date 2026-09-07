@@ -60,13 +60,13 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
         onClick={sellerGate.open}
         className="hidden lg:block mr-2 rounded-full bg-[var(--wn-surface-2)] px-5 py-2.5 text-[14px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-line)]"
       >
-        Seller Hub
+        Худалдагчийн төв
       </button>
 
       <Link
         to="/profile?tab=following"
         className={`hidden lg:flex ${iconButton}`}
-        aria-label="Following"
+        aria-label="Дагаж буй"
       >
         <Heart className="h-5 w-5" />
       </Link>
@@ -74,7 +74,7 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
       <Link
         to="/messages"
         className={`relative ${iconButton}`}
-        aria-label="Messages"
+        aria-label="Зурвас"
       >
         <MessageSquare className="h-5 w-5" />
         {unreadTotal > 0 && <div className={badge} />}
@@ -97,7 +97,7 @@ export const TopbarActions: React.FC<TopbarActionsProps> = ({
       <button
         onClick={onOpenCart}
         className={`relative ${iconButton} sm:ml-2`}
-        aria-label="Cart"
+        aria-label="Сагс"
       >
         <ShoppingCart className="h-5 w-5" />
         {cartCount > 0 && <div className={badge} />}

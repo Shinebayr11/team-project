@@ -9,7 +9,13 @@ import { useRequireAuth } from "@/hooks/useRequireAuth"
  * Chat over LiveKit's data channel, rendered with the browse chat design.
  * Must be mounted inside a LiveKitRoom.
  */
-export function LiveChat({ hostName }: { hostName: string }) {
+export function LiveChat({
+  hostName,
+  className,
+}: {
+  hostName: string
+  className?: string
+}) {
   const { chatMessages, send } = useChat()
   const participants = useRemoteParticipants()
   const { isSignedIn, isLoaded } = useRequireAuth()
@@ -38,6 +44,7 @@ export function LiveChat({ hostName }: { hostName: string }) {
       lines={lines}
       viewers={participants.length}
       hostName={hostName}
+      className={className}
       lockedNotice={lockedNotice}
       onSend={(text) => {
         send(text).catch((error) => console.error("Chat send failed:", error))

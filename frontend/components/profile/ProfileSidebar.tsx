@@ -33,20 +33,20 @@ const NAV_GROUPS: {
   items: { id: ProfileTab; label: string; icon: React.ElementType }[]
 }[] = [
   {
-    section: "Buying",
+    section: "Худалдан авалт",
     items: [
-      { id: "overview", label: "Overview", icon: Package },
-      { id: "purchases", label: "Purchases", icon: Package },
-      { id: "saved", label: "Saved", icon: Heart },
-      { id: "following", label: "Following", icon: Users },
+      { id: "overview", label: "Ерөнхий тойм", icon: Package },
+      { id: "purchases", label: "Худалдан авалт", icon: Package },
+      { id: "saved", label: "Хадгалсан", icon: Heart },
+      { id: "following", label: "Дагаж буй", icon: Users },
     ],
   },
   {
-    section: "Account",
+    section: "Бүртгэл",
     items: [
-      { id: "settings", label: "Settings", icon: Settings },
-      { id: "payment", label: "Payment Methods", icon: CreditCard },
-      { id: "addresses", label: "Shipping Addresses", icon: MapPin },
+      { id: "settings", label: "Тохиргоо", icon: Settings },
+      { id: "payment", label: "Төлбөрийн хэрэгсэл", icon: CreditCard },
+      { id: "addresses", label: "Хүргэлтийн хаяг", icon: MapPin },
     ],
   },
 ]
@@ -75,7 +75,7 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
           onClick={onEditProfile}
           className="w-full rounded-full border border-[var(--wn-line-2)] py-2 text-[13px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-surface-2)]"
         >
-          Edit Profile
+          Профайл засах
         </button>
       </div>
 
@@ -110,7 +110,7 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
             className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[14px] font-[600] text-red-600 transition-colors hover:bg-red-50"
           >
             <LogOut className="h-4 w-4" />
-            Sign Out
+            Гарах
           </button>
         </div>
       </div>

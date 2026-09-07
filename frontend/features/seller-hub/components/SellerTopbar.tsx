@@ -24,8 +24,8 @@ export const SellerTopbar: React.FC<SellerTopbarProps> = ({ onOpenNav }) => (
         <Search className="w-4 h-4 text-gray-500 mr-2 shrink-0" />
         <input
           type="text"
-          placeholder="Search Seller Dashboard"
-          aria-label="Search Seller Dashboard"
+          placeholder="Худалдагчийн самбараас хайх"
+          aria-label="Худалдагчийн самбараас хайх"
           className="bg-transparent border-none outline-none w-full min-w-0 text-[14px] text-black placeholder:text-gray-500"
         />
       </div>
@@ -33,10 +33,10 @@ export const SellerTopbar: React.FC<SellerTopbarProps> = ({ onOpenNav }) => (
 
     <div className="flex items-center gap-4 sm:gap-5 shrink-0">
       {/* 375px дээр зай чөлөөлөхийн тулд хоёрдогч үйлдлүүд нуугдана. */}
-      <button className="hidden sm:block text-gray-600 hover:text-black transition-colors" aria-label="Create">
+      <button className="hidden sm:block text-gray-600 hover:text-black transition-colors" aria-label="Үүсгэх">
         <Plus className="w-5 h-5" />
       </button>
-      <button className="hidden sm:block text-gray-600 hover:text-black transition-colors" aria-label="Messages">
+      <button className="hidden sm:block text-gray-600 hover:text-black transition-colors" aria-label="Зурвас">
         <MessageSquare className="w-5 h-5" />
       </button>
       <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden border border-gray-300 shrink-0">

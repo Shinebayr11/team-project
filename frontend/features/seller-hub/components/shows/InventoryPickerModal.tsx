@@ -17,8 +17,8 @@ export const InventoryPickerModal: React.FC<InventoryPickerModalProps> = ({ prod
     {/* `vh` нь гар утсан дээр хөтчийн мөрийн ард хэмжигддэг тул `dvh`. */}
     <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-[600px] flex flex-col max-h-[92dvh] sm:max-h-[80dvh] shadow-xl">
       <div className="p-5 border-b border-gray-200 flex items-center justify-between">
-        <h2 className="text-[18px] font-[800] text-black">Add Products to Show</h2>
-        <button onClick={onClose} aria-label="Close" className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
+        <h2 className="text-[18px] font-[800] text-black">Шоунд бараа нэмэх</h2>
+        <button onClick={onClose} aria-label="Хаах" className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -31,7 +31,7 @@ export const InventoryPickerModal: React.FC<InventoryPickerModalProps> = ({ prod
               <div>
                 <div className="text-[14px] font-[700] text-black">{product.name}</div>
                 <div className="text-[12px] font-[500] text-gray-500">
-                  {product.quantity} available • ₮{product.price.toLocaleString()}
+                  {product.quantity} боломжтой • ₮{product.price.toLocaleString()}
                 </div>
               </div>
             </div>
@@ -39,12 +39,12 @@ export const InventoryPickerModal: React.FC<InventoryPickerModalProps> = ({ prod
               onClick={() => onAdd(product.id)}
               className="px-4 py-1.5 rounded-lg bg-black text-white text-[13px] font-[700] hover:bg-gray-800"
             >
-              Add
+              Нэмэх
             </button>
           </div>
         )) : (
           <div className="p-8 text-center text-[14px] font-[500] text-gray-500">
-            No active inventory available to add.
+            Нэмэх идэвхтэй бараа алга байна.
           </div>
         )}
       </div>

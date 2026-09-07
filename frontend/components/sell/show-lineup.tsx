@@ -1,37 +1,25 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { ListOrdered, Package, Plus, X } from "lucide-react"
+import { ListOrdered, Plus, X } from "lucide-react"
+import { ProductThumb } from "@/components/ui/ProductThumb"
 import { useApiClient } from "@/hooks/useApiClient"
 import { AuctionProduct } from "@/hooks/useAuction"
-import { productOfEntry, useShowProducts } from "@/hooks/useShowProducts"
+import { productOfEntry, ShowLineupState } from "@/hooks/useShowProducts"
 
 const pillOutline =
   "inline-flex items-center rounded-full border border-gray-300 px-3.5 py-1.5 text-[13px] font-[700] text-black transition-colors hover:bg-gray-50"
-
-/** Барааны зураг, эсвэл зураггүй бол орлуулах хайрцаг. */
-function ProductThumb({ product }: { product?: AuctionProduct }) {
-  return product?.images?.[0] ? (
-    <img
-      src={product.images[0]}
-      alt={product.name}
-      className="size-10 shrink-0 rounded-lg object-cover"
-    />
-  ) : (
-    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[var(--wn-surface-2)]">
-      <Package className="size-4 text-[var(--wn-ink-3)]" />
-    </div>
-  )
-}
 
 /**
  * Шууд дамжуулалт дээр гарах барааны жагсаалт. Худалдагч бараагаа урьдчилан эмхэлж
  * тавьснаар үзэгчид дамжуулалтын туршид бүтэн жагсаалтыг харна — дуудлага худалдаанд гарсан
  * ганц лот биш.
  */
-export function ShowLineup({ showId }: { showId: string }) {
+export function ShowLineup({ lineup }: { lineup: ShowLineupState }) {
   const { callApi } = useApiClient()
-  const { entries, loading, add, remove } = useShowProducts(showId)
+  // Жагсаалт нь "Миний бараа" панельтай хуваалцсан төлөв — аль нэгээс нь нэмэхэд
+  // нөгөөд нь шууд тусна.
+  const { entries, loading, add, remove } = lineup
 
   const [catalog, setCatalog] = useState<AuctionProduct[]>([])
   const [picking, setPicking] = useState(false)

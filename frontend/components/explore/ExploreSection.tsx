@@ -23,7 +23,7 @@ export const ExploreSection: React.FC<ExploreSectionProps> = ({
       </div>
       {onViewAll && (
         <button onClick={onViewAll} className="text-[14px] font-[700] text-[var(--wn-accent)] hover:underline">
-          View All
+          Бүгдийг харах
         </button>
       )}
     </div>

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import { useSearchParams } from "@/lib/router"
 import { useStore } from "@/store"
+import { useFollow } from "@/hooks/useFollow"
+import { useMyPurchases } from "@/hooks/useMyPurchases"
 import { useLiveShows } from "@/hooks/useLiveShows"
 import {
   ProfileSidebar,
@@ -20,7 +22,10 @@ import { AddressesTab } from "@/components/profile/AddressesTab"
 
 export const Profile: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { state, followingCount, addToast } = useStore()
+  const { addToast } = useStore()
+  // Дагаж буй тоо, худалдан авалт бүгд серверээс — mock өгөгдөл биш.
+  const { followingCount } = useFollow()
+  const { purchases, activeBids, loading: buyingLoading } = useMyPurchases()
   const { shows } = useLiveShows()
   const savedShows = shows.filter((show) => show.saved)
   const { user, isLoaded } = useUser()
@@ -46,7 +51,13 @@ export const Profile: React.FC = () => {
   const renderTab = () => {
     switch (tab) {
       case "purchases":
-        return <PurchasesTab purchases={state.purchases} bids={state.bids} />
+        return (
+          <PurchasesTab
+            purchases={purchases}
+            bids={activeBids}
+            loading={buyingLoading}
+          />
+        )
       case "following":
         return <FollowingTab />
       case "saved":
@@ -55,7 +66,7 @@ export const Profile: React.FC = () => {
         return (
           <SettingsTab
             nameInputRef={nameInputRef}
-            onSave={() => addToast("Saved.")}
+            onSave={() => addToast("Хадгалагдлаа.")}
           />
         )
       case "payment":
@@ -65,9 +76,10 @@ export const Profile: React.FC = () => {
       default:
         return (
           <OverviewTab
-            purchases={state.purchases}
+            purchases={purchases}
             savedShows={savedShows}
-            followingCount={followingCount()}
+            followingCount={followingCount}
+            loading={buyingLoading}
             onNavigate={goToTab}
           />
         )

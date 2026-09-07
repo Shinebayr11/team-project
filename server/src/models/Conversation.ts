@@ -21,7 +21,19 @@ const conversationSchema = new Schema(
     { timestamps: true }
 )
 
-conversationSchema.index({ participants: 1 }, { unique: true })
+/**
+ * Хосын давхардлыг байрлалаар нь хоригложээ.
+ *
+ * Өмнө нь `{ participants: 1 }` дээр unique индекс байсан нь БУРУУ: массив
+ * талбар дээрх unique индекс нь массивыг бүхэлд нь биш, ЭЛЕМЕНТ ТУС БҮРИЙГ
+ * давхардуулахгүй барьдаг. Улмаас нэг хэрэглэгч ЗӨВХӨН НЭГ яриатай байж
+ * чадах ба хоёр дахийг нээх гэхэд E11000 алдаа гарч, чат нээгддэггүй байв.
+ *
+ * `participants` нь үргэлж эрэмбэлэгдсэн, яг хоёр элементтэй тул байрлалаар
+ * нь compound unique индекс тавихад "А↔Б" хос давхардахгүй, харин "А↔В" шинэ
+ * яриа хэвийн үүснэ.
+ */
+conversationSchema.index({ "participants.0": 1, "participants.1": 1 }, { unique: true })
 conversationSchema.index({ last_message_at: -1 })
 
 export const Conversation = mongoose.model("Conversation", conversationSchema)

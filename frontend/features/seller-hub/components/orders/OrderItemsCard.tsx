@@ -5,7 +5,7 @@ import { SellerOrder } from '@/features/seller-hub/types';
 import { Panel } from '../DataCard';
 
 export const OrderItemsCard: React.FC<{ items: SellerOrder['items'] }> = ({ items }) => (
-  <Panel title="Order Items">
+  <Panel title="Захиалгын бараа">
     <div className="flex flex-col gap-4">
       {items.map((item, i) => (
         <div key={`${item.productId}-${i}`} className="flex items-center gap-4 py-2 border-b border-gray-100 last:border-0">
@@ -16,7 +16,7 @@ export const OrderItemsCard: React.FC<{ items: SellerOrder['items'] }> = ({ item
           </div>
           <div className="text-right">
             <div className="text-[14px] font-[700] text-black">₮{item.price.toLocaleString()}</div>
-            <div className="text-[12px] font-[500] text-gray-500 mt-0.5">Qty: {item.qty}</div>
+            <div className="text-[12px] font-[500] text-gray-500 mt-0.5">Тоо: {item.qty}</div>
           </div>
         </div>
       ))}

@@ -12,11 +12,11 @@ const Row: React.FC<{ label: string; value: string | number }> = ({ label, value
 
 export const ShowStatsPanel: React.FC<{ stats: SellerShow['stats'] }> = ({ stats }) => (
   <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-    <h2 className="text-[16px] font-[800] text-black mb-4">Performance</h2>
+    <h2 className="text-[16px] font-[800] text-black mb-4">Үзүүлэлт</h2>
     <div className="flex flex-col gap-3">
-      <Row label="Viewers" value={stats.viewers} />
-      <Row label="Items Sold" value={stats.sales} />
-      <Row label="Revenue" value={`₮${stats.revenue.toLocaleString()}`} />
+      <Row label="Үзэгч" value={stats.viewers} />
+      <Row label="Зарагдсан бараа" value={stats.sales} />
+      <Row label="Орлого" value={`₮${stats.revenue.toLocaleString()}`} />
     </div>
   </div>
 );

@@ -2,31 +2,31 @@
 
 import React from 'react';
 import { useNavigate } from '@/lib/router';
-import { ShoppingBag, AlertTriangle, AlertCircle } from 'lucide-react';
+import { ShoppingBag, AlertTriangle } from 'lucide-react';
 import { ActionCard } from './ActionCard';
 
 interface ActionRequiredProps {
-  pendingOrders: number;
+  /** Зарагдсан ч ялагчтай нь хараахан холбогдоогүй лотууд. */
+  pendingHandover: number;
   lowStockCount: number;
-  showBlocker?: string;
 }
 
 export const ActionRequired: React.FC<ActionRequiredProps> = ({
-  pendingOrders, lowStockCount, showBlocker,
+  pendingHandover, lowStockCount,
 }) => {
   const navigate = useNavigate();
-  const isClear = pendingOrders === 0 && lowStockCount === 0 && !showBlocker;
+  const isClear = pendingHandover === 0 && lowStockCount === 0;
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-[18px] font-[800] text-black">Action Required</h2>
+      <h2 className="text-[18px] font-[800] text-black">Анхаарал шаардлагатай</h2>
 
-      {pendingOrders > 0 && (
+      {pendingHandover > 0 && (
         <ActionCard
           icon={ShoppingBag}
           tone="red"
-          title={`${pendingOrders} orders need fulfillment`}
-          description="Process and ship pending orders."
+          title={`${pendingHandover} лот хүргэлт хүлээж байна`}
+          description="Ялагчтай холбогдож хүргэлт, төлбөрөө тохирно уу."
           onClick={() => navigate('/seller/orders')}
         />
       )}
@@ -35,25 +35,15 @@ export const ActionRequired: React.FC<ActionRequiredProps> = ({
         <ActionCard
           icon={AlertTriangle}
           tone="amber"
-          title={`${lowStockCount} items are low in stock`}
-          description="Update inventory to prevent stockouts."
+          title={`${lowStockCount} барааны нөөц багассан байна`}
+          description="Дуусахаас сэргийлж нөөцөө шинэчилнэ үү."
           onClick={() => navigate('/seller/products')}
-        />
-      )}
-
-      {showBlocker && (
-        <ActionCard
-          icon={AlertCircle}
-          tone="red"
-          title="Next show is not ready"
-          description={showBlocker}
-          onClick={() => navigate('/seller/shows')}
         />
       )}
 
       {isClear && (
         <div className="p-8 rounded-2xl border border-gray-200 bg-white text-center text-gray-500 font-[500]">
-          You're all caught up! No actions required.
+          Бүх зүйл бэлэн байна! Анхаарах зүйл алга.
         </div>
       )}
     </div>

@@ -14,10 +14,10 @@ export const TopProductsTable: React.FC<TopProductsTableProps> = ({
   products, grossSales, onViewInventory,
 }) => (
   <AnalyticsTableCard
-    title="Top Products"
-    actionLabel="View Inventory"
+    title="Шилдэг бараа"
+    actionLabel="Бараа харах"
     onAction={onViewInventory}
-    headers={['Product', 'Sold', 'Revenue']}
+    headers={['Бараа', 'Зарагдсан', 'Орлого']}
     isEmpty={products.length === 0}
   >
     {products.map(product => (
@@ -32,7 +32,7 @@ export const TopProductsTable: React.FC<TopProductsTableProps> = ({
         <td className="p-4 text-right font-[800] text-black">
           <div>₮{product.revenue.toLocaleString()}</div>
           <div className="text-[11px] font-[600] text-gray-400 mt-0.5">
-            {grossSales > 0 ? Math.round((product.revenue / grossSales) * 100) : 0}% of total
+            нийт дүнгийн {grossSales > 0 ? Math.round((product.revenue / grossSales) * 100) : 0}%
           </div>
         </td>
       </tr>

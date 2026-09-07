@@ -20,9 +20,9 @@ interface ShowFormProps {
 
 const CATEGORIES = ['Vintage Decor', 'Sneakers', 'Trading Cards', 'Other'];
 const TYPES: { value: SellerShow['type']; label: string }[] = [
-  { value: 'mixed', label: 'Mixed (Auction & Buy Now)' },
-  { value: 'auction', label: 'Auction Only' },
-  { value: 'buy_it_now', label: 'Buy It Now Only' },
+  { value: 'mixed', label: 'Хосолсон (Дуудлага худалдаа ба шууд худалдах)' },
+  { value: 'auction', label: 'Зөвхөн дуудлага худалдаа' },
+  { value: 'buy_it_now', label: 'Зөвхөн шууд худалдах' },
 ];
 
 export const emptyShowDraft = (): ShowDraft => ({
@@ -39,20 +39,20 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
 
   return (
     <>
-      <PageHeader title="Create Show" onBack={onCancel} />
+      <PageHeader title="Шоу үүсгэх" onBack={onCancel} />
 
       <div className="max-w-[600px] bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
         <div className="flex flex-col gap-5">
-          <TextField label="Show Title *" value={draft.title} onChange={e => patch({ title: e.target.value })} />
+          <TextField label="Шоуны нэр *" value={draft.title} onChange={e => patch({ title: e.target.value })} />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <SelectField
-              label="Category *"
+              label="Ангилал *"
               options={CATEGORIES}
               value={draft.category}
               onChange={e => patch({ category: e.target.value })}
             />
-            <Field label="Show Type *">
+            <Field label="Шоуны төрөл *">
               <select
                 value={draft.type}
                 onChange={e => patch({ type: e.target.value as SellerShow['type'] })}
@@ -64,14 +64,14 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
           </div>
 
           <TextField
-            label="Scheduled Start Time *"
+            label="Эхлэх товлосон цаг *"
             type="datetime-local"
             value={draft.scheduledAt}
             onChange={e => patch({ scheduledAt: e.target.value })}
           />
 
           <TextAreaField
-            label="Description"
+            label="Тайлбар"
             rows={3}
             value={draft.description}
             onChange={e => patch({ description: e.target.value })}
@@ -79,10 +79,10 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
 
           <div className="flex justify-end gap-3 mt-4">
             <button onClick={onCancel} className="px-5 py-2 rounded-full text-[14px] font-[700] text-gray-600 hover:bg-gray-100 transition-colors">
-              Cancel
+              Цуцлах
             </button>
             <button onClick={() => onCreate(draft)} className="px-6 py-2 rounded-full bg-black text-white text-[14px] font-[800] hover:bg-gray-800 transition-colors">
-              Create Draft
+              Ноорог үүсгэх
             </button>
           </div>
         </div>

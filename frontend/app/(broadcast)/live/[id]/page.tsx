@@ -3,8 +3,8 @@
 import { use, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
-import { ChevronLeft, Tag, Clock, Users } from "lucide-react"
-import { Link } from "@/lib/router"
+import { Tag, Clock, Users } from "lucide-react"
+import { BackButton } from "@/components/ui/BackButton"
 import { LiveDot } from "@/components/ui/LiveDot"
 import { useLiveShowDetail } from "@/hooks/useLiveShowDetail"
 import { VideoStage } from "@/components/live/video-stage"
@@ -81,15 +81,14 @@ export default function LivePage({
     // 68px нь `components/layout/Topbar.tsx:17`-ийн `h-[68px]` — Topbar нь
     // sticky тул урсгал дотор байрээ эзэлдэг.
     <main className="mx-auto flex min-h-[calc(100svh-68px)] max-w-[1440px] flex-col px-4 py-4 lg:h-[calc(100svh-68px)]">
-      {/* Худалдагч самбартаа буцах илэрхий зам — өмнө нь энэ дэлгэцээс
-          гарах ямар ч холбоос байгаагүй. */}
-      <Link
-        to="/seller/shows"
-        className="mb-3 inline-flex items-center gap-1.5 text-[13px] font-[700] text-gray-500 transition-colors hover:text-black"
-      >
-        <ChevronLeft className="size-4" />
-        Seller Hub
-      </Link>
+      {/* Өмнөх хуудас руу буцна. Худалдагч самбараасаа, үзэгч нүүр/хайлтаас
+          орж ирдэг тул тогтмол нэг зам руу шидэх нь буруу — түүх байхгүй үед л
+          дүрд тохирсон нөөц зам руу очно. */}
+      <BackButton
+        label={isHost ? "Худалдагчийн төв" : "Буцах"}
+        fallback={isHost ? "/seller/shows" : "/live-show"}
+        className="mb-3 text-[13px] font-[700] text-gray-500 hover:text-black"
+      />
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">

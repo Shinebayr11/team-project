@@ -1,10 +1,12 @@
 import { Context } from "hono"
+import mongoose from "mongoose"
 import { z } from "zod"
 import { User } from "../models/User.js"
 import { slugify, SLUG_MIN, SLUG_MAX, SLUG_PATTERN } from "../lib/slug.js"
 import type {
     SellerActivateBody,
     SellerProfile,
+    SellerSettings,
 } from "../types/seller.js"
 
 export const getseller = async (c: Context) => {
@@ -68,12 +70,14 @@ const PHONE_PATTERN = /^(\+?976[\s-]?)?\d{8}$/
 
 const required = (name: string) => `${name} оруулна уу`
 
-const activateSchema = z.object({
+/** Идэвхжүүлэх ба дараа нь засварлах хоёулаа хуваалцдаг дэлгүүрийн үндсэн талбарууд. */
+const profileSchema = z.object({
     storeName: z
         .string()
         .trim()
         .min(3, "Дэлгүүрийн нэр 3-аас доошгүй тэмдэгт байна")
-        .max(30, "Дэлгүүрийн нэр 30-аас ихгүй тэмдэгт байна"),
+        .max(30, "Дэлгүүрийн нэр 30-аас ихгүй тэмдэгт байна")
+        .regex(/\p{L}/u, "Дэлгүүрийн нэрэнд ядаж нэг үсэг байх ёстой"),
     storeSlug: z
         .string()
         .trim()
@@ -92,6 +96,9 @@ const activateSchema = z.object({
         .string()
         .trim()
         .regex(PHONE_PATTERN, "Утасны дугаар 8 оронтой байна"),
+})
+
+const activateSchema = profileSchema.extend({
     signature: z
         .string()
         .trim()
@@ -99,6 +106,9 @@ const activateSchema = z.object({
         .max(60, "Гарын үсэг хэт урт байна"),
     termsVersion: z.string().trim().min(1, required("Гэрээний хувилбар")),
 })
+
+/** Гарын үсэг, гэрээний хувилбар нэг удаагийн зөвшөөрөл тул засварт ороход орохгүй. */
+const updateProfileSchema = profileSchema
 
 /** zod-ийн алдааг талбар тус бүрийн helper text болгож хөрвүүлнэ. */
 const fieldErrors = (error: z.ZodError): Partial<Record<keyof SellerActivateBody, string>> => {
@@ -225,6 +235,197 @@ export const activateSeller = async (c: Context) => {
     }
 }
 
+/**
+ * PATCH /api/seller/profile
+ *
+ * Идэвхтэй худалдагч дэлгүүрийнхээ мэдээллийг засварлана. Гарын үсэг,
+ * гэрээний хувилбар нэг удаагийн зөвшөөрөл тул энд өөрчлөгдөхгүй.
+ */
+export const updateSellerProfile = async (c: Context) => {
+    try {
+        const user = authedUser(c)
+
+        if (user.sellerProfile?.status !== "active") {
+            return c.json({ message: "Дэлгүүр идэвхжээгүй байна" }, 400)
+        }
+
+        const raw = await c.req.json().catch(() => null)
+        if (!raw) {
+            return c.json({ message: "Хүсэлтийн бие буруу байна" }, 400)
+        }
+
+        const parsed = updateProfileSchema.safeParse(raw)
+        if (!parsed.success) {
+            return c.json(
+                { message: "Мэдээлэл дутуу эсвэл буруу байна", fields: fieldErrors(parsed.error) },
+                400
+            )
+        }
+
+        const body = parsed.data
+
+        const canonicalSlug = slugify(body.storeName)
+        if (canonicalSlug.length < SLUG_MIN) {
+            return c.json(
+                {
+                    message: "Дэлгүүрийн нэрнээс хаяг үүсгэж чадсангүй",
+                    field: "storeName",
+                    fields: { storeName: "Латин үсэг эсвэл тоо агуулсан нэр оруулна уу" },
+                },
+                400
+            )
+        }
+        if (canonicalSlug !== body.storeSlug) {
+            return c.json(
+                {
+                    message: "Дэлгүүрийн нэр болон хаяг зөрж байна",
+                    field: "storeSlug",
+                    fields: { storeSlug: `Энэ нэрэнд тохирох хаяг: ${canonicalSlug}` },
+                },
+                400
+            )
+        }
+
+        const updated = await User.findByIdAndUpdate(
+            user._id,
+            {
+                $set: {
+                    "sellerProfile.storeName": body.storeName,
+                    "sellerProfile.storeSlug": canonicalSlug,
+                    "sellerProfile.sellerType": body.sellerType,
+                    "sellerProfile.category": body.category,
+                    "sellerProfile.address": body.address,
+                    "sellerProfile.phone": body.phone,
+                    shop_name: body.storeName,
+                },
+            },
+            { new: true, runValidators: true }
+        )
+
+        if (!updated) {
+            return c.json({ message: "Хэрэглэгч олдсонгүй" }, 404)
+        }
+
+        return c.json(
+            { message: "Дэлгүүрийн мэдээлэл шинэчлэгдлээ", data: updated.sellerProfile },
+            200
+        )
+    } catch (error) {
+        if (isDuplicateKey(error)) {
+            return c.json(
+                {
+                    message: "Энэ хаяг аль хэдийн эзэмшигдсэн байна",
+                    field: "storeSlug",
+                    fields: { storeSlug: "Энэ хаяг завгүй байна. Өөр нэр сонгоно уу." },
+                },
+                409
+            )
+        }
+        console.error("updateSellerProfile aldaa", error)
+        return c.json({ message: "Серверийн алдаа гарлаа" }, 500)
+    }
+}
+
+const settingsSchema = z
+    .object({
+        selling: z.object({
+            defaultListingType: z.enum(["buy_it_now", "auction"]),
+            acceptOffers: z.boolean(),
+        }),
+        listing: z.object({
+            defaultCategory: z.string().trim().min(1, required("Үндсэн ангилал")),
+            defaultCondition: z.string().trim().min(1, required("Барааны байдал")),
+            defaultQuantity: z
+                .number()
+                .int("Тоо ширхэг бүхэл тоо байна")
+                .min(0, "Тоо ширхэг сөрөг байж болохгүй")
+                .max(9999, "Тоо ширхэг 9999-өөс ихгүй байна"),
+        }),
+        shipping: z.object({
+            defaultCarrier: z.string().trim().min(1, required("Тээвэрлэгч")),
+            processingDays: z
+                .number()
+                .int("Хоног бүхэл тоо байна")
+                .min(1, "Хамгийн багадаа 1 хоног")
+                .max(30, "Хамгийн ихдээ 30 хоног"),
+        }),
+        orders: z.object({
+            autoConfirm: z.boolean(),
+            packingSlipNote: z.string().trim().max(300, "Тэмдэглэл 300-аас ихгүй тэмдэгт байна"),
+        }),
+    })
+    .partial()
+    .refine((body) => Object.keys(body).length > 0, {
+        message: "Шинэчлэх тохиргоо алга байна",
+    })
+
+/**
+ * Тохиргооны алдаа бүлгээрээ (`selling`, `shipping` ...) буцна — панель бүр
+ * зөвхөн өөрийн бүлгээ явуулдаг тул харуулах газар нь тодорхой.
+ */
+const settingsFieldErrors = (error: z.ZodError): Partial<Record<keyof SellerSettings, string>> => {
+    const fields: Partial<Record<keyof SellerSettings, string>> = {}
+    for (const issue of error.issues) {
+        const key = issue.path[0] as keyof SellerSettings | undefined
+        if (key && !fields[key]) fields[key] = issue.message
+    }
+    return fields
+}
+
+/**
+ * PATCH /api/seller/settings
+ *
+ * Худалдагчийн үйл ажиллагааны тохиргоо. Панель бүр зөвхөн өөрийн бүлгээ
+ * явуулдаг тул ирсэн бүлгийг нь бүхэлд нь солино.
+ */
+export const updateSellerSettings = async (c: Context) => {
+    try {
+        const user = authedUser(c)
+
+        if (user.sellerProfile?.status !== "active") {
+            return c.json({ message: "Дэлгүүр идэвхжээгүй байна" }, 400)
+        }
+
+        const raw = await c.req.json().catch(() => null)
+        if (!raw) {
+            return c.json({ message: "Хүсэлтийн бие буруу байна" }, 400)
+        }
+
+        const parsed = settingsSchema.safeParse(raw)
+        if (!parsed.success) {
+            return c.json(
+                {
+                    message: "Мэдээлэл дутуу эсвэл буруу байна",
+                    fields: settingsFieldErrors(parsed.error),
+                },
+                400
+            )
+        }
+
+        const updates = Object.fromEntries(
+            Object.entries(parsed.data).map(([group, value]) => [
+                `sellerProfile.settings.${group}`,
+                value,
+            ])
+        )
+
+        const updated = await User.findByIdAndUpdate(
+            user._id,
+            { $set: updates },
+            { new: true, runValidators: true }
+        )
+
+        if (!updated) {
+            return c.json({ message: "Хэрэглэгч олдсонгүй" }, 404)
+        }
+
+        return c.json({ message: "Тохиргоо хадгалагдлаа", data: updated.sellerProfile }, 200)
+    } catch (error) {
+        console.error("updateSellerSettings aldaa", error)
+        return c.json({ message: "Серверийн алдаа гарлаа" }, 500)
+    }
+}
+
 /** GET /api/seller/slug-available?slug= */
 export const slugAvailable = async (c: Context) => {
     try {
@@ -256,6 +457,69 @@ export const getMySellerProfile = async (c: Context) => {
         return c.json({ data: profile }, 200)
     } catch (error) {
         console.error("getMySellerProfile aldaa", error)
+        return c.json({ message: "Серверийн алдаа гарлаа" }, 500)
+    }
+}
+
+/**
+ * GET /api/seller/shop/:key
+ *
+ * Дэлгүүрийн ил тод мэдээлэл. Түлхүүр нь хэрэглэгчийн id, дэлгүүрийн хаяг
+ * (`storeSlug`), дэлгүүрийн нэр эсвэл хэрэглэгчийн нэр байж болно — хуучин
+ * `?seller=<нэр>` холбоосууд ажилласаар байх ёстой.
+ *
+ * Нэвтрэх шаардлагагүй ч ХУВИЙН талбарууд (хаяг, утас, гарын үсэг) буцахгүй.
+ */
+export const getSellerShop = async (c: Context) => {
+    try {
+        const key = decodeURIComponent(c.req.param("key") ?? "").trim()
+        if (!key) {
+            return c.json({ message: "Дэлгүүр олдсонгүй" }, 404)
+        }
+
+        // Хэрэглэгчийн оруулсан текстийг регексэд шууд тавихгүй — тусгай
+        // тэмдэгт нь хайлтыг өөрчилж мэднэ.
+        const exact = new RegExp(`^${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i")
+        const or: Record<string, unknown>[] = [
+            { "sellerProfile.storeSlug": key.toLowerCase() },
+            { shop_name: exact },
+            { display_name: exact },
+        ]
+        if (mongoose.Types.ObjectId.isValid(key)) {
+            or.unshift({ _id: key })
+        }
+
+        const user = await User.findOne({ $or: or }).select(
+            "display_name shop_name avatar_url followers createdAt " +
+            "sellerProfile.status sellerProfile.storeName sellerProfile.storeSlug " +
+            "sellerProfile.sellerType sellerProfile.category sellerProfile.activatedAt"
+        )
+
+        if (!user) {
+            return c.json({ message: "Дэлгүүр олдсонгүй" }, 404)
+        }
+
+        const profile = user.sellerProfile
+        return c.json(
+            {
+                data: {
+                    _id: user._id,
+                    display_name: user.display_name,
+                    shop_name: user.shop_name,
+                    avatar_url: user.avatar_url,
+                    storeName: profile?.storeName,
+                    storeSlug: profile?.storeSlug,
+                    sellerType: profile?.sellerType,
+                    category: profile?.category,
+                    isActive: profile?.status === "active",
+                    followersCount: user.followers?.length ?? 0,
+                    since: profile?.activatedAt ?? user.createdAt,
+                },
+            },
+            200
+        )
+    } catch (error) {
+        console.error("getSellerShop aldaa", error)
         return c.json({ message: "Серверийн алдаа гарлаа" }, 500)
     }
 }

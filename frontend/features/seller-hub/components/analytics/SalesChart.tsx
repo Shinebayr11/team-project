@@ -11,6 +11,11 @@ interface SalesChartProps {
 }
 
 const METRICS: ChartMetric[] = ['revenue', 'orders', 'items'];
+const METRIC_LABELS: Record<ChartMetric, string> = {
+  revenue: 'Орлого',
+  orders: 'Захиалга',
+  items: 'Бараа',
+};
 const axisTick = { fontSize: 12, fill: '#6B7280', fontWeight: 600 };
 
 export const SalesChart: React.FC<SalesChartProps> = ({ data, metric, onMetricChange }) => {
@@ -20,17 +25,17 @@ export const SalesChart: React.FC<SalesChartProps> = ({ data, metric, onMetricCh
   return (
     <div className="p-6 rounded-2xl border border-gray-200 bg-white shadow-sm mb-8">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-        <h3 className="text-[16px] font-[800] text-black">Sales Performance</h3>
+        <h3 className="text-[16px] font-[800] text-black">Борлуулалтын үзүүлэлт</h3>
         <div className="flex p-1 bg-gray-100 rounded-lg">
           {METRICS.map(m => (
             <button
               key={m}
               onClick={() => onMetricChange(m)}
-              className={`px-4 py-1.5 rounded-md text-[12px] font-[700] capitalize transition-colors ${
+              className={`px-4 py-1.5 rounded-md text-[12px] font-[700] transition-colors ${
                 metric === m ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-black'
               }`}
             >
-              {m}
+              {METRIC_LABELS[m]}
             </button>
           ))}
         </div>

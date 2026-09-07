@@ -21,8 +21,8 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({
 }) => (
   <>
     <PageHeader
-      title={`Order ${order.id}`}
-      description={`Placed on ${new Date(order.date).toLocaleDateString()}`}
+      title={`Захиалга ${order.id}`}
+      description={`${new Date(order.date).toLocaleDateString()}-нд хийгдсэн`}
       onBack={onBack}
     />
 

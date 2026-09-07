@@ -26,9 +26,19 @@ export function useDisplayName() {
   const emailLocalPart =
     user?.primaryEmailAddress?.emailAddress?.split("@")[0] ?? undefined
 
+  // Утсаар бүртгүүлсэн хэрэглэгчид и-мэйл ОГТ байхгүй байж болно. Дугаарыг
+  // бүтнээр нь харуулах нь хувийн мэдээлэл тул зөвхөн сүүлийн 4 оронг авна.
+  const phone = user?.primaryPhoneNumber?.phoneNumber
+  const phoneTail = phone ? `***${phone.slice(-4)}` : undefined
+
   const displayName =
-    chosen ?? user?.fullName ?? user?.username ?? emailLocalPart ?? "Зочин"
-  const handle = user?.username ?? emailLocalPart ?? ""
+    chosen ??
+    user?.fullName ??
+    user?.username ??
+    emailLocalPart ??
+    phoneTail ??
+    "Зочин"
+  const handle = user?.username ?? emailLocalPart ?? phoneTail ?? ""
   const initial = displayName.charAt(0).toUpperCase() || "?"
 
   return {

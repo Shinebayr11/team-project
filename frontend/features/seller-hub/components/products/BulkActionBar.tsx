@@ -10,14 +10,14 @@ interface BulkActionBarProps {
 }
 
 const NEUTRAL_ACTIONS: { action: BulkAction; label: string }[] = [
-  { action: 'activate', label: 'Activate' },
-  { action: 'draft', label: 'Draft' },
-  { action: 'archive', label: 'Archive' },
+  { action: 'activate', label: 'Идэвхжүүлэх' },
+  { action: 'draft', label: 'Ноороглох' },
+  { action: 'archive', label: 'Архивлах' },
 ];
 
 export const BulkActionBar: React.FC<BulkActionBarProps> = ({ count, onAction }) => (
   <div className="flex flex-wrap items-center gap-2">
-    <span className="text-[13px] font-[600] text-gray-600 mr-2">{count} selected</span>
+    <span className="text-[13px] font-[600] text-gray-600 mr-2">{count} сонгогдсон</span>
 
     {NEUTRAL_ACTIONS.map(({ action, label }) => (
       <button
@@ -33,7 +33,7 @@ export const BulkActionBar: React.FC<BulkActionBarProps> = ({ count, onAction })
       onClick={() => onAction('delete')}
       className="px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 text-[13px] font-[600] text-red-600 hover:bg-red-100"
     >
-      Delete
+      Устгах
     </button>
   </div>
 );

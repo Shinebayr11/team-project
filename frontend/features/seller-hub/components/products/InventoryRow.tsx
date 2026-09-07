@@ -4,7 +4,7 @@ import React from 'react';
 import { Edit2, CheckSquare, Square } from 'lucide-react';
 import { InventoryProduct } from '@/features/seller-hub/types';
 import { StatusPill } from '../StatusPill';
-import { productTone } from '../statusTones';
+import { productTone, PRODUCT_STATUS_LABELS } from '../statusTones';
 
 interface InventoryRowProps {
   product: InventoryProduct;
@@ -24,7 +24,7 @@ export const InventoryRow: React.FC<InventoryRowProps> = ({
       <td className="p-4">
         <button
           onClick={onToggleSelect}
-          aria-label={selected ? `Deselect ${product.name}` : `Select ${product.name}`}
+          aria-label={selected ? `${product.name}-г сонголтоос хасах` : `${product.name}-г сонгох`}
           className={`hover:text-black ${selected ? 'text-blue-600' : 'text-gray-400'}`}
         >
           {selected ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5" />}
@@ -33,7 +33,16 @@ export const InventoryRow: React.FC<InventoryRowProps> = ({
 
       <td className="p-4 font-[700] text-black">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 shrink-0" />
+          {/* Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй. */}
+          {product.images?.[0] ? (
+            <img
+              src={product.images[0]}
+              alt={product.name}
+              className="w-10 h-10 rounded-lg border border-gray-200 object-cover shrink-0"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 shrink-0" />
+          )}
           <div>
             <div className="truncate max-w-[200px]">{product.name}</div>
             <div className="text-[12px] font-[500] text-gray-500">{product.category}</div>
@@ -46,16 +55,16 @@ export const InventoryRow: React.FC<InventoryRowProps> = ({
       <td className="p-4 text-right font-[700] text-black">{available}</td>
       <td className="p-4 text-right font-[500] text-gray-500">{product.reservedQuantity}</td>
       <td className="p-4 text-right font-[500] text-gray-500">{product.soldQuantity}</td>
-      <td className="p-4"><StatusPill label={product.status} tone={productTone(product.status)} withDot /></td>
+      <td className="p-4"><StatusPill label={PRODUCT_STATUS_LABELS[product.status]} tone={productTone(product.status)} withDot /></td>
 
       <td className="p-4 text-right">
         <div className="flex items-center justify-end gap-2">
           <button onClick={onAdjustStock} className="px-3 py-1.5 rounded-lg bg-gray-100 text-[12px] font-[700] text-black hover:bg-gray-200 transition-colors">
-            Stock
+            Нөөц
           </button>
           <button
             onClick={onEdit}
-            aria-label={`Edit ${product.name}`}
+            aria-label={`${product.name}-г засах`}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-black transition-colors"
           >
             <Edit2 className="w-4 h-4" />

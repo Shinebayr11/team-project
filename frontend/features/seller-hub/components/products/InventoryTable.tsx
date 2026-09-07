@@ -25,18 +25,18 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({
       <thead>
         <tr className="bg-white text-[12px] font-[800] text-gray-500 uppercase tracking-wider border-b border-gray-200">
           <th className="p-4 w-12">
-            <button onClick={onToggleSelectAll} aria-label="Select all" className="text-gray-400 hover:text-black">
+            <button onClick={onToggleSelectAll} aria-label="Бүгдийг сонгох" className="text-gray-400 hover:text-black">
               {allSelected ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5" />}
             </button>
           </th>
-          <th className="p-4">Product</th>
+          <th className="p-4">Бараа</th>
           <th className="p-4">SKU</th>
-          <th className="p-4">Price</th>
-          <th className="p-4 text-right">Available</th>
-          <th className="p-4 text-right">Reserved</th>
-          <th className="p-4 text-right">Sold</th>
-          <th className="p-4">Status</th>
-          <th className="p-4 text-right">Actions</th>
+          <th className="p-4">Үнэ</th>
+          <th className="p-4 text-right">Боломжтой</th>
+          <th className="p-4 text-right">Захиалагдсан</th>
+          <th className="p-4 text-right">Зарагдсан</th>
+          <th className="p-4">Төлөв</th>
+          <th className="p-4 text-right">Үйлдэл</th>
         </tr>
       </thead>
 
@@ -52,7 +52,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({
           />
         ))}
 
-        {products.length === 0 && <EmptyRow colSpan={9} message="No products found." />}
+        {products.length === 0 && <EmptyRow colSpan={9} message="Бараа олдсонгүй." />}
       </tbody>
     </table>
   );

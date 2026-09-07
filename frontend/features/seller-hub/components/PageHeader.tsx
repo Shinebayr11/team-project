@@ -17,7 +17,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({ title, description, onBa
       {onBack && (
         <button
           onClick={onBack}
-          aria-label="Go back"
+          aria-label="Буцах"
           className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm"
         >
           <ChevronLeft className="w-5 h-5 text-gray-600" />
