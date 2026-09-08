@@ -1,8 +1,20 @@
 "use client"
 
 import { useSyncExternalStore } from "react"
+import { useAuth } from "@clerk/nextjs"
 
 export type ActiveStream = {
+  /**
+   * Дамжуулалтыг эхлүүлсэн Clerk хэрэглэгчийн id.
+   *
+   * Энэ мөр нь хөтчийн `localStorage` дээр ГАНЦ түлхүүрээр хадгалагддаг ба
+   * гарахад цэвэрлэгддэггүй. Эзэмшигчийг нь бичихгүй бол нэг хөтчөөр дараа
+   * нэвтэрсэн ӨӨР хэрэглэгч (жишээ нь шинээр бүртгүүлсэн дэлгүүр) хуучин
+   * хүний дамжуулалтыг өөрийнх мэт өвлөж авдаг байв: "Эхлэх" маягтын оронд
+   * "Үргэлжлүүлэх" гарч ирээд, дарахад нь сервер эзэн нь биш гэж таньж
+   * "Энэ шууд дамжуулалтыг явуулах эрх танд алга байна" гэж хардаг байлаа.
+   */
+  ownerId: string
   roomName: string
   title: string
   /** Backend дээрх шууд дамжуулалтын id (`/api/liveshow`). */
@@ -62,5 +74,13 @@ export function writeActiveStream(next: ActiveStream | null) {
 // localStorage is an external store: reading it through useSyncExternalStore
 // keeps SSR and hydration in step without a setState round trip in an effect.
 export function useActiveStream(): ActiveStream | null {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+  const { userId, isLoaded } = useAuth()
+  const stored = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+
+  // Зөвхөн ӨӨРИЙНХӨӨ дамжуулалтыг үргэлжлүүлнэ. Clerk уншигдаж дуустал юу ч
+  // харуулахгүй — эс тэгвээс өөр хүний мөр хормын зуур гялсхийнэ.
+  // `ownerId`-гүй мөр нь энэ талбар нэмэгдэхээс өмнөх үлдэгдэл: эзэн нь
+  // тодорхойгүй тул хэнд ч харуулахгүй, дараагийн бичилтэд дарагдана.
+  if (!isLoaded || !userId) return null
+  return stored?.ownerId === userId ? stored : null
 }

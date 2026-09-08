@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@clerk/nextjs"
 import { Radio } from "lucide-react"
 
 import { useSearchParams } from "@/lib/router"
@@ -36,6 +37,9 @@ const primaryBtn =
 export function StartShowScreen() {
   const router = useRouter()
   const { callApi } = useApiClient()
+  // Дамжуулалтын эзэн — `useActiveStream` энэ id-гаар л мөрөө таньдаг тул
+  // нэг хөтчийг хуваалцсан өөр бүртгэл түүнийг өвлөхгүй.
+  const { userId } = useAuth()
   const [params] = useSearchParams()
   const active = useActiveStream()
   // Шууд дамжуулалтын бараа — "Миний бараа" ба "Шууд дамжуулалтын бараа" хоёр панель
@@ -91,6 +95,13 @@ export function StartShowScreen() {
   }
 
   const startLive = async () => {
+    // Эзэнгүй мөр бичвэл дараа нь хэн ч үргэлжлүүлж чадахгүй болно — Clerk
+    // уншигдаж дуусаагүй бол эхлүүлэхгүй.
+    if (!userId) {
+      setStartError("Нэвтрэлт уншигдаж байна. Хэсэг хүлээгээд дахин оролдоно уу.")
+      return
+    }
+
     setStarting(true)
     setStartError(null)
     try {
@@ -115,6 +126,7 @@ export function StartShowScreen() {
       )
 
       writeActiveStream({
+        ownerId: userId,
         roomName,
         title: streamTitle,
         showId: show._id,
