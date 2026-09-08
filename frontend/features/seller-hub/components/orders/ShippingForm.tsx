@@ -27,7 +27,7 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ onGenerateLabel, onS
         onClick={onGenerateLabel}
         className="w-full py-2.5 rounded-xl border border-gray-300 text-black text-[14px] font-[700] hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
       >
-        <FileText className="w-4 h-4" /> Наалт үүсгэх
+        <FileText className="w-4 h-4" /> Хаягийн наалт үүсгэх
       </button>
 
       <div className="h-px bg-gray-100 my-2" />

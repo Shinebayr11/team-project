@@ -12,7 +12,7 @@ import { LiveViewer } from "@/components/live/live-viewer"
 
 const CLOCK_MS = 30_000
 
-/** "1ц 24м" — шоу хэдий хугацаанд үргэлжилж байгаа нь. */
+/** "1ц 24м" — дамжуулалт хэдий хугацаанд үргэлжилж байгаа нь. */
 function useElapsed(startedAt?: string) {
   const [now, setNow] = useState(() => Date.now())
 
@@ -77,7 +77,7 @@ export default function LivePage({
   return (
     // Гарчгийн блок хэдэн ч мөр болсон видео тайз үлдсэн зайг яг дүүргэнэ.
     // Өмнө нь `h-[calc(100vh-140px)]` гэж хатуу бичсэн тул гарчиг өндөрсөхөд
-    // "Шоу дуусгах" товч нугалаас доош унаж, гүйлгэхгүйгээр харагдахаа болив.
+    // "Дамжуулалт дуусгах" товч нугалаас доош унаж, гүйлгэхгүйгээр харагдахаа болив.
     // 68px нь `components/layout/Topbar.tsx:17`-ийн `h-[68px]` — Topbar нь
     // sticky тул урсгал дотор байрээ эзэлдэг.
     <main className="mx-auto flex min-h-[calc(100svh-68px)] max-w-[1440px] flex-col px-4 py-4 lg:h-[calc(100svh-68px)]">

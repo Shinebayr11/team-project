@@ -19,7 +19,7 @@ export const DUR = {
   cta: 0.55,
   /** Header-ийн өнгө урвах хугацаа (CSS transition). */
   tone: 0.35,
-  /** Bid орж ирэх үеийн үнийн count-up. */
+  /** Үнийн санал орж ирэх үеийн count-up. */
   count: 0.6,
 } as const
 
@@ -63,7 +63,7 @@ export const VIEWPORT = { once: true, amount: 0.4 } as const
 export const AUCTION = {
   /** Дуудлага худалдааны таймер. */
   window: 10_000,
-  /** Bid хоорондын завсар. */
+  /** Үнийн саналуудын хоорондын завсар. */
   gap: 3_000,
   /** "Ялагч" badge харагдах хугацаа. */
   win: 1_500,
@@ -94,7 +94,7 @@ export interface SectionSpec {
 export const SECTIONS: readonly SectionSpec[] = [
   { id: "hero", label: "Нүүр", bg: "#5b3fe0", tone: "light" },
   { id: "auction", label: "Дуудлага худалдаа", bg: "#0e0b18", tone: "light" },
-  { id: "wallet", label: "Coin хэтэвч", bg: "#fbfaff", tone: "dark" },
+  { id: "wallet", label: "Зоосны хэтэвч", bg: "#fbfaff", tone: "dark" },
   { id: "sellers", label: "Худалдагчид", bg: "#f1edfe", tone: "dark" },
   { id: "categories", label: "Ангилал", bg: "#0e0b18", tone: "light" },
   { id: "cta", label: "Эхлэх", bg: "#5b3fe0", tone: "light" },

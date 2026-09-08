@@ -10,8 +10,8 @@ interface TopbarNavProps {
 
 const LINKS = [
   { to: '/home', label: 'Нүүр', icon: Home, exact: true },
-  { to: '/explore', label: 'Хайх', icon: Compass },
-  { to: '/live-show', label: 'Үзэх', icon: Radio },
+  { to: '/explore', label: 'Ангилал', icon: Compass },
+  { to: '/live-show', label: 'Шууд', icon: Radio },
 ];
 
 const isActive = (path: string, to: string, exact?: boolean) =>

@@ -209,7 +209,7 @@ export const SellerActivationSheet: React.FC<SellerActivationSheetProps> = ({
 
         if (detail?.fields && Object.keys(detail.fields).length > 0) {
           setErrors(detail.fields)
-          // Хаяг завгүй бол нэрний талбар дээр фокусыг үлдээнэ.
+          // Нэр ашиглагдсан бол нэрний талбар дээр фокусыг үлдээнэ.
           if (detail.fields.storeSlug || detail.fields.storeName) {
             setSlugState("taken")
             nameRef.current?.focus()
@@ -219,7 +219,7 @@ export const SellerActivationSheet: React.FC<SellerActivationSheetProps> = ({
 
         if (error.status === 409) {
           setSlugState("taken")
-          setErrors({ storeSlug: "Энэ хаяг завгүй байна. Өөр нэр сонгоно уу." })
+          setErrors({ storeSlug: "Энэ нэр аль хэдийн ашиглагдсан байна. Өөр нэр сонгоно уу." })
           nameRef.current?.focus()
           return
         }
@@ -245,7 +245,7 @@ export const SellerActivationSheet: React.FC<SellerActivationSheetProps> = ({
     if (!nameHasLetter) {
       return (
         <p className="text-[12.5px] font-[600] text-[var(--wn-live)]">
-          Зөвхөн тооноос бус, ядаж нэг үсэг агуулсан нэр оруулна уу.
+          Зөвхөн тооноос бүрдэхгүй, дор хаяж нэг үсэг агуулсан нэр оруулна уу.
         </p>
       )
     }
@@ -268,7 +268,7 @@ export const SellerActivationSheet: React.FC<SellerActivationSheetProps> = ({
           <span className="font-[700] text-[var(--wn-accent)]">Боломжтой</span>
         )}
         {slugState === "taken" && (
-          <span className="font-[700] text-[var(--wn-live)]">Завгүй байна</span>
+          <span className="font-[700] text-[var(--wn-live)]">Ашиглагдсан</span>
         )}
       </p>
     )

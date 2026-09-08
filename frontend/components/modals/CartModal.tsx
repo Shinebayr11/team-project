@@ -24,16 +24,16 @@ export const CartModal: React.FC = () => {
   const handleCheckout = () => {
     if (!checkoutCart()) return;
     closeModal();
-    addToast(`Checked out ${items.length} items for ₮${total.toLocaleString()}`);
+    addToast(`${items.length} барааны ₮${total.toLocaleString()} төлбөр амжилттай хийгдлээ.`);
   };
 
   return (
-    <Modal title="Your Cart" wide onClose={closeModal}>
+    <Modal title="Таны сагс" wide onClose={closeModal}>
       {/* Өндрийн хязгаарыг `ui/Modal.tsx`-ийн бүрхүүл эзэмшинэ (dvh-ээр). */}
       <div className="flex flex-col">
         <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-8">
           {items.length > 0 && (
-            <Section title="To Checkout">
+            <Section title="Төлбөр хийх">
               {items.map((line, i) => (
                 <CartLineRow
                   key={`${line.seller}-${line.name}`}
@@ -46,7 +46,7 @@ export const CartModal: React.FC = () => {
           )}
 
           {bids.length > 0 && (
-            <Section title="Active Bids">
+            <Section title="Идэвхтэй үнийн санал">
               {bids.map(b => (
                 <CartStaticRow key={b.id} title={b.title} seller={b.seller} price={b.amount} variant="bid" />
               ))}
@@ -54,7 +54,7 @@ export const CartModal: React.FC = () => {
           )}
 
           {purchases.length > 0 && (
-            <Section title="Purchased">
+            <Section title="Худалдаж авсан">
               {purchases.map(p => (
                 <CartStaticRow key={p.id} title={p.title} seller={p.seller} price={p.price} variant="purchase" />
               ))}
@@ -62,14 +62,14 @@ export const CartModal: React.FC = () => {
           )}
 
           {isEmpty && (
-            <div className="py-12 text-center text-[15px] font-[600] text-[var(--wn-ink-3)]">Your cart is empty</div>
+            <div className="py-12 text-center text-[15px] font-[600] text-[var(--wn-ink-3)]">Сагс хоосон байна</div>
           )}
         </div>
 
         {items.length > 0 && (
           <div className="p-6 border-t border-[var(--wn-line)] bg-[var(--wn-surface-4)] shrink-0">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[16px] font-[700] text-[var(--wn-ink-2)]">Total to pay</span>
+              <span className="text-[16px] font-[700] text-[var(--wn-ink-2)]">Нийт төлөх дүн</span>
               <span className="text-[20px] font-[800] text-[var(--wn-ink)]">₮{total.toLocaleString()}</span>
             </div>
             <button
@@ -77,7 +77,7 @@ export const CartModal: React.FC = () => {
               disabled={!canAfford(total)}
               className="w-full h-[52px] rounded-xl bg-[var(--wn-accent)] text-white text-[16px] font-[800] hover:bg-[var(--wn-accent-hover)] transition-colors disabled:opacity-50 disabled:bg-[var(--wn-ink-4)]"
             >
-              {canAfford(total) ? `Checkout — ₮${total.toLocaleString()}` : 'Not enough funds'}
+              {canAfford(total) ? `Төлбөр хийх — ₮${total.toLocaleString()}` : 'Үлдэгдэл хүрэлцэхгүй'}
             </button>
           </div>
         )}

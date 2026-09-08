@@ -17,7 +17,9 @@ type ClerkLocalization = NonNullable<
  * бичнэ — орчуулаагүй үлдсэн зүйл нь англиараа хэвээр гарна.
  */
 export const clerkMongolian: ClerkLocalization = {
-  socialButtonsBlockButton: "{{provider|titleize}}-ээр үргэлжлүүлэх",
+  // Нийлүүлэгчийн нэр янз бүр (Google, Facebook, Apple) тул "-ээр" гэж хатуу
+  // залгавал эгшгийн зохицол алдагдана. "ашиглан" нь аль ч нэрэнд зөв тохирно.
+  socialButtonsBlockButton: "{{provider|titleize}} ашиглан үргэлжлүүлэх",
   dividerText: "эсвэл",
   formButtonPrimary: "Үргэлжлүүлэх",
   backButton: "Буцах",

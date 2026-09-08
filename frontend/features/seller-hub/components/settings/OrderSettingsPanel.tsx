@@ -60,7 +60,7 @@ export const OrderSettingsPanel: React.FC = () => {
         </div>
 
         <div>
-          <Field label="Хүргэлтийн хуудасны тэмдэглэл">
+          <Field label="Баглаанд хийх тэмдэглэл">
             <textarea
               value={note}
               onChange={(event) => setNote(event.target.value)}

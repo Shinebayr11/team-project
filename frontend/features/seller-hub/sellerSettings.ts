@@ -22,3 +22,11 @@ export const settingsOf = (profile: SellerProfile | null | undefined): SellerSet
 
 /** Барааны байдлын сонголтууд — маягт, тохиргоо хоёрт ижил жагсаалт. */
 export const PRODUCT_CONDITIONS = ["New", "Like New", "Good", "Fair"]
+
+/** Барааны байдлын монгол нэр. Хадгалагдах утга нь англиараа хэвээр. */
+export const PRODUCT_CONDITION_LABELS: Record<string, string> = {
+  "New": "Шинэ",
+  "Like New": "Шинэтэй адил",
+  "Good": "Сайн",
+  "Fair": "Хэвийн",
+}

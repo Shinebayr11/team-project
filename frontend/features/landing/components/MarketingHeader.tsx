@@ -21,7 +21,7 @@ import { useLandingScroll } from "./ScrollProvider"
 
 const NAV = [
   { to: "/live-show", label: "Шууд" },
-  { to: "/explore", label: "Судлах" },
+  { to: "/explore", label: "Ангилал" },
   { to: "/home", label: "Дэлгүүр" },
 ]
 

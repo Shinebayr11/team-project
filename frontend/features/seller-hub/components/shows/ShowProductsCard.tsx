@@ -13,7 +13,7 @@ interface ShowProductsCardProps {
 
 export const ShowProductsCard: React.FC<ShowProductsCardProps> = ({ products, onAdd, onRemove }) => (
   <Panel
-    title="Шоуны бараа"
+    title="Дамжуулалтын бараа"
     action={
       <button onClick={onAdd} className="px-4 py-1.5 rounded-lg bg-gray-100 text-[13px] font-[700] text-black hover:bg-gray-200 transition-colors flex items-center gap-2">
         <Plus className="w-4 h-4" /> Бараа нэмэх
@@ -34,7 +34,7 @@ export const ShowProductsCard: React.FC<ShowProductsCardProps> = ({ products, on
             </div>
             <button
               onClick={() => onRemove(product.id)}
-              aria-label={`${product.name}-г хасах`}
+              aria-label={`Хасах: ${product.name}`}
               className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-white hover:text-red-600 transition-colors"
             >
               <Trash2 className="w-4 h-4" />
@@ -44,7 +44,7 @@ export const ShowProductsCard: React.FC<ShowProductsCardProps> = ({ products, on
       </div>
     ) : (
       <div className="py-8 text-center text-[14px] font-[500] text-gray-500 border border-dashed border-gray-300 rounded-xl">
-        Энэ шоунд бараа хараахан нэмэгдээгүй байна.
+        Энэ дамжуулалтад бараа хараахан нэмэгдээгүй байна.
       </div>
     )}
   </Panel>

@@ -38,7 +38,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, seller }) => 
       <div>
         <h4 className="text-[14.5px] font-[600] text-[var(--wn-ink)] leading-tight group-hover:text-[var(--wn-accent)] transition-colors">{product.name}</h4>
         <div className="text-[14px] font-[700] text-[var(--wn-ink-2)] mt-0.5">
-          {product.price === 'Free' ? 'Free' : `₮${product.price}`}
+          {product.price === 'Free' ? 'Үнэгүй' : `₮${product.price}`}
         </div>
       </div>
     </div>

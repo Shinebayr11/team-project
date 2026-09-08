@@ -14,7 +14,7 @@ export const Messages: React.FC = () => {
   const { conversations, loading, openWith, refresh } = useConversations()
 
   // ?c=<ярианы id> нь гол параметр. ?user=<хэрэглэгчийн id> нь мэдэгдэл зэрэг
-  // газраас "энэ хүнтэй чатлах" гэж орж ирэхэд ашиглагдана — тэр тохиолдолд
+  // газраас "энэ хүнтэй холбогдох" гэж орж ирэхэд ашиглагдана — тэр тохиолдолд
   // яриаг нээгээд (байхгүй бол үүсгээд) ?c рүү шилжинэ.
   const conversationId = searchParams.get("c")
   const withUserId = searchParams.get("user")

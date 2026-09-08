@@ -27,7 +27,7 @@ export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
 
   return (
   <Panel
-    title="Биелэлт"
+    title="Захиалгын явц"
     action={<StatusPill label={FULFILLMENT_STATUS_LABELS[order.fulfillmentStatus]} tone={fulfillmentTone(order.fulfillmentStatus)} />}
   >
     <div className="flex flex-col gap-4">
@@ -43,7 +43,7 @@ export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
         <>
           {packingSlipNote && (
             <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
-              <div className="text-[12px] font-[700] text-gray-500">Хуудасны тэмдэглэл</div>
+              <div className="text-[12px] font-[700] text-gray-500">Баглааны тэмдэглэл</div>
               <div className="mt-0.5 text-[13px] font-[500] text-black">{packingSlipNote}</div>
             </div>
           )}

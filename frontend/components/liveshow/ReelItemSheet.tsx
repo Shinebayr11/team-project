@@ -92,7 +92,7 @@ export const ReelItemSheet: React.FC<ReelItemSheetProps> = ({
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-[var(--wn-surface-2)] flex items-center justify-center text-[var(--wn-ink-3)] hover:text-[var(--wn-ink)] transition-colors"
-          aria-label="Close"
+          aria-label="Хаах"
           data-no-drag
         >
           <X className="w-5 h-5" />

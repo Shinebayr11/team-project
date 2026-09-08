@@ -163,7 +163,7 @@ export const ShopInformationPanel: React.FC = () => {
 
         if (error.status === 409) {
           setSlugState("taken")
-          setErrors({ storeSlug: "Энэ хаяг завгүй байна. Өөр нэр сонгоно уу." })
+          setErrors({ storeSlug: "Энэ нэр аль хэдийн ашиглагдсан байна. Өөр нэр сонгоно уу." })
           return
         }
       }
@@ -202,7 +202,7 @@ export const ShopInformationPanel: React.FC = () => {
           <span className="font-[700] text-emerald-600">Боломжтой</span>
         )}
         {slugState === "taken" && (
-          <span className="font-[700] text-red-600">Завгүй байна</span>
+          <span className="font-[700] text-red-600">Ашиглагдсан</span>
         )}
       </p>
     )

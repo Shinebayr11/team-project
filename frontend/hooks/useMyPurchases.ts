@@ -19,7 +19,7 @@ export interface MyPurchase {
   id: string
   title: string
   seller: string
-  /** Худалдагчтай чатлах — id байхгүй бол товч гарахгүй. */
+  /** Худалдагчтай холбогдох — id байхгүй бол товч гарахгүй. */
   sellerId?: string
   price: number
   date?: string
