@@ -17,7 +17,7 @@ interface ShowStatusPanelProps {
 
 const dark = btn("ink", "block");
 const outline = btn("outline", "block");
-const live = 'w-full py-2.5 rounded-xl bg-[var(--wn-live-deep)] text-white text-[14px] font-[700] hover:bg-[var(--wn-live)] transition-colors flex items-center justify-center gap-2';
+const live = 'w-full py-2.5 rounded-xl bg-[var(--wn-live-deep)] text-white text-[14px] font-[700] hover:bg-[var(--wn-live-deep-hover)] transition-colors flex items-center justify-center gap-2';
 
 /**
  * Шууд дамжуулалтын төлөв.

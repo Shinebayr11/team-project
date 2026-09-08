@@ -135,7 +135,7 @@ export const SellerShows: React.FC = () => {
         {/* Жинхэнэ LiveKit шууд дамжуулалт — Seller Hub-ын chrome дотор. */}
         <Link
           to={startShowHref()}
-          className="flex items-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-live)]"
+          className="flex items-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-live-deep-hover)]"
         >
           <Radio className="h-4 w-4" /> Дамжуулж эхлэх
         </Link>

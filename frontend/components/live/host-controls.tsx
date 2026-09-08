@@ -65,7 +65,7 @@ export function HostControls({ onEnd }: { onEnd: () => void }) {
           <button
             type="button"
             onClick={onEnd}
-            className="h-11 rounded-full bg-[var(--wn-live-deep)] px-5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-live)]"
+            className="h-11 rounded-full bg-[var(--wn-live-deep)] px-5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-live-deep-hover)]"
           >
             Тийм, дуусгах
           </button>
@@ -81,7 +81,7 @@ export function HostControls({ onEnd }: { onEnd: () => void }) {
         <button
           type="button"
           onClick={() => setConfirming(true)}
-          className="flex h-11 items-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 text-[14px] font-[700] text-white shadow-lg transition-colors hover:bg-[var(--wn-live)]"
+          className="flex h-11 items-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 text-[14px] font-[700] text-white shadow-lg transition-colors hover:bg-[var(--wn-live-deep-hover)]"
         >
           <Square className="size-4 fill-white" />
           Шууд дамжуулалт дуусгах

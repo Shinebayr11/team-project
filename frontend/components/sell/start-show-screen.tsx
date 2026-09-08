@@ -23,7 +23,7 @@ import { PastShows } from "@/components/sell/past-shows"
 
 /** Самбарын үндсэн товч — NextShowBanner / SellerShows-тэй ижил хэмжээ. */
 const primaryBtn =
-  "flex items-center justify-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-live)] disabled:cursor-not-allowed disabled:opacity-50"
+  "flex items-center justify-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-live-deep-hover)] disabled:cursor-not-allowed disabled:opacity-50"
 
 /**
  * Шууд дамжуулалт эхлэх дэлгэц. `/seller/shows/start` дор mount хийгддэг тул Seller
