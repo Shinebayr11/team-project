@@ -87,7 +87,7 @@ export const Modal: React.FC<ModalProps> = ({ title, onClose, children, eyebrow,
   if (!mounted) return null;
 
   // Цонхыг document.body руу гаргаснаар `overflow-hidden`, `transform` бүхий
-  // эцэг элемент (жишээ нь лайвын видео тайз) үүнийг таслах, дарах боломжгүй.
+  // эцэг элемент (жишээ нь дамжуулалтын видео тайз) үүнийг таслах, дарах боломжгүй.
   return createPortal(
     <div
       data-base-ui-portal=""

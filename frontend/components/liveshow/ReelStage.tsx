@@ -20,8 +20,8 @@ export const ReelStage: React.FC<ReelStageProps> = ({
   shows, currentIndex, countdown, viewers, showScrollHint, onWheel, onGoTo, onItemAction,
 }) => {
   // Гар утсан дээр гүйлгэлтийг хөтөч өөрөө (snap scroll) хийдэг тул хуруугаар
-  // гүйлгэхэд `onWheel` огт дуудагддаггүй. Иймд идэвхтэй лайвыг гүйлгэлтийн
-  // байрлалаас нь уншиж, overlay-ууд (Buy/Bid, чат, худалдагч) үзэж буй лайвтай
+  // гүйлгэхэд `onWheel` огт дуудагддаггүй. Иймд идэвхтэй дамжуулалтыг гүйлгэлтийн
+  // байрлалаас нь уншиж, overlay-ууд (Buy/Bid, чат, худалдагч) үзэж буй дамжуулалттай
   // нь тааруулна — эс тэгвэл тэдгээр нь shows[0] дээр гацна.
   const mobileScrollRef = useRef<HTMLDivElement>(null);
 

@@ -11,7 +11,7 @@ export interface LiveStream {
   /** LiveKit серверийн хаяг — серверээс ирнэ, клиент дээр тохируулахгүй. */
   url: string | null
   /**
-   * Дамжуулах эрх. Үүнийг ЗӨВХӨН сервер шийднэ (лайвын эзэн мөн эсэх).
+   * Дамжуулах эрх. Үүнийг ЗӨВХӨН сервер шийднэ (дамжуулалтын эзэн мөн эсэх).
    *
    * Өмнө нь клиент `canPublish`-ээ өөрөө сонгож, нэвтрэлтгүй endpoint рүү
    * илгээдэг байсан тул `/live/:room?host=1` гэж хаягаа бичсэн ямар ч хүн
@@ -37,19 +37,19 @@ const IDLE: LiveStream = {
   loading: true,
 }
 
-const NO_SHOW: LiveStream = { ...IDLE, loading: false, error: "Лайв олдсонгүй" }
+const NO_SHOW: LiveStream = { ...IDLE, loading: false, error: "Дамжуулалт олдсонгүй" }
 
 /**
- * Лайвын LiveKit token-ыг серверээс авна.
+ * Дамжуулалтын LiveKit token-ыг серверээс авна.
  *
- * Түлхүүр нь өрөөний нэр БИШ, лайвын id: өрөөг лайваас нь сервер олж,
+ * Түлхүүр нь өрөөний нэр БИШ, дамжуулалтын id: өрөөг дамжуулалтаас нь сервер олж,
  * эрхийг нь тэндээ шийднэ.
  */
 export function useLiveKitToken(showId?: string): LiveStream {
   const { callApi } = useApiClient()
   const { displayName, isLoaded } = useDisplayName()
   const [state, setState] = useState<LiveStream>(IDLE)
-  /** Хоцорч ирсэн хариу шинэ лайвын token-ыг дарж бичихээс сэргийлнэ. */
+  /** Хоцорч ирсэн хариу шинэ дамжуулалтын token-ыг дарж бичихээс сэргийлнэ. */
   const latest = useRef(0)
 
   const load = useCallback(() => {

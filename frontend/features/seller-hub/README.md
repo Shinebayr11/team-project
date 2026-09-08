@@ -62,10 +62,10 @@ screen-үүдийг export хийдэг тул зөвхөн төрөл авах 
 Бодит шууд дамжуулалт огт өөр газар:
 
 ```
-app/(broadcast)/sell/page.tsx        → лайв эхлүүлэх товч
+app/(broadcast)/sell/page.tsx        → дамжуулалт эхлүүлэх товч
 app/(broadcast)/live/[id]/page.tsx   → өрөө
 components/live/video-stage.tsx      → LiveKit room + token авах
 ```
 
-Энэ хоёр хэсэг одоогоор **хоорондоо холбогдоогүй**. Seller Hub-ын лайвыг бодит
+Энэ хоёр хэсэг одоогоор **хоорондоо холбогдоогүй**. Seller Hub-ын дамжуулалтыг бодит
 дамжуулалттай холбох бол тэр ажил энэ фолдерын гадна, `app/(broadcast)/` талд хийгдэнэ.

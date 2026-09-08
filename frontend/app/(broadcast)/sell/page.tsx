@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 
 /**
- * Лайв эхлэх дэлгэц Seller Hub руу зөөгдсөн (`/seller/shows/start`).
+ * Дамжуулалт эхлэх дэлгэц Seller Hub руу зөөгдсөн (`/seller/shows/start`).
  *
  * Энэ хаяг нь худалдан авагчийн topbar-тай, sidebar-гүй байсан тул худалдагч
  * самбраасаа гарч өөр аппад ирсэн мэт болдог байв. Хадгалсан холбоос,

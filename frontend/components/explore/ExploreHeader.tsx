@@ -12,7 +12,7 @@ export const ExploreHeader: React.FC<ExploreHeaderProps> = ({ query, onQueryChan
   <div className="bg-white border-b border-[var(--wn-line)] pt-12 pb-8 px-6 md:px-12">
     <div className="max-w-[1200px] mx-auto">
       <h1 className="text-[32px] md:text-[40px] font-[800] text-[var(--wn-ink)] tracking-tight mb-2">Ангилал</h1>
-      <p className="text-[16px] text-[var(--wn-ink-3)] font-[500] mb-8">Лайв, бараа, худалдагч</p>
+      <p className="text-[16px] text-[var(--wn-ink-3)] font-[500] mb-8">Дамжуулалт, бараа, худалдагч</p>
 
       <div className="relative max-w-[600px]">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--wn-ink-4)]" />
@@ -20,7 +20,7 @@ export const ExploreHeader: React.FC<ExploreHeaderProps> = ({ query, onQueryChan
           type="text"
           value={query}
           onChange={e => onQueryChange(e.target.value)}
-          placeholder="Бараа, худалдагч, лайв хайх"
+          placeholder="Бараа, худалдагч, дамжуулалт хайх"
           aria-label="Хайх"
           className="w-full h-[52px] rounded-full bg-[var(--wn-surface-2)] border border-[var(--wn-line)] pl-12 pr-4 text-[15px] text-[var(--wn-ink)] placeholder:text-[var(--wn-ink-4)] font-[500] outline-none focus:border-[var(--wn-accent)] transition-colors shadow-sm"
         />

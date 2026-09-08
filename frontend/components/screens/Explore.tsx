@@ -56,7 +56,7 @@ export const Explore: React.FC = () => {
         </ExploreSection>
 
         <ExploreSection
-          title="Удахгүй эхлэх лайв"
+          title="Удахгүй эхлэх дамжуулалт"
           icon={<Calendar className="w-5 h-5 text-[var(--wn-ink-2)]" />}
           onViewAll={() => navigate('/home')}
         >

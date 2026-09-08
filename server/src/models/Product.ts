@@ -32,7 +32,7 @@ export const ProductSchema = new Schema(
             enum: ["ACTIVE", "DRAFT", "ARCHIVED", "OUT_OF_STOCK"],
             default: "ACTIVE",
         },
-        /** Лайвд гаргахаар барьцаалсан ба зарагдсан тоо. */
+        /** Дамжуулалтад гаргахаар барьцаалсан ба зарагдсан тоо. */
         reserved_quantity: { type: Number, default: 0, min: 0 },
         sold_quantity: { type: Number, default: 0, min: 0 },
     },

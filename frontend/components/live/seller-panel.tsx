@@ -15,7 +15,7 @@ export function SellerPanel({
 }: {
   title: string
   seller: string
-  /** Populate хийгдээгүй/mock лайвын хувьд байхгүй байж болно. */
+  /** Populate хийгдээгүй/mock дамжуулалтын хувьд байхгүй байж болно. */
   sellerId?: string
   category: string
 }) {

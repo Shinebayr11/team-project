@@ -18,7 +18,7 @@ const roomService = new RoomServiceClient(
 const STALE_CHECK_GRACE_MS = 30_000
 
 /**
- * Лайв staleness шалгалтад орох хангалттай хуучин болсон эсэх.
+ * Дамжуулалт staleness шалгалтад орох хангалттай хуучин болсон эсэх.
  *
  * `createdAt` нь Mongoose-ийн `timestamps` -аас ирдэг ч Mongo руу шууд (жишээ нь
  * гар аргаар, эсвэл тестийн script-ээр) оруулсан баримтад огт байхгүй байж
@@ -58,8 +58,8 @@ const listRoomsCached = () => {
 export const getliveshow = async (c: Context) => {
     try {
         // Home feed-д зөвхөн одоо шууд явж буй (status: "live"), эсвэл эхлэх цаг нь
-        // тохируулагдсан (started_at) лайвуудыг харуулна — цаг/төлөвгүй бэлэн бус
-        // (draft) баримтуудыг нуух. Дууссан (ended) лайвыг үргэлж хасна.
+        // тохируулагдсан (started_at) дамжуулалтуудыг харуулна — цаг/төлөвгүй бэлэн бус
+        // (draft) баримтуудыг нуух. Дууссан (ended) дамжуулалтыг үргэлж хасна.
         const data = await Live_Show.find({
             status: { $ne: "ended" },
             $or: [{ status: "live" }, { started_at: { $ne: null } }],
@@ -114,12 +114,12 @@ export const getliveshow = async (c: Context) => {
 /**
  * GET /api/liveshow/mine
  *
- * Худалдагчийн өөрийн лайвууд. Анхдагч нь `/sell` дээрх "хамгийн их үзэлттэй
- * 3 дууссан лайв" — параметргүй хуучин дуудлагууд хэвээр ажиллана.
+ * Худалдагчийн өөрийн дамжуулалтууд. Анхдагч нь `/sell` дээрх "хамгийн их үзэлттэй
+ * 3 дууссан дамжуулалт" — параметргүй хуучин дуудлагууд хэвээр ажиллана.
  *
  *   ?sort=recent   — шинэ нь эхэндээ (анхдагч: үзэгчээр)
  *   ?limit=6       — хэдийг буцаах (дээд тал нь 50)
- *   ?stats=1       — лайв тус бүрийн зарагдсан лот, орлогыг хамт тооцно
+ *   ?stats=1       — дамжуулалт тус бүрийн зарагдсан лот, орлогыг хамт тооцно
  */
 export const getMyLiveshows = async (c: Context) => {
     try {
@@ -136,7 +136,7 @@ export const getMyLiveshows = async (c: Context) => {
             return c.json({ data: shows }, 200)
         }
 
-        // Лайв тус бүрийн орлого нь тухайн лайв дээр ЗАРАГДСАН лотуудын нийлбэр.
+        // Дамжуулалт тус бүрийн орлого нь тухайн дамжуулалт дээр ЗАРАГДСАН лотуудын нийлбэр.
         const sold = await ProductListing.aggregate([
             {
                 $match: {
@@ -198,7 +198,7 @@ export const patchliveshow = async (c: Context) => {
             return c.json({ message: "Live show olsongvi" }, 404)
         }
         if (String(show.seller_id) !== String(userId)) {
-            return c.json({ message: "Энэ лайвыг өөрчлөх эрхгүй байна" }, 403)
+            return c.json({ message: "Энэ дамжуулалтыг өөрчлөх эрхгүй байна" }, 403)
         }
 
         if (status !== undefined) show.status = status
@@ -310,17 +310,17 @@ export const getAccessToken = async (c: Context) => {
         }
 
         if (!show.livekit_room_name) {
-            return c.json({ message: "Энэ лайв дамжуулалттай холбогдоогүй байна" }, 400)
+            return c.json({ message: "Энэ дамжуулалт дамжуулалттай холбогдоогүй байна" }, 400)
         }
 
-        // Дамжуулах эрхийг ЗӨВХӨН сервер шийднэ: лайвын эзэн мөн эсэх.
+        // Дамжуулах эрхийг ЗӨВХӨН сервер шийднэ: дамжуулалтын эзэн мөн эсэх.
         // Өмнө нь клиент `canPublish`-ээ өөрөө сонгож, `/live/:room?host=1`
         // гэж хаяг бичсэн ямар ч хүн өөр хүний өрөөнд нэвтэрч дамжуулах
         // боломжтой байв.
         const isHost = !!user && String(show.seller_id) === String(user._id)
 
-        // Эхлээгүй/дууссан лайвыг үзэгчид үзэх зүйлгүй. Харин эзэн нь орж
-        // чадах ёстой — staleness цэвэрлэгээ лайвыг "ended" болгосон ч
+        // Эхлээгүй/дууссан дамжуулалтыг үзэгчид үзэх зүйлгүй. Харин эзэн нь орж
+        // чадах ёстой — staleness цэвэрлэгээ дамжуулалтыг "ended" болгосон ч
         // худалдагч дахин холбогдож үргэлжлүүлнэ.
         if (!isHost && show.status !== "live") {
             return c.json({ message: "Дамжуулалт одоогоор явагдаагүй байна" }, 409)

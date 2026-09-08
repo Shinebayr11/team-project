@@ -26,7 +26,7 @@ export default function LivePage({
   params: Promise<{ id: string }>
   searchParams: Promise<{ host?: string; title?: string; showId?: string }>
 }) {
-  // `id` нь LiveKit өрөөний нэр. Token авахад ХЭРЭГЛЭХГҮЙ — өрөөг лайваас нь
+  // `id` нь LiveKit өрөөний нэр. Token авахад ХЭРЭГЛЭХГҮЙ — өрөөг дамжуулалтаас нь
   // сервер олдог тул зөвхөн хуучин холбоосын үлдэгдэл.
   use(params)
   const { host, title, showId } = use(searchParams)

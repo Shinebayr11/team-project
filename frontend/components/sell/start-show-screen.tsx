@@ -25,7 +25,7 @@ const primaryBtn =
   "flex items-center justify-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-live)] disabled:cursor-not-allowed disabled:opacity-50"
 
 /**
- * Лайв эхлэх дэлгэц. `/seller/shows/start` дор mount хийгддэг тул Seller
+ * Дамжуулалт эхлэх дэлгэц. `/seller/shows/start` дор mount хийгддэг тул Seller
  * Hub-ын sidebar, SellerTopbar хэвээр үлдэнэ — нэвтрэлтийг `proxy.ts`,
  * худалдагч идэвхтэй эсэхийг `SellerHubLayout` аль хэдийн шалгасан байдаг тул
  * энд давхар guard хэрэггүй.
@@ -43,7 +43,7 @@ export function StartShowScreen() {
   const lineup = useShowProducts(active?.showId)
   const { categories, addCategory } = useCategories()
 
-  // Лайвын дэлгэрэнгүйгээс ирсэн бол гарчиг, ангилал нь бэлдсэн байна.
+  // Дамжуулалтын дэлгэрэнгүйгээс ирсэн бол гарчиг, ангилал нь бэлдсэн байна.
   const [title, setTitle] = useState(params.get("title") ?? "")
   const [category, setCategory] = useState(
     params.get("category") || EXPLORE_CATEGORIES[0].name
@@ -51,7 +51,7 @@ export function StartShowScreen() {
   const [starting, setStarting] = useState(false)
   const [startError, setStartError] = useState<string | null>(null)
 
-  // Самбарын лайваас ирсэн бол дамжуулалтыг тэр лайвтай холбоно.
+  // Самбарын дамжуулалтаас ирсэн бол дамжуулалтыг тэр дамжуулалттай холбоно.
   const sellerShowId = params.get("showId") ?? undefined
 
   const [addingCategory, setAddingCategory] = useState(false)

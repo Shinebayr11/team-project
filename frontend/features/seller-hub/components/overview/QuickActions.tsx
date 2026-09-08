@@ -6,7 +6,7 @@ import { Plus, Calendar, Package, ShoppingBag, BarChart2 } from 'lucide-react';
 
 const ACTIONS = [
   { label: 'Бараа нэмэх', to: '/seller/products', icon: Plus },
-  { label: 'Лайв товлох', to: '/seller/shows', icon: Calendar },
+  { label: 'Дамжуулалт товлох', to: '/seller/shows', icon: Calendar },
   { label: 'Бараа харах', to: '/seller/products', icon: Package },
   { label: 'Захиалга харах', to: '/seller/orders', icon: ShoppingBag },
   { label: 'Тайлан харах', to: '/seller/analytics', icon: BarChart2 },

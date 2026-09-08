@@ -9,7 +9,7 @@ const DEFAULT_DURATION_SECONDS = 60
 const MAX_DURATION_SECONDS = 60 * 60
 
 /**
- * Лайвын аукционууд. live_show_id өгвөл зөвхөн тухайн лайвынх, эс бөгөөс бүгд.
+ * Дамжуулалтын аукционууд. live_show_id өгвөл зөвхөн тухайн дамжуулалтынх, эс бөгөөс бүгд.
  * Уншихаас өмнө хугацаа нь дууссан аукционуудыг хаана.
  */
 export const getProductlisting = async (c: Context) => {
@@ -117,7 +117,7 @@ export const getMySales = async (c: Context) => {
     try {
         const userId = c.get("userId")
 
-        // Лайв нь худалдагчийнх эсэхээр шүүнэ — лот дээр эзэмшигч шууд байхгүй.
+        // Дамжуулалт нь худалдагчийнх эсэхээр шүүнэ — лот дээр эзэмшигч шууд байхгүй.
         const myShows = await Live_Show.find({ seller_id: userId }).select("_id")
         const showIds = myShows.map((show) => show._id)
 
@@ -145,7 +145,7 @@ export const getMySales = async (c: Context) => {
 }
 
 /**
- * Лайв дээр бараагаа аукционд гаргах. Зөвхөн тухайн лайвын эзэн, зөвхөн
+ * Дамжуулалт дээр бараагаа аукционд гаргах. Зөвхөн тухайн дамжуулалтын эзэн, зөвхөн
  * өөрийн бараагаар.
  */
 export const postProductlisting = async (c: Context) => {
@@ -168,7 +168,7 @@ export const postProductlisting = async (c: Context) => {
             return c.json({ message: "Live show olsongvi" }, 404)
         }
         if (String(show.seller_id) !== String(userId)) {
-            return c.json({ message: "Энэ лайвыг өөрчлөх эрхгүй байна" }, 403)
+            return c.json({ message: "Энэ дамжуулалтыг өөрчлөх эрхгүй байна" }, 403)
         }
 
         const product = await Product.findById(product_id)
@@ -179,7 +179,7 @@ export const postProductlisting = async (c: Context) => {
             return c.json({ message: "Энэ бараа таных биш байна" }, 403)
         }
 
-        // Нэг лайв дээр нэгэн зэрэг зөвхөн нэг аукцион явна — үзэгчид юун дээр
+        // Нэг дамжуулалт дээр нэгэн зэрэг зөвхөн нэг аукцион явна — үзэгчид юун дээр
         // санал болгож буй нь ойлгомжтой байх ёстой.
         await settleExpiredListings({ live_show_id })
         const running = await ProductListing.findOne({
@@ -214,7 +214,7 @@ export const postProductlisting = async (c: Context) => {
     }
 }
 
-/** Аукционыг хугацаанаас нь өмнө хаах — зөвхөн лайвын эзэн. */
+/** Аукционыг хугацаанаас нь өмнө хаах — зөвхөн дамжуулалтын эзэн. */
 export const closeProductlisting = async (c: Context) => {
     try {
         const userId = c.get("userId")

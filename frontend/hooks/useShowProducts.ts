@@ -23,8 +23,8 @@ export const productOfEntry = (entry: ShowProduct): AuctionProduct | undefined =
     : undefined
 
 /**
- * Нэг лайвын барааны жагсаалт. Худалдагч /sell дээрээс энд бараагаа нэмж,
- * үзэгч лайв дээр яг үүнийг хардаг.
+ * Нэг дамжуулалтын барааны жагсаалт. Худалдагч /sell дээрээс энд бараагаа нэмж,
+ * үзэгч дамжуулалт дээр яг үүнийг хардаг.
  */
 export function useShowProducts(liveShowId?: string) {
   const { callApi } = useApiClient()

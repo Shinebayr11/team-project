@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { SellerShow } from '@/features/seller-hub/types';
 import { PageHeader } from '../PageHeader';
 import { TextField, SelectField, TextAreaField, Field } from '../FormField';
+import { PRODUCT_CATEGORY_LABELS } from '../products/productDraft';
 
 export interface ShowDraft {
   title: string;
@@ -39,20 +40,21 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
 
   return (
     <>
-      <PageHeader title="Лайв үүсгэх" onBack={onCancel} />
+      <PageHeader title="Дамжуулалт үүсгэх" onBack={onCancel} />
 
       <div className="max-w-[600px] bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
         <div className="flex flex-col gap-5">
-          <TextField label="Лайвын нэр *" value={draft.title} onChange={e => patch({ title: e.target.value })} />
+          <TextField label="Дамжуулалтын нэр *" value={draft.title} onChange={e => patch({ title: e.target.value })} />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <SelectField
               label="Ангилал *"
               options={CATEGORIES}
+              labels={PRODUCT_CATEGORY_LABELS}
               value={draft.category}
               onChange={e => patch({ category: e.target.value })}
             />
-            <Field label="Лайвын төрөл *">
+            <Field label="Дамжуулалтын төрөл *">
               <select
                 value={draft.type}
                 onChange={e => patch({ type: e.target.value as SellerShow['type'] })}

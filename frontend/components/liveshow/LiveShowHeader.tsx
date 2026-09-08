@@ -55,14 +55,14 @@ export function LiveShowHeader({ showId }: LiveShowHeaderProps) {
   const [followOverride, setFollowOverride] = useState<boolean | null>(null)
   const [followLoading, setFollowLoading] = useState(false)
 
-  // Лайвын мэдээлэл нэг л удаа — 5 секунд тутам дахин татах шаардлагагүй.
+  // Дамжуулалтын мэдээлэл нэг л удаа — 5 секунд тутам дахин татах шаардлагагүй.
   useEffect(() => {
     let cancelled = false
     callApi<{ data: ShowData }>(`/api/liveshow/${showId}`)
       .then(({ data }) => {
         if (!cancelled) setShow(data)
       })
-      .catch((err) => console.error('Лайвын мэдээлэл татаж чадсангүй:', err))
+      .catch((err) => console.error('Дамжуулалтын мэдээлэл татаж чадсангүй:', err))
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
@@ -129,7 +129,7 @@ export function LiveShowHeader({ showId }: LiveShowHeaderProps) {
   const seller = sellerOf(show)
   const sellerName = seller?.shop_name || seller?.display_name || 'Худалдагч'
   const sellerAvatar = seller?.avatar_url
-  // Өөрийнхөө лайв дээр "дагах" товч утгагүй — сервер ч 400 буцаадаг.
+  // Өөрийнхөө дамжуулалт дээр "дагах" товч утгагүй — сервер ч 400 буцаадаг.
   const isOwnShow = !!me?._id && !!sellerId && String(me._id) === String(sellerId)
 
   return (

@@ -25,7 +25,7 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
   const navigate = useNavigate()
   const [navOpen, setNavOpen] = React.useState(false)
 
-  // Барааг бүрхүүл дээр нэг л удаа уншина — бараа, лайв, тойм, аналитик бүгд
+  // Барааг бүрхүүл дээр нэг л удаа уншина — бараа, дамжуулалт, тойм, аналитик бүгд
   // store доторх нэг кэшийг хардаг.
   const inventory = useInventoryHydration()
 

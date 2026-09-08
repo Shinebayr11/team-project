@@ -19,7 +19,7 @@ const TOPICS: { key: keyof AccountNotifications; label: string; description: str
   },
   {
     key: "showReminders",
-    label: "Лайвын сануулга",
+    label: "Дамжуулалтын сануулга",
     description: "Дагасан худалдагч шууд эфирт гарах гэж байгаа үед.",
   },
   {

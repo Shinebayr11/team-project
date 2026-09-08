@@ -17,7 +17,7 @@ export const InventoryPickerModal: React.FC<InventoryPickerModalProps> = ({ prod
     {/* `vh` нь гар утсан дээр хөтчийн мөрийн ард хэмжигддэг тул `dvh`. */}
     <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-[600px] flex flex-col max-h-[92dvh] sm:max-h-[80dvh] shadow-xl">
       <div className="p-5 border-b border-gray-200 flex items-center justify-between">
-        <h2 className="text-[18px] font-[800] text-black">Лайвд бараа нэмэх</h2>
+        <h2 className="text-[18px] font-[800] text-black">Дамжуулалтад бараа нэмэх</h2>
         <button onClick={onClose} aria-label="Хаах" className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
           <X className="w-4 h-4" />
         </button>
