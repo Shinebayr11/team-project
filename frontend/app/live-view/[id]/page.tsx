@@ -31,7 +31,7 @@ export default function LiveViewRedirectPage() {
   return (
     <div className="flex min-h-svh items-center justify-center">
       <p className="text-[15px] font-[500] text-[var(--wn-ink-3)]">
-        Дамжуулалт руу шилжиж байна...
+        Шууд дамжуулалт руу шилжиж байна...
       </p>
     </div>
   )

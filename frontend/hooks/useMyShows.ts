@@ -14,8 +14,8 @@ export interface PastShow {
 }
 
 /**
- * Худалдагчийн дуусгасан лайвуудаас хамгийн их үзэлттэй 3. /sell дээр шинэ
- * лайв эхлүүлэхийн өмнө өмнөх дүнгээ харах зорилготой.
+ * Худалдагчийн дуусгасан шууд дамжуулалтуудаас хамгийн их үзэлттэй 3. /sell дээр шинэ
+ * шууд дамжуулалт эхлүүлэхийн өмнө өмнөх дүнгээ харах зорилготой.
  */
 export function useMyShows() {
   const { callApi } = useApiClient()
@@ -27,7 +27,7 @@ export function useMyShows() {
       const { data } = await callApi<{ data: PastShow[] }>("/api/liveshow/mine")
       setShows(data)
     } catch (error) {
-      console.error("Өмнөх лайв уншиж чадсангүй:", error)
+      console.error("Өмнөх шууд дамжуулалт уншиж чадсангүй:", error)
     } finally {
       setLoading(false)
     }

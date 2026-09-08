@@ -44,16 +44,16 @@ export const toHomeShow = (doc: LiveShowDoc): HomeShow => {
         : undefined,
     roomId: doc.livekit_room_name,
     showId: doc._id,
-    // `/sell`-ээс эхлүүлсэн лайв `started_at`-гүй үүсэж болох тул `createdAt`
+    // `/sell`-ээс эхлүүлсэн шууд дамжуулалт `started_at`-гүй үүсэж болох тул `createdAt`
     // нөөцөд байна — аль нэг нь үргэлж байдаг (schema дээр `timestamps: true`).
     startedAt: doc.started_at ?? doc.createdAt,
   }
 }
 
 // Browse (`/live-show`) ямар ч LiveKit өгөгдөл ашигладаггүй, зөвхөн хатуу
-// тогтоосон REEL_SHOWS mock-оор ажилладаг тул бодит дамжуулалтыг зөв
-// харуулж чадахгүй — тиймээс бодит room-той (roomId) лайвыг зөвхөн жинхэнэ
-// видео дэлгэц рүү, roomId-гүй (mock/жишээ) лайвыг Browse рүү оруулна.
+// тогтоосон REEL_SHOWS mock-оор ажилладаг тул бодит шууд дамжуулалтыг зөв
+// харуулж чадахгүй — тиймээс бодит room-той (roomId) шууд дамжуулалтыг зөвхөн жинхэнэ
+// видео дэлгэц рүү, roomId-гүй (mock/жишээ) шууд дамжуулалтыг Browse рүү оруулна.
 //
 // `/live/:room?host=0` нь ХУДАЛДАГЧИЙН биш — `host=0` үед `LiveViewer`
 // (худалдагчийн самбар, барааны жагсаалт, дуудлага худалдаа, чат) ордог.

@@ -42,7 +42,7 @@ export const SellerProducts: React.FC = () => {
   const { state, addToast } = useStore()
   const inventory = state.inventory
 
-  // Бараа сервер дээр амьдарна — дамжуулалтын "Миний бараа" ЯГ ижил
+  // Бараа сервер дээр амьдарна — шууд дамжуулалтын "Миний бараа" ЯГ ижил
   // цуглуулгыг уншдаг тул энд нэмсэн бараа тэнд шууд харагдана.
   const { create, update, remove } = useInventoryActions()
 

@@ -16,7 +16,7 @@ export const ReelNavRail: React.FC<ReelNavRailProps> = ({ count, currentIndex, o
     <button
       onClick={() => onGoTo(currentIndex - 1)}
       disabled={currentIndex === 0}
-      aria-label="Өмнөх дамжуулалт"
+      aria-label="Өмнөх шууд дамжуулалт"
       className={arrowClass}
     >
       <ChevronUp className="w-4 h-4" />
@@ -36,7 +36,7 @@ export const ReelNavRail: React.FC<ReelNavRailProps> = ({ count, currentIndex, o
     <button
       onClick={() => onGoTo(currentIndex + 1)}
       disabled={currentIndex === count - 1}
-      aria-label="Дараагийн дамжуулалт"
+      aria-label="Дараагийн шууд дамжуулалт"
       className={arrowClass}
     >
       <ChevronDown className="w-4 h-4" />

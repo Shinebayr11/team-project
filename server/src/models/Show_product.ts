@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-/** Лайвын барааны жагсаалт — аль бараа аль лайв дээр ямар дарааллаар гарах вэ. */
+/** Шууд дамжуулалтын барааны жагсаалт — аль бараа аль шууд дамжуулалт дээр ямар дарааллаар гарах вэ. */
 const Show_productSchema = new Schema(
     {
         // Модель "Live_Show" нэрээр бүртгэгддэг тул ref нь яг тэр үсгээр байх ёстой,
@@ -13,7 +13,7 @@ const Show_productSchema = new Schema(
     { timestamps: true }
 )
 
-// Нэг бараа нэг лайв дээр ганц л удаа байна.
+// Нэг бараа нэг шууд дамжуулалт дээр ганц л удаа байна.
 Show_productSchema.index({ live_show_id: 1, product_id: 1 }, { unique: true })
 
 export const Show_product = mongoose.model("Show_product", Show_productSchema)

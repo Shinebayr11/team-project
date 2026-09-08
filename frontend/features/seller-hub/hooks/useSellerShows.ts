@@ -5,7 +5,7 @@ import { useUser } from "@clerk/nextjs"
 
 import { useApiClient } from "@/hooks/useApiClient"
 
-/** Дууссан дамжуулалт, түүний борлуулалтын дүнтэй хамт. */
+/** Дууссан шууд дамжуулалт, түүний борлуулалтын дүнтэй хамт. */
 export interface SellerShowSummary {
   _id: string
   title?: string
@@ -14,7 +14,7 @@ export interface SellerShowSummary {
   started_at?: string
   ended_at?: string
   createdAt?: string
-  /** Тухайн лайв дээр зарагдсан лотын тоо, нийлбэр орлого. */
+  /** Тухайн шууд дамжуулалт дээр зарагдсан лотын тоо, нийлбэр орлого. */
   soldCount: number
   revenue: number
 }
@@ -22,9 +22,9 @@ export interface SellerShowSummary {
 const RECENT_LIMIT = 6
 
 /**
- * Худалдагчийн сүүлийн дамжуулалтууд — Ерөнхий тойм хуудсанд.
+ * Худалдагчийн сүүлийн шууд дамжуулалтууд — Ерөнхий тойм хуудсанд.
  *
- * Лайв тус бүрийн орлогыг сервер дээр нэг л удаа тооцно; урьд нь энэ хуудас
+ * Шууд дамжуулалт тус бүрийн орлогыг сервер дээр нэг л удаа тооцно; урьд нь энэ хуудас
  * `data/seedShows.ts` жишээ өгөгдлөөс уншдаг байсан.
  */
 export function useSellerShows() {
@@ -45,7 +45,7 @@ export function useSellerShows() {
 
     let cancelled = false
     refresh()
-      .catch((error) => console.error("Дамжуулалтууд уншиж чадсангүй:", error))
+      .catch((error) => console.error("Шууд дамжуулалтууд уншиж чадсангүй:", error))
       .finally(() => {
         if (!cancelled) setSettled(true)
       })

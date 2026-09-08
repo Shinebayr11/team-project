@@ -27,7 +27,7 @@ export const verifyClerkToken = createMiddleware(async (c, next) => {
 });
 
 // Нэвтрэлт заавал биш, гэхдээ байвал ашигтай endpoint-уудад (жишээ нь шууд
-// дамжуулалт үзэх — зочин ч үзнэ, нэвтэрсэн хүний нэр нь чатад харагдана).
+// шууд дамжуулалт үзэх — зочин ч үзнэ, нэвтэрсэн хүний нэр нь чатад харагдана).
 // Токен байхгүй эсвэл буруу бол алдаа буцаахгүй, зүгээр л `user`-гүй үргэлжилнэ.
 export const optionalAuth = createMiddleware(async (c, next) => {
     const header = c.req.header("Authorization");

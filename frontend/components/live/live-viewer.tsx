@@ -16,7 +16,7 @@ import { SellerPanel } from "@/components/live/seller-panel"
 import { ViewerStage } from "@/components/live/viewer-stage"
 
 /**
- * Бодит дамжуулалт үзэх дэлгэц, Browse-ийн reel-тэй ижил байрлалтай:
+ * Бодит шууд дамжуулалт үзэх дэлгэц, Browse-ийн reel-тэй ижил байрлалтай:
  * зүүнд худалдагч, барааны жагсаалт; голд видео; баруунд чат.
  *
  * Token нь эцэг хуудсаас props-оор ирнэ — эрхийг сервер шийддэг тул энэ

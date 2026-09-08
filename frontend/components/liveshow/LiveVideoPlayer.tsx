@@ -47,7 +47,7 @@ function ViewerStage() {
   if (tracks.length === 0) {
     return (
       <div className="flex h-full items-center justify-center">
-        <p className="text-white">Дамжуулалт хүлээгдэж байна...</p>
+        <p className="text-white">Шууд дамжуулалт хүлээгдэж байна...</p>
       </div>
     )
   }
@@ -95,7 +95,7 @@ export function LiveVideoPlayer({ showId, userName }: LiveVideoPlayerProps) {
 
   if (loading) return <Screen><p className="text-white">Холбогдож байна...</p></Screen>
   if (error) return <Screen><p className="text-red-500">{error}</p></Screen>
-  if (!token || !url) return <Screen><p className="text-white">Дамжуулалт олдсонгүй</p></Screen>
+  if (!token || !url) return <Screen><p className="text-white">Шууд дамжуулалт олдсонгүй</p></Screen>
 
   return (
     <div className="w-full h-screen bg-black">

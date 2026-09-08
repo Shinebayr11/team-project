@@ -11,7 +11,7 @@ export interface LiveStream {
   /** LiveKit серверийн хаяг — серверээс ирнэ, клиент дээр тохируулахгүй. */
   url: string | null
   /**
-   * Дамжуулах эрх. Үүнийг ЗӨВХӨН сервер шийднэ (лайвын эзэн мөн эсэх).
+   * Дамжуулах эрх. Үүнийг ЗӨВХӨН сервер шийднэ (шууд дамжуулалтын эзэн мөн эсэх).
    *
    * Өмнө нь клиент `canPublish`-ээ өөрөө сонгож, нэвтрэлтгүй endpoint рүү
    * илгээдэг байсан тул `/live/:room?host=1` гэж хаягаа бичсэн ямар ч хүн
@@ -37,19 +37,19 @@ const IDLE: LiveStream = {
   loading: true,
 }
 
-const NO_SHOW: LiveStream = { ...IDLE, loading: false, error: "Лайв олдсонгүй" }
+const NO_SHOW: LiveStream = { ...IDLE, loading: false, error: "Шууд дамжуулалт олдсонгүй" }
 
 /**
- * Лайвын LiveKit token-ыг серверээс авна.
+ * Шууд дамжуулалтын LiveKit token-ыг серверээс авна.
  *
- * Түлхүүр нь өрөөний нэр БИШ, лайвын id: өрөөг лайваас нь сервер олж,
+ * Түлхүүр нь өрөөний нэр БИШ, шууд дамжуулалтын id: өрөөг шууд дамжуулалтаас нь сервер олж,
  * эрхийг нь тэндээ шийднэ.
  */
 export function useLiveKitToken(showId?: string): LiveStream {
   const { callApi } = useApiClient()
   const { displayName, isLoaded } = useDisplayName()
   const [state, setState] = useState<LiveStream>(IDLE)
-  /** Хоцорч ирсэн хариу шинэ лайвын token-ыг дарж бичихээс сэргийлнэ. */
+  /** Хоцорч ирсэн хариу шинэ шууд дамжуулалтын token-ыг дарж бичихээс сэргийлнэ. */
   const latest = useRef(0)
 
   const load = useCallback(() => {
@@ -81,7 +81,7 @@ export function useLiveKitToken(showId?: string): LiveStream {
           error:
             error instanceof Error
               ? error.message
-              : "Дамжуулалтад холбогдож чадсангүй",
+              : "Шууд дамжуулалтад холбогдож чадсангүй",
         })
       })
   }, [showId, isLoaded, displayName, callApi])

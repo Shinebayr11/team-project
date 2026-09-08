@@ -35,7 +35,7 @@ const controlBarTheme = {
   "--lk-font-size": "14px",
 } as React.CSSProperties
 
-/** Камер/микрофон + "Дамжуулалт дуусгах" — зөвхөн худалдагчид харагдана. */
+/** Камер/микрофон + "Шууд дамжуулалт дуусгах" — зөвхөн худалдагчид харагдана. */
 export function HostControls({ onEnd }: { onEnd: () => void }) {
   const [confirming, setConfirming] = useState(false)
 
@@ -60,7 +60,7 @@ export function HostControls({ onEnd }: { onEnd: () => void }) {
       {confirming ? (
         <div className="flex items-center gap-2 rounded-full bg-white p-1.5 pl-4 shadow-lg">
           <span className="text-[14px] font-[700] text-black">
-            Дамжуулалтыг дуусгах уу?
+            Шууд дамжуулалтыг дуусгах уу?
           </span>
           <button
             type="button"
@@ -84,7 +84,7 @@ export function HostControls({ onEnd }: { onEnd: () => void }) {
           className="flex h-11 items-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 text-[14px] font-[700] text-white shadow-lg transition-colors hover:bg-[var(--wn-live)]"
         >
           <Square className="size-4 fill-white" />
-          Дамжуулалт дуусгах
+          Шууд дамжуулалт дуусгах
         </button>
       )}
     </div>

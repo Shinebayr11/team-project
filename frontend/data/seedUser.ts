@@ -27,7 +27,7 @@ export const SEED_THREADS = [
   {
     slug: "thewittleshop", initial: "T", tint: "#E4EAF0", unread: 0,
     messages: [
-      { from: "me" as const, text: "Хоёр дамжуулалтын барааг нэг хүргэлтэд нэгтгэдэг үү?", at: "Дав" },
+      { from: "me" as const, text: "Хоёр шууд дамжуулалтын барааг нэг хүргэлтэд нэгтгэдэг үү?", at: "Дав" },
       { from: "them" as const, text: "Үргэлж тэгдэг — нэг долоо хоногт хожсон бүх бараа хамт явна.", at: "Дав" },
     ],
   },

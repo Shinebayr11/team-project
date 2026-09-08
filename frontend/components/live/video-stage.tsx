@@ -18,7 +18,7 @@ import { HostStage } from "@/components/live/host-stage"
  * сэтгэгдэл, дуудлага худалдааны хяналт.
  *
  * Token нь эцэг хуудсаас props-оор ирнэ; `isHost` нь СЕРВЕРИЙН шийдвэр
- * (лайвын эзэн мөн эсэх) бөгөөд URL дэх `?host=1` биш.
+ * (шууд дамжуулалтын эзэн мөн эсэх) бөгөөд URL дэх `?host=1` биш.
  */
 export function VideoStage({
   token,

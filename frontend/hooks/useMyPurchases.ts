@@ -23,7 +23,7 @@ export interface MyPurchase {
   sellerId?: string
   price: number
   date?: string
-  /** Дэлгэрэнгүйд харуулах — барааны тайлбар, ямар лайв дээр зарагдсан. */
+  /** Дэлгэрэнгүйд харуулах — барааны тайлбар, ямар шууд дамжуулалт дээр зарагдсан. */
   description?: string
   showTitle?: string
   product?: AuctionProduct

@@ -23,7 +23,7 @@ const TABS = [
   { value: "COMPLETED", label: SHOW_STATUS_LABELS.COMPLETED },
 ] as const
 
-/** Лайв эхлүүлэх ганц зам. Гарчиг, ангилал нь бэлдсэн байдлаар нээгдэнэ. */
+/** Шууд дамжуулалт эхлүүлэх ганц зам. Гарчиг, ангилал нь бэлдсэн байдлаар нээгдэнэ. */
 const startShowHref = (show?: SellerShow) => {
   if (!show) return "/seller/shows/start"
   const params = new URLSearchParams({
@@ -53,8 +53,8 @@ export const SellerShows: React.FC = () => {
   const [search, setSearch] = useState("")
 
   // `SellerShow.status` нь mock өгөгдөл. LIVE-ыг store-оос уншихын оронд
-  // жинхэнэ LiveKit дамжуулалтаас гаргаж авна — камер асаагүй лайв LIVE
-  // харагдах, дамжуулалт зогссон ч LIVE гацаж үлдэх аль аль нь боломжгүй.
+  // жинхэнэ LiveKit шууд дамжуулалтаас гаргаж авна — камер асаагүй шууд дамжуулалт LIVE
+  // харагдах, шууд дамжуулалт зогссон ч LIVE гацаж үлдэх аль аль нь боломжгүй.
   const withLiveStatus = useCallback(
     (show: SellerShow): SellerShow =>
       active?.sellerShowId === show.id ? { ...show, status: "LIVE" } : show,
@@ -86,16 +86,16 @@ export const SellerShows: React.FC = () => {
       scheduledAt: new Date(draft.scheduledAt).toISOString(),
       status: "DRAFT",
     })
-    addToast("Лайв ноорог хэлбэрээр үүслээ.")
+    addToast("Шууд дамжуулалт ноорог хэлбэрээр үүслээ.")
     setMode("list")
   }
 
   const handleStatusChange = (status: SellerShow["status"]) => {
     if (!selectedId) return
-    // LIVE нь дамжуулалтаас гаргаж авдаг утга тул энд бичигдэхгүй.
+    // LIVE нь шууд дамжуулалтаас гаргаж авдаг утга тул энд бичигдэхгүй.
     if (status === "LIVE") return
     updateShowStatus(selectedId, status)
-    addToast(`Лайвын төлөв "${SHOW_STATUS_LABELS[status]}" болж шинэчлэгдлээ.`)
+    addToast(`Шууд дамжуулалтын төлөв "${SHOW_STATUS_LABELS[status]}" болж шинэчлэгдлээ.`)
   }
 
   if (mode === "create") {
@@ -118,7 +118,7 @@ export const SellerShows: React.FC = () => {
         onGoLive={() => navigate(startShowHref(selectedShow))}
         onAddProduct={(id) => {
           addShowProduct(selectedShow.id, id)
-          addToast("Бараа лайвд нэмэгдлээ.")
+          addToast("Бараа шууд дамжуулалтад нэмэгдлээ.")
         }}
         onRemoveProduct={(id) => removeShowProduct(selectedShow.id, id)}
       />
@@ -131,7 +131,7 @@ export const SellerShows: React.FC = () => {
         title="Шууд"
         description="Шууд дамжуулалтуудаа товлож, удирдана уу."
       >
-        {/* Жинхэнэ LiveKit дамжуулалт — Seller Hub-ын chrome дотор. */}
+        {/* Жинхэнэ LiveKit шууд дамжуулалт — Seller Hub-ын chrome дотор. */}
         <Link
           to={startShowHref()}
           className="flex items-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-live)]"
@@ -143,7 +143,7 @@ export const SellerShows: React.FC = () => {
           onClick={() => setMode("create")}
           className="flex items-center gap-2 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-black"
         >
-          <Plus className="h-4 w-4" /> Лайв үүсгэх
+          <Plus className="h-4 w-4" /> Шууд дамжуулалт үүсгэх
         </button>
       </PageHeader>
 
@@ -154,7 +154,7 @@ export const SellerShows: React.FC = () => {
           <SellerSearchField
             value={search}
             onChange={setSearch}
-            placeholder="Лайв хайх..."
+            placeholder="Шууд дамжуулалт хайх..."
           />
         }
       >

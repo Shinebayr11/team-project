@@ -1,11 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
 /**
- * Худалдагчийн бараа — Seller Hub-ын "Бараа" хэсэг ба дамжуулалтын "Миний бараа"
+ * Худалдагчийн бараа — Seller Hub-ын "Бараа" хэсэг ба шууд дамжуулалтын "Миний бараа"
  * ХОЁУЛАА эндээс уншина. Өмнө нь Seller Hub зөвхөн хөтчийн localStorage дээр
- * ажилладаг байсан тул нэмсэн бараа дамжуулалт дээр огт харагддаггүй байв.
+ * ажилладаг байсан тул нэмсэн бараа шууд дамжуулалт дээр огт харагддаггүй байв.
  *
- * `sku`-с доош талбарууд нь Seller Hub-ын нэмэлт ойлголтууд; дамжуулалтын тал
+ * `sku`-с доош талбарууд нь Seller Hub-ын нэмэлт ойлголтууд; шууд дамжуулалтын тал
  * тэдгээрийг ашиглахгүй ч нэг баримт дээр хамт амьдарна.
  */
 export const ProductSchema = new Schema(
@@ -19,7 +19,7 @@ export const ProductSchema = new Schema(
         category_id: { type: Schema.Types.ObjectId, ref: "Category" },
 
         sku: { type: String, trim: true },
-        /** Seller Hub-ын текст ангилал (`category_id` нь дамжуулалтын ангилал). */
+        /** Seller Hub-ын текст ангилал (`category_id` нь шууд дамжуулалтын ангилал). */
         category: { type: String, trim: true },
         condition: { type: String, trim: true },
         listing_type: {
@@ -32,7 +32,7 @@ export const ProductSchema = new Schema(
             enum: ["ACTIVE", "DRAFT", "ARCHIVED", "OUT_OF_STOCK"],
             default: "ACTIVE",
         },
-        /** Лайвд гаргахаар барьцаалсан ба зарагдсан тоо. */
+        /** Шууд дамжуулалтад гаргахаар барьцаалсан ба зарагдсан тоо. */
         reserved_quantity: { type: Number, default: 0, min: 0 },
         sold_quantity: { type: Number, default: 0, min: 0 },
     },
