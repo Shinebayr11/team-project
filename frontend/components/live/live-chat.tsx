@@ -33,7 +33,7 @@ export function LiveChat({
     isLoaded && !isSignedIn ? (
       <Link
         to="/sign-in"
-        className="flex h-[36px] w-full items-center justify-center rounded-xl border border-[var(--wn-line)] bg-white text-[13px] font-[700] text-[var(--wn-accent)] transition-colors hover:bg-[var(--wn-surface-2)]"
+        className="flex h-[36px] w-full items-center justify-center rounded-xl border border-[var(--wn-line)] bg-white text-[13px] font-[700] text-[var(--wn-accent)] transition-colors hover:bg-[var(--wn-accent-wash)]"
       >
         Нэвтэрч сэтгэгдэл бичих
       </Link>

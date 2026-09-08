@@ -32,7 +32,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({ path }) => (
       // --wn-accent дээр 6.50:1 — AA давна.
       const tone = active
         ? 'bg-[var(--wn-accent)] text-white hover:bg-[var(--wn-accent-hover)]'
-        : 'text-[var(--wn-ink)] hover:bg-[var(--wn-surface-2)]';
+        : 'text-[var(--wn-ink)] hover:bg-[var(--wn-accent-wash)]';
 
       return (
         <React.Fragment key={to}>

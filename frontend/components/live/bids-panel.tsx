@@ -153,7 +153,7 @@ function StartAuctionForm({
               className={`flex items-center gap-2.5 rounded-xl border p-2 text-left transition-colors ${
                 selected
                   ? "border-[var(--wn-accent)] bg-[var(--wn-accent-soft)]"
-                  : "border-[var(--wn-line)] hover:bg-[var(--wn-surface-2)]"
+                  : "border-[var(--wn-line)] hover:bg-[var(--wn-accent-wash)]"
               }`}
             >
               <ProductThumb product={product} size={36} />

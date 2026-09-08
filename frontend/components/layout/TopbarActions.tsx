@@ -17,7 +17,7 @@ interface TopbarActionsProps {
 }
 
 const iconButton =
-  "w-10 h-10 rounded-full flex items-center justify-center hover:bg-[var(--wn-surface-2)] transition-colors text-[var(--wn-ink)]"
+  "w-10 h-10 rounded-full flex items-center justify-center hover:bg-[var(--wn-accent-wash)] transition-colors text-[var(--wn-ink)]"
 const badge =
   "absolute top-2 right-2 w-2 h-2 rounded-full bg-[var(--wn-live)] border border-white"
 

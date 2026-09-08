@@ -20,7 +20,7 @@ export const PaymentTab: React.FC = () => (
       <button className="text-[13px] font-[700] text-[var(--wn-ink-4)] hover:text-red-600 transition-colors">Устгах</button>
     </div>
 
-    <button className="h-[48px] rounded-xl border-2 border-[var(--wn-line-2)] text-[var(--wn-ink)] text-[14px] font-[700] hover:bg-[var(--wn-surface-2)] transition-colors flex items-center justify-center gap-2">
+    <button className="h-[48px] rounded-xl border-2 border-[var(--wn-line-2)] text-[var(--wn-ink)] text-[14px] font-[700] hover:bg-[var(--wn-accent-wash)] transition-colors flex items-center justify-center gap-2">
       <Plus className="w-4 h-4" /> Төлбөрийн хэрэгсэл нэмэх
     </button>
   </div>

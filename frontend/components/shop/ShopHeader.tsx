@@ -53,7 +53,7 @@ export const ShopHeader: React.FC<ShopHeaderProps> = ({
           <button
             onClick={onMessage}
             aria-label="Худалдагч руу зурвас бичих"
-            className="flex size-[40px] items-center justify-center rounded-full border border-[var(--wn-line)] bg-white text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-surface-2)]"
+            className="flex size-[40px] items-center justify-center rounded-full border border-[var(--wn-line)] bg-white text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-accent-wash)]"
           >
             <MessageCircle className="size-5" />
           </button>

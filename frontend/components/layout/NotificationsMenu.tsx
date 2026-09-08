@@ -14,7 +14,7 @@ import {
 import { useSeenIds } from "@/hooks/useSeenIds"
 
 const iconButton =
-  "w-10 h-10 rounded-full flex items-center justify-center hover:bg-[var(--wn-surface-2)] transition-colors text-[var(--wn-ink)]"
+  "w-10 h-10 rounded-full flex items-center justify-center hover:bg-[var(--wn-accent-wash)] transition-colors text-[var(--wn-ink)]"
 
 function relativeTime(dateStr?: string) {
   if (!dateStr) return ""
@@ -43,7 +43,7 @@ function WinRow({
     <button
       type="button"
       onClick={onOpen}
-      className={`flex w-full items-start gap-3 border-b border-[var(--wn-line)] p-3 text-left transition-colors last:border-b-0 hover:bg-[var(--wn-surface-2)] ${
+      className={`flex w-full items-start gap-3 border-b border-[var(--wn-line)] p-3 text-left transition-colors last:border-b-0 hover:bg-[var(--wn-accent-wash)] ${
         unseen ? "bg-[var(--wn-accent-soft)]" : ""
       }`}
     >
@@ -100,7 +100,7 @@ function SaleRow({
     <button
       type="button"
       onClick={onOpen}
-      className={`flex w-full items-start gap-3 border-b border-[var(--wn-line)] p-3 text-left transition-colors last:border-b-0 hover:bg-[var(--wn-surface-2)] ${
+      className={`flex w-full items-start gap-3 border-b border-[var(--wn-line)] p-3 text-left transition-colors last:border-b-0 hover:bg-[var(--wn-accent-wash)] ${
         unseen ? "bg-[var(--wn-accent-soft)]" : ""
       }`}
     >

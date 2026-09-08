@@ -154,7 +154,7 @@ export function ShowLineup({ lineup }: { lineup: ShowLineupState }) {
                   onClick={() => removeEntry(entry._id)}
                   disabled={busyId === entry._id}
                   aria-label="Жагсаалтаас хасах"
-                  className="shrink-0 rounded-full p-1 text-[var(--wn-ink-3)] transition-colors hover:bg-[var(--wn-surface-2)] hover:text-[var(--wn-ink)] disabled:opacity-50"
+                  className="shrink-0 rounded-full p-1 text-[var(--wn-ink-3)] transition-colors hover:bg-[var(--wn-accent-wash)] hover:text-[var(--wn-ink)] disabled:opacity-50"
                 >
                   <X className="size-4" />
                 </button>

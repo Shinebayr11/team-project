@@ -26,7 +26,7 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
         </button>
         <button
           onClick={onAddToCart}
-          className="w-full h-[52px] rounded-xl border-2 border-[var(--wn-line-2)] text-[var(--wn-ink)] text-[16px] font-[800] hover:bg-[var(--wn-surface-2)] transition-colors"
+          className="w-full h-[52px] rounded-xl border-2 border-[var(--wn-line-2)] text-[var(--wn-ink)] text-[16px] font-[800] hover:bg-[var(--wn-accent-wash)] transition-colors"
         >
           Add to cart
         </button>
