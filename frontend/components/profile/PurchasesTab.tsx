@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
+import { Skeleton, SkeletonRows, SkeletonScreen } from '@/components/ui/Skeleton';
 import { ChevronRight } from 'lucide-react';
 import { MyActiveBid, MyPurchase } from '@/hooks/useMyPurchases';
 import { ProductThumb } from '@/components/ui/ProductThumb';
@@ -28,7 +29,10 @@ export const PurchasesTab: React.FC<PurchasesTabProps> = ({ purchases, bids, loa
       <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Худалдан авалт</h2>
 
       {loading ? (
-        <p className="text-[15px] font-[600] text-[var(--wn-ink-3)]">Уншиж байна...</p>
+        <SkeletonScreen className="flex flex-col gap-4">
+          <Skeleton className="h-5 w-40" />
+          <SkeletonRows rows={4} />
+        </SkeletonScreen>
       ) : (
         <>
           {bids.length > 0 && (

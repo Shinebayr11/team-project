@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Avatar } from '../ui/Avatar';
+import { SkeletonRows, SkeletonScreen } from '@/components/ui/Skeleton';
 import { ConversationSummary, participantName } from '@/hooks/useConversations';
 
 interface ThreadListProps {
@@ -35,7 +36,9 @@ export const ThreadList: React.FC<ThreadListProps> = ({
 
     <div className="flex-1 overflow-y-auto">
       {loading ? (
-        <p className="p-4 text-[14px] text-[var(--wn-ink-3)]">Уншиж байна...</p>
+        <SkeletonScreen label="Яриануудыг уншиж байна">
+          <SkeletonRows rows={6} card={false} className="gap-0" />
+        </SkeletonScreen>
       ) : conversations.length === 0 ? (
         <p className="p-4 text-[14px] text-[var(--wn-ink-3)]">
           Одоогоор яриа алга. Дуудлага худалдаа хожсоны дараа худалдагчтайгаа энд холбогдоно.

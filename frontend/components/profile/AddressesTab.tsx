@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
+import { SkeletonRows, SkeletonScreen } from '@/components/ui/Skeleton';
 import { MapPin, Plus } from 'lucide-react';
 import { useAddresses } from '@/hooks/useAddresses';
 import type { Address, AddressBody } from '@/types/account';
@@ -70,7 +71,9 @@ export const AddressesTab: React.FC = () => {
       <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Хүргэлтийн хаяг</h2>
 
       {loading ? (
-        <p className="text-[15px] font-[600] text-[var(--wn-ink-3)]">Уншиж байна...</p>
+        <SkeletonScreen label="Хаягуудыг уншиж байна">
+          <SkeletonRows rows={2} />
+        </SkeletonScreen>
       ) : (
         <>
           {addresses.length === 0 ? (
