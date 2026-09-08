@@ -1,39 +1,36 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useState } from "react"
+
 import { LiveShowDoc } from "@/lib/liveShows"
+import { apiFetch } from "@/lib/api"
+import { usePoll } from "./usePoll"
 
 /**
- * One live show straight from the API. Uses a plain fetch (not useApiClient) so
- * signed-out visitors arriving from the landing page can watch too — the
- * GET route is public.
+ * Үзэгчийн тоо зэрэг өөрчлөгддөг талбарыг шинэлэг байлгахад л хангалттай
+ * давтамж. Өмнө нь 2 секунд байсан — үзэгч бүр минутанд 30 хүсэлт явуулж,
+ * 100 үзэгчтэй лайв дээр зөвхөн энэ hook нь 50 req/s болдог байв.
+ */
+const POLL_MS = 10_000
+
+/**
+ * Нэг лайвын мэдээлэл. `apiFetch`-ийг token-гүй дуудна — GET нь нээлттэй тул
+ * landing-аас орж ирсэн зочин ч үзнэ.
  */
 export function useLiveShowDetail(showId?: string) {
   const [show, setShow] = useState<LiveShowDoc | null>(null)
 
-  useEffect(() => {
+  const fetchShow = useCallback(() => {
     if (!showId) return
-    let cancelled = false
-
-    const fetchShow = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/liveshow/${showId}`)
-        const d = await res.json()
-        if (!cancelled) setShow(d.data ?? null)
-      } catch {
-        // A missing show just means the side panel falls back to URL params.
-      }
-    }
-
-    // Үзэгчийн тоо зэрэг шууд өөрчлөгддөг өгөгдлийг сэргээж байхын тулд давтан татна.
-    fetchShow()
-    const interval = setInterval(fetchShow, 2000)
-
-    return () => {
-      cancelled = true
-      clearInterval(interval)
-    }
+    apiFetch<{ data: LiveShowDoc | null }>(`/api/liveshow/${showId}`)
+      .then((body) => setShow(body.data ?? null))
+      .catch(() => {
+        // Олдоогүй лайв гэдэг нь хажуугийн самбар URL-ийн параметрээ
+        // ашиглана гэсэн үг — дэлгэц унахгүй.
+      })
   }, [showId])
+
+  usePoll(fetchShow, POLL_MS, !!showId)
 
   return show
 }

@@ -5,14 +5,14 @@ import { useSyncExternalStore } from "react"
 export type ActiveStream = {
   roomName: string
   title: string
-  /** Backend дээрх шоуны id (`/api/liveshow`). */
+  /** Backend дээрх лайвын id (`/api/liveshow`). */
   showId: string
   /**
-   * Seller Hub-ын жагсаалт дахь шоуны id, хэрэв дамжуулалт тэндээс эхэлсэн бол.
+   * Seller Hub-ын жагсаалт дахь лайвын id, хэрэв дамжуулалт тэндээс эхэлсэн бол.
    *
    * Самбарын `SellerShow.status` нь mock өгөгдөл тул түүнийг LIVE болгож
    * бичихийн оронд энэ холбоосоор ЖИНХЭНЭ дамжуулалтаас ГАРГАЖ АВНА — тэгснээр
-   * камер асаагүй атлаа шоу LIVE харагдах, эсвэл дамжуулалт зогссон ч LIVE
+   * камер асаагүй атлаа лайв LIVE харагдах, эсвэл дамжуулалт зогссон ч LIVE
    * гацаж үлдэх аль аль нь боломжгүй болно.
    */
   sellerShowId?: string

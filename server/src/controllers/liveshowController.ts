@@ -18,7 +18,7 @@ const roomService = new RoomServiceClient(
 const STALE_CHECK_GRACE_MS = 30_000
 
 /**
- * Шоу staleness шалгалтад орох хангалттай хуучин болсон эсэх.
+ * Лайв staleness шалгалтад орох хангалттай хуучин болсон эсэх.
  *
  * `createdAt` нь Mongoose-ийн `timestamps` -аас ирдэг ч Mongo руу шууд (жишээ нь
  * гар аргаар, эсвэл тестийн script-ээр) оруулсан баримтад огт байхгүй байж
@@ -58,8 +58,8 @@ const listRoomsCached = () => {
 export const getliveshow = async (c: Context) => {
     try {
         // Home feed-д зөвхөн одоо шууд явж буй (status: "live"), эсвэл эхлэх цаг нь
-        // тохируулагдсан (started_at) шоунуудыг харуулна — цаг/төлөвгүй бэлэн бус
-        // (draft) баримтуудыг нуух. Дууссан (ended) шоуг үргэлж хасна.
+        // тохируулагдсан (started_at) лайвуудыг харуулна — цаг/төлөвгүй бэлэн бус
+        // (draft) баримтуудыг нуух. Дууссан (ended) лайвыг үргэлж хасна.
         const data = await Live_Show.find({
             status: { $ne: "ended" },
             $or: [{ status: "live" }, { started_at: { $ne: null } }],
@@ -114,12 +114,12 @@ export const getliveshow = async (c: Context) => {
 /**
  * GET /api/liveshow/mine
  *
- * Худалдагчийн өөрийн шоунууд. Анхдагч нь `/sell` дээрх "хамгийн их үзэлттэй
- * 3 дууссан шоу" — параметргүй хуучин дуудлагууд хэвээр ажиллана.
+ * Худалдагчийн өөрийн лайвууд. Анхдагч нь `/sell` дээрх "хамгийн их үзэлттэй
+ * 3 дууссан лайв" — параметргүй хуучин дуудлагууд хэвээр ажиллана.
  *
  *   ?sort=recent   — шинэ нь эхэндээ (анхдагч: үзэгчээр)
  *   ?limit=6       — хэдийг буцаах (дээд тал нь 50)
- *   ?stats=1       — шоу тус бүрийн зарагдсан лот, орлогыг хамт тооцно
+ *   ?stats=1       — лайв тус бүрийн зарагдсан лот, орлогыг хамт тооцно
  */
 export const getMyLiveshows = async (c: Context) => {
     try {
@@ -136,7 +136,7 @@ export const getMyLiveshows = async (c: Context) => {
             return c.json({ data: shows }, 200)
         }
 
-        // Шоу тус бүрийн орлого нь тухайн шоун дээр ЗАРАГДСАН лотуудын нийлбэр.
+        // Лайв тус бүрийн орлого нь тухайн лайв дээр ЗАРАГДСАН лотуудын нийлбэр.
         const sold = await ProductListing.aggregate([
             {
                 $match: {
@@ -198,7 +198,7 @@ export const patchliveshow = async (c: Context) => {
             return c.json({ message: "Live show olsongvi" }, 404)
         }
         if (String(show.seller_id) !== String(userId)) {
-            return c.json({ message: "Энэ шоуг өөрчлөх эрхгүй байна" }, 403)
+            return c.json({ message: "Энэ лайвыг өөрчлөх эрхгүй байна" }, 403)
         }
 
         if (status !== undefined) show.status = status
@@ -275,7 +275,7 @@ export const getParticipants = async (c: Context) => {
                     }
                 }
             } catch (error) {
-                console.log("Could not get LiveKit room info:", (error as any).message)
+                console.error("LiveKit өрөөний мэдээлэл авч чадсангүй:", error)
             }
         }
 
@@ -287,11 +287,8 @@ export const getParticipants = async (c: Context) => {
             roomName: show.livekit_room_name
         }, 200)
     } catch (error) {
-        console.error("GetParticipants error:", (error as any).message)
-        return c.json({
-            error: "Failed to get participants",
-            details: (error as any).message
-        }, 500)
+        console.error("getParticipants алдаа:", error)
+        return c.json({ message: "Үзэгчийн тоог уншиж чадсангүй" }, 500)
     }
 }
 
@@ -300,19 +297,6 @@ export const getAccessToken = async (c: Context) => {
         const showId = c.req.param("id")
         const body = await c.req.json().catch(() => ({}))
         const user = c.get("user")
-
-        // Identity-г ХЭЗЭЭ Ч клиентээс авахгүй: өмнө нь бие дэх `identity`-г
-        // шууд token-д бичдэг байсан тул хэн ч эвэнтийн эзний identity-г дуурайж
-        // дамжуулж буй худалдагчийг өрөөнөөс шахаж гаргах боломжтой байв.
-        // LiveKit-д нэг өрөөнд identity давхцвал өмнөх холболт таслагддаг.
-        const identity = `viewer-${randomUUID()}`
-
-        // Нэр зөвхөн харагдацын зориулалттай — нэвтэрсэн бол профайлаас нь авна,
-        // зочны өгсөн нэрийг хязгаарлаж цэвэрлэнэ.
-        const name =
-            user?.display_name ||
-            (typeof body?.name === "string" ? body.name.trim().slice(0, 40) : "") ||
-            "Зочин"
 
         let show = null
         try {
@@ -326,14 +310,34 @@ export const getAccessToken = async (c: Context) => {
         }
 
         if (!show.livekit_room_name) {
-            return c.json({ message: "Энэ шоу дамжуулалттай холбогдоогүй байна" }, 400)
+            return c.json({ message: "Энэ лайв дамжуулалттай холбогдоогүй байна" }, 400)
         }
 
-        // Дуусаагүй/эхлээгүй шоуны хувьд token гаргах нь утгагүй — хоосон өрөө рүү
-        // холбогдож хар дэлгэц үзүүлэхийн оронд ойлгомжтой хариу буцаана.
-        if (show.status !== "live") {
+        // Дамжуулах эрхийг ЗӨВХӨН сервер шийднэ: лайвын эзэн мөн эсэх.
+        // Өмнө нь клиент `canPublish`-ээ өөрөө сонгож, `/live/:room?host=1`
+        // гэж хаяг бичсэн ямар ч хүн өөр хүний өрөөнд нэвтэрч дамжуулах
+        // боломжтой байв.
+        const isHost = !!user && String(show.seller_id) === String(user._id)
+
+        // Эхлээгүй/дууссан лайвыг үзэгчид үзэх зүйлгүй. Харин эзэн нь орж
+        // чадах ёстой — staleness цэвэрлэгээ лайвыг "ended" болгосон ч
+        // худалдагч дахин холбогдож үргэлжлүүлнэ.
+        if (!isHost && show.status !== "live") {
             return c.json({ message: "Дамжуулалт одоогоор явагдаагүй байна" }, 409)
         }
+
+        // Identity-г ХЭЗЭЭ Ч клиентээс авахгүй: өмнө нь бие дэх `identity`-г
+        // шууд token-д бичдэг байсан тул хэн ч эвэнтийн эзний identity-г дуурайж
+        // дамжуулж буй худалдагчийг өрөөнөөс шахаж гаргах боломжтой байв.
+        // LiveKit-д нэг өрөөнд identity давхцвал өмнөх холболт таслагддаг.
+        const identity = isHost ? `host-${user._id}` : `viewer-${randomUUID()}`
+
+        // Нэр зөвхөн харагдацын зориулалттай — нэвтэрсэн бол профайлаас нь авна,
+        // зочны өгсөн нэрийг хязгаарлаж цэвэрлэнэ.
+        const name =
+            user?.display_name ||
+            (typeof body?.name === "string" ? body.name.trim().slice(0, 40) : "") ||
+            "Зочин"
 
         const at = new AccessToken(
             process.env.LIVEKIT_API_KEY!,
@@ -344,7 +348,7 @@ export const getAccessToken = async (c: Context) => {
         at.addGrant({
             room: show.livekit_room_name,
             roomJoin: true,
-            canPublish: false,
+            canPublish: isHost,
             canSubscribe: true,
             canPublishData: true
         })
@@ -354,10 +358,11 @@ export const getAccessToken = async (c: Context) => {
         return c.json({
             token,
             url: process.env.LIVEKIT_URL,
-            roomName: show.livekit_room_name
+            roomName: show.livekit_room_name,
+            isHost
         }, 200)
     } catch (error) {
-        console.error("GetAccessToken error:", (error as any).message)
+        console.error("GetAccessToken error:", error)
         return c.json({ message: "Дамжуулалтад холбогдож чадсангүй" }, 500)
     }
 }

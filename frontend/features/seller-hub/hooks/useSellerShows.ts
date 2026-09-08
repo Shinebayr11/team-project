@@ -14,7 +14,7 @@ export interface SellerShowSummary {
   started_at?: string
   ended_at?: string
   createdAt?: string
-  /** Тухайн шоун дээр зарагдсан лотын тоо, нийлбэр орлого. */
+  /** Тухайн лайв дээр зарагдсан лотын тоо, нийлбэр орлого. */
   soldCount: number
   revenue: number
 }
@@ -24,7 +24,7 @@ const RECENT_LIMIT = 6
 /**
  * Худалдагчийн сүүлийн дамжуулалтууд — Ерөнхий тойм хуудсанд.
  *
- * Шоу тус бүрийн орлогыг сервер дээр нэг л удаа тооцно; урьд нь энэ хуудас
+ * Лайв тус бүрийн орлогыг сервер дээр нэг л удаа тооцно; урьд нь энэ хуудас
  * `data/seedShows.ts` жишээ өгөгдлөөс уншдаг байсан.
  */
 export function useSellerShows() {

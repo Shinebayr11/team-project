@@ -4,6 +4,7 @@ import * as React from "react"
 import { useSession, useUser } from "@clerk/nextjs"
 
 import { Field } from "@/features/seller-hub/components/FormField"
+import { useLoad } from "@/hooks/useLoad"
 
 const PASSWORD_MIN = 8
 const SAVED_HOLD_MS = 1800
@@ -64,9 +65,7 @@ export const SecurityPanel: React.FC = () => {
     }
   }, [user])
 
-  React.useEffect(() => {
-    void loadSessions()
-  }, [loadSessions])
+  useLoad(loadSessions)
 
   if (!user) return null
 

@@ -1,8 +1,9 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useAuth } from "@clerk/nextjs"
 import { useApiClient } from "./useApiClient"
+import { usePoll } from "./usePoll"
 
 export interface ChatParticipant {
   _id: string
@@ -34,11 +35,7 @@ export function useConversations() {
   const [loading, setLoading] = useState(true)
 
   const refresh = useCallback(async () => {
-    if (!isSignedIn) {
-      setConversations([])
-      setLoading(false)
-      return
-    }
+    if (!isSignedIn) return
     try {
       const { data } = await callApi<{ data: ConversationSummary[] }>(
         "/api/messages/conversations"
@@ -51,11 +48,7 @@ export function useConversations() {
     }
   }, [callApi, isSignedIn])
 
-  useEffect(() => {
-    refresh()
-    const timer = setInterval(refresh, POLL_MS)
-    return () => clearInterval(timer)
-  }, [refresh])
+  usePoll(refresh, POLL_MS, !!isSignedIn)
 
   /** Тодорхой хэрэглэгчтэй яриа нээх (байхгүй бол үүснэ). */
   const openWith = useCallback(
@@ -77,5 +70,6 @@ export function useConversations() {
 
   const unreadTotal = conversations.reduce((sum, c) => sum + (c.unread ?? 0), 0)
 
-  return { conversations, loading, refresh, openWith, unreadTotal }
+  // Нэвтрээгүй хүнд татах зүйл алга — "уншиж байна" гэж мөнхөд өлгөхгүй.
+  return { conversations: isSignedIn ? conversations : [], loading: !!isSignedIn && loading, refresh, openWith, unreadTotal }
 }

@@ -1,11 +1,12 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { ListOrdered, Plus, X } from "lucide-react"
 import { ProductThumb } from "@/components/ui/ProductThumb"
 import { useApiClient } from "@/hooks/useApiClient"
 import { AuctionProduct } from "@/hooks/useAuction"
 import { productOfEntry, ShowLineupState } from "@/hooks/useShowProducts"
+import { useLoad } from "@/hooks/useLoad"
 
 const pillOutline =
   "inline-flex items-center rounded-full border border-gray-300 px-3.5 py-1.5 text-[13px] font-[700] text-black transition-colors hover:bg-gray-50"
@@ -35,9 +36,7 @@ export function ShowLineup({ lineup }: { lineup: ShowLineupState }) {
     }
   }, [callApi])
 
-  useEffect(() => {
-    loadCatalog()
-  }, [loadCatalog])
+  useLoad(loadCatalog)
 
   // Жагсаалтад аль хэдийн орсон барааг дахин санал болгохгүй.
   const added = new Set(

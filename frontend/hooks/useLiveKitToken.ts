@@ -1,48 +1,92 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useRef, useState } from "react"
+
+import { useApiClient } from "./useApiClient"
 import { useDisplayName } from "./useDisplayName"
+import { useLoad } from "./useLoad"
+
+export interface LiveStream {
+  token: string | null
+  /** LiveKit серверийн хаяг — серверээс ирнэ, клиент дээр тохируулахгүй. */
+  url: string | null
+  /**
+   * Дамжуулах эрх. Үүнийг ЗӨВХӨН сервер шийднэ (лайвын эзэн мөн эсэх).
+   *
+   * Өмнө нь клиент `canPublish`-ээ өөрөө сонгож, нэвтрэлтгүй endpoint рүү
+   * илгээдэг байсан тул `/live/:room?host=1` гэж хаягаа бичсэн ямар ч хүн
+   * өөр хүний өрөөнд орж дамжуулах боломжтой байв.
+   */
+  isHost: boolean
+  error: string | null
+  loading: boolean
+}
+
+interface TokenResponse {
+  token: string
+  url: string
+  roomName: string
+  isHost: boolean
+}
+
+const IDLE: LiveStream = {
+  token: null,
+  url: null,
+  isHost: false,
+  error: null,
+  loading: true,
+}
+
+const NO_SHOW: LiveStream = { ...IDLE, loading: false, error: "Лайв олдсонгүй" }
 
 /**
- * Mints a LiveKit access token for a room. Hosts get publish rights, viewers
- * don't. The signed-in user's name rides along so chat shows people rather
- * than random identities.
+ * Лайвын LiveKit token-ыг серверээс авна.
+ *
+ * Түлхүүр нь өрөөний нэр БИШ, лайвын id: өрөөг лайваас нь сервер олж,
+ * эрхийг нь тэндээ шийднэ.
  */
-export function useLiveKitToken(roomName: string, isHost: boolean) {
+export function useLiveKitToken(showId?: string): LiveStream {
+  const { callApi } = useApiClient()
   const { displayName, isLoaded } = useDisplayName()
-  const [token, setToken] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [state, setState] = useState<LiveStream>(IDLE)
+  /** Хоцорч ирсэн хариу шинэ лайвын token-ыг дарж бичихээс сэргийлнэ. */
+  const latest = useRef(0)
 
-  useEffect(() => {
-    // Wait for Clerk: fetching first would mint a token named "Зочин" and then
-    // reconnect the room once the real name arrived.
-    if (!isLoaded) return
-    let cancelled = false
+  const load = useCallback(() => {
+    // Clerk-ийг хүлээнэ: эрт татвал "Зочин" нэртэй token гараад, жинхэнэ нэр
+    // ирэхэд өрөөнд дахин холбогдоно.
+    if (!showId || !isLoaded) return
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/livekit/token`, {
+    const ticket = ++latest.current
+
+    callApi<TokenResponse>(`/api/liveshow/${showId}/token`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        roomName,
-        // Identity must be unique within a room — two tabs of one user would
-        // otherwise evict each other, so it stays random.
-        identity: `${isHost ? "host" : "viewer"}-${Math.random().toString(36).slice(2, 8)}`,
-        name: displayName,
-        canPublish: isHost,
-      }),
+      body: JSON.stringify({ name: displayName }),
     })
-      .then((r) => r.json())
-      .then((d) => {
-        if (!cancelled) setToken(d.token)
+      .then((data) => {
+        if (ticket !== latest.current) return
+        setState({
+          token: data.token,
+          url: data.url,
+          isHost: data.isHost,
+          error: null,
+          loading: false,
+        })
       })
-      .catch((e) => {
-        if (!cancelled) setError(String(e))
+      .catch((error: unknown) => {
+        if (ticket !== latest.current) return
+        setState({
+          ...IDLE,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : "Дамжуулалтад холбогдож чадсангүй",
+        })
       })
+  }, [showId, isLoaded, displayName, callApi])
 
-    return () => {
-      cancelled = true
-    }
-  }, [roomName, isHost, displayName, isLoaded])
+  useLoad(load)
 
-  return { token, error }
+  return showId ? state : NO_SHOW
 }

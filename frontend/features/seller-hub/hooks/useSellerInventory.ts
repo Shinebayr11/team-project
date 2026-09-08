@@ -28,7 +28,7 @@ interface ServerProduct {
 /**
  * Дамжуулалтын "Миний бараа" ба Seller Hub хоёр НЭГ цуглуулгыг хардаг тул нэр,
  * үнэ, нөөц нь хоёр талд ижил байна. Store дахь `inventory` нь энэ серверийн
- * өгөгдлийн кэш — шоу, тойм, аналитик хуучнаараа түүнийг уншина.
+ * өгөгдлийн кэш — лайв, тойм, аналитик хуучнаараа түүнийг уншина.
  */
 export const toInventoryProduct = (product: ServerProduct): InventoryProduct => ({
   id: product._id,
@@ -60,8 +60,8 @@ const toServerBody = (updates: Partial<InventoryProduct>) => {
   if (updates.condition !== undefined) body.condition = updates.condition
   if (updates.listingType !== undefined) body.listing_type = updates.listingType
   if (updates.status !== undefined) body.status = updates.status
-  if (updates.reservedQuantity !== undefined) body.reserved_quantity = updates.reservedQuantity
-  if (updates.soldQuantity !== undefined) body.sold_quantity = updates.soldQuantity
+  // `reservedQuantity`/`soldQuantity` энд ЯВАХГҮЙ — тэдгээрийг систем л
+  // бичдэг тул сервер ч хүлээж авахаа больсон.
   return body
 }
 
@@ -77,7 +77,7 @@ function useRefreshInventory() {
 }
 
 /**
- * Барааг нэг л удаа — Seller Hub-ын бүрхүүл дээр уншина. Ингэснээр шоу, тойм,
+ * Барааг нэг л удаа — Seller Hub-ын бүрхүүл дээр уншина. Ингэснээр лайв, тойм,
  * аналитик бүгд бодит бараагаар ажиллана, дэлгэц бүр дахин татахгүй.
  */
 export function useInventoryHydration() {

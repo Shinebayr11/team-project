@@ -27,7 +27,7 @@ const winnerOf = (listing: Listing) =>
  * шууд чат бичих боломжтой байх ёстой тул нэр дээр нь дарж болно.
  *
  * Чат шинэ таб дээр нээгдэнэ: энэ самбар дамжуулалтын дотор байдаг тул
- * тухайн таб дээрээ шилжвэл LiveKit-ийн холболт тасарч, шоу унана.
+ * тухайн таб дээрээ шилжвэл LiveKit-ийн холболт тасарч, лайв унана.
  */
 function WinnerBanner({ listing }: { listing: Listing }) {
   const winner = winnerOf(listing)

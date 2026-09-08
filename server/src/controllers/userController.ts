@@ -1,10 +1,21 @@
 import { Context } from "hono";
+import mongoose from "mongoose";
 import { z } from "zod";
 import { User } from "../models/User.js";
 import type { AccountUpdateBody } from "../types/account.js";
+/**
+ * GET /api/users
+ *
+ * Нээлттэй жагсаалт тул ЗӨВХӨН ил тод талбарууд буцна. Өмнө нь `User.find()`
+ * баримтыг бүтнээр нь өгдөг байсан — хүргэлтийн хаяг, утас, гэрээнд зурсан
+ * гарын үсэг, `clerk_user_id` хүртэл нэвтрээгүй хүнд ил байв.
+ */
+const PUBLIC_USER_FIELDS = "display_name shop_name avatar_url bio createdAt"
+
 export const getUsers = async (c: Context) => {
     try {
-        const users = await User.find()
+        const limit = Math.min(Math.max(Number(c.req.query("limit")) || 50, 1), 100)
+        const users = await User.find().select(PUBLIC_USER_FIELDS).limit(limit)
         return c.json({ users })
     } catch (error) {
         return c.json({ message: "aldaa garlaa" }, 500)
@@ -148,73 +159,71 @@ export const listFollowing = async (c: Context) => {
     }
 }
 
+/**
+ * Дагах/дагахаа болих хоёрын хуваалцдаг шалгалт.
+ *
+ * `c.get("userId")` нь ObjectId ОБЪЕКТ, биеийн `sellerId` нь string тул
+ * тэдгээрийг шууд `===`-ээр харьцуулж болохгүй — өмнө нь "өөрийгөө дагах"
+ * хамгаалалт яг үүнээс болж хэзээ ч ажилладаггүй байв.
+ */
+const resolveFollowTarget = async (c: Context) => {
+    const followerId = c.get("userId")
+    const body = await c.req.json().catch(() => ({}))
+    const sellerId = typeof body?.sellerId === "string" ? body.sellerId : ""
+
+    if (!followerId || !sellerId) {
+        return { error: c.json({ message: "sellerId дутуу байна" }, 400) }
+    }
+
+    // Буруу хэлбэрийн id-г Mongo руу оруулбал CastError шидэж 500 болдог.
+    if (!mongoose.Types.ObjectId.isValid(sellerId)) {
+        return { error: c.json({ message: "Худалдагч олдсонгүй" }, 404) }
+    }
+
+    if (String(followerId) === String(sellerId)) {
+        return { error: c.json({ message: "Өөрийгөө дагах боломжгүй" }, 400) }
+    }
+
+    // Байхгүй хэрэглэгчийн id-г `following` дотор хуримтлуулахгүй.
+    const exists = await User.exists({ _id: sellerId })
+    if (!exists) {
+        return { error: c.json({ message: "Худалдагч олдсонгүй" }, 404) }
+    }
+
+    return { followerId, sellerId }
+}
+
 export const followUser = async (c: Context) => {
     try {
-        const followerId = c.get("userId") as string
-        const { sellerId } = await c.req.json()
+        const { error, followerId, sellerId } = await resolveFollowTarget(c)
+        if (error) return error
 
-        if (!followerId || !sellerId) {
-            return c.json({ error: "followerId and sellerId required" }, 400)
-        }
+        await Promise.all([
+            User.findByIdAndUpdate(followerId, { $addToSet: { following: sellerId } }),
+            User.findByIdAndUpdate(sellerId, { $addToSet: { followers: followerId } }),
+        ])
 
-        if (followerId === sellerId) {
-            return c.json({ error: "Cannot follow yourself" }, 400)
-        }
-
-        // Add seller to follower's following list
-        await User.findByIdAndUpdate(
-            followerId,
-            { $addToSet: { following: sellerId } },
-            { new: true }
-        )
-
-        // Add follower to seller's followers list
-        await User.findByIdAndUpdate(
-            sellerId,
-            { $addToSet: { followers: followerId } },
-            { new: true }
-        )
-
-        return c.json({
-            success: true,
-            message: "Successfully followed seller"
-        })
-    } catch (error: any) {
-        console.error("FollowUser error:", error)
-        return c.json({ error: "Failed to follow", details: error.message }, 500)
+        return c.json({ success: true, message: "Дагалаа" }, 200)
+    } catch (error) {
+        console.error("followUser aldaa", error)
+        return c.json({ message: "Серверийн алдаа гарлаа" }, 500)
     }
 }
 
 export const unfollowUser = async (c: Context) => {
     try {
-        const followerId = c.get("userId") as string
-        const { sellerId } = await c.req.json()
+        const { error, followerId, sellerId } = await resolveFollowTarget(c)
+        if (error) return error
 
-        if (!followerId || !sellerId) {
-            return c.json({ error: "followerId and sellerId required" }, 400)
-        }
+        await Promise.all([
+            User.findByIdAndUpdate(followerId, { $pull: { following: sellerId } }),
+            User.findByIdAndUpdate(sellerId, { $pull: { followers: followerId } }),
+        ])
 
-        // Remove seller from follower's following list
-        await User.findByIdAndUpdate(
-            followerId,
-            { $pull: { following: sellerId } },
-            { new: true }
-        )
-
-        // Remove follower from seller's followers list
-        await User.findByIdAndUpdate(
-            sellerId,
-            { $pull: { followers: followerId } },
-            { new: true }
-        )
-
-        return c.json({
-            success: true,
-            message: "Successfully unfollowed seller"
-        })
-    } catch (error: any) {
-        console.error("UnfollowUser error:", error)
-        return c.json({ error: "Failed to unfollow", details: error.message }, 500)
+        return c.json({ success: true, message: "Дагахаа болилоо" }, 200)
+    } catch (error) {
+        console.error("unfollowUser aldaa", error)
+        return c.json({ message: "Серверийн алдаа гарлаа" }, 500)
     }
 }
 

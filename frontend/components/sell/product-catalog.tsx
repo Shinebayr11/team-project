@@ -1,12 +1,13 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { ImagePlus, Package, Plus, X } from "lucide-react"
 import { useApiClient } from "@/hooks/useApiClient"
 import { AuctionProduct } from "@/hooks/useAuction"
 import { isImageUploadReady, uploadImage } from "@/lib/cloudinary"
 import { lineupEntryOf, ShowLineupState } from "@/hooks/useShowProducts"
 import { ProductThumb } from "@/components/ui/ProductThumb"
+import { useLoad } from "@/hooks/useLoad"
 
 // Хүрээ нь `--wn-ink-4`: `--wn-line-2` цагаан дээр 1.49:1 буюу SC 1.4.11-ийн
 // 3:1-ийг давдаггүй (`components/ui/input.tsx`-тэй ижил шалтгаан).
@@ -83,9 +84,7 @@ export function ProductCatalog({
     }
   }, [callApi])
 
-  useEffect(() => {
-    load()
-  }, [load])
+  useLoad(load)
 
   const save = async () => {
     setBusy(true)

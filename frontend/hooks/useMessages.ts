@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useApiClient } from "./useApiClient"
+import { usePoll } from "./usePoll"
 import { ChatParticipant } from "./useConversations"
 
 export interface ChatLine {
@@ -19,16 +20,16 @@ export function useMessages(conversationId?: string | null) {
   const { callApi } = useApiClient()
   const [messages, setMessages] = useState<ChatLine[]>([])
   const [other, setOther] = useState<ChatParticipant | undefined>()
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  /**
+   * Аль ярианы өгөгдөл ачаалагдсаныг тэмдэглэнэ. `loading`-ийг тусад нь
+   * төлөвт барихын оронд үүнээс гаргаж авснаар яриа солиход өмнөх ярианы
+   * зурвасууд агшин зуур харагдахгүй.
+   */
+  const [loadedFor, setLoadedFor] = useState<string | null>(null)
 
   const refresh = useCallback(async () => {
-    if (!conversationId) {
-      setMessages([])
-      setOther(undefined)
-      setLoading(false)
-      return
-    }
+    if (!conversationId) return
     try {
       const { data } = await callApi<{
         data: { other?: ChatParticipant; messages: ChatLine[] }
@@ -39,17 +40,11 @@ export function useMessages(conversationId?: string | null) {
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "Уншиж чадсангүй")
     } finally {
-      setLoading(false)
+      setLoadedFor(conversationId)
     }
   }, [callApi, conversationId])
 
-  useEffect(() => {
-    setLoading(true)
-    refresh()
-    if (!conversationId) return
-    const timer = setInterval(refresh, POLL_MS)
-    return () => clearInterval(timer)
-  }, [conversationId, refresh])
+  usePoll(refresh, POLL_MS, !!conversationId)
 
   // Яриаг нээсэн даруйд уншсанд тооцно.
   useEffect(() => {
@@ -83,5 +78,14 @@ export function useMessages(conversationId?: string | null) {
     [callApi, conversationId]
   )
 
-  return { messages, other, loading, error, send, refresh }
+  const loading = !!conversationId && loadedFor !== conversationId
+
+  return {
+    messages: conversationId ? messages : [],
+    other: conversationId ? other : undefined,
+    loading,
+    error,
+    send,
+    refresh,
+  }
 }

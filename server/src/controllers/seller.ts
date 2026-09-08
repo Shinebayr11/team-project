@@ -12,7 +12,10 @@ import type {
 export const getseller = async (c: Context) => {
     try {
 
-        const data = await User.find({ role: "seller" }).select("clerk_user_id display_name avatar_url shop_name")
+        // `clerk_user_id` энд БАЙХГҮЙ: нээлттэй жагсаалт тул нэвтрэлтийн
+        // үйлчилгээн дэх хэрэглэгчийн танигчийг гадагш өгөх шаардлагагүй
+        // (цорын ганц хэрэглэгч болох нүүрний хажуугийн самбар ч уншдаггүй).
+        const data = await User.find({ role: "seller" }).select("display_name avatar_url shop_name")
         return c.json({
             message: "Amjilttai avlaa",
             data

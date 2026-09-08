@@ -23,7 +23,7 @@ const SNAPSHOT_WIDTH = 640
 const JPEG_QUALITY = 0.7
 
 /**
- * Худалдагчийн камерын нэг кадрыг тогтмол авч, шоуны `thumbnail_url` болгоно.
+ * Худалдагчийн камерын нэг кадрыг тогтмол авч, лайвын `thumbnail_url` болгоно.
  *
  * Ингэснээр нүүрний том карт (`FeaturedShow`) болон бүх `ShowCard` дээр яг тэр
  * үед юу болж байгаа нь харагдана — үзэгч бүрийг LiveKit өрөөнд холбож,
@@ -74,8 +74,11 @@ export function useLiveThumbnail(
         )
         if (!blob) return
 
+        // Лайв бүр Cloudinary дээр ГАНЦ файлтай: 20 секунд тутам түүнийг дарж
+        // бичнэ. Өмнө нь дуудалт бүрд шинэ файл үүсэж, устгагддаггүй байв.
         const url = await uploadImage(
-          new File([blob], `live-${showId}.jpg`, { type: "image/jpeg" })
+          new File([blob], `live-${showId}.jpg`, { type: "image/jpeg" }),
+          `live-shows/${showId}`
         )
 
         await callApi(`/api/liveshow/${showId}`, {
