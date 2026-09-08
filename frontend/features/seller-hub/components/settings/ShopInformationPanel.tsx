@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { Field, TextField, SelectField } from "@/features/seller-hub/components/FormField"
+import { CONTROL, Field, TextField, SelectField } from "@/features/seller-hub/components/FormField"
 import { ApiError } from "@/lib/api"
 import { useApiClient } from "@/hooks/useApiClient"
 import { useSellerProfile } from "@/hooks/useSellerProfile"
@@ -230,7 +230,7 @@ export const ShopInformationPanel: React.FC = () => {
               maxLength={30}
               autoComplete="off"
               disabled={phase === "saving"}
-              className="w-full h-10 rounded-lg border border-[var(--wn-ink-4)] px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
+              className={CONTROL}
             />
           </Field>
           {(errors.storeName ?? errors.storeSlug) ? (

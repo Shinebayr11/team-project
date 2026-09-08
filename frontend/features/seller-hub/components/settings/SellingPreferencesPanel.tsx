@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { Field } from "@/features/seller-hub/components/FormField"
+import { CONTROL, Field } from "@/features/seller-hub/components/FormField"
 import type { ListingType } from "@/types/seller"
 import { Toggle } from "@/features/seller-hub/components/Toggle"
 import { SettingsSaveBar } from "./SettingsSaveBar"
@@ -13,9 +13,6 @@ const LISTING_TYPES: { value: ListingType; label: string }[] = [
   { value: "buy_it_now", label: "Шууд худалдах" },
   { value: "auction", label: "Дуудлага худалдаа" },
 ]
-
-const control =
-  "w-full h-10 rounded-lg border border-[var(--wn-ink-4)] px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
 
 /**
  * Шинэ бараа үүсгэхэд урьдчилан сонгогдох утгууд. `SellerProducts` дээр
@@ -48,7 +45,7 @@ export const SellingPreferencesPanel: React.FC = () => {
             value={listingType}
             onChange={(event) => setListingType(event.target.value as ListingType)}
             disabled={phase === "saving"}
-            className={control}
+            className={CONTROL}
           >
             {LISTING_TYPES.map((option) => (
               <option key={option.value} value={option.value}>

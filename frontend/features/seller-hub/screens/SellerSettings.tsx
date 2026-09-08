@@ -1,10 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { Settings } from 'lucide-react';
 import { SettingsNav } from '@/features/seller-hub/components/settings/SettingsNav';
-import { VerificationPanel } from '@/features/seller-hub/components/settings/VerificationPanel';
-import { PayoutsPanel } from '@/features/seller-hub/components/settings/PayoutsPanel';
 import { ShopInformationPanel } from '@/features/seller-hub/components/settings/ShopInformationPanel';
 import { AccountProfilePanel } from '@/features/seller-hub/components/settings/AccountProfilePanel';
 import { PreferencesPanel } from '@/features/seller-hub/components/settings/PreferencesPanel';
@@ -15,36 +12,31 @@ import { ListingSettingsPanel } from '@/features/seller-hub/components/settings/
 import { ShippingSettingsPanel } from '@/features/seller-hub/components/settings/ShippingSettingsPanel';
 import { OrderSettingsPanel } from '@/features/seller-hub/components/settings/OrderSettingsPanel';
 
-const PlaceholderPanel: React.FC = () => (
-  <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-[var(--wn-ink-4)] rounded-2xl">
-    <Settings className="w-8 h-8 text-[var(--wn-admin-muted)] mb-3" />
-    <div className="text-[16px] font-[700] text-black mb-1">Тохиргооны хуудас</div>
-    <div className="text-[14px] text-[var(--wn-admin-muted)]">Энэ хэсэг одоогоор бэлтгэгдэж байна.</div>
-  </div>
-);
+/**
+ * Таб бүр панельтай — `SettingsNav`-ын id-нууд ЭНЭ жагсаалттай яг таарна.
+ * Өмнө нь таарахгүй тохиолдолд «бэлтгэгдэж байна» гэсэн орлуулагч гардаг байсан
+ * ч ямар ч таб түүн рүү хүрдэггүй байв.
+ */
+const PANELS: Record<string, React.FC> = {
+  profile: AccountProfilePanel,
+  preferences: PreferencesPanel,
+  notifications: NotificationsPanel,
+  security: SecurityPanel,
+  shop: ShopInformationPanel,
+  selling: SellingPreferencesPanel,
+  listing: ListingSettingsPanel,
+  shipping: ShippingSettingsPanel,
+  orders: OrderSettingsPanel,
+};
 
 export const SellerSettings: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('verification');
-
-  const renderPanel = () => {
-    if (activeTab === 'profile') return <AccountProfilePanel />;
-    if (activeTab === 'preferences') return <PreferencesPanel />;
-    if (activeTab === 'notifications') return <NotificationsPanel />;
-    if (activeTab === 'security') return <SecurityPanel />;
-    if (activeTab === 'verification') return <VerificationPanel />;
-    if (activeTab === 'shop') return <ShopInformationPanel />;
-    if (activeTab === 'selling') return <SellingPreferencesPanel />;
-    if (activeTab === 'listing') return <ListingSettingsPanel />;
-    if (activeTab === 'shipping') return <ShippingSettingsPanel />;
-    if (activeTab === 'orders') return <OrderSettingsPanel />;
-    if (activeTab === 'payouts') return <PayoutsPanel />;
-    return <PlaceholderPanel />;
-  };
+  const [activeTab, setActiveTab] = useState('profile');
+  const Panel = PANELS[activeTab] ?? AccountProfilePanel;
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 max-w-[1100px]">
       <SettingsNav activeTab={activeTab} onSelect={setActiveTab} />
-      <div className="flex-1 pt-2">{renderPanel()}</div>
+      <div className="flex-1 pt-2"><Panel /></div>
     </div>
   );
 };

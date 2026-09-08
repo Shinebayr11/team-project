@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {
-  User, Sliders, Bell, Shield, CheckCircle2, Store, List, Truck, Package, CreditCard,
+  User, Sliders, Bell, Shield, Store, List, Truck, Package,
 } from 'lucide-react';
 
 export interface SettingsLink {
@@ -19,13 +19,11 @@ export const ACCOUNT_LINKS: SettingsLink[] = [
 ];
 
 export const SELLER_LINKS: SettingsLink[] = [
-  { id: 'verification', label: 'Баталгаажуулалт', icon: CheckCircle2 },
   { id: 'shop', label: 'Дэлгүүрийн мэдээлэл', icon: Store },
   { id: 'selling', label: 'Худалдааны тохиргоо', icon: Sliders },
   { id: 'listing', label: 'Барааны жагсаалтын тохиргоо', icon: List },
   { id: 'shipping', label: 'Хүргэлтийн тохиргоо', icon: Truck },
   { id: 'orders', label: 'Захиалгын тохиргоо', icon: Package },
-  { id: 'payouts', label: 'Төлбөр тооцоо', icon: CreditCard },
 ];
 
 interface SettingsNavProps {
