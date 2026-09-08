@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Heart, Users } from 'lucide-react'
 
 import { useApiClient } from '@/hooks/useApiClient'
+import { usePoll } from '@/hooks/usePoll'
 import { useRequireAuth } from '@/hooks/useRequireAuth'
 
 interface LiveShowHeaderProps {
@@ -54,14 +55,14 @@ export function LiveShowHeader({ showId }: LiveShowHeaderProps) {
   const [followOverride, setFollowOverride] = useState<boolean | null>(null)
   const [followLoading, setFollowLoading] = useState(false)
 
-  // Шоуны мэдээлэл нэг л удаа — 5 секунд тутам дахин татах шаардлагагүй.
+  // Лайвын мэдээлэл нэг л удаа — 5 секунд тутам дахин татах шаардлагагүй.
   useEffect(() => {
     let cancelled = false
     callApi<{ data: ShowData }>(`/api/liveshow/${showId}`)
       .then(({ data }) => {
         if (!cancelled) setShow(data)
       })
-      .catch((err) => console.error('Шоуны мэдээлэл татаж чадсангүй:', err))
+      .catch((err) => console.error('Лайвын мэдээлэл татаж чадсангүй:', err))
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
@@ -70,23 +71,14 @@ export function LiveShowHeader({ showId }: LiveShowHeaderProps) {
     }
   }, [showId, callApi])
 
-  // Үзэгчийн тоо л шинэчлэгдэнэ.
-  useEffect(() => {
-    let cancelled = false
-    const poll = () =>
-      callApi<{ viewerCount?: number }>(`/api/liveshow/${showId}/participants`)
-        .then((res) => {
-          if (!cancelled) setViewerCount(res.viewerCount || 0)
-        })
-        .catch(() => {})
-
-    poll()
-    const interval = setInterval(poll, VIEWER_POLL_MS)
-    return () => {
-      cancelled = true
-      clearInterval(interval)
-    }
+  // Үзэгчийн тоо л шинэчлэгдэнэ. Таб нуугдсан үед `usePoll` зогсооно.
+  const pollViewers = useCallback(() => {
+    callApi<{ viewerCount?: number }>(`/api/liveshow/${showId}/participants`)
+      .then((res) => setViewerCount(res.viewerCount || 0))
+      .catch(() => {})
   }, [showId, callApi])
+
+  usePoll(pollViewers, VIEWER_POLL_MS, !!showId)
 
   // Дагаж буй эсэхийг серверээс уншина — эс тэгвэл товч дахин ачаалах бүрд
   // "дагаагүй" төлөвөөс эхэлж, хэрэглэгчийг андуурна.
@@ -137,7 +129,7 @@ export function LiveShowHeader({ showId }: LiveShowHeaderProps) {
   const seller = sellerOf(show)
   const sellerName = seller?.shop_name || seller?.display_name || 'Худалдагч'
   const sellerAvatar = seller?.avatar_url
-  // Өөрийнхөө шоун дээр "дагах" товч утгагүй — сервер ч 400 буцаадаг.
+  // Өөрийнхөө лайв дээр "дагах" товч утгагүй — сервер ч 400 буцаадаг.
   const isOwnShow = !!me?._id && !!sellerId && String(me._id) === String(sellerId)
 
   return (

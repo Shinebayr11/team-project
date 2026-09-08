@@ -12,10 +12,10 @@ interface ShowPerformanceTableProps {
 
 export const ShowPerformanceTable: React.FC<ShowPerformanceTableProps> = ({ shows, onViewShows }) => (
   <AnalyticsTableCard
-    title="Шоуны үзүүлэлт"
-    actionLabel="Шоу харах"
+    title="Лайвын үзүүлэлт"
+    actionLabel="Лайв харах"
     onAction={onViewShows}
-    headers={['Шоу', 'Үзэгч', 'Орлого']}
+    headers={['Лайв', 'Үзэгч', 'Орлого']}
     isEmpty={shows.length === 0}
   >
     {shows.map(show => (

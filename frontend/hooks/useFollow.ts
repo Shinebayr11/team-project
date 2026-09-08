@@ -1,9 +1,10 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 
 import { useApiClient } from "./useApiClient"
 import { useRequireAuth } from "./useRequireAuth"
+import { useLoad } from "./useLoad"
 
 export interface FollowedSeller {
   _id: string
@@ -51,9 +52,7 @@ export function useFollow() {
     }
   }, [callApi, isSignedIn])
 
-  useEffect(() => {
-    refresh()
-  }, [refresh])
+  useLoad(refresh)
 
   const isFollowing = useCallback(
     (sellerId?: string) =>

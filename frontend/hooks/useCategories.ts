@@ -1,7 +1,8 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useApiClient } from "./useApiClient"
+import { useLoad } from "./useLoad"
 
 export interface Category {
   _id: string
@@ -11,8 +12,8 @@ export interface Category {
 /**
  * Ангиллын жагсаалт. Худалдагч /sell дээрээс шинэ ангилал нэмэхэд бусад бүх
  * хэрэглэгчид харагдах ерөнхий сан руу хадгалагдана — Home-ийн ангиллаар
- * бүлэглэх нь шоуны `category` талбар дээр шууд тулгуурладаг тул шинэ нэр
- * бүхий шоу гарахад автоматаар шинэ бүлэг үүснэ.
+ * бүлэглэх нь лайвын `category` талбар дээр шууд тулгуурладаг тул шинэ нэр
+ * бүхий лайв гарахад автоматаар шинэ бүлэг үүснэ.
  */
 export function useCategories() {
   const { callApi } = useApiClient()
@@ -30,9 +31,7 @@ export function useCategories() {
     }
   }, [callApi])
 
-  useEffect(() => {
-    refresh()
-  }, [refresh])
+  useLoad(refresh)
 
   const addCategory = useCallback(
     async (name: string): Promise<{ ok: boolean; message?: string; category?: Category }> => {

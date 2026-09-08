@@ -45,7 +45,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
       <StatCard value={purchases.length} label="Худалдан авалт" onClick={() => onNavigate('purchases')} />
-      <StatCard value={savedShows.length} label="Хадгалсан шоу" onClick={() => onNavigate('saved')} />
+      <StatCard value={savedShows.length} label="Хадгалсан лайв" onClick={() => onNavigate('saved')} />
       <StatCard value={followingCount} label="Дагаж буй" onClick={() => onNavigate('following')} />
     </div>
 
@@ -84,7 +84,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
     {savedShows.length > 0 && (
       <div>
-        <SectionHeader title="Хадгалсан шоу" onViewAll={() => onNavigate('saved')} />
+        <SectionHeader title="Хадгалсан лайв" onViewAll={() => onNavigate('saved')} />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {savedShows.slice(0, 3).map(show => (
             <ShowCard key={`${show.seller}-${show.title}`} show={show} />

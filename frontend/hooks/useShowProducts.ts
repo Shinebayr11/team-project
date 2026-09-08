@@ -1,8 +1,9 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useApiClient } from "./useApiClient"
 import { AuctionProduct } from "./useAuction"
+import { useLoad } from "./useLoad"
 
 export interface ShowProduct {
   _id: string
@@ -22,8 +23,8 @@ export const productOfEntry = (entry: ShowProduct): AuctionProduct | undefined =
     : undefined
 
 /**
- * Нэг шоуны барааны жагсаалт. Худалдагч /sell дээрээс энд бараагаа нэмж,
- * үзэгч шоун дээр яг үүнийг хардаг.
+ * Нэг лайвын барааны жагсаалт. Худалдагч /sell дээрээс энд бараагаа нэмж,
+ * үзэгч лайв дээр яг үүнийг хардаг.
  */
 export function useShowProducts(liveShowId?: string) {
   const { callApi } = useApiClient()
@@ -48,9 +49,7 @@ export function useShowProducts(liveShowId?: string) {
     }
   }, [callApi, liveShowId])
 
-  useEffect(() => {
-    refresh()
-  }, [refresh])
+  useLoad(refresh)
 
   const add = useCallback(
     async (productId: string): Promise<{ ok: boolean; message?: string }> => {

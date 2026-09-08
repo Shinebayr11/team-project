@@ -4,7 +4,7 @@ import { Product } from "../models/Product.js"
 import { Live_Show } from "../models/Live_show.js"
 
 /**
- * Шоуны барааны жагсаалт. live_show_id өгвөл зөвхөн тухайн шоуных, эс бөгөөс
+ * Лайвын барааны жагсаалт. live_show_id өгвөл зөвхөн тухайн лайвынх, эс бөгөөс
  * бүгд. Үзэгчид ч уншдаг тул нэвтрэх шаардлагагүй.
  */
 export const getshowproduct = async (c: Context) => {
@@ -24,7 +24,7 @@ export const getshowproduct = async (c: Context) => {
 }
 
 /**
- * Шоунд бараа нэмэх. Зөвхөн тухайн шоуны эзэн, зөвхөн өөрийн бараагаар.
+ * Лайвд бараа нэмэх. Зөвхөн тухайн лайвын эзэн, зөвхөн өөрийн бараагаар.
  * display_order өгөөгүй бол жагсаалтын араас залгана.
  */
 export const postshowproduct = async (c: Context) => {
@@ -42,7 +42,7 @@ export const postshowproduct = async (c: Context) => {
             return c.json({ message: "Live show olsongvi" }, 404)
         }
         if (String(show.seller_id) !== String(userId)) {
-            return c.json({ message: "Энэ шоуг өөрчлөх эрхгүй байна" }, 403)
+            return c.json({ message: "Энэ лайвыг өөрчлөх эрхгүй байна" }, 403)
         }
 
         const product = await Product.findById(product_id)
@@ -80,7 +80,7 @@ export const postshowproduct = async (c: Context) => {
     }
 }
 
-/** Шоуны жагсаалтаас бараа хасах — зөвхөн шоуны эзэн. */
+/** Лайвын жагсаалтаас бараа хасах — зөвхөн лайвын эзэн. */
 export const deleteshowproduct = async (c: Context) => {
     try {
         const userId = c.get("userId")
@@ -91,7 +91,7 @@ export const deleteshowproduct = async (c: Context) => {
 
         const show = await Live_Show.findById(entry.live_show_id)
         if (!show || String(show.seller_id) !== String(userId)) {
-            return c.json({ message: "Энэ шоуг өөрчлөх эрхгүй байна" }, 403)
+            return c.json({ message: "Энэ лайвыг өөрчлөх эрхгүй байна" }, 403)
         }
 
         await entry.deleteOne()

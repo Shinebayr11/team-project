@@ -1,4 +1,12 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+/**
+ * Бүх хүсэлт ХӨТӨЧИЙН ижил домэйн руу явна: `/api/*`-ыг `next.config.ts` дэх
+ * rewrite backend рүү дамжуулна.
+ *
+ * Өмнө нь энд `NEXT_PUBLIC_API_URL`-ыг угтвар болгодог байсан тул (1) rewrite
+ * хэзээ ч ажилладаггүй үхмэл тохиргоо болж, (2) орчны хувьсагч дутуу үед
+ * `undefined/api/...` рүү хүсэлт явж чимээгүй уначихдаг байв. Backend-ийн
+ * хаяг одоо ганц газар — `next.config.ts` дотор л бичигдэнэ.
+ */
 
 export class ApiError extends Error {
   status: number
@@ -30,7 +38,7 @@ export async function apiFetch<T>(
     headers.Authorization = `Bearer ${token}`
   }
 
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers })
+  const res = await fetch(path, { ...options, headers })
   const body = await res.json().catch(() => null)
 
   if (!res.ok) {

@@ -1,240 +1,55 @@
 "use client"
 
 import { useState } from "react"
-import { Star } from "lucide-react"
-import {
-  LiveKitRoom,
-  RoomAudioRenderer,
-  useRemoteParticipants,
-  useTracks,
-  VideoTrack,
-} from "@livekit/components-react"
-import { Track } from "livekit-client"
+import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react"
 import "@livekit/components-styles"
-import { useNavigate } from "@/lib/router"
-import { cn } from "@/lib/utils"
-import { useFollow } from "@/hooks/useFollow"
-import { useLiveKitToken } from "@/hooks/useLiveKitToken"
-import { useLiveShowDetail } from "@/hooks/useLiveShowDetail"
-import { ReelProduct, ReelTab } from "@/types"
-import { Avatar } from "@/components/ui/Avatar"
-import { LiveDot } from "@/components/ui/LiveDot"
+
+import { buildProducts } from "@/lib/reelProducts"
+import { useAuction } from "@/hooks/useAuction"
+import { useShowProducts } from "@/hooks/useShowProducts"
+import { LiveShowDoc } from "@/lib/liveShows"
+import { ReelTab } from "@/types"
 import { ShowProductList } from "@/components/liveshow/ShowProductList"
 import { LiveChat } from "@/components/live/live-chat"
 import { AuctionBidPanel } from "@/components/live/auction-bid-panel"
-import { AuctionProduct, Listing, isActive, useAuction } from "@/hooks/useAuction"
-import { ShowProduct, productOfEntry, useShowProducts } from "@/hooks/useShowProducts"
+import { SellerPanel } from "@/components/live/seller-panel"
+import { ViewerStage } from "@/components/live/viewer-stage"
 
 /**
- * Худалдагчийн урьдчилан эмхэлсэн жагсаалт панелийн үндэс болно; дуудлага худалдаанд
- * гарсан бараа нь "Шууд явж байна", дуусcан нь "Зарагдсан" болж доошоо шилжинэ.
- */
-const buildProducts = (
-  entries: ShowProduct[],
-  listing: Listing | null
-): Record<ReelTab, ReelProduct[]> => {
-  const onBlock =
-    listing && typeof listing.product_id === "object" ? listing.product_id : null
-  const running = isActive(listing)
-  const livePrice = String(
-    listing?.current_highest_bid_coins ?? listing?.starting_price_coins ?? 0
-  )
-
-  const buynow: ReelProduct[] = []
-  const sold: ReelProduct[] = []
-
-  const push = (product: AuctionProduct) => {
-    const current = onBlock?._id === product._id
-    const row: ReelProduct = {
-      name: product.name,
-      price: current ? livePrice : String(product.price_coins ?? 0),
-      tag: current ? (running ? "Шууд явж байна" : "Зарагдсан") : "Удахгүй",
-      live: current && running,
-      image: product.images?.[0],
-    }
-    if (current && !running) sold.push(row)
-    else buynow.push(row)
-  }
-
-  const listed = new Set<string>()
-  for (const entry of entries) {
-    const product = productOfEntry(entry)
-    if (!product) continue
-    listed.add(product._id)
-    push(product)
-  }
-
-  // Жагсаалтад ороогүй бараагаар дуудлага худалдаа явж байвал түүнийг ч гэсэн харуулна —
-  // /sell дээр жагсаалт эмхлээгүй байсан ч панель хоосон харагдахгүй.
-  if (onBlock && !listed.has(onBlock._id)) push(onBlock)
-
-  return { buynow, giveaways: [], sold }
-}
-
-/** The host's camera, filling the stage. Any auction UI overlays it. */
-function Stage({
-  shareLabel,
-  className,
-  children,
-}: {
-  shareLabel: string
-  className?: string
-  children?: React.ReactNode
-}) {
-  const tracks = useTracks([Track.Source.Camera], { onlySubscribed: false })
-  const track = tracks[0]
-  const participants = useRemoteParticipants()
-  const [copied, setCopied] = useState(false)
-
-  // Browse дээрх тайзтай ижил байрлалд хуваалцах товч. Тэнд зөвхөн чимэглэл
-  // байсан бол энд бодит холбоосыг хуулна.
-  const copyLink = () => {
-    navigator.clipboard
-      .writeText(window.location.href)
-      .then(() => {
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-      })
-      .catch(() => {})
-  }
-
-  return (
-    <div
-      className={cn(
-        "relative aspect-video w-full shrink-0 overflow-hidden rounded-[20px] bg-[var(--wn-shot-deep)] lg:aspect-auto lg:h-full lg:w-auto lg:flex-1 lg:shrink",
-        className
-      )}
-    >
-      {track ? (
-        <VideoTrack trackRef={track} className="size-full object-cover" />
-      ) : (
-        <div className="flex size-full items-center justify-center text-sm text-white/60">
-          Дамжуулалт хүлээгдэж байна...
-        </div>
-      )}
-
-      <div className="absolute top-4 left-4 z-10 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-[12px] font-[600] text-white backdrop-blur-md">
-        <LiveDot className="h-2 w-2" />
-        <span>Шууд</span>
-        <span className="ml-1 opacity-60">{participants.length} үзэж байна</span>
-      </div>
-
-      <button
-        type="button"
-        onClick={copyLink}
-        className="absolute top-4 right-4 z-10 flex h-8 max-w-[45%] items-center gap-2 truncate rounded-full bg-black/40 px-3 text-[12px] font-[600] text-white backdrop-blur-md transition-colors hover:bg-black/60"
-      >
-        {copied ? "Холбоос хуулагдлаа" : shareLabel}
-      </button>
-
-      {children}
-    </div>
-  )
-}
-
-/** Seller card above the product tabs — mirrors ShowInfoPanel, minus the mock ratings. */
-function SellerPanel({
-  title,
-  seller,
-  sellerId,
-  category,
-}: {
-  title: string
-  seller: string
-  /** Populate хийгдээгүй/mock шоуны хувьд байхгүй байж болно. */
-  sellerId?: string
-  category: string
-}) {
-  const navigate = useNavigate()
-  const { isFollowing, toggleFollow, pendingId } = useFollow()
-  const following = isFollowing(sellerId)
-
-  return (
-    <div className="border-b border-[var(--wn-line)] p-4">
-      <div className="mb-1 text-[10px] font-[800] tracking-wider text-[var(--wn-accent)] uppercase">
-        {category}
-      </div>
-      <h1 className="mb-3 text-[20px] leading-tight font-[800] text-[var(--wn-ink)]">
-        {title}
-      </h1>
-
-      <div
-        className="group mb-3 flex cursor-pointer items-center gap-3"
-        onClick={() => navigate(`/shop?seller=${seller}`)}
-      >
-        <Avatar name={seller} size={36} tint="var(--wn-accent-soft)" />
-        <div>
-          <div className="text-[14px] font-[700] text-[var(--wn-ink)] transition-colors group-hover:text-[var(--wn-accent)]">
-            {seller}
-          </div>
-          <div className="flex items-center gap-1 text-[12px] text-[var(--wn-ink-3)]">
-            <Star className="h-3 w-3 fill-[var(--wn-accent)] text-[var(--wn-accent)]" />
-            <span>Шинэ худалдагч</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Худалдагчийн id байхгүй бол дагах боломжгүй — сервер зөвхөн id-гаар
-          ажилладаг тул товчийг харуулахгүй. */}
-      {sellerId && (
-        <button
-          onClick={() => toggleFollow({ _id: sellerId, display_name: seller })}
-          disabled={pendingId === sellerId}
-          className={`w-full rounded-xl py-2 text-[13px] font-[700] transition-colors disabled:opacity-60 ${
-            following
-              ? "bg-[var(--wn-surface-2)] text-[var(--wn-ink)]"
-              : "bg-[var(--wn-ink)] text-white hover:bg-[var(--wn-ink-2)]"
-          }`}
-        >
-          {following ? "Дагаж байна" : "Дагах"}
-        </button>
-      )}
-    </div>
-  )
-}
-
-/**
- * Watching a real broadcast, laid out like the browse reel: seller and products
- * on the left, the live video in the middle, chat on the right.
+ * Бодит дамжуулалт үзэх дэлгэц, Browse-ийн reel-тэй ижил байрлалтай:
+ * зүүнд худалдагч, барааны жагсаалт; голд видео; баруунд чат.
+ *
+ * Token нь эцэг хуудсаас props-оор ирнэ — эрхийг сервер шийддэг тул энэ
+ * component өөрөө хүсэлт явуулахгүй.
  */
 export function LiveViewer({
-  roomName,
+  token,
+  serverUrl,
+  show,
   showId,
   title,
 }: {
-  roomName: string
+  token: string
+  serverUrl: string
+  show: LiveShowDoc | null
   showId?: string
   title?: string
 }) {
-
-  const { token: liveKitToken, error } = useLiveKitToken(roomName, false)
-  const show = useLiveShowDetail(showId)
   const { listing, bids, placeBid } = useAuction(showId)
   const { entries } = useShowProducts(showId)
   const [tab, setTab] = useState<ReelTab>("buynow")
 
   const sellerDoc =
     typeof show?.seller_id === "object" ? show.seller_id : undefined
-  const seller =
-    sellerDoc?.shop_name || sellerDoc?.display_name || "Худалдагч"
+  const seller = sellerDoc?.shop_name || sellerDoc?.display_name || "Худалдагч"
   const sellerId = sellerDoc?._id
   const shownTitle = show?.title ?? title ?? "Шууд дамжуулалт"
   const category = show?.category || "Ерөнхий"
 
-  if (error || !liveKitToken) {
-    return (
-      <div className="mx-auto flex h-[calc(100vh-68px)] max-w-[1440px] items-center justify-center px-4">
-        <p className="text-sm text-[var(--wn-ink-3)]">
-          {error ? "Холбогдож чадсангүй." : "Холбогдож байна..."}
-        </p>
-      </div>
-    )
-  }
-
   return (
     <LiveKitRoom
-      token={liveKitToken}
-      serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+      token={token}
+      serverUrl={serverUrl}
       connect
       video={false}
       audio={false}
@@ -244,9 +59,9 @@ export function LiveViewer({
           гар утсанд зориулж видеог эхэнд байлгадаг тул зөвхөн lg дээр `order`-оор
           сольж байна. */}
       <div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-4 py-4 lg:h-[calc(100vh-68px)] lg:flex-row">
-        <Stage shareLabel={`whynot.live/${seller}`} className="lg:order-2">
+        <ViewerStage shareLabel={`whynot.live/${seller}`} className="lg:order-2">
           <AuctionBidPanel listing={listing} bids={bids} onBid={placeBid} />
-        </Stage>
+        </ViewerStage>
 
         {/* `lg:contents` — дэлгэц дээр энэ бүрхүүл layout-аас арилж, гурван
             самбар мөрийн шууд хүүхэд болно. Гар утсан дээр л өндөр өгнө. */}

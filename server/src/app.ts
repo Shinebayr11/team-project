@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { connectDb } from "./lib/db.js";
 
-import livekit from "./livekit.js";
 import userRoutes from "./route/userRoute.js";
 import productRoutes from "./route/productRoute.js";
 import categoryRoutes from "./route/categoryRoute.js";
@@ -20,7 +19,32 @@ import messageRoutes from "./route/messageRoute.js";
 
 const app = new Hono();
 
-app.use("*", cors({ origin: "*" }));
+/**
+ * Зөвшөөрөгдсөн домэйнууд. Клиент нь `/api/*`-ыг Next-ийн rewrite-аар өөрийн
+ * домэйноороо дамжуулдаг тул хөтчөөс шууд ирэх cross-origin хүсэлт хэвийн
+ * ажиллагаанд шаардлагагүй — `CORS_ORIGINS` (таслалаар тусгаарласан) зөвхөн
+ * гар аргаар турших, өөр клиент холбоход л хэрэгтэй.
+ *
+ * Өмнө нь `origin: "*"` байсан: нэвтэрсэн хүний хөтчөөр ямар ч сайт манай
+ * API-г чөлөөтэй уншиж чадах өргөн нээлттэй тохиргоо байв.
+ */
+const allowedOrigins = (process.env.CORS_ORIGINS ?? "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const devOrigins = ["http://localhost:3000", "http://127.0.0.1:3000"];
+
+app.use(
+  "*",
+  cors({
+    origin: (origin) => {
+      const allowList = allowedOrigins.length ? allowedOrigins : devOrigins;
+      return allowList.includes(origin) ? origin : null;
+    },
+    credentials: true,
+  }),
+);
 
 app.get("/", (c) => {
   return c.text("Server is running successfully! 🚀");
@@ -42,7 +66,6 @@ app.use("/api/*", async (c, next) => {
   await next();
 });
 
-app.route("/livekit", livekit);
 app.route("/api/users", userRoutes);
 app.route("/api/product", productRoutes);
 app.route("/api/category", categoryRoutes);

@@ -5,6 +5,7 @@ import { useUser } from "@clerk/nextjs"
 
 import { useApiClient } from "@/hooks/useApiClient"
 import type { SellerMeResponse, SellerProfile } from "@/types/seller"
+import { useLoad } from "./useLoad"
 
 interface SellerProfileContextValue {
   profile: SellerProfile | null
@@ -56,10 +57,7 @@ export const SellerProfileProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [callApi, isSignedIn])
 
-  React.useEffect(() => {
-    if (!isLoaded) return
-    void refresh()
-  }, [isLoaded, refresh])
+  useLoad(refresh, isLoaded)
 
   const value = React.useMemo<SellerProfileContextValue>(
     () => ({

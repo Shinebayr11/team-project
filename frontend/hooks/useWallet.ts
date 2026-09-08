@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useUser } from "@clerk/nextjs"
 import { useApiClient } from "./useApiClient"
+import { useLoad } from "./useLoad"
 
 export interface WalletBalance {
   coin_balance?: number
@@ -54,9 +55,7 @@ export function useWallet() {
     }
   }, [callApi, isSignedIn])
 
-  useEffect(() => {
-    refresh()
-  }, [refresh])
+  useLoad(refresh)
 
   const balance = wallet?.coin_balance ?? 0
   const held = wallet?.held_coins ?? 0

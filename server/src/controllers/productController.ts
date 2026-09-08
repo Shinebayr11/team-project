@@ -67,11 +67,17 @@ export const postProduct = async (c: Context) => {
     }
 }
 
-/** Зөвхөн эздийн засаж болох талбарууд — `seller_id`-г гаднаас солиулахгүй. */
+/**
+ * Зөвхөн эздийн засаж болох талбарууд — `seller_id`-г гаднаас солиулахгүй.
+ *
+ * `reserved_quantity`, `sold_quantity` хоёр энд БАЙХГҮЙ: тэдгээрийг зөвхөн
+ * систем (захиалга, дуудлага худалдааны дүн) бичих ёстой. Өмнө нь худалдагч
+ * өөрийн борлуулалтын тоог дураараа тавьж, "эрэлттэй бараа" зэрэг бодит
+ * тоонд түшсэн газруудыг гажуудуулж чадах байв.
+ */
 const EDITABLE_FIELDS = [
     "name", "description", "price_coins", "stock_quantity", "images",
     "sku", "category", "condition", "listing_type", "status",
-    "reserved_quantity", "sold_quantity",
 ] as const
 
 /**
