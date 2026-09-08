@@ -42,7 +42,7 @@ export const ActionRequired: React.FC<ActionRequiredProps> = ({
       )}
 
       {isClear && (
-        <div className="p-8 rounded-2xl border border-gray-200 bg-white text-center text-gray-500 font-[500]">
+        <div className="p-8 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white text-center text-[var(--wn-admin-muted)] font-[500]">
           Бүх зүйл бэлэн байна! Анхаарах зүйл алга.
         </div>
       )}

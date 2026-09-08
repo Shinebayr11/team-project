@@ -36,7 +36,7 @@ const PreferencesForm: React.FC<{
   const canSubmit = phase !== "saving" && dirty
 
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="flex flex-col gap-5 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
       <Field label="Хэл">
         <select
           value={language}
@@ -84,17 +84,17 @@ export const PreferencesPanel: React.FC = () => {
     <div>
       <div className="mb-6">
         <h2 className="text-[24px] font-[800] mb-1 text-black">Тохиргоо</h2>
-        <p className="text-[14px] text-gray-500 font-[500]">
+        <p className="text-[14px] text-[var(--wn-admin-muted)] font-[500]">
           Хэл, цагийн бүсээ энд сонгоно.
         </p>
       </div>
 
       {loading ? (
-        <p className="text-[14px] text-gray-500">Уншиж байна...</p>
+        <p className="text-[14px] text-[var(--wn-admin-muted)]">Уншиж байна...</p>
       ) : account ? (
         <PreferencesForm account={account} save={save} />
       ) : (
-        <p className="text-[14px] font-[600] text-red-600">
+        <p className="text-[14px] font-[600] text-[var(--wn-admin-danger)]">
           Тохиргоо уншиж чадсангүй. Хуудсаа шинэчилнэ үү.
         </p>
       )}

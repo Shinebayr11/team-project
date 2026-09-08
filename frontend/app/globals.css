@@ -193,10 +193,32 @@
     var(--font-bricolage), "Bricolage Grotesque", var(--font-jakarta),
     "Plus Jakarta Sans", system-ui, sans-serif;
 
-  /* Seller hub palette */
+  /* ---------------------------------------------------------------------
+     Seller hub palette.
+
+     Хоёр тэнхлэг тусдаа: ХАРИЛЦАН ҮЙЛДЭЛ (accent) ба ТӨЛӨВ (semantic).
+     Хоёрыг холивол «энэ ногоон нь товч уу, амжилт уу» гэдэг нь ойлгогдохоо
+     болино — өмнө нь самбар дээр гурван accent (lime / #F5A623 / blue-600)
+     зэрэг ажиллаж байсан.
+
+       Харилцан үйлдэл — гурван үүрэг, гурван хэлбэр:
+         гадаргуу дээрх үйлдэл  → --wn-admin-lime (хар бичигтэй)
+         сонгогдсон зүйл        → --wn-admin-ink (цагаан бичигтэй)
+         холбоос, бичвэрийн үйлдэл → --wn-admin-accent (аппын брэнд өнгө)
+
+       Төлөв — зөвхөн утга дамжуулна, хэзээ ч чимэглэлээр хэрэглэхгүй:
+         ok / warn / danger / info
+
+     Саарлууд нь ягаан ялтастай (H≈290-305), учир нь --wn-page өөрөө тийш
+     хазайдаг. Tailwind-ын `gray-*` нь хөх ялтастай (H≈258-264) тул энэ
+     дэвсгэр дээр хүйтэн харагддаг — самбарт тэдгээрийг хэрэглэхгүй.
+     --------------------------------------------------------------------- */
   --wn-admin-ink: #0e0b18;
   --wn-admin-ink-2: #4a4655;
-  --wn-admin-muted: #6b7280;
+  /* Цайвар байх тусмаа сайн ч самбарын БҮХ дэвсгэр дээр AA (4.5:1) давах
+     ёстой. #6b7280 нь --wn-admin-chip дээр 4.26:1 болж унадаг байсан;
+     энэ утга хамгийн бараан дэвсгэр (--wn-admin-chip-2) дээр ч 4.89:1. */
+  --wn-admin-muted: #63616e;
   --wn-admin-nav-bg: #f4f3f5;
   --wn-admin-nav-hover: #eae8ed;
   --wn-admin-nav-rule: #e4e2e8;
@@ -207,11 +229,42 @@
   --wn-admin-chip: #f1f0f3;
   --wn-admin-chip-2: #e8e6ec;
   --wn-admin-lime: #c9f73d;
+  --wn-admin-lime-hover: #b8e62c;
   --wn-admin-btn-hover: #241f35;
   --wn-admin-outline: #d9d6de;
   --wn-admin-live: #e5484d;
   --wn-admin-live-soft: #fdecec;
 
+  /* Харилцан үйлдлийн accent. Аппын брэнд өнгө — өмнө нь самбар үүнийг
+     огт хэрэглэдэггүй, оронд нь Tailwind-ын blue-600 холбоост явж байв. */
+  --wn-admin-accent: var(--wn-accent);
+
+  /* Төлөвийн өнгө. Дэвсгэр бүр L≈.955 C≈.035, бичиг бүр L≈.45 C≈.115 дээр
+     үүсгэсэн тул дөрвүүлээ ижил хүчтэй харагдаж, хосууд нь 6.2:1-ээс дээш.
+     Өмнө нь amber chip нь H 96 дэвсгэр дээр H 46 бичигтэй байсан — нэг
+     chip дотор 50° зөрүү нь өнгийг бохирдуулж байлаа. */
+  --wn-admin-ok: #0e6632;
+  --wn-admin-ok-soft: #e0f7e4;
+  --wn-admin-warn: #853f01;
+  --wn-admin-warn-soft: #ffeadb;
+  --wn-admin-danger: #8a3633;
+  --wn-admin-danger-soft: #ffe8e4;
+  --wn-admin-info: #305394;
+  --wn-admin-info-soft: #e4f1ff;
+
+  /* KPI картын ангиллын аяс. Утга дамжуулдаггүй — зөвхөн ялгаж таниулна.
+     Дэвсгэр L .955, дүрс L .50 дээр үүсгэсэн тул тав дахин ижил жинтэй,
+     хос бүр 4.9:1-ээс дээш (өмнө нь 3.24–4.27 буюу хилийн). */
+  --wn-admin-tone-amber: #feeddb;
+  --wn-admin-tone-amber-ink: #8c5500;
+  --wn-admin-tone-teal: #ddf7ee;
+  --wn-admin-tone-teal-ink: #00775c;
+  --wn-admin-tone-blue: #e3f2ff;
+  --wn-admin-tone-blue-ink: #3164a3;
+  --wn-admin-tone-coral: #ffe9e4;
+  --wn-admin-tone-coral-ink: #9a463a;
+  --wn-admin-tone-neutral: #f0eff8;
+  --wn-admin-tone-neutral-ink: #63616e;
 }
 
 .whynot-root {

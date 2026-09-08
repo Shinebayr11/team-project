@@ -23,9 +23,9 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({
   return (
     <table className="w-full text-left border-collapse min-w-[900px]">
       <thead>
-        <tr className="bg-white text-[12px] font-[800] text-gray-500 uppercase tracking-wider border-b border-gray-200">
+        <tr className="bg-white text-[12px] font-[800] text-[var(--wn-admin-muted)] uppercase tracking-wider border-b border-[var(--wn-admin-card-border)]">
           <th className="p-4 w-12">
-            <button onClick={onToggleSelectAll} aria-label="Бүгдийг сонгох" className="text-gray-400 hover:text-black">
+            <button onClick={onToggleSelectAll} aria-label="Бүгдийг сонгох" className="text-[var(--wn-admin-muted)] hover:text-black">
               {allSelected ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5" />}
             </button>
           </th>
@@ -40,7 +40,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({
         </tr>
       </thead>
 
-      <tbody className="divide-y divide-gray-100">
+      <tbody className="divide-y divide-[var(--wn-admin-row-rule)]">
         {products.map(product => (
           <InventoryRow
             key={product.id}

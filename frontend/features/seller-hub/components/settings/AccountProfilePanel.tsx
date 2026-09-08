@@ -57,7 +57,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ account, save }) => {
   }
 
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="flex flex-col gap-5 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
       <div>
         <TextField
           label="Харагдах нэр"
@@ -71,11 +71,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ account, save }) => {
           disabled={phase === "saving"}
         />
         {fieldErrors.display_name ? (
-          <p className="mt-1 text-[12.5px] font-[600] text-red-600">
+          <p className="mt-1 text-[13px] font-[600] text-[var(--wn-admin-danger)]">
             {fieldErrors.display_name}
           </p>
         ) : (
-          <p className="mt-1 text-[12.5px] text-gray-500">2–40 тэмдэгт.</p>
+          <p className="mt-1 text-[13px] text-[var(--wn-admin-muted)]">2–40 тэмдэгт.</p>
         )}
       </div>
 
@@ -85,10 +85,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ account, save }) => {
           <input
             value={email ?? phone ?? ""}
             readOnly
-            className="w-full h-10 rounded-lg border border-[var(--wn-ink-4)] bg-gray-50 px-3 text-[14px] font-[500] text-gray-500 outline-none"
+            className="w-full h-10 rounded-lg border border-[var(--wn-ink-4)] bg-[var(--wn-admin-row-rule)] px-3 text-[14px] font-[500] text-[var(--wn-admin-muted)] outline-none"
           />
         </Field>
-        <p className="mt-1 text-[12.5px] text-gray-500">
+        <p className="mt-1 text-[13px] text-[var(--wn-admin-muted)]">
           Нэвтрэх мэдээллээ “Аюулгүй байдал” хэсгээс солино.
         </p>
       </div>
@@ -108,9 +108,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ account, save }) => {
           />
         </Field>
         {fieldErrors.bio ? (
-          <p className="mt-1 text-[12.5px] font-[600] text-red-600">{fieldErrors.bio}</p>
+          <p className="mt-1 text-[13px] font-[600] text-[var(--wn-admin-danger)]">{fieldErrors.bio}</p>
         ) : (
-          <p className="mt-1 text-[12.5px] text-gray-500">
+          <p className="mt-1 text-[13px] text-[var(--wn-admin-muted)]">
             {trimmedBio.length}/{BIO_MAX} тэмдэгт.
           </p>
         )}
@@ -133,17 +133,17 @@ export const AccountProfilePanel: React.FC = () => {
     <div>
       <div className="mb-6">
         <h2 className="text-[24px] font-[800] mb-1 text-black">Профайл</h2>
-        <p className="text-[14px] text-gray-500 font-[500]">
+        <p className="text-[14px] text-[var(--wn-admin-muted)] font-[500]">
           Бусад хэрэглэгчид таныг хэрхэн харахыг эндээс тохируулна.
         </p>
       </div>
 
       {loading ? (
-        <p className="text-[14px] text-gray-500">Уншиж байна...</p>
+        <p className="text-[14px] text-[var(--wn-admin-muted)]">Уншиж байна...</p>
       ) : account ? (
         <ProfileForm account={account} save={save} />
       ) : (
-        <p className="text-[14px] font-[600] text-red-600">
+        <p className="text-[14px] font-[600] text-[var(--wn-admin-danger)]">
           Бүртгэлийн мэдээлэл уншиж чадсангүй. Хуудсаа шинэчилнэ үү.
         </p>
       )}

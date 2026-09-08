@@ -19,21 +19,21 @@ export const ShowPerformanceTable: React.FC<ShowPerformanceTableProps> = ({ show
     isEmpty={shows.length === 0}
   >
     {shows.map(show => (
-      <tr key={show.id} className="text-[14px] hover:bg-gray-50 transition-colors cursor-pointer" onClick={onViewShows}>
+      <tr key={show.id} className="text-[14px] hover:bg-[var(--wn-admin-row-rule)] transition-colors cursor-pointer" onClick={onViewShows}>
         <td className="p-4 font-[700] text-black">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 shrink-0 flex items-center justify-center">
-              <Video className="w-4 h-4 text-gray-400" />
+            <div className="w-10 h-10 rounded-lg bg-[var(--wn-admin-chip)] border border-[var(--wn-admin-card-border)] shrink-0 flex items-center justify-center">
+              <Video className="w-4 h-4 text-[var(--wn-admin-muted)]" />
             </div>
             <div>
               <div className="truncate max-w-[160px]">{show.title}</div>
-              <div className="text-[11px] font-[500] text-gray-500 mt-0.5">
+              <div className="text-[11px] font-[500] text-[var(--wn-admin-muted)] mt-0.5">
                 {new Date(show.scheduledAt).toLocaleDateString()}
               </div>
             </div>
           </div>
         </td>
-        <td className="p-4 text-right font-[600] text-gray-600">{show.stats.viewers}</td>
+        <td className="p-4 text-right font-[600] text-[var(--wn-admin-ink-2)]">{show.stats.viewers}</td>
         <td className="p-4 text-right font-[800] text-black">₮{show.stats.revenue.toLocaleString()}</td>
       </tr>
     ))}

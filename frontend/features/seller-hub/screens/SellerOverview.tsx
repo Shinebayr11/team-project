@@ -48,7 +48,7 @@ export const SellerOverview: React.FC = () => {
 
       <QuickActions />
 
-      <div className="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+      <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
         <KpiCard
           title="Нийт орлого"
           value={`₮${overview.totalRevenue.toLocaleString()}`}

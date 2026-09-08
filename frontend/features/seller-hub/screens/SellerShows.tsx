@@ -14,6 +14,7 @@ import { ShowsTable } from "@/features/seller-hub/components/shows/ShowsTable"
 import { ShowForm, ShowDraft } from "@/features/seller-hub/components/shows/ShowForm"
 import { ShowDetail } from "@/features/seller-hub/components/shows/ShowDetail"
 import { SHOW_STATUS_LABELS } from "@/features/seller-hub/components/statusTones"
+import { btn } from "@/features/seller-hub/components/buttons"
 
 const TABS = [
   { value: "ALL", label: "Бүгд" },
@@ -141,7 +142,7 @@ export const SellerShows: React.FC = () => {
 
         <button
           onClick={() => setMode("create")}
-          className="flex items-center gap-2 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-black"
+          className={btn("ink", "pill")}
         >
           <Plus className="h-4 w-4" /> Шууд дамжуулалт үүсгэх
         </button>

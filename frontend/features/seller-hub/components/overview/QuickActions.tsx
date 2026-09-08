@@ -22,7 +22,7 @@ export const QuickActions: React.FC = () => {
           <button
             key={label}
             onClick={() => navigate(to)}
-            className="px-4 py-2 rounded-full bg-white border border-gray-200 text-[13px] font-[700] text-black hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap"
+            className="px-4 py-2 rounded-full bg-white border border-[var(--wn-admin-card-border)] text-[13px] font-[700] text-black hover:bg-[var(--wn-admin-row-rule)] transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap"
           >
             <Icon className="w-4 h-4" /> {label}
           </button>

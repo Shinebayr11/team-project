@@ -9,9 +9,9 @@ interface DataCardProps {
 }
 
 export const DataCard: React.FC<DataCardProps> = ({ children, toolbar }) => (
-  <div className="border border-gray-200 rounded-2xl bg-white shadow-sm overflow-hidden flex flex-col">
+  <div className="border border-[var(--wn-admin-card-border)] rounded-2xl bg-white shadow-sm overflow-hidden flex flex-col">
     {toolbar && (
-      <div className="p-4 border-b border-gray-200 bg-gray-50 flex flex-wrap items-center justify-between gap-4">
+      <div className="p-4 border-b border-[var(--wn-admin-card-border)] bg-[var(--wn-admin-row-rule)] flex flex-wrap items-center justify-between gap-4">
         {toolbar}
       </div>
     )}
@@ -22,7 +22,7 @@ export const DataCard: React.FC<DataCardProps> = ({ children, toolbar }) => (
 export const Panel: React.FC<{ title: string; children: React.ReactNode; action?: React.ReactNode }> = ({
   title, children, action,
 }) => (
-  <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+  <div className="bg-white border border-[var(--wn-admin-card-border)] rounded-2xl p-6 shadow-sm">
     <div className="flex items-center justify-between mb-4">
       <h2 className="text-[16px] font-[800] text-black">{title}</h2>
       {action}
@@ -33,7 +33,7 @@ export const Panel: React.FC<{ title: string; children: React.ReactNode; action?
 
 export const EmptyRow: React.FC<{ colSpan: number; message: string }> = ({ colSpan, message }) => (
   <tr>
-    <td colSpan={colSpan} className="p-12 text-center text-[14px] font-[600] text-gray-500">
+    <td colSpan={colSpan} className="p-12 text-center text-[14px] font-[600] text-[var(--wn-admin-muted)]">
       {message}
     </td>
   </tr>

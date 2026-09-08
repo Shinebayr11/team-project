@@ -6,6 +6,7 @@ import { SellerShow } from '@/features/seller-hub/types';
 import { StatusPill } from '../StatusPill';
 import { showTone, SHOW_STATUS_LABELS } from '../statusTones';
 import { Panel } from '../DataCard';
+import { btn } from "@/features/seller-hub/components/buttons"
 
 interface ShowStatusPanelProps {
   show: SellerShow;
@@ -14,8 +15,8 @@ interface ShowStatusPanelProps {
   onGoLive: () => void;
 }
 
-const dark = 'w-full py-2.5 rounded-xl bg-black text-white text-[14px] font-[700] hover:bg-gray-800 transition-colors';
-const outline = 'w-full py-2.5 rounded-xl border border-gray-300 text-black text-[14px] font-[700] hover:bg-gray-50 transition-colors';
+const dark = btn("ink", "block");
+const outline = btn("outline", "block");
 const live = 'w-full py-2.5 rounded-xl bg-[var(--wn-live-deep)] text-white text-[14px] font-[700] hover:bg-[var(--wn-live)] transition-colors flex items-center justify-center gap-2';
 
 /**
@@ -51,7 +52,7 @@ export const ShowStatusPanel: React.FC<ShowStatusPanelProps> = ({ show, onChange
             <button onClick={onGoLive} className={live}>
               <Radio className="w-4 h-4" /> Шууд дамжуулалт руу буцах
             </button>
-            <p className="text-[13px] font-[500] text-gray-500 text-center">
+            <p className="text-[13px] font-[500] text-[var(--wn-admin-muted)] text-center">
               Шууд дамжуулалтаа шууд эфирийн дэлгэцээс дуусгана уу.
             </p>
           </>

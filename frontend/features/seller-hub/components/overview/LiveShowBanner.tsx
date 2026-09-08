@@ -16,7 +16,7 @@ interface LiveShowBannerProps {
 }
 
 export const LiveShowBanner: React.FC<LiveShowBannerProps> = ({ title, stats, onOpen }) => (
-  <div className="mb-8 p-4 sm:p-6 rounded-2xl bg-[#1A1A1A] text-white shadow-lg flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+  <div className="mb-8 p-4 sm:p-6 rounded-2xl bg-[var(--wn-admin-ink)] text-white shadow-lg flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
     <div className="flex items-center gap-4 sm:gap-6 min-w-0">
       <div className="w-16 h-16 shrink-0 rounded-xl bg-white/10 flex items-center justify-center">
         <Video className="w-8 h-8 text-white" />
@@ -26,15 +26,15 @@ export const LiveShowBanner: React.FC<LiveShowBannerProps> = ({ title, stats, on
           <LiveDot className="w-2.5 h-2.5" />
           <div className="text-[13px] font-[800] text-[var(--wn-live)] uppercase tracking-wider">Шууд</div>
         </div>
-        <div className="text-[22px] font-[800] mb-2">{title}</div>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] font-[600] text-gray-300">
+        <div className="text-[20px] font-[800] mb-2">{title}</div>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] font-[600] text-[var(--wn-admin-muted)]">
           <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> {stats.viewers} үзэгч</span>
           <span className="flex items-center gap-1.5"><ShoppingBag className="w-4 h-4" /> {stats.sales} зарагдсан</span>
           <span className="flex items-center gap-1.5"><CreditCard className="w-4 h-4" /> ₮{stats.revenue.toLocaleString()}</span>
         </div>
       </div>
     </div>
-    <button onClick={onOpen} className="shrink-0 px-6 py-3 rounded-full bg-white text-black text-[14px] font-[800] hover:bg-gray-200 transition-colors">
+    <button onClick={onOpen} className="shrink-0 px-6 py-3 rounded-full bg-white text-black text-[14px] font-[800] hover:bg-[var(--wn-admin-chip-2)] transition-colors">
       Шууд дамжуулалт руу очих
     </button>
   </div>

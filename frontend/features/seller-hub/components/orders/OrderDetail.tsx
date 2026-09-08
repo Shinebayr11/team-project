@@ -32,7 +32,7 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({
         <OrderPaymentCard order={order} />
       </div>
 
-      <div className="w-full lg:w-[340px] lg:shrink-0 flex flex-col gap-6">
+      <div className="w-full lg:w-[320px] lg:shrink-0 flex flex-col gap-6">
         <FulfillmentPanel
           order={order}
           onAdvance={onAdvance}

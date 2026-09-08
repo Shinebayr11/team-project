@@ -4,13 +4,21 @@ import React from 'react';
 
 export type StatusTone = 'green' | 'blue' | 'amber' | 'red' | 'gray' | 'muted';
 
+/**
+ * Төлөвийн өнгө нь ЗӨВХӨН утга дамжуулна — accent-тай хэзээ ч холилдохгүй.
+ * Дөрвүүлээ ижил OKLCH жин дээр (дэвсгэр L .955 C .035, бичиг L .45 C .115)
+ * үүсгэсэн тул нэг эгнээнд зэрэгцэхэд аль нэг нь дүрвэж харагдахгүй.
+ *
+ * `muted` нь өмнө нь `text-[var(--wn-admin-muted)]` дээр `bg-[var(--wn-admin-chip)]` буюу 2.36:1 байсан —
+ * «Архивласан» бараа уншигдахгүй байв. Одоо `--wn-admin-muted` 5.34:1.
+ */
 const TONES: Record<StatusTone, { pill: string; dot: string }> = {
-  green: { pill: 'bg-[#E6F4EA] text-[#166534]', dot: 'bg-[#166534]' },
-  blue: { pill: 'bg-blue-50 text-blue-600', dot: 'bg-blue-600' },
-  amber: { pill: 'bg-[#FEF3C7] text-[#92400E]', dot: 'bg-[#92400E]' },
-  red: { pill: 'bg-red-50 text-red-600', dot: 'bg-red-600 animate-pulse-dot' },
-  gray: { pill: 'bg-gray-100 text-gray-600', dot: 'bg-gray-500' },
-  muted: { pill: 'bg-gray-100 text-gray-400', dot: 'bg-gray-400' },
+  green: { pill: 'bg-[var(--wn-admin-ok-soft)] text-[var(--wn-admin-ok)]', dot: 'bg-[var(--wn-admin-ok)]' },
+  blue: { pill: 'bg-[var(--wn-admin-info-soft)] text-[var(--wn-admin-info)]', dot: 'bg-[var(--wn-admin-info)]' },
+  amber: { pill: 'bg-[var(--wn-admin-warn-soft)] text-[var(--wn-admin-warn)]', dot: 'bg-[var(--wn-admin-warn)]' },
+  red: { pill: 'bg-[var(--wn-admin-danger-soft)] text-[var(--wn-admin-danger)]', dot: 'bg-[var(--wn-admin-danger)] animate-pulse-dot' },
+  gray: { pill: 'bg-[var(--wn-admin-chip)] text-[var(--wn-admin-ink-2)]', dot: 'bg-[var(--wn-admin-ink-2)]' },
+  muted: { pill: 'bg-[var(--wn-admin-chip)] text-[var(--wn-admin-muted)]', dot: 'bg-[var(--wn-admin-muted)]' },
 };
 
 interface StatusPillProps {

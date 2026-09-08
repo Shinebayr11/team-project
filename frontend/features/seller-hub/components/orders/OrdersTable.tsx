@@ -16,21 +16,21 @@ const HEADERS = ['Захиалга', 'Огноо', 'Худалдан авагч'
 export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onSelect }) => (
   <table className="w-full text-left border-collapse min-w-[900px]">
     <thead>
-      <tr className="bg-white text-[12px] font-[800] text-gray-500 uppercase tracking-wider border-b border-gray-200">
+      <tr className="bg-white text-[12px] font-[800] text-[var(--wn-admin-muted)] uppercase tracking-wider border-b border-[var(--wn-admin-card-border)]">
         {HEADERS.map(h => <th key={h} className="p-4">{h}</th>)}
         <th className="p-4 text-right">Нийт дүн</th>
       </tr>
     </thead>
-    <tbody className="divide-y divide-gray-100">
+    <tbody className="divide-y divide-[var(--wn-admin-row-rule)]">
       {orders.map(order => (
         <tr
           key={order.id}
           onClick={() => onSelect(order.id)}
-          className="text-[14px] hover:bg-gray-50 transition-colors cursor-pointer"
+          className="text-[14px] hover:bg-[var(--wn-admin-row-rule)] transition-colors cursor-pointer"
         >
           <td className="p-4 font-[800] text-black">{order.id}</td>
-          <td className="p-4 font-[500] text-gray-500">{new Date(order.date).toLocaleDateString()}</td>
-          <td className="p-4 font-[600] text-gray-600">{order.buyerName}</td>
+          <td className="p-4 font-[500] text-[var(--wn-admin-muted)]">{new Date(order.date).toLocaleDateString()}</td>
+          <td className="p-4 font-[600] text-[var(--wn-admin-ink-2)]">{order.buyerName}</td>
           <td className="p-4">
             <StatusPill label={PAYMENT_STATUS_LABELS[order.paymentStatus]} tone={paymentTone(order.paymentStatus)} />
           </td>

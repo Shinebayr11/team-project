@@ -35,12 +35,12 @@ export const ListingSettingsPanel: React.FC = () => {
     <div>
       <div className="mb-6">
         <h2 className="text-[24px] font-[800] mb-1 text-black">Барааны жагсаалтын тохиргоо</h2>
-        <p className="text-[14px] text-gray-500 font-[500]">
+        <p className="text-[14px] text-[var(--wn-admin-muted)] font-[500]">
           Шинэ бараа үүсгэхэд эдгээр утга анхнаасаа бөглөгдсөн байна.
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-col gap-5 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
         <Field label="Үндсэн ангилал">
           <select
             value={category}
@@ -84,7 +84,7 @@ export const ListingSettingsPanel: React.FC = () => {
             />
           </Field>
           {!quantityValid && (
-            <p className="mt-1 text-[12.5px] font-[600] text-red-600">
+            <p className="mt-1 text-[13px] font-[600] text-[var(--wn-admin-danger)]">
               0–9999 хооронд бүхэл тоо оруулна уу.
             </p>
           )}

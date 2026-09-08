@@ -21,15 +21,19 @@ const NAVS = [
 
 const linkClass = (active: boolean) =>
   `flex items-center justify-between px-3 py-2 rounded-lg text-[14px] font-[600] transition-all relative ${
-    active ? 'bg-[#1A1A1A] text-white' : 'text-gray-600 hover:bg-gray-100'
+    active
+      ? 'bg-[var(--wn-admin-ink)] text-white'
+      : 'text-[var(--wn-admin-ink-2)] hover:bg-[var(--wn-admin-nav-hover)]'
   }`;
 
-const ActiveRail = () => <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#F5A623]" />;
+/* Зураас нь өмнө нь #F5A623 байсан — самбарт lime CTA, хөх холбоостой зэрэгцэн
+   гурав дахь accent болж байв. Одоо самбарын ганц accent болох lime дээр. */
+const ActiveRail = () => <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[var(--wn-admin-lime)]" />;
 
 export const SellerBrand: React.FC<{ onNavigate?: () => void }> = ({ onNavigate }) => (
   <Link to="/home" onClick={onNavigate} className="flex items-center gap-2">
-    <span className="font-display text-[21px] font-[800] tracking-[-0.04em] text-black">WhyNot</span>
-    <span className="px-2 py-0.5 border border-gray-200 bg-gray-50 rounded-md text-[11px] font-[700] text-gray-600 uppercase tracking-wider">
+    <span className="font-display text-[20px] font-[800] tracking-[-0.04em] text-black">WhyNot</span>
+    <span className="px-2 py-0.5 border border-[var(--wn-admin-card-border)] bg-[var(--wn-admin-row-rule)] rounded-md text-[11px] font-[700] text-[var(--wn-admin-ink-2)] uppercase tracking-wider">
       Худалдагчийн төв
     </span>
   </Link>
@@ -55,11 +59,11 @@ export const SellerNav: React.FC<SellerNavProps> = ({ path, pendingOrders, onNav
             <Link key={nav.label} to={nav.to} onClick={onNavigate} className={linkClass(active)}>
               {active && <ActiveRail />}
               <div className="flex items-center gap-3">
-                <Icon className={`w-4 h-4 ${active ? 'text-white' : 'text-gray-500'}`} />
+                <Icon className={`w-4 h-4 ${active ? 'text-white' : 'text-[var(--wn-admin-muted)]'}`} />
                 {nav.label}
               </div>
               {badge && (
-                <span className={`px-1.5 py-0.5 rounded text-[11px] font-[800] ${active ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                <span className={`px-1.5 py-0.5 rounded text-[11px] font-[800] ${active ? 'bg-white/20 text-white' : 'bg-[var(--wn-admin-chip-2)] text-[var(--wn-admin-ink-2)]'}`}>
                   {badge}
                 </span>
               )}
@@ -68,16 +72,16 @@ export const SellerNav: React.FC<SellerNavProps> = ({ path, pendingOrders, onNav
         })}
       </nav>
 
-      <div className="p-3 border-t border-gray-200 flex flex-col gap-1 shrink-0">
+      <div className="p-3 border-t border-[var(--wn-admin-card-border)] flex flex-col gap-1 shrink-0">
         <Link to="/seller/settings" onClick={onNavigate} className={linkClass(settingsActive)}>
           {settingsActive && <ActiveRail />}
           <div className="flex items-center gap-3">
-            <Settings className={`w-4 h-4 ${settingsActive ? 'text-white' : 'text-gray-500'}`} />
+            <Settings className={`w-4 h-4 ${settingsActive ? 'text-white' : 'text-[var(--wn-admin-muted)]'}`} />
             Тохиргоо
           </div>
         </Link>
-        <button className="flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-[600] text-gray-600 hover:bg-gray-100 transition-all">
-          <AlertTriangle className="w-4 h-4 text-gray-500" />
+        <button className="flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-[600] text-[var(--wn-admin-ink-2)] hover:bg-[var(--wn-admin-nav-hover)] transition-all">
+          <AlertTriangle className="w-4 h-4 text-[var(--wn-admin-muted)]" />
           Алдаа мэдээлэх
         </button>
       </div>
@@ -91,7 +95,7 @@ export const SellerNav: React.FC<SellerNavProps> = ({ path, pendingOrders, onNav
  * өргөнтэй самбар гар утсан дээр контентыг дэлгэцээс шахаж гаргадаг байв.
  */
 export const SellerSidebar: React.FC<Omit<SellerNavProps, 'onNavigate'>> = ({ path, pendingOrders }) => (
-  <aside className="hidden lg:flex w-[240px] shrink-0 bg-white border-r border-gray-200 flex-col h-screen sticky top-0 z-30">
+  <aside className="hidden lg:flex w-[240px] shrink-0 bg-white border-r border-[var(--wn-admin-card-border)] flex-col h-svh sticky top-0 z-30">
     <div className="h-16 flex items-center px-6 shrink-0">
       <SellerBrand />
     </div>

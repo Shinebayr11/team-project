@@ -48,14 +48,14 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
   // хүлээнэ — эс тэгвээс тойм, аналитик хоромхон зуур худал үзүүлэлт үзүүлнэ.
   if (inventory.loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--wn-page)]">
-        <div className="size-6 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
+      <div className="flex min-h-svh items-center justify-center bg-[var(--wn-page)]">
+        <div className="size-6 animate-spin rounded-full border-2 border-[var(--wn-ink-4)] border-t-transparent" />
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-screen bg-[var(--wn-page)] font-[var(--wn-font)] text-[var(--wn-admin-ink)]">
+    <div className="flex min-h-svh bg-[var(--wn-page)] font-[var(--wn-font)] text-[var(--wn-admin-ink)]">
       <SellerSidebar path={pathname} pendingOrders={pendingOrders} />
 
       <div className="flex min-w-0 flex-1 flex-col">

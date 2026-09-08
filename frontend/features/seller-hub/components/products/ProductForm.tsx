@@ -7,6 +7,7 @@ import { TextField, SelectField, TextAreaField } from '../FormField';
 import { ProductMediaCard } from './ProductMediaCard';
 import { ProductPricingCard } from './ProductPricingCard';
 import { ProductDraft, PRODUCT_CATEGORIES, PRODUCT_CATEGORY_LABELS } from './productDraft';
+import { btn } from "@/features/seller-hub/components/buttons"
 
 interface ProductFormProps {
   title: string;
@@ -23,7 +24,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
     <>
       <PageHeader title={title} onBack={onCancel} />
 
-      <div className="flex flex-col lg:flex-row gap-6 max-w-[1000px]">
+      <div className="flex flex-col lg:flex-row gap-6 max-w-[1100px]">
         <div className="flex-1 flex flex-col gap-6">
           <ProductMediaCard
             images={draft.images}
@@ -64,14 +65,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
         </div>
       </div>
 
-      <div className="mt-8 flex items-center justify-end gap-3 max-w-[1000px] pt-6 border-t border-gray-200">
-        <button onClick={onCancel} className="px-5 py-2 rounded-full text-[14px] font-[700] text-gray-600 hover:bg-gray-100 transition-colors">
+      <div className="mt-8 flex items-center justify-end gap-3 max-w-[1100px] pt-6 border-t border-[var(--wn-admin-card-border)]">
+        <button onClick={onCancel} className="px-5 py-2 rounded-full text-[14px] font-[700] text-[var(--wn-admin-ink-2)] hover:bg-[var(--wn-admin-nav-hover)] transition-colors">
           Цуцлах
         </button>
-        <button onClick={() => onSave(draft, false)} className="px-5 py-2 rounded-full border border-gray-300 text-[14px] font-[700] text-black hover:bg-gray-50 transition-colors">
+        <button onClick={() => onSave(draft, false)} className={btn("outline", "pill")}>
           Ноорогт хадгалах
         </button>
-        <button onClick={() => onSave(draft, true)} className="px-6 py-2 rounded-full bg-[#C9F73D] text-black text-[14px] font-[800] hover:bg-[#b8e62c] transition-colors">
+        <button onClick={() => onSave(draft, true)} className={btn("lime", "pillWide")}>
           Нийтлэх
         </button>
       </div>
