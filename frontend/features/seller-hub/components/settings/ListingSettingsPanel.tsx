@@ -2,15 +2,12 @@
 
 import * as React from "react"
 
-import { Field } from "@/features/seller-hub/components/FormField"
+import { CONTROL, Field } from "@/features/seller-hub/components/FormField"
 import { PRODUCT_CATEGORIES } from "@/features/seller-hub/components/products/productDraft"
 import { PRODUCT_CONDITIONS, PRODUCT_CONDITION_LABELS } from "@/features/seller-hub/sellerSettings"
 import { SettingsSaveBar } from "./SettingsSaveBar"
 import { useSellerSettings } from "./useSellerSettings"
 import { useSettingsSave } from "./useSettingsSave"
-
-const control =
-  "w-full h-10 rounded-lg border border-[var(--wn-ink-4)] px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
 
 /** Шинэ барааны маягтын ангилал, байдал, тоо ширхгийн урьдчилсан утга. */
 export const ListingSettingsPanel: React.FC = () => {
@@ -46,7 +43,7 @@ export const ListingSettingsPanel: React.FC = () => {
             value={category}
             onChange={(event) => setCategory(event.target.value)}
             disabled={phase === "saving"}
-            className={control}
+            className={CONTROL}
           >
             {PRODUCT_CATEGORIES.map((option) => (
               <option key={option} value={option}>
@@ -61,7 +58,7 @@ export const ListingSettingsPanel: React.FC = () => {
             value={condition}
             onChange={(event) => setCondition(event.target.value)}
             disabled={phase === "saving"}
-            className={control}
+            className={CONTROL}
           >
             {PRODUCT_CONDITIONS.map((option) => (
               <option key={option} value={option}>
@@ -80,7 +77,7 @@ export const ListingSettingsPanel: React.FC = () => {
               value={quantity}
               onChange={(event) => setQuantity(event.target.value)}
               disabled={phase === "saving"}
-              className={control}
+              className={CONTROL}
             />
           </Field>
           {!quantityValid && (

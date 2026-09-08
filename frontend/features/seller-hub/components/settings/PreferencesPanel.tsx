@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { Field } from "@/features/seller-hub/components/FormField"
+import { CONTROL, Field } from "@/features/seller-hub/components/FormField"
 import { useAccount } from "@/hooks/useAccount"
 import type { AccountLanguage, AccountSettings, AccountUpdateBody } from "@/types/account"
 import { SettingsSaveBar } from "./SettingsSaveBar"
@@ -18,9 +18,6 @@ const TIMEZONES = [
   { value: "Asia/Hovd", label: "Ховд (UTC+7)" },
   { value: "UTC", label: "UTC" },
 ]
-
-const control =
-  "w-full h-10 rounded-lg border border-[var(--wn-ink-4)] px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
 
 const PreferencesForm: React.FC<{
   account: AccountSettings
@@ -42,7 +39,7 @@ const PreferencesForm: React.FC<{
           value={language}
           onChange={(event) => setLanguage(event.target.value as AccountLanguage)}
           disabled={phase === "saving"}
-          className={control}
+          className={CONTROL}
         >
           {LANGUAGES.map((option) => (
             <option key={option.value} value={option.value}>
@@ -57,7 +54,7 @@ const PreferencesForm: React.FC<{
           value={timezone}
           onChange={(event) => setTimezone(event.target.value)}
           disabled={phase === "saving"}
-          className={control}
+          className={CONTROL}
         >
           {TIMEZONES.map((option) => (
             <option key={option.value} value={option.value}>

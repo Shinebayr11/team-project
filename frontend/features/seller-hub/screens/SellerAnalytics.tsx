@@ -2,9 +2,8 @@
 
 import React, { useState } from "react"
 import { useNavigate } from "@/lib/router"
-import { Download, Users, Package, Tag } from "lucide-react"
+import { Download, Users, Package } from "lucide-react"
 import { useStore } from "@/store"
-import { AUCTION_INSIGHTS } from "@/features/seller-hub/data/sellerStats"
 import {
   useSellerAnalytics,
   DateRange,
@@ -100,7 +99,7 @@ export const SellerAnalytics: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <InsightPanel
           title="Худалдан авагчийн үзүүлэлт"
           icon={Users}
@@ -130,24 +129,6 @@ export const SellerAnalytics: React.FC = () => {
               label: "Дууссан бараа",
               value: stats.outOfStockCount,
               tone: "red",
-            },
-          ]}
-        />
-        <InsightPanel
-          title="Дуудлага худалдааны үзүүлэлт"
-          icon={Tag}
-          rows={[
-            {
-              label: "Дууссан дуудлага худалдаа",
-              value: AUCTION_INSIGHTS.completedAuctions,
-            },
-            {
-              label: "Амжилтын хувь",
-              value: AUCTION_INSIGHTS.successRate,
-            },
-            {
-              label: "Дундаж хожсон үнэ",
-              value: AUCTION_INSIGHTS.avgWinningPrice,
             },
           ]}
         />

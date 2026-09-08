@@ -2,14 +2,11 @@
 
 import * as React from "react"
 
-import { Field } from "@/features/seller-hub/components/FormField"
+import { CONTROL, Field } from "@/features/seller-hub/components/FormField"
 import { CARRIERS } from "@/features/seller-hub/components/orders/ShippingForm"
 import { SettingsSaveBar } from "./SettingsSaveBar"
 import { useSellerSettings } from "./useSellerSettings"
 import { useSettingsSave } from "./useSettingsSave"
-
-const control =
-  "w-full h-10 rounded-lg border border-[var(--wn-ink-4)] px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
 
 /** Захиалга илгээх маягтын тээвэрлэгч болон бэлтгэх хугацаа. */
 export const ShippingSettingsPanel: React.FC = () => {
@@ -42,7 +39,7 @@ export const ShippingSettingsPanel: React.FC = () => {
             value={carrier}
             onChange={(event) => setCarrier(event.target.value)}
             disabled={phase === "saving"}
-            className={control}
+            className={CONTROL}
           >
             {CARRIERS.map((option) => (
               <option key={option} value={option}>
@@ -61,7 +58,7 @@ export const ShippingSettingsPanel: React.FC = () => {
               value={days}
               onChange={(event) => setDays(event.target.value)}
               disabled={phase === "saving"}
-              className={control}
+              className={CONTROL}
             />
           </Field>
           {daysValid ? (
