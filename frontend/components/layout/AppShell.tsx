@@ -1,6 +1,7 @@
 "use client"
 
 import React, { ReactNode } from "react"
+import { Skeleton, SkeletonScreen } from "@/components/ui/Skeleton"
 
 import { StoreProvider } from "@/store"
 import { useLocation } from "@/lib/router"
@@ -49,8 +50,20 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => (
   </div>
 )
 
+/**
+ * 18 маршрутын нийтлэг Suspense хил. Дэлгэц бүр өөр хэлбэртэй тул энэ нь
+ * ЯМАР Ч тодорхой бүтэц зааж болохгүй — гарчиг ба контентын блок гэсэн
+ * бүх хуудсанд үнэн байдаг хэсгээр хязгаарлана. Дэлгэц өөрөө ачаалагдмагц
+ * өөрийн нарийвчилсан skeleton-оо (жишээ нь `Home`, `Shop`) харуулна.
+ */
 export const RouteFallback = () => (
-  <div className="flex h-[60vh] w-full items-center justify-center">
-    <div className="size-6 animate-spin rounded-full border-2 border-[var(--wn-ink-3)] border-t-transparent opacity-50" />
-  </div>
+  <SkeletonScreen className="mx-auto flex w-full max-w-[1120px] flex-col gap-6 px-4 py-8 sm:px-6">
+    <Skeleton className="h-8 w-56" />
+    <Skeleton className="h-4 w-80" />
+    <div className="mt-2 flex flex-col gap-4">
+      {[0, 1, 2].map((i) => (
+        <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+      ))}
+    </div>
+  </SkeletonScreen>
 )

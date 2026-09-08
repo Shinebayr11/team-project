@@ -93,11 +93,8 @@ export const SellerOverview: React.FC = () => {
             subtitle={(show) =>
               `₮${show.revenue.toLocaleString()} • ${show.soldCount} лот зарагдсан`
             }
-            emptyMessage={
-              overview.loading
-                ? "Уншиж байна..."
-                : "Дууссан шууд дамжуулалт алга байна."
-            }
+            loading={overview.loading}
+            emptyMessage="Дууссан шууд дамжуулалт алга байна."
           />
         </div>
       </div>

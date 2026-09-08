@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Skeleton, SkeletonScreen } from "@/components/ui/Skeleton"
 import { useUser } from "@clerk/nextjs"
 
 import { Field, TextField } from "@/features/seller-hub/components/FormField"
@@ -139,7 +140,15 @@ export const AccountProfilePanel: React.FC = () => {
       </div>
 
       {loading ? (
-        <p className="text-[14px] text-[var(--wn-admin-muted)]">Уншиж байна...</p>
+        <SkeletonScreen className="flex flex-col gap-5 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="flex flex-col gap-1.5">
+              <Skeleton className="h-3 w-28" />
+              <Skeleton className="h-10 w-full rounded-lg" />
+            </div>
+          ))}
+          <Skeleton className="h-10 w-32 rounded-lg" />
+        </SkeletonScreen>
       ) : account ? (
         <ProfileForm account={account} save={save} />
       ) : (

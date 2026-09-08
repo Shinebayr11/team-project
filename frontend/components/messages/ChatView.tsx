@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
+import { Skeleton, SkeletonScreen } from '@/components/ui/Skeleton';
 import { ArrowLeft } from 'lucide-react';
 import { Avatar } from '../ui/Avatar';
 import { ChatParticipant, participantName } from '@/hooks/useConversations';
@@ -81,7 +82,15 @@ export const ChatView: React.FC<ChatViewProps> = ({
 
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col gap-4">
         {loading ? (
-          <p className="text-[14px] text-[var(--wn-ink-3)]">Уншиж байна...</p>
+          /* Бөмбөлгүүд ээлжлэн хоёр тал руу — жинхэнэ яриа ингэж харагдана. */
+          <SkeletonScreen className="flex flex-col gap-4" label="Зурвасуудыг уншиж байна">
+            {["w-40", "w-56", "w-32", "w-48", "w-36"].map((width, i) => (
+              <Skeleton
+                key={width}
+                className={`h-10 rounded-[18px] ${width} ${i % 2 ? "self-end" : "self-start"}`}
+              />
+            ))}
+          </SkeletonScreen>
         ) : messages.length === 0 ? (
           <p className="text-[14px] text-[var(--wn-ink-3)]">
             Одоогоор зурвас алга. Эхний зурвасаа бичээрэй.

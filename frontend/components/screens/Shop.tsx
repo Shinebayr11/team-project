@@ -6,6 +6,7 @@ import { useSearchParams, useNavigate } from "@/lib/router"
 import { useFollow } from "@/hooks/useFollow"
 import { useSellerShop, shopName } from "@/hooks/useSellerShop"
 import { BackButton } from "@/components/ui/BackButton"
+import { Skeleton, SkeletonScreen, SkeletonCardGrid } from "@/components/ui/Skeleton"
 import { ShopHeader } from "@/components/shop/ShopHeader"
 import { ShopStats } from "@/components/shop/ShopStats"
 
@@ -25,9 +26,27 @@ export const Shop: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="mx-auto flex max-w-[1120px] items-center justify-center px-4 py-24">
-        <div className="size-6 animate-spin rounded-full border-2 border-[var(--wn-ink-3)] border-t-transparent opacity-50" />
-      </div>
+      <SkeletonScreen className="mx-auto max-w-[1120px] pb-20">
+        {/* Ковер, аватар, нэр — `ShopHeader`-ын хэмжээгээр. */}
+        <Skeleton className="h-[180px] w-full rounded-none sm:rounded-b-[24px]" />
+        <div className="flex items-end gap-4 px-4 sm:px-6 lg:px-8 -mt-10">
+          <Skeleton className="size-20 shrink-0 rounded-full border-4 border-white" />
+          <div className="flex flex-1 flex-col gap-2 pb-2">
+            <Skeleton className="h-5 w-48" />
+            <Skeleton className="h-3.5 w-32" />
+          </div>
+        </div>
+
+        <div className="mt-8 px-4 sm:px-6 lg:px-8">
+          <Skeleton className="mb-6 h-5 w-20" />
+          <SkeletonCardGrid
+            className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+            count={10}
+            ratio="1/1"
+            withHeader={false}
+          />
+        </div>
+      </SkeletonScreen>
     )
   }
 

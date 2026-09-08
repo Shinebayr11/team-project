@@ -6,6 +6,7 @@ import { useSession, useUser } from "@clerk/nextjs"
 import { Field } from "@/features/seller-hub/components/FormField"
 import { useLoad } from "@/hooks/useLoad"
 import { btn } from "@/features/seller-hub/components/buttons"
+import { Skeleton, SkeletonScreen } from "@/components/ui/Skeleton"
 
 const PASSWORD_MIN = 8
 const SAVED_HOLD_MS = 1800
@@ -251,7 +252,14 @@ export const SecurityPanel: React.FC = () => {
           </div>
 
           {sessions === null ? (
-            <p className="text-[13px] text-[var(--wn-admin-muted)]">Уншиж байна...</p>
+            <SkeletonScreen className="flex flex-col gap-3" label="Төхөөрөмжүүдийг уншиж байна">
+              {[0, 1].map((i) => (
+                <div key={i} className="flex flex-col gap-1.5 border-b border-[var(--wn-admin-row-rule)] pb-3 last:border-b-0 last:pb-0">
+                  <Skeleton className="h-3.5 w-56" />
+                  <Skeleton className="h-3 w-40" />
+                </div>
+              ))}
+            </SkeletonScreen>
           ) : (
             <div className="flex flex-col gap-3">
               {sessions.map((row) => (
