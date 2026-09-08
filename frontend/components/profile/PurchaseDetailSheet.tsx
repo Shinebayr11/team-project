@@ -58,7 +58,7 @@ export const PurchaseDetailSheet: React.FC<{
               href={`/messages?user=${purchase.sellerId}`}
               className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--wn-ink)] text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-ink-2)]"
             >
-              <MessageSquare className="size-4" /> Худалдагчтай чатлах
+              <MessageSquare className="size-4" /> Худалдагчтай холбогдох
             </a>
           ) : (
             <p className="pb-2 text-center text-[13px] font-[600] text-[var(--wn-ink-3)]">

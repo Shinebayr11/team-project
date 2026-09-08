@@ -51,7 +51,7 @@ export const HomeFeedHeader: React.FC<HomeFeedHeaderProps> = ({ query, category,
               </div>
             ))}
           </div>
-          <span className="text-[14px] font-[600] text-[var(--wn-ink-3)]">266мянга дагагч</span>
+          <span className="text-[14px] font-[600] text-[var(--wn-ink-3)]">266 мянган дагагч</span>
           <button className="min-h-11 sm:min-h-0 px-4 py-1.5 rounded-full bg-[var(--wn-ink)] text-white text-[13px] font-[600] hover:bg-[var(--wn-ink-2)] transition-colors">
             Дагах
           </button>

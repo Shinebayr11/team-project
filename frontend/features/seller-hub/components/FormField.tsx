@@ -27,12 +27,19 @@ export const TextField: React.FC<InputProps> = ({ label, className = '', ...prop
   <Field label={label}><input {...props} className={`${CONTROL} ${className}`} /></Field>
 );
 
-type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & { label: string; options: string[] };
+type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
+  label: string;
+  options: string[];
+  /** Хадгалагдах утга нь `options`-д хэвээр, дэлгэц дээр монгол нэрээр гарна. */
+  labels?: Record<string, string>;
+};
 
-export const SelectField: React.FC<SelectProps> = ({ label, options, ...props }) => (
+export const SelectField: React.FC<SelectProps> = ({ label, options, labels, ...props }) => (
   <Field label={label}>
     <select {...props} className={CONTROL}>
-      {options.map(option => <option key={option} value={option}>{option}</option>)}
+      {options.map(option => (
+        <option key={option} value={option}>{labels?.[option] ?? option}</option>
+      ))}
     </select>
   </Field>
 );

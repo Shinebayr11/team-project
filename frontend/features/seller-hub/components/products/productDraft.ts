@@ -17,6 +17,18 @@ export interface ProductDraft {
 export const PRODUCT_CATEGORIES = ['Sneakers', 'Vintage Decor', 'Trading Cards', 'Electronics', 'Other'];
 
 /**
+ * Ангиллын монгол нэр. Хадгалагдах утга нь англиараа хэвээр — сервер дээрх
+ * хуучин бараа, худалдагчийн тохиргоо тэр утгуудтай таарсаар байна.
+ */
+export const PRODUCT_CATEGORY_LABELS: Record<string, string> = {
+  'Sneakers': 'Пүүз',
+  'Vintage Decor': 'Винтаж чимэглэл',
+  'Trading Cards': 'Цуглуулгын карт',
+  'Electronics': 'Электроник',
+  'Other': 'Бусад',
+};
+
+/**
  * Шинэ барааны хоосон маягт. Урьдчилсан утгууд нь худалдагчийн тохиргооноос
  * ирнэ (`Тохиргоо → Худалдааны / Барааны жагсаалтын`); тохиргоо байхгүй бол
  * `settingsOf` default-ууд нь эдгээрийн өмнөх хатуу утгуудтай ижил.

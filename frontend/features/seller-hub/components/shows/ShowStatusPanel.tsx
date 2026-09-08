@@ -25,7 +25,7 @@ const live = 'w-full py-2.5 rounded-xl bg-[var(--wn-live-deep)] text-white text-
  * камер огт асаагүй атлаа лайв нь LIVE харагддаг байв. Одоо энэ товч жинхэнэ
  * дамжуулалтын дэлгэц рүү (`/seller/shows/start`) гарчиг, ангиллыг нь бэлдээд
  * аваачна. `LIVE` төлөв нь `useActiveStream()`-ээс ГАРГАЖ АВСАН утга тул энд
- * дуусгах товч байхгүй — лайв нь live консол дээрээ дуусна.
+ * дуусгах товч байхгүй — лайв нь шууд эфирийн дэлгэцээрээ дуусна.
  */
 export const ShowStatusPanel: React.FC<ShowStatusPanelProps> = ({ show, onChangeStatus, onGoLive }) => {
   const isDraftOrScheduled = show.status === 'DRAFT' || show.status === 'SCHEDULED';
@@ -42,7 +42,7 @@ export const ShowStatusPanel: React.FC<ShowStatusPanelProps> = ({ show, onChange
             <button onClick={onGoLive} className={live}>
               <Radio className="w-4 h-4" /> Одоо дамжуулж эхлэх
             </button>
-            <button onClick={() => onChangeStatus('DRAFT')} className={outline}>Ноороглох руу буцаах</button>
+            <button onClick={() => onChangeStatus('DRAFT')} className={outline}>Ноорог болгох</button>
           </>
         )}
 
@@ -52,7 +52,7 @@ export const ShowStatusPanel: React.FC<ShowStatusPanelProps> = ({ show, onChange
               <Radio className="w-4 h-4" /> Дамжуулалт руу буцах
             </button>
             <p className="text-[13px] font-[500] text-gray-500 text-center">
-              Лайвыг дамжуулалтын консол дээрээс дуусгана уу.
+              Лайваа шууд эфирийн дэлгэцээс дуусгана уу.
             </p>
           </>
         )}

@@ -23,26 +23,26 @@ export const BuyModal: React.FC<{ data: BuyModalData }> = ({ data }) => {
   const handleBuy = () => {
     if (!buy({ title: product.name, seller, price: product.price, qty })) return;
     closeModal();
-    addToast('Order confirmed');
+    addToast('Захиалга баталгаажлаа.');
   };
 
   return (
-    <Modal title="Confirm purchase" onClose={closeModal}>
+    <Modal title="Худалдан авалт баталгаажуулах" onClose={closeModal}>
       <div className="px-6 py-4 flex flex-col gap-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-xl bg-[var(--wn-shot)] shrink-0" />
           <div className="flex-1 min-w-0">
             <div className="text-[15px] font-[700] text-[var(--wn-ink)] truncate">{product.name}</div>
-            <div className="text-[14px] font-[600] text-[var(--wn-ink-3)] mt-0.5">₮{product.price} each</div>
+            <div className="text-[14px] font-[600] text-[var(--wn-ink-3)] mt-0.5">ширхэг нь ₮{product.price}</div>
           </div>
           <div className="text-[16px] font-[800] text-[var(--wn-ink)]">₮{total.toLocaleString()}</div>
         </div>
 
         <div className="flex items-center justify-between text-[14px] font-[600] text-[var(--wn-ink-2)]">
-          <span>Quantity</span><span>{qty}</span>
+          <span>Тоо ширхэг</span><span>{qty}</span>
         </div>
         <div className="flex items-center justify-between text-[14px] font-[600] text-[var(--wn-ink-2)]">
-          <span>Shipping</span><span>Combined</span>
+          <span>Хүргэлт</span><span>Нэгтгэсэн</span>
         </div>
 
         <div className="h-px bg-[var(--wn-line)] w-full" />
@@ -52,7 +52,7 @@ export const BuyModal: React.FC<{ data: BuyModalData }> = ({ data }) => {
         <ModalActionButton
           onClick={handleBuy}
           enabled={balance >= total}
-          label={`Buy — ₮${total.toLocaleString()}`}
+          label={`Худалдаж авах — ₮${total.toLocaleString()}`}
         />
       </div>
     </Modal>

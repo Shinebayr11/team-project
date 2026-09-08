@@ -23,7 +23,7 @@ const TABS = [
   { value: "COMPLETED", label: SHOW_STATUS_LABELS.COMPLETED },
 ] as const
 
-/** Лайв эхлэх ганц зам. Гарчиг, ангилал нь бэлдсэн байдлаар нээгдэнэ. */
+/** Лайв эхлүүлэх ганц зам. Гарчиг, ангилал нь бэлдсэн байдлаар нээгдэнэ. */
 const startShowHref = (show?: SellerShow) => {
   if (!show) return "/seller/shows/start"
   const params = new URLSearchParams({

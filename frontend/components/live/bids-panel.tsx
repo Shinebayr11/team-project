@@ -127,7 +127,7 @@ function StartAuctionForm({
   if (!products.length) {
     return (
       <div className="p-4 text-[13px] text-[var(--wn-ink-3)]">
-        {error ?? "Бараа алга. Эхлээд дамжуулалт эхлэх хуудсаас бараагаа бүртгээрэй."}
+        {error ?? "Бараа алга. Эхлээд дамжуулалт эхлэх хуудаснаас бараагаа бүртгээрэй."}
       </div>
     )
   }
@@ -301,7 +301,7 @@ export function BidsPanel({
                       </div>
                       {highest && (
                         <div className="text-[11px] font-[700] text-[var(--wn-accent)]">
-                          Хамгийн өндөр үнэ санал болгогч
+                          Тэргүүлж буй санал
                         </div>
                       )}
                     </div>

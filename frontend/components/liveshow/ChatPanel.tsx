@@ -10,7 +10,7 @@ interface ChatPanelProps {
   viewers: number;
   hostName: string;
   onSend: (text: string) => void;
-  /** Replaces the input with a prompt — used when a visitor must sign in first. */
+  /** Оролтын талбарыг сануулгаар солино — зочин эхлээд нэвтрэх шаардлагатай үед. */
   lockedNotice?: React.ReactNode;
   /** Байрлал зохицуулах нэмэлт ангилал (жишээ нь `lg:order-3`). */
   className?: string;
@@ -34,7 +34,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ lines, viewers, hostName, 
   return (
     <div className={cn("hidden lg:flex w-[280px] shrink-0 flex-col h-full bg-white rounded-[20px] border border-[var(--wn-line)] overflow-hidden", className)}>
       <div className="p-3 border-b border-[var(--wn-line)] flex items-center justify-between">
-        <h2 className="text-[14px] font-[800] text-[var(--wn-ink)]">Chat</h2>
+        <h2 className="text-[14px] font-[800] text-[var(--wn-ink)]">Чат</h2>
         <div className="flex items-center gap-1.5 text-[12px] font-[600] text-[var(--wn-ink-3)]">
           <LiveDot /> {viewers}
         </div>
@@ -61,8 +61,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ lines, viewers, hostName, 
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="Say something..."
-              aria-label="Chat message"
+              placeholder="Сэтгэгдэл бичих..."
+              aria-label="Чатын мессеж"
               className="bg-transparent border-none outline-none w-full text-[13px] text-[var(--wn-ink)]"
             />
           </form>

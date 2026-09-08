@@ -39,7 +39,7 @@ const FLOATERS = [
     delay: 0,
   },
   {
-    label: "Sneaker · 42",
+    label: "Пүүз · 42",
     price: "120,000₮",
     className: "-right-4 top-[38%] sm:-right-24",
     duration: 4.4,
@@ -88,7 +88,7 @@ export function HeroSection() {
               as="h1"
               id="hero-title"
               immediate
-              text={"Шууд дамжуулалт\nдээр нь худалдаж ав"}
+              text={"Дуудлага худалдааны\nцогц шийдэл"}
               className="text-[clamp(2.75rem,7vw,6.5rem)] leading-[0.95] font-[800] tracking-[-0.03em]"
             />
           </ParallaxLayer>
@@ -97,7 +97,7 @@ export function HeroSection() {
             immediate
             className="mt-6 max-w-[30ch] text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-white/75"
           >
-            Дуудлага худалдаа, flash sale, шууд эфирийн бэлэг — бүгд нэг дээр.
+            Шууд дамжуулалт, шуурхай хямдрал — бүгд нэг дээр.
           </RevealSub>
 
           <RevealCta immediate className="mt-9 flex flex-wrap gap-3">
@@ -158,7 +158,7 @@ function PhoneMockup() {
 
         <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-[4px] bg-[var(--wn-live)] px-2 py-1 text-[10px] font-[800] tracking-[0.08em] text-white uppercase">
           <span className="animate-pulse-dot h-1.5 w-1.5 rounded-full bg-white" />
-          Live
+          Шууд
         </div>
 
         <div className="absolute top-3 right-3 flex items-center gap-1 rounded-[4px] bg-black/45 px-2 py-1 text-[10px] font-[700] text-white/85">
@@ -181,7 +181,7 @@ function PhoneMockup() {
         <div className="absolute right-3 bottom-3 left-3 flex items-center justify-between rounded-[6px] bg-white px-3 py-2.5">
           <div className="text-left">
             <div className="text-[9px] font-[600] text-[var(--wn-ink-3)]">
-              Buy it now
+              Шууд авах
             </div>
             <div className="text-[13px] font-[800] text-[var(--wn-noir)]">
               89,000₮

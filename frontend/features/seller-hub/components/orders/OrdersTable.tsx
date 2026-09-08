@@ -11,7 +11,7 @@ interface OrdersTableProps {
   onSelect: (id: string) => void;
 }
 
-const HEADERS = ['Захиалга', 'Огноо', 'Худалдан авагч', 'Төлбөр', 'Биелэлт'];
+const HEADERS = ['Захиалга', 'Огноо', 'Худалдан авагч', 'Төлбөр', 'Явц'];
 
 export const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onSelect }) => (
   <table className="w-full text-left border-collapse min-w-[900px]">

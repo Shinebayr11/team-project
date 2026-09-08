@@ -43,7 +43,7 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
   };
 
   return (
-    <Modal title="Үнэ санал болгох" onClose={closeModal}>
+    <Modal title="Үнийн санал өгөх" onClose={closeModal}>
       <div className="px-6 py-4 flex flex-col gap-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-xl bg-[var(--wn-shot)] shrink-0" />
@@ -80,7 +80,7 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
           onClick={handleBid}
           enabled={balance >= myBid && seconds > 0}
           disabledLabel={seconds > 0 ? 'Үлдэгдэл хүрэлцэхгүй' : 'Хугацаа дууслаа'}
-          label={`Үнэ санал болгох — ₮${myBid.toLocaleString()}`}
+          label={`Санал өгөх — ₮${myBid.toLocaleString()}`}
         />
       </div>
     </Modal>

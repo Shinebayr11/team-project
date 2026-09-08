@@ -30,7 +30,7 @@ export const ReelActionRail: React.FC<ReelActionRailProps> = ({
     <button
       onClick={onShop}
       className="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex flex-col items-center justify-center text-white hover:bg-black/60 transition-colors"
-      aria-label="Shop"
+      aria-label="Дэлгүүр"
     >
       <ShoppingBag className="w-5 h-5" />
       {itemCount > 0 && (
@@ -42,7 +42,7 @@ export const ReelActionRail: React.FC<ReelActionRailProps> = ({
     <button
       onClick={onChatToggle}
       className="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/60 transition-colors"
-      aria-label="Toggle chat"
+      aria-label="Чат нээх/хаах"
     >
       <MessageCircle className="w-5 h-5" />
     </button>
@@ -52,7 +52,7 @@ export const ReelActionRail: React.FC<ReelActionRailProps> = ({
       <button
         onClick={onLike}
         className="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/60 transition-colors"
-        aria-label="Like"
+        aria-label="Таалагдсан"
       >
         <Heart className="w-5 h-5" />
       </button>
@@ -63,7 +63,7 @@ export const ReelActionRail: React.FC<ReelActionRailProps> = ({
       <button
         onClick={onCart}
         className="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex flex-col items-center justify-center text-white hover:bg-black/60 transition-colors"
-        aria-label="Cart"
+        aria-label="Сагс"
       >
         <ShoppingCart className="w-5 h-5" />
         {cartCount > 0 && (
@@ -77,7 +77,7 @@ export const ReelActionRail: React.FC<ReelActionRailProps> = ({
       <button
         onClick={onShare}
         className="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/60 transition-colors"
-        aria-label="Share"
+        aria-label="Хуваалцах"
       >
         <Share2 className="w-5 h-5" />
       </button>

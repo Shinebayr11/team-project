@@ -39,7 +39,7 @@ export const ReelMobileTopOverlay: React.FC<ReelMobileTopOverlayProps> = ({
           navigator.clipboard.writeText(shareUrl);
         }}
         className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/60 transition-colors"
-        aria-label="Copy link"
+        aria-label="Холбоос хуулах"
       >
         <Copy className="w-4 h-4" />
       </button>
@@ -47,7 +47,7 @@ export const ReelMobileTopOverlay: React.FC<ReelMobileTopOverlayProps> = ({
         <button
           onClick={onClose}
           className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white hover:bg-black/60 transition-colors"
-          aria-label="Close"
+          aria-label="Хаах"
         >
           <X className="w-4 h-4" />
         </button>

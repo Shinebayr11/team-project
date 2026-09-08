@@ -11,7 +11,7 @@ interface ExploreHeaderProps {
 export const ExploreHeader: React.FC<ExploreHeaderProps> = ({ query, onQueryChange }) => (
   <div className="bg-white border-b border-[var(--wn-line)] pt-12 pb-8 px-6 md:px-12">
     <div className="max-w-[1200px] mx-auto">
-      <h1 className="text-[32px] md:text-[40px] font-[800] text-[var(--wn-ink)] tracking-tight mb-2">Хайх</h1>
+      <h1 className="text-[32px] md:text-[40px] font-[800] text-[var(--wn-ink)] tracking-tight mb-2">Ангилал</h1>
       <p className="text-[16px] text-[var(--wn-ink-3)] font-[500] mb-8">Лайв, бараа, худалдагч</p>
 
       <div className="relative max-w-[600px]">

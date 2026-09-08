@@ -13,10 +13,19 @@ interface ShowProductListProps {
 }
 
 const TABS: { id: ReelTab; label: string }[] = [
-  { id: 'buynow', label: 'Buy Now' },
-  { id: 'giveaways', label: 'Giveaways' },
-  { id: 'sold', label: 'Sold' },
+  { id: 'buynow', label: 'Шууд авах' },
+  { id: 'giveaways', label: 'Бэлэг' },
+  { id: 'sold', label: 'Зарагдсан' },
 ];
+
+/** Өгөгдлийн шошгыг харагдац руу буулгана — `tagClass`-ийн түлхүүр хэвээр. */
+const TAG_LABELS: Record<string, string> = {
+  'Live now': 'Шууд явж байна',
+  'Sold': 'Зарагдсан',
+  'Giveaway': 'Бэлэг',
+  'Buy now': 'Шууд авах',
+  'Follow to enter': 'Дагаад оролц',
+};
 
 const tagClass = (tag: string) => {
   if (tag === 'Live now') return 'bg-[var(--wn-live-soft)] text-[var(--wn-live)]';
@@ -47,7 +56,7 @@ export const ShowProductList: React.FC<ShowProductListProps> = ({
     <div className="p-2 border-b border-[var(--wn-line)]">
       <div className="relative flex items-center w-full h-[32px] rounded-lg bg-[var(--wn-surface-2)] px-3">
         <Search className="w-4 h-4 text-[var(--wn-ink-4)] mr-2" />
-        <input type="text" placeholder="Search items" aria-label="Search items" className="bg-transparent border-none outline-none w-full text-[12px] text-[var(--wn-ink)]" />
+        <input type="text" placeholder="Бараа хайх" aria-label="Бараа хайх" className="bg-transparent border-none outline-none w-full text-[12px] text-[var(--wn-ink)]" />
       </div>
     </div>
 
@@ -69,11 +78,11 @@ export const ShowProductList: React.FC<ShowProductListProps> = ({
           <div className="flex-1 min-w-0">
             <div className="text-[13px] font-[600] text-[var(--wn-ink)] truncate">{product.name}</div>
             <div className="text-[12px] font-[700] text-[var(--wn-ink-2)] mt-0.5">
-              {product.price === 'Free' ? 'Free' : `₮${product.price}`}
+              {product.price === 'Free' ? 'Үнэгүй' : `₮${product.price}`}
             </div>
           </div>
           <div className={`px-2 py-1 rounded-md text-[10px] font-[700] shrink-0 ${tagClass(product.tag)}`}>
-            {product.tag}
+            {TAG_LABELS[product.tag] ?? product.tag}
           </div>
         </div>
       ))}

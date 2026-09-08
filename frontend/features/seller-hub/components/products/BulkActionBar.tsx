@@ -11,7 +11,7 @@ interface BulkActionBarProps {
 
 const NEUTRAL_ACTIONS: { action: BulkAction; label: string }[] = [
   { action: 'activate', label: 'Идэвхжүүлэх' },
-  { action: 'draft', label: 'Ноороглох' },
+  { action: 'draft', label: 'Ноорог болгох' },
   { action: 'archive', label: 'Архивлах' },
 ];
 

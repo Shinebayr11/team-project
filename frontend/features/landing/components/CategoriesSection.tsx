@@ -17,7 +17,7 @@ import { ParallaxLayer, SectionShell } from "./SectionShell"
 import { motion } from "framer-motion"
 
 const ROW_ONE = [
-  "Sneaker",
+  "Пүүз",
   "Ретро хувцас",
   "Цуглуулгын карт",
   "Гоо сайхан",
@@ -29,7 +29,7 @@ const ROW_ONE = [
 
 const ROW_TWO = [
   "Тоглоом",
-  "Загасчлал",
+  "Загас агнуур",
   "Спорт хэрэгсэл",
   "Винил",
   "Гэрийн чимэглэл",
@@ -52,7 +52,7 @@ export function CategoriesSection() {
       </div>
 
       <ParallaxLayer depth="mid" className="mt-14">
-        {/* Хоёр мөр хоёулаа хуудсаас өргөн — гадагш нь гарахгүйн тулд эцэг нь
+        {/* Хоёр мөр хоёулаа хуудаснаас өргөн — гадагш нь гарахгүйн тулд эцэг нь
             SectionShell дээр overflow-hidden байна. */}
         <div className="flex flex-col gap-3">
           <MarqueeRow items={ROW_ONE} duration={46} />
