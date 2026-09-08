@@ -29,7 +29,7 @@ export const Explore: React.FC = () => {
       <ExploreHeader query={query} onQueryChange={setQuery} />
 
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-12 py-8 md:py-10 flex flex-col gap-10 md:gap-16">
-        <ExploreSection title="Ангилал" onViewAll={() => navigate('/home')}>
+        <ExploreSection title="Бүх ангилал" onViewAll={() => navigate('/home')}>
           <CategoryGrid
             categories={EXPLORE_CATEGORIES}
             onSelect={category => navigate(`/home?cat=${encodeURIComponent(category.name)}`)}
@@ -56,7 +56,7 @@ export const Explore: React.FC = () => {
         </ExploreSection>
 
         <ExploreSection
-          title="Удахгүй болох шоу"
+          title="Удахгүй эхлэх дамжуулалт"
           icon={<Calendar className="w-5 h-5 text-[var(--wn-ink-2)]" />}
           onViewAll={() => navigate('/home')}
         >

@@ -55,7 +55,7 @@ export const ReelMobileBottomBar: React.FC<ReelMobileBottomBarProps> = ({
             onClick={onAction}
             className="h-[36px] px-4 rounded-lg bg-[var(--wn-accent)] text-white text-[12px] font-[800] hover:bg-[var(--wn-accent-hover)] transition-colors shrink-0"
           >
-            {isBidding ? 'Bid' : 'Buy'}
+            {isBidding ? 'Санал' : 'Авах'}
           </button>
         </div>
       </div>
@@ -68,8 +68,8 @@ export const ReelMobileBottomBar: React.FC<ReelMobileBottomBarProps> = ({
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Say something..."
-            aria-label="Chat message"
+            placeholder="Сэтгэгдэл бичих..."
+            aria-label="Чатын мессеж"
             className="bg-transparent border-none outline-none w-full text-[13px] text-white placeholder:text-white/60"
           />
         </div>

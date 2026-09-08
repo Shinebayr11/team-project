@@ -18,7 +18,7 @@ interface TopUpPanelProps {
 
 export const TopUpPanel: React.FC<TopUpPanelProps> = ({ packs, selected, onSelect, onTopUp }) => (
   <div className="p-6 rounded-[24px] bg-white border border-[var(--wn-line)] shadow-sm">
-    <h2 className="text-[18px] font-[800] text-[var(--wn-ink)] mb-4">Add Funds</h2>
+    <h2 className="text-[18px] font-[800] text-[var(--wn-ink)] mb-4">Дансаа цэнэглэх</h2>
 
     <div className="flex flex-col gap-3 mb-6">
       {packs.map(pack => {
@@ -38,7 +38,7 @@ export const TopUpPanel: React.FC<TopUpPanelProps> = ({ packs, selected, onSelec
               <div>
                 <div className="text-[16px] font-[800] text-[var(--wn-ink)]">₮{pack.amount.toLocaleString()}</div>
                 {pack.bonus > 0 && (
-                  <div className="text-[12px] font-[700] text-[var(--wn-accent)]">+₮{pack.bonus.toLocaleString()} Bonus</div>
+                  <div className="text-[12px] font-[700] text-[var(--wn-accent)]">+₮{pack.bonus.toLocaleString()} урамшуулал</div>
                 )}
               </div>
             </div>
@@ -52,8 +52,8 @@ export const TopUpPanel: React.FC<TopUpPanelProps> = ({ packs, selected, onSelec
       onClick={onTopUp}
       className="w-full h-[52px] rounded-xl bg-[var(--wn-accent)] text-white text-[16px] font-[800] hover:bg-[var(--wn-accent-hover)] transition-colors flex items-center justify-center gap-2"
     >
-      <Plus className="w-5 h-5" /> Add ₮{selected.toLocaleString()}
+      <Plus className="w-5 h-5" /> ₮{selected.toLocaleString()} цэнэглэх
     </button>
-    <div className="text-center text-[12px] font-[600] text-[var(--wn-ink-4)] mt-4">Demo only — no real payment is taken</div>
+    <div className="text-center text-[12px] font-[600] text-[var(--wn-ink-4)] mt-4">Зөвхөн туршилт — бодит төлбөр хийгдэхгүй</div>
   </div>
 );

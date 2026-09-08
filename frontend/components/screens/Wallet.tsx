@@ -43,7 +43,7 @@ export const Wallet: React.FC = () => {
     })
       .then((res) => {
         setServerWallet(res.data)
-        addToast(`Server balance +${COIN_TOPUP_AMOUNT} coins.`)
+        addToast(`Серверийн үлдэгдэл +${COIN_TOPUP_AMOUNT} зоос.`)
       })
       .catch((error) => console.error("Failed to top up server wallet:", error))
   }
@@ -63,7 +63,7 @@ export const Wallet: React.FC = () => {
   const handleTopUp = () => {
     topUp(selectedPack)
     addToast(
-      `Successfully added ₮${selectedPack.toLocaleString()} to your wallet.`
+      `Хэтэвчинд ₮${selectedPack.toLocaleString()} амжилттай нэмэгдлээ.`
     )
   }
 

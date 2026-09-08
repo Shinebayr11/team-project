@@ -14,7 +14,7 @@ export interface WalletTransaction {
 export const TransactionList: React.FC<{ transactions: WalletTransaction[] }> = ({ transactions }) => (
   <div className="p-6 rounded-[24px] bg-white border border-[var(--wn-line)] shadow-sm h-full">
     <div className="flex items-center justify-between mb-6">
-      <h2 className="text-[18px] font-[800] text-[var(--wn-ink)]">Transaction History</h2>
+      <h2 className="text-[18px] font-[800] text-[var(--wn-ink)]">Гүйлгээний түүх</h2>
     </div>
 
     {transactions.length > 0 ? (
@@ -51,8 +51,8 @@ export const TransactionList: React.FC<{ transactions: WalletTransaction[] }> = 
         <div className="w-16 h-16 rounded-full bg-[var(--wn-surface-2)] flex items-center justify-center mb-4">
           <Clock className="w-8 h-8 text-[var(--wn-ink-4)]" />
         </div>
-        <div className="text-[16px] font-[700] text-[var(--wn-ink)] mb-1">No transactions yet</div>
-        <div className="text-[14px] text-[var(--wn-ink-3)]">Your purchase and top-up history will appear here.</div>
+        <div className="text-[16px] font-[700] text-[var(--wn-ink)] mb-1">Одоогоор гүйлгээ алга</div>
+        <div className="text-[14px] text-[var(--wn-ink-3)]">Худалдан авалт, цэнэглэлтийн түүх энд харагдана.</div>
       </div>
     )}
   </div>

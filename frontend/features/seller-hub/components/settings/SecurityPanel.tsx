@@ -59,7 +59,7 @@ export const SecurityPanel: React.FC = () => {
     try {
       setSessions(await user.getSessions())
     } catch (loadError) {
-      console.error("Сешн уншиж чадсангүй:", loadError)
+      console.error("Нэвтэрсэн төхөөрөмжүүдийг уншиж чадсангүй:", loadError)
       setSessions([])
     }
   }, [user])
@@ -134,7 +134,7 @@ export const SecurityPanel: React.FC = () => {
             <p className="mt-0.5 text-[12.5px] text-gray-500">
               {hasPassword
                 ? "Шинэ нууц үг тавьснаар бусад төхөөрөмжөөс автоматаар гарна."
-                : "Та одоогоор нууц үггүй (утасны код эсвэл Google зэрэг гадаад бүртгэлээр) нэвтэрдэг. Нууц үг тавьбал нэмэлт нэвтрэх арга нээгдэнэ."}
+                : "Та одоогоор нууц үггүй (утасны код эсвэл Google зэрэг гадаад бүртгэлээр) нэвтэрдэг. Нууц үг тавивал нэмэлт нэвтрэх арга нээгдэнэ."}
             </p>
           </div>
 
@@ -231,7 +231,7 @@ export const SecurityPanel: React.FC = () => {
           <p className="text-[13px] text-gray-500">
             {user.twoFactorEnabled
               ? "Нэвтрэх бүрд нэг удаагийн код шаардана."
-              : "Нэмэлт хамгаалалт болгож нэг удаагийн кодын аппликейшн холбож болно."}
+              : "Нэмэлт хамгаалалт болгож нэг удаагийн код үүсгэдэг апп холбож болно."}
           </p>
         </div>
 
@@ -245,7 +245,7 @@ export const SecurityPanel: React.FC = () => {
                 disabled={revoking}
                 className="text-[13px] font-[800] text-red-600 underline underline-offset-2 disabled:opacity-60"
               >
-                {revoking ? "Гаргаж байна…" : "Бусад бүрээс гарах"}
+                {revoking ? "Гаргаж байна…" : "Бусад төхөөрөмжөөс гарах"}
               </button>
             )}
           </div>

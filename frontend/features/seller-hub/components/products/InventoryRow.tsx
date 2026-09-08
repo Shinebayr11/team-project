@@ -24,7 +24,7 @@ export const InventoryRow: React.FC<InventoryRowProps> = ({
       <td className="p-4">
         <button
           onClick={onToggleSelect}
-          aria-label={selected ? `${product.name}-г сонголтоос хасах` : `${product.name}-г сонгох`}
+          aria-label={selected ? `Сонголтоос хасах: ${product.name}` : `Сонгох: ${product.name}`}
           className={`hover:text-black ${selected ? 'text-blue-600' : 'text-gray-400'}`}
         >
           {selected ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5" />}
@@ -64,7 +64,7 @@ export const InventoryRow: React.FC<InventoryRowProps> = ({
           </button>
           <button
             onClick={onEdit}
-            aria-label={`${product.name}-г засах`}
+            aria-label={`Засах: ${product.name}`}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-black transition-colors"
           >
             <Edit2 className="w-4 h-4" />

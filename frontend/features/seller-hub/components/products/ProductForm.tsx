@@ -6,7 +6,7 @@ import { Panel } from '../DataCard';
 import { TextField, SelectField, TextAreaField } from '../FormField';
 import { ProductMediaCard } from './ProductMediaCard';
 import { ProductPricingCard } from './ProductPricingCard';
-import { ProductDraft, PRODUCT_CATEGORIES } from './productDraft';
+import { ProductDraft, PRODUCT_CATEGORIES, PRODUCT_CATEGORY_LABELS } from './productDraft';
 
 interface ProductFormProps {
   title: string;
@@ -39,6 +39,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
                 <SelectField
                   label="Ангилал *"
                   options={PRODUCT_CATEGORIES}
+                  labels={PRODUCT_CATEGORY_LABELS}
                   value={draft.category}
                   onChange={e => patch({ category: e.target.value })}
                 />
@@ -68,7 +69,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
           Цуцлах
         </button>
         <button onClick={() => onSave(draft, false)} className="px-5 py-2 rounded-full border border-gray-300 text-[14px] font-[700] text-black hover:bg-gray-50 transition-colors">
-          Ноороглох
+          Ноорогт хадгалах
         </button>
         <button onClick={() => onSave(draft, true)} className="px-6 py-2 rounded-full bg-[#C9F73D] text-black text-[14px] font-[800] hover:bg-[#b8e62c] transition-colors">
           Нийтлэх

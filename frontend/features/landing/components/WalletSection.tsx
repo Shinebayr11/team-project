@@ -1,9 +1,9 @@
 "use client"
 
 /**
- * 3 — Coin хэтэвч. Цайвар (paper) дэвсгэр, noir текст.
+ * 3 — Зоосны хэтэвч. Цайвар (paper) дэвсгэр, noir текст.
  *
- * Coin багцын 3 карт scroll явцад дараалан (stagger) ирнэ. Дунд карт нь
+ * Зоосны багцын 3 карт scroll явцад дараалан (stagger) ирнэ. Дунд карт нь
  * "хамгийн их сонгогддог" гэж товойж, parallax-ийн mid давхаргад суудаг.
  */
 
@@ -21,7 +21,7 @@ const PACKS = [
   { coins: "5,000", price: "42,000₮", note: "Тогтмол оролцогчид", featured: false },
 ]
 
-const PERKS = ["Хугацаа дуусдаггүй", "Bid дээр шууд зарцуулагдана"]
+const PERKS = ["Хугацаа дуусдаггүй", "Үнийн саналд шууд зарцуулагдана"]
 
 export function WalletSection() {
   const { motionOn } = useAmplitude()
@@ -32,7 +32,7 @@ export function WalletSection() {
         <ParallaxLayer depth="back">
           <MaskText
             id="wallet-title"
-            text={"Coin цэнэглээд шууд bid хий"}
+            text={"Зоос цэнэглээд шууд санал өг"}
             className="mx-auto max-w-[16ch] text-[clamp(2rem,4.6vw,3.75rem)] leading-[0.98] font-[800] tracking-[-0.03em]"
           />
           <RevealSub className="mx-auto mt-6 max-w-[46ch] text-[clamp(1rem,1.3vw,1.15rem)] leading-relaxed text-[var(--wn-ink-2)]">
@@ -68,7 +68,7 @@ export function WalletSection() {
                   {pack.coins}
                 </span>
                 <span className="text-[15px] font-[700] text-[var(--wn-accent)]">
-                  coin
+                  зоос
                 </span>
               </div>
               <div className="mt-2 text-[15px] font-[600] text-[var(--wn-ink-2)]">

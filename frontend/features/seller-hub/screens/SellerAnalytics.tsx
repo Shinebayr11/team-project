@@ -105,7 +105,7 @@ export const SellerAnalytics: React.FC = () => {
               value: Math.floor(stats.uniqueBuyers * RETURNING_BUYER_RATE),
             },
             {
-              label: "Хүн тутмын дундаж зарцуулалт",
+              label: "Худалдан авагч тутмын дундаж",
               value: `₮${stats.avgSpend.toLocaleString()}`,
             },
           ]}
@@ -140,7 +140,7 @@ export const SellerAnalytics: React.FC = () => {
               value: AUCTION_INSIGHTS.successRate,
             },
             {
-              label: "Дундаж ялах үнэ",
+              label: "Дундаж хожсон үнэ",
               value: AUCTION_INSIGHTS.avgWinningPrice,
             },
           ]}

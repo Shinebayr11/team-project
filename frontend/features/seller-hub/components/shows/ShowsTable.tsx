@@ -11,7 +11,7 @@ interface ShowsTableProps {
   onSelect: (id: string) => void;
 }
 
-const HEADERS = ['Шоу', 'Хэзээ', 'Бараа', 'Төлөв'];
+const HEADERS = ['Дамжуулалт', 'Хэзээ', 'Бараа', 'Төлөв'];
 
 export const ShowsTable: React.FC<ShowsTableProps> = ({ shows, onSelect }) => (
   <table className="w-full text-left border-collapse min-w-[900px]">
@@ -37,7 +37,7 @@ export const ShowsTable: React.FC<ShowsTableProps> = ({ shows, onSelect }) => (
         </tr>
       ))}
 
-      {shows.length === 0 && <EmptyRow colSpan={4} message="Шоу олдсонгүй." />}
+      {shows.length === 0 && <EmptyRow colSpan={4} message="Дамжуулалт олдсонгүй." />}
     </tbody>
   </table>
 );

@@ -83,8 +83,8 @@ export function AuctionSection() {
             className="text-[clamp(2rem,4.6vw,3.75rem)] leading-[0.98] font-[800] tracking-[-0.03em]"
           />
           <RevealSub className="mt-6 max-w-[34ch] text-[clamp(1rem,1.3vw,1.15rem)] leading-relaxed text-white/70">
-            Bid тавих бүрт таймер шинэчлэгдэнэ. Дуусмагц ялагчийн wallet-аас
-            шууд суутгана.
+            Санал өгөх бүрд хугацаа шинэчлэгдэнэ. Дуусмагц ялагчийн
+            хэтэвчнээс шууд суутгана.
           </RevealSub>
         </ParallaxLayer>
 
@@ -226,7 +226,7 @@ function AuctionCard() {
         />
       </div>
 
-      {/* 4 мөрийн өндрийг урьдчилж захиална: bid орж ирэх бүрт карт нь
+      {/* 4 мөрийн өндрийг урьдчилж захиална: үнийн санал орж ирэх бүрд карт нь
           сунаж, доорх агуулгыг түлхэхээс сэргийлнэ. */}
       <div className="mt-5 flex min-h-[156px] flex-col gap-1.5">
         {bids.map((bid) => (

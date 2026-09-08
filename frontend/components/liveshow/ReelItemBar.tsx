@@ -21,7 +21,7 @@ export const ReelItemBar: React.FC<ReelItemBarProps> = ({ item, seconds, onActio
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <span className="px-1.5 py-0.5 rounded text-[9px] font-[800] tracking-wider uppercase bg-[var(--wn-accent-soft)] text-[var(--wn-accent)]">
-            {isBidding ? 'Bidding' : 'Buy Now'}
+            {isBidding ? 'Дуудлага' : 'Шууд авах'}
           </span>
           <span className="text-[11px] text-[var(--wn-ink-3)] font-[500] truncate">{item.subline}</span>
         </div>
@@ -40,7 +40,7 @@ export const ReelItemBar: React.FC<ReelItemBarProps> = ({ item, seconds, onActio
           className="h-[40px] px-5 rounded-xl bg-[var(--wn-accent)] text-white text-[13px] font-[800] hover:bg-[var(--wn-accent-hover)] transition-colors"
           style={{ boxShadow: '0 6px 18px rgba(91,63,224,0.3)' }}
         >
-          {isBidding ? 'Bid now' : 'Buy now'}
+          {isBidding ? 'Санал өгөх' : 'Худалдаж авах'}
         </button>
       </div>
     </div>

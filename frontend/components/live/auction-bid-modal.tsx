@@ -75,14 +75,14 @@ export function AuctionBidModal({
     const result = await onBid(myBid)
     setBusy(false)
     if (result.ok) onClose()
-    else setError(result.message ?? "Үнэ санал болгож чадсангүй")
+    else setError(result.message ?? "Үнийн санал өгч чадсангүй")
   }
 
   const affordable = balance >= myBid
   const balanceKnown = !balanceLoading && !balanceFailed
 
   return (
-    <Modal title="Үнэ санал болгох" onClose={onClose}>
+    <Modal title="Үнийн санал өгөх" onClose={onClose}>
       <div className="flex flex-col gap-6 px-6 py-4">
         <div className="flex items-center gap-4">
           {product?.images?.[0] ? (
@@ -190,7 +190,7 @@ export function AuctionBidModal({
             // хэрэглэгчийг локал тоолуураар хааж болохгүй. Лот үнэхээр дуусахад
             // эцэг панель цонхыг хаана.
             enabled={affordable && balanceKnown && !busy}
-            label={`Үнэ санал болгох — ₮${myBid.toLocaleString()}`}
+            label={`Санал өгөх — ₮${myBid.toLocaleString()}`}
             disabledLabel={
               busy
                 ? "Илгээж байна..."

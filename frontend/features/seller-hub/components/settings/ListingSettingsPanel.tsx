@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { Field } from "@/features/seller-hub/components/FormField"
 import { PRODUCT_CATEGORIES } from "@/features/seller-hub/components/products/productDraft"
-import { PRODUCT_CONDITIONS } from "@/features/seller-hub/sellerSettings"
+import { PRODUCT_CONDITIONS, PRODUCT_CONDITION_LABELS } from "@/features/seller-hub/sellerSettings"
 import { SettingsSaveBar } from "./SettingsSaveBar"
 import { useSellerSettings } from "./useSellerSettings"
 import { useSettingsSave } from "./useSettingsSave"
@@ -65,7 +65,7 @@ export const ListingSettingsPanel: React.FC = () => {
           >
             {PRODUCT_CONDITIONS.map((option) => (
               <option key={option} value={option}>
-                {option}
+                {PRODUCT_CONDITION_LABELS[option] ?? option}
               </option>
             ))}
           </select>

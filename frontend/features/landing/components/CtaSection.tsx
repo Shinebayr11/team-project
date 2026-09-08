@@ -15,7 +15,7 @@ import { ParallaxLayer, SectionShell } from "./SectionShell"
 
 const LINKS = [
   { to: "/live-show", label: "Шууд" },
-  { to: "/explore", label: "Судлах" },
+  { to: "/explore", label: "Ангилал" },
   { to: "/home", label: "Дэлгүүр" },
   { to: "/sell", label: "Худалдагч болох" },
 ]
@@ -49,7 +49,7 @@ export function CtaSection() {
           WhyNot
         </span>
 
-        <nav aria-label="Хөлийн цэс" className="flex flex-wrap gap-x-6 gap-y-2">
+        <nav aria-label="Хөлийн хэсгийн цэс" className="flex flex-wrap gap-x-6 gap-y-2">
           {LINKS.map((link) => (
             <Link
               key={link.to}

@@ -144,7 +144,7 @@ export function ProductCatalog({
               id="product-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Жишээ: Vintage шил ваар"
+              placeholder="Жишээ: Винтаж шил ваар"
               className={fieldClass}
               autoComplete="off"
             />
