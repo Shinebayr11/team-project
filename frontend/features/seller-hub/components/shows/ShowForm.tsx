@@ -76,7 +76,7 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
         <div className="flex flex-col gap-4 border-b border-[var(--wn-admin-row-rule)] p-6">
           <div className="flex items-center gap-2">
             <CalendarClock className="h-4 w-4 text-[var(--wn-admin-muted)]" />
-            <h2 className="text-[16px] font-[800] text-black">Хэзээ эфирт орох вэ?</h2>
+            <h2 className="text-[16px] font-[800] text-black">Цаг товлох</h2>
           </div>
 
           {presets.length > 0 && (
