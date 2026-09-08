@@ -17,15 +17,15 @@ const pillOutline =
   "inline-flex items-center rounded-full border border-gray-300 px-3.5 py-1.5 text-[13px] font-[700] text-black transition-colors hover:bg-gray-50"
 
 /**
- * Худалдагчийн барааны сан. Дамжуулалтын үед дуудлага худалдаанд гаргах бараа эндээс сонгогдох
- * тул дамжуулалт эхлэхээс өмнө бүртгэсэн байх ёстой.
+ * Худалдагчийн барааны сан. Шууд дамжуулалтын үед дуудлага худалдаанд гаргах бараа эндээс сонгогдох
+ * тул шууд дамжуулалт эхлэхээс өмнө бүртгэсэн байх ёстой.
  */
 export function ProductCatalog({
   className = "",
   lineup,
 }: {
   className?: string
-  /** Дамжуулалт явж байвал бараан дээр дарж шууд гаргана. */
+  /** Шууд дамжуулалт явж байвал бараан дээр дарж шууд гаргана. */
   lineup?: ShowLineupState
 }) {
   const { callApi } = useApiClient()
@@ -123,8 +123,8 @@ export function ProductCatalog({
           <h2 className="text-[16px] font-[800] text-black">Миний бараа</h2>
           <p className="mt-1 text-[14px] font-[500] text-gray-500">
             {lineup
-              ? "Бараан дээрээ дарж дамжуулалт дээр гаргана."
-              : "Дамжуулалт эхлүүлсний дараа эндээс дарж гаргана."}
+              ? "Бараан дээрээ дарж шууд дамжуулалт дээр гаргана."
+              : "Шууд дамжуулалт эхлүүлсний дараа эндээс дарж гаргана."}
           </p>
         </div>
         {!adding && (
@@ -279,15 +279,15 @@ export function ProductCatalog({
               </>
             )
 
-            // Дамжуулалт явж байгаа үед мөр нь товч болно — дарахад бараа
-            // дамжуулалтын жагсаалтад орж, үзэгчид шууд харна.
+            // Шууд дамжуулалт явж байгаа үед мөр нь товч болно — дарахад бараа
+            // шууд дамжуулалтын жагсаалтад орж, үзэгчид шууд харна.
             return lineup ? (
               <button
                 key={product._id}
                 type="button"
                 onClick={() => putOnShow(product._id)}
                 disabled={!!onShow || busy}
-                title={onShow ? 'Дамжуулалт дээр гарсан' : 'Дамжуулалт дээр гаргах'}
+                title={onShow ? 'Шууд дамжуулалт дээр гарсан' : 'Шууд дамжуулалт дээр гаргах'}
                 className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3 transition-colors hover:bg-gray-50 disabled:cursor-default disabled:hover:bg-transparent"
               >
                 {row}

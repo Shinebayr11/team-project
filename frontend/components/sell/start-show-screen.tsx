@@ -25,12 +25,12 @@ const primaryBtn =
   "flex items-center justify-center gap-2 rounded-full bg-[var(--wn-live-deep)] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-[var(--wn-live)] disabled:cursor-not-allowed disabled:opacity-50"
 
 /**
- * Дамжуулалт эхлэх дэлгэц. `/seller/shows/start` дор mount хийгддэг тул Seller
+ * Шууд дамжуулалт эхлэх дэлгэц. `/seller/shows/start` дор mount хийгддэг тул Seller
  * Hub-ын sidebar, SellerTopbar хэвээр үлдэнэ — нэвтрэлтийг `proxy.ts`,
  * худалдагч идэвхтэй эсэхийг `SellerHubLayout` аль хэдийн шалгасан байдаг тул
  * энд давхар guard хэрэггүй.
  *
- * LiveKit-ийн дамжуулалтын логик (`startLive`, `writeActiveStream`) нь
+ * LiveKit-ийн шууд дамжуулалтын логик (`startLive`, `writeActiveStream`) нь
  * `/sell` дээр байсан хэвээрээ — зөвхөн бүрхүүл нь самбарын хэлэнд орсон.
  */
 export function StartShowScreen() {
@@ -38,12 +38,12 @@ export function StartShowScreen() {
   const { callApi } = useApiClient()
   const [params] = useSearchParams()
   const active = useActiveStream()
-  // Дамжуулалтын бараа — "Миний бараа" ба "Дамжуулалтын бараа" хоёр панель
+  // Шууд дамжуулалтын бараа — "Миний бараа" ба "Шууд дамжуулалтын бараа" хоёр панель
   // үүнийг хуваалцана.
   const lineup = useShowProducts(active?.showId)
   const { categories, addCategory } = useCategories()
 
-  // Дамжуулалтын дэлгэрэнгүйгээс ирсэн бол гарчиг, ангилал нь бэлдсэн байна.
+  // Шууд дамжуулалтын дэлгэрэнгүйгээс ирсэн бол гарчиг, ангилал нь бэлдсэн байна.
   const [title, setTitle] = useState(params.get("title") ?? "")
   const [category, setCategory] = useState(
     params.get("category") || EXPLORE_CATEGORIES[0].name
@@ -51,7 +51,7 @@ export function StartShowScreen() {
   const [starting, setStarting] = useState(false)
   const [startError, setStartError] = useState<string | null>(null)
 
-  // Самбарын дамжуулалтаас ирсэн бол дамжуулалтыг тэр дамжуулалттай холбоно.
+  // Самбарын шууд дамжуулалтаас ирсэн бол шууд дамжуулалтыг тэр шууд дамжуулалттай холбоно.
   const sellerShowId = params.get("showId") ?? undefined
 
   const [addingCategory, setAddingCategory] = useState(false)
@@ -107,7 +107,7 @@ export function StartShowScreen() {
             status: "live",
             category,
             // Хэзээ эхэлснийг тэмдэглэнэ: нүүрний том карт хамгийн сүүлийн
-            // дамжуулалтыг үүгээр сонгодог, host дэлгэцийн үргэлжлэх хугацаа
+            // шууд дамжуулалтыг үүгээр сонгодог, host дэлгэцийн үргэлжлэх хугацаа
             // (`useElapsed`) ч үүнийг уншдаг.
             started_at: new Date().toISOString(),
           }),
@@ -128,7 +128,7 @@ export function StartShowScreen() {
       // болоогүй мэт харагдуулдаг — шалтгааныг нь товчны доор ил гаргана.
       console.error("startLive error:", error)
       setStartError(
-        error instanceof Error ? error.message : "Дамжуулалт эхлүүлж чадсангүй"
+        error instanceof Error ? error.message : "Шууд дамжуулалт эхлүүлж чадсангүй"
       )
     } finally {
       setStarting(false)
@@ -156,16 +156,16 @@ export function StartShowScreen() {
     <>
       <PageHeader
         title="Шууд дамжуулалт эхлэх"
-        description="Гарчиг, ангиллаа сонгоод дамжуулалтаа эхлээрэй."
+        description="Гарчиг, ангиллаа сонгоод шууд дамжуулалтаа эхлээрэй."
         onBack={() => router.push("/seller/shows")}
       />
 
       {/* Тэнцүү өргөнтэй 2 багана: зүүн талд эхлүүлэх/удирдах хэсэг, баруун
-          талд бараа болон өмнөх дамжуулалтууд. */}
+          талд бараа болон өмнөх шууд дамжуулалтууд. */}
       <div className="grid max-w-[1100px] grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="flex flex-col gap-8">
           {active ? (
-            // Идэвхтэй дамжуулалт — LiveShowBanner-ийн хар самбартай ижил хэл.
+            // Идэвхтэй шууд дамжуулалт — LiveShowBanner-ийн хар самбартай ижил хэл.
             <div className="rounded-2xl bg-[#1A1A1A] p-6 text-white shadow-sm">
               <div className="flex items-center gap-2">
                 <LiveDot className="h-2.5 w-2.5" />
@@ -176,7 +176,7 @@ export function StartShowScreen() {
 
               <h2 className="mt-2 text-[22px] font-[800]">{active.title}</h2>
               <p className="mt-2 text-[14px] font-[500] text-gray-300">
-                Дамжуулалт үргэлжилж байна. Дуусгасны дараа шинэ дамжуулалт эхлэх боломжтой.
+                Шууд дамжуулалт үргэлжилж байна. Дуусгасны дараа шинэ шууд дамжуулалт эхлэх боломжтой.
               </p>
 
               <div className="mt-6 flex gap-3">
@@ -192,14 +192,14 @@ export function StartShowScreen() {
                   onClick={endStream}
                   className="flex-1 rounded-full border border-white/30 px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-white/10"
                 >
-                  Дамжуулалт дуусгах
+                  Шууд дамжуулалт дуусгах
                 </button>
               </div>
             </div>
           ) : (
-            <Panel title="Дамжуулалтын мэдээлэл">
+            <Panel title="Шууд дамжуулалтын мэдээлэл">
               <div className="flex flex-col gap-4">
-                <Field label="Дамжуулалтын гарчиг">
+                <Field label="Шууд дамжуулалтын гарчиг">
                   <Input
                     id="show-title"
                     value={title}
@@ -290,7 +290,7 @@ export function StartShowScreen() {
             </Panel>
           )}
 
-          {/* Дамжуулалтын жагсаалт зөвхөн дамжуулалт байгаа үед утгатай — эхлүүлээгүй бол
+          {/* Шууд дамжуулалтын жагсаалт зөвхөн шууд дамжуулалт байгаа үед утгатай — эхлүүлээгүй бол
               холбогдох showId байхгүй. */}
           {active && <ShowLineup lineup={lineup} />}
         </div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 
 const CLOCK_MS = 30_000
 
-/** "1ц 24м" — дамжуулалт хэдий хугацаанд үргэлжилж байгаа нь. */
+/** "1ц 24м" — шууд дамжуулалт хэдий хугацаанд үргэлжилж байгаа нь. */
 export function useElapsed(startedAt?: string) {
   const [now, setNow] = useState(() => Date.now())
 

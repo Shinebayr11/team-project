@@ -6,7 +6,7 @@ import { LiveDot } from '@/components/ui/LiveDot';
 
 /**
  * Бүтэн `SellerShow` биш, харагдах талбаруудыг нь л авна: шууд дамжуулалт нь
- * самбарын дамжуулалттай холбоогүй ч (дээд талын "Go Live" товчноос эхэлсэн)
+ * самбарын шууд дамжуулалттай холбоогүй ч (дээд талын "Go Live" товчноос эхэлсэн)
  * үзүүлэх боломжтой байх ёстой.
  */
 interface LiveShowBannerProps {
@@ -35,7 +35,7 @@ export const LiveShowBanner: React.FC<LiveShowBannerProps> = ({ title, stats, on
       </div>
     </div>
     <button onClick={onOpen} className="shrink-0 px-6 py-3 rounded-full bg-white text-black text-[14px] font-[800] hover:bg-gray-200 transition-colors">
-      Дамжуулалт руу очих
+      Шууд дамжуулалт руу очих
     </button>
   </div>
 );

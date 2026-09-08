@@ -4,7 +4,7 @@ import { Product } from "../models/Product.js"
 import { Live_Show } from "../models/Live_show.js"
 
 /**
- * Дамжуулалтын барааны жагсаалт. live_show_id өгвөл зөвхөн тухайн дамжуулалтынх, эс бөгөөс
+ * Шууд дамжуулалтын барааны жагсаалт. live_show_id өгвөл зөвхөн тухайн шууд дамжуулалтынх, эс бөгөөс
  * бүгд. Үзэгчид ч уншдаг тул нэвтрэх шаардлагагүй.
  */
 export const getshowproduct = async (c: Context) => {
@@ -24,7 +24,7 @@ export const getshowproduct = async (c: Context) => {
 }
 
 /**
- * Дамжуулалтад бараа нэмэх. Зөвхөн тухайн дамжуулалтын эзэн, зөвхөн өөрийн бараагаар.
+ * Шууд дамжуулалтад бараа нэмэх. Зөвхөн тухайн шууд дамжуулалтын эзэн, зөвхөн өөрийн бараагаар.
  * display_order өгөөгүй бол жагсаалтын араас залгана.
  */
 export const postshowproduct = async (c: Context) => {
@@ -42,7 +42,7 @@ export const postshowproduct = async (c: Context) => {
             return c.json({ message: "Live show olsongvi" }, 404)
         }
         if (String(show.seller_id) !== String(userId)) {
-            return c.json({ message: "Энэ дамжуулалтыг өөрчлөх эрхгүй байна" }, 403)
+            return c.json({ message: "Энэ шууд дамжуулалтыг өөрчлөх эрхгүй байна" }, 403)
         }
 
         const product = await Product.findById(product_id)
@@ -80,7 +80,7 @@ export const postshowproduct = async (c: Context) => {
     }
 }
 
-/** Дамжуулалтын жагсаалтаас бараа хасах — зөвхөн дамжуулалтын эзэн. */
+/** Шууд дамжуулалтын жагсаалтаас бараа хасах — зөвхөн шууд дамжуулалтын эзэн. */
 export const deleteshowproduct = async (c: Context) => {
     try {
         const userId = c.get("userId")
@@ -91,7 +91,7 @@ export const deleteshowproduct = async (c: Context) => {
 
         const show = await Live_Show.findById(entry.live_show_id)
         if (!show || String(show.seller_id) !== String(userId)) {
-            return c.json({ message: "Энэ дамжуулалтыг өөрчлөх эрхгүй байна" }, 403)
+            return c.json({ message: "Энэ шууд дамжуулалтыг өөрчлөх эрхгүй байна" }, 403)
         }
 
         await entry.deleteOne()

@@ -40,11 +40,11 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
 
   return (
     <>
-      <PageHeader title="Дамжуулалт үүсгэх" onBack={onCancel} />
+      <PageHeader title="Шууд дамжуулалт үүсгэх" onBack={onCancel} />
 
       <div className="max-w-[600px] bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
         <div className="flex flex-col gap-5">
-          <TextField label="Дамжуулалтын нэр *" value={draft.title} onChange={e => patch({ title: e.target.value })} />
+          <TextField label="Шууд дамжуулалтын нэр *" value={draft.title} onChange={e => patch({ title: e.target.value })} />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <SelectField
@@ -54,7 +54,7 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
               value={draft.category}
               onChange={e => patch({ category: e.target.value })}
             />
-            <Field label="Дамжуулалтын төрөл *">
+            <Field label="Шууд дамжуулалтын төрөл *">
               <select
                 value={draft.type}
                 onChange={e => patch({ type: e.target.value as SellerShow['type'] })}

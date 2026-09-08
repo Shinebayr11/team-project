@@ -45,7 +45,7 @@ export const PurchaseDetailSheet: React.FC<{
 
           <Row label="Худалдагч">{purchase.seller}</Row>
           <Row label="Төлсөн дүн">₮{purchase.price.toLocaleString()}</Row>
-          {purchase.showTitle && <Row label="Дамжуулалт">{purchase.showTitle}</Row>}
+          {purchase.showTitle && <Row label="Шууд дамжуулалт">{purchase.showTitle}</Row>}
           {purchase.date && (
             <Row label="Хожсон огноо">{new Date(purchase.date).toLocaleString()}</Row>
           )}

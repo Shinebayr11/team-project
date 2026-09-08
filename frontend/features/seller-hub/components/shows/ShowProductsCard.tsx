@@ -13,7 +13,7 @@ interface ShowProductsCardProps {
 
 export const ShowProductsCard: React.FC<ShowProductsCardProps> = ({ products, onAdd, onRemove }) => (
   <Panel
-    title="Дамжуулалтын бараа"
+    title="Шууд дамжуулалтын бараа"
     action={
       <button onClick={onAdd} className="px-4 py-1.5 rounded-lg bg-gray-100 text-[13px] font-[700] text-black hover:bg-gray-200 transition-colors flex items-center gap-2">
         <Plus className="w-4 h-4" /> Бараа нэмэх
@@ -44,7 +44,7 @@ export const ShowProductsCard: React.FC<ShowProductsCardProps> = ({ products, on
       </div>
     ) : (
       <div className="py-8 text-center text-[14px] font-[500] text-gray-500 border border-dashed border-gray-300 rounded-xl">
-        Энэ дамжуулалтад бараа хараахан нэмэгдээгүй байна.
+        Энэ шууд дамжуулалтад бараа хараахан нэмэгдээгүй байна.
       </div>
     )}
   </Panel>

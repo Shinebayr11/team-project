@@ -36,7 +36,7 @@ export const SellerOverview: React.FC = () => {
         description="Өнөөдөр таны дэлгүүрт болж буй зүйлс."
       />
 
-      {/* Шууд эфир нь жинхэнэ дамжуулалтаас тодорхойлогдоно. Дүн нь дуудлага
+      {/* Шууд эфир нь жинхэнэ шууд дамжуулалтаас тодорхойлогдоно. Дүн нь дуудлага
           худалдааны бодит үр дүн ирэх хүртэл 0 байхыг зөвшөөрнө. */}
       {active && (
         <LiveShowBanner
@@ -85,7 +85,7 @@ export const SellerOverview: React.FC = () => {
           )}
 
           <ShowListSection
-            title="Сүүлийн дамжуулалт"
+            title="Сүүлийн шууд дамжуулалт"
             shows={overview.recentShows.slice(0, 3)}
             icon={CheckCircle2}
             actionLabel="Харах"
@@ -96,7 +96,7 @@ export const SellerOverview: React.FC = () => {
             emptyMessage={
               overview.loading
                 ? "Уншиж байна..."
-                : "Дууссан дамжуулалт алга байна."
+                : "Дууссан шууд дамжуулалт алга байна."
             }
           />
         </div>

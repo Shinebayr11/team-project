@@ -7,7 +7,7 @@ export interface ExploreCategory {
 }
 
 /**
- * `name` нь дэлгэц дээр гарахаас гадна шинэ дамжуулалтын `category` утга болж
+ * `name` нь дэлгэц дээр гарахаас гадна шинэ шууд дамжуулалтын `category` утга болж
  * хадгалагддаг тул монголоор бичнэ. `id` нь тогтвортой түлхүүр — хөндөхгүй.
  */
 export const EXPLORE_CATEGORIES: ExploreCategory[] = [

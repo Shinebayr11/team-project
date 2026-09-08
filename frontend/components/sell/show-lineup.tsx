@@ -13,7 +13,7 @@ const pillOutline =
 
 /**
  * Шууд дамжуулалт дээр гарах барааны жагсаалт. Худалдагч бараагаа урьдчилан эмхэлж
- * тавьснаар үзэгчид дамжуулалтын туршид бүтэн жагсаалтыг харна — дуудлага худалдаанд гарсан
+ * тавьснаар үзэгчид шууд дамжуулалтын туршид бүтэн жагсаалтыг харна — дуудлага худалдаанд гарсан
  * ганц лот биш.
  */
 export function ShowLineup({ lineup }: { lineup: ShowLineupState }) {
@@ -64,9 +64,9 @@ export function ShowLineup({ lineup }: { lineup: ShowLineupState }) {
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[16px] font-[800] text-black">Дамжуулалтын бараа</h2>
+          <h2 className="text-[16px] font-[800] text-black">Шууд дамжуулалтын бараа</h2>
           <p className="mt-1 text-[14px] font-[500] text-gray-500">
-            Энэ дамжуулалт дээр үзэгчдэд харагдах жагсаалт.
+            Энэ шууд дамжуулалт дээр үзэгчдэд харагдах жагсаалт.
           </p>
         </div>
         {!picking && available.length > 0 && (

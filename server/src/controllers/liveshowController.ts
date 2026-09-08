@@ -18,7 +18,7 @@ const roomService = new RoomServiceClient(
 const STALE_CHECK_GRACE_MS = 30_000
 
 /**
- * Дамжуулалт staleness шалгалтад орох хангалттай хуучин болсон эсэх.
+ * Шууд дамжуулалт staleness шалгалтад орох хангалттай хуучин болсон эсэх.
  *
  * `createdAt` нь Mongoose-ийн `timestamps` -аас ирдэг ч Mongo руу шууд (жишээ нь
  * гар аргаар, эсвэл тестийн script-ээр) оруулсан баримтад огт байхгүй байж
@@ -58,8 +58,8 @@ const listRoomsCached = () => {
 export const getliveshow = async (c: Context) => {
     try {
         // Home feed-д зөвхөн одоо шууд явж буй (status: "live"), эсвэл эхлэх цаг нь
-        // тохируулагдсан (started_at) дамжуулалтуудыг харуулна — цаг/төлөвгүй бэлэн бус
-        // (draft) баримтуудыг нуух. Дууссан (ended) дамжуулалтыг үргэлж хасна.
+        // тохируулагдсан (started_at) шууд дамжуулалтуудыг харуулна — цаг/төлөвгүй бэлэн бус
+        // (draft) баримтуудыг нуух. Дууссан (ended) шууд дамжуулалтыг үргэлж хасна.
         const data = await Live_Show.find({
             status: { $ne: "ended" },
             $or: [{ status: "live" }, { started_at: { $ne: null } }],
@@ -69,7 +69,7 @@ export const getliveshow = async (c: Context) => {
         // хэрэглэгч "Дуусгах"-г дарахгүйгээр таб-аа хаавал мөр нь мөнхөд "live"
         // хэвээр үлддэг. Иймд LiveKit-ээс яг одоо идэвхтэй байгаа room-уудтай
         // тулгаж, бодитоор дамжуулж буй биш "live" мөрүүдийг хасаж, DB-г засна.
-        // livekit_room_name-гүй "live" мөрүүд бодит дамжуулалт хэзээ ч байгаагүй
+        // livekit_room_name-гүй "live" мөрүүд бодит шууд дамжуулалт хэзээ ч байгаагүй
         // (жишээ нь mock/demo өгөгдөл) тул шалгах room алга — эдгээрийг алгасна.
         // Дөнгөж үүссэн (GRACE хугацаанаас цөөн) мөрүүдийг ч алгасна — race condition-оос сэргийлнэ.
         const liveDocs = data.filter(
@@ -114,12 +114,12 @@ export const getliveshow = async (c: Context) => {
 /**
  * GET /api/liveshow/mine
  *
- * Худалдагчийн өөрийн дамжуулалтууд. Анхдагч нь `/sell` дээрх "хамгийн их үзэлттэй
- * 3 дууссан дамжуулалт" — параметргүй хуучин дуудлагууд хэвээр ажиллана.
+ * Худалдагчийн өөрийн шууд дамжуулалтууд. Анхдагч нь `/sell` дээрх "хамгийн их үзэлттэй
+ * 3 дууссан шууд дамжуулалт" — параметргүй хуучин дуудлагууд хэвээр ажиллана.
  *
  *   ?sort=recent   — шинэ нь эхэндээ (анхдагч: үзэгчээр)
  *   ?limit=6       — хэдийг буцаах (дээд тал нь 50)
- *   ?stats=1       — дамжуулалт тус бүрийн зарагдсан лот, орлогыг хамт тооцно
+ *   ?stats=1       — шууд дамжуулалт тус бүрийн зарагдсан лот, орлогыг хамт тооцно
  */
 export const getMyLiveshows = async (c: Context) => {
     try {
@@ -136,7 +136,7 @@ export const getMyLiveshows = async (c: Context) => {
             return c.json({ data: shows }, 200)
         }
 
-        // Дамжуулалт тус бүрийн орлого нь тухайн дамжуулалт дээр ЗАРАГДСАН лотуудын нийлбэр.
+        // Шууд дамжуулалт тус бүрийн орлого нь тухайн шууд дамжуулалт дээр ЗАРАГДСАН лотуудын нийлбэр.
         const sold = await ProductListing.aggregate([
             {
                 $match: {
@@ -198,13 +198,13 @@ export const patchliveshow = async (c: Context) => {
             return c.json({ message: "Live show olsongvi" }, 404)
         }
         if (String(show.seller_id) !== String(userId)) {
-            return c.json({ message: "Энэ дамжуулалтыг өөрчлөх эрхгүй байна" }, 403)
+            return c.json({ message: "Энэ шууд дамжуулалтыг өөрчлөх эрхгүй байна" }, 403)
         }
 
         if (status !== undefined) show.status = status
         if (viewer_count !== undefined) show.viewer_count = viewer_count
         if (ended_at !== undefined) show.ended_at = ended_at
-        // Дамжуулалтын явцад худалдагчийн хөтөч камерын кадрыг тогтмол илгээж
+        // Шууд дамжуулалтын явцад худалдагчийн хөтөч камерын кадрыг тогтмол илгээж
         // байдаг (`useLiveThumbnail`) — картууд үүнийг зурна.
         if (thumbnail_url !== undefined) show.thumbnail_url = thumbnail_url
 
@@ -310,20 +310,20 @@ export const getAccessToken = async (c: Context) => {
         }
 
         if (!show.livekit_room_name) {
-            return c.json({ message: "Энэ дамжуулалт дамжуулалттай холбогдоогүй байна" }, 400)
+            return c.json({ message: "Энэ шууд дамжуулалт шууд дамжуулалттай холбогдоогүй байна" }, 400)
         }
 
-        // Дамжуулах эрхийг ЗӨВХӨН сервер шийднэ: дамжуулалтын эзэн мөн эсэх.
+        // Дамжуулах эрхийг ЗӨВХӨН сервер шийднэ: шууд дамжуулалтын эзэн мөн эсэх.
         // Өмнө нь клиент `canPublish`-ээ өөрөө сонгож, `/live/:room?host=1`
         // гэж хаяг бичсэн ямар ч хүн өөр хүний өрөөнд нэвтэрч дамжуулах
         // боломжтой байв.
         const isHost = !!user && String(show.seller_id) === String(user._id)
 
-        // Эхлээгүй/дууссан дамжуулалтыг үзэгчид үзэх зүйлгүй. Харин эзэн нь орж
-        // чадах ёстой — staleness цэвэрлэгээ дамжуулалтыг "ended" болгосон ч
+        // Эхлээгүй/дууссан шууд дамжуулалтыг үзэгчид үзэх зүйлгүй. Харин эзэн нь орж
+        // чадах ёстой — staleness цэвэрлэгээ шууд дамжуулалтыг "ended" болгосон ч
         // худалдагч дахин холбогдож үргэлжлүүлнэ.
         if (!isHost && show.status !== "live") {
-            return c.json({ message: "Дамжуулалт одоогоор явагдаагүй байна" }, 409)
+            return c.json({ message: "Шууд дамжуулалт одоогоор явагдаагүй байна" }, 409)
         }
 
         // Identity-г ХЭЗЭЭ Ч клиентээс авахгүй: өмнө нь бие дэх `identity`-г
@@ -363,6 +363,6 @@ export const getAccessToken = async (c: Context) => {
         }, 200)
     } catch (error) {
         console.error("GetAccessToken error:", error)
-        return c.json({ message: "Дамжуулалтад холбогдож чадсангүй" }, 500)
+        return c.json({ message: "Шууд дамжуулалтад холбогдож чадсангүй" }, 500)
     }
 }

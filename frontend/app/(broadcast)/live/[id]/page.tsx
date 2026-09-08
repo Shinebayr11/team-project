@@ -26,7 +26,7 @@ export default function LivePage({
   params: Promise<{ id: string }>
   searchParams: Promise<{ host?: string; title?: string; showId?: string }>
 }) {
-  // `id` нь LiveKit өрөөний нэр. Token авахад ХЭРЭГЛЭХГҮЙ — өрөөг дамжуулалтаас нь
+  // `id` нь LiveKit өрөөний нэр. Token авахад ХЭРЭГЛЭХГҮЙ — өрөөг шууд дамжуулалтаас нь
   // сервер олдог тул зөвхөн хуучин холбоосын үлдэгдэл.
   use(params)
   const { host, title, showId } = use(searchParams)
@@ -51,7 +51,7 @@ export default function LivePage({
   }
 
   if (wantsHost && !stream.isHost) {
-    return <Notice>Энэ дамжуулалтыг явуулах эрх танд алга байна.</Notice>
+    return <Notice>Энэ шууд дамжуулалтыг явуулах эрх танд алга байна.</Notice>
   }
 
   if (!stream.isHost) {

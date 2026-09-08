@@ -45,7 +45,7 @@ export function HostStage({
         />
       ) : (
         <div className="flex size-full items-center justify-center text-sm text-white/60">
-          Дамжуулалт хүлээгдэж байна...
+          Шууд дамжуулалт хүлээгдэж байна...
         </div>
       )}
 

@@ -23,8 +23,8 @@ export const productOfEntry = (entry: ShowProduct): AuctionProduct | undefined =
     : undefined
 
 /**
- * Нэг дамжуулалтын барааны жагсаалт. Худалдагч /sell дээрээс энд бараагаа нэмж,
- * үзэгч дамжуулалт дээр яг үүнийг хардаг.
+ * Нэг шууд дамжуулалтын барааны жагсаалт. Худалдагч /sell дээрээс энд бараагаа нэмж,
+ * үзэгч шууд дамжуулалт дээр яг үүнийг хардаг.
  */
 export function useShowProducts(liveShowId?: string) {
   const { callApi } = useApiClient()
@@ -43,7 +43,7 @@ export function useShowProducts(liveShowId?: string) {
       )
       setEntries(data)
     } catch (error) {
-      console.error("Дамжуулалтын бараа уншиж чадсангүй:", error)
+      console.error("Шууд дамжуулалтын бараа уншиж чадсангүй:", error)
     } finally {
       setLoading(false)
     }
@@ -53,7 +53,7 @@ export function useShowProducts(liveShowId?: string) {
 
   const add = useCallback(
     async (productId: string): Promise<{ ok: boolean; message?: string }> => {
-      if (!liveShowId) return { ok: false, message: "Дамжуулалт олдсонгүй" }
+      if (!liveShowId) return { ok: false, message: "Шууд дамжуулалт олдсонгүй" }
       try {
         await callApi("/api/showproduct", {
           method: "POST",
@@ -93,7 +93,7 @@ export function useShowProducts(liveShowId?: string) {
   return { entries, loading, add, remove, refresh }
 }
 
-/** Дамжуулалтын жагсаалтыг хэд хэдэн панель хуваалцдаг тул төрлийг нэрлэв. */
+/** Шууд дамжуулалтын жагсаалтыг хэд хэдэн панель хуваалцдаг тул төрлийг нэрлэв. */
 export type ShowLineupState = ReturnType<typeof useShowProducts>
 
 /** Тухайн бараа жагсаалтад аль хэдийн орсон эсэх. */

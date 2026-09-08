@@ -17,9 +17,9 @@ const Metric: React.FC<{ label: string; value: string | number }> = ({ label, va
 
 export const LastShowPerformance: React.FC<LastShowPerformanceProps> = ({ show, onViewAnalytics }) => (
   <div className="flex flex-col gap-4">
-    <h2 className="text-[18px] font-[800] text-black">Сүүлийн дамжуулалтын үзүүлэлт</h2>
+    <h2 className="text-[18px] font-[800] text-black">Сүүлийн шууд дамжуулалтын үзүүлэлт</h2>
     <div className="p-6 rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <div className="text-[15px] font-[800] text-black mb-1">{show.title ?? "Дамжуулалт"}</div>
+      <div className="text-[15px] font-[800] text-black mb-1">{show.title ?? "Шууд дамжуулалт"}</div>
       <div className="text-[13px] text-gray-500 font-[500] mb-6">
         {new Date(show.ended_at ?? show.createdAt ?? Date.now()).toLocaleDateString()}
       </div>
