@@ -66,9 +66,13 @@ export const ReelStage: React.FC<ReelStageProps> = ({
             </div>
 
             <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
-              <button className="px-3 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center gap-2 text-white text-[12px] font-[600] hover:bg-black/60 transition-colors">
+              {/* Хаяг нь зөвхөн мэдээлэл — хуулах үйлдэл нь desktop-ийн
+                  `ReelActionRail`, гар утасны `ReelMobileTopOverlay` дээр
+                  байна. Энэ нь товч дүрстэй байсан ч дардаг ч юу ч болдоггүй
+                  байв. */}
+              <span className="px-3 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center gap-2 text-white text-[12px] font-[600]">
                 whynot.live/{show.slug}
-              </button>
+              </span>
             </div>
 
             <ReelItemBar

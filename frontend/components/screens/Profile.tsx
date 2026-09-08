@@ -17,7 +17,6 @@ import { PurchasesTab } from "@/components/profile/PurchasesTab"
 import { FollowingTab } from "@/components/profile/FollowingTab"
 import { SavedTab } from "@/components/profile/SavedTab"
 import { SettingsTab } from "@/components/profile/SettingsTab"
-import { PaymentTab } from "@/components/profile/PaymentTab"
 import { AddressesTab } from "@/components/profile/AddressesTab"
 
 export const Profile: React.FC = () => {
@@ -69,8 +68,6 @@ export const Profile: React.FC = () => {
             onSave={() => addToast("Хадгалагдлаа.")}
           />
         )
-      case "payment":
-        return <PaymentTab />
       case "addresses":
         return <AddressesTab />
       default:

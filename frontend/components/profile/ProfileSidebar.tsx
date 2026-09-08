@@ -6,7 +6,6 @@ import {
   Heart,
   Users,
   Settings,
-  CreditCard,
   MapPin,
   LogOut,
 } from "lucide-react"
@@ -19,7 +18,6 @@ export type ProfileTab =
   | "saved"
   | "following"
   | "settings"
-  | "payment"
   | "addresses"
 
 interface ProfileSidebarProps {
@@ -45,7 +43,6 @@ const NAV_GROUPS: {
     section: "Бүртгэл",
     items: [
       { id: "settings", label: "Тохиргоо", icon: Settings },
-      { id: "payment", label: "Төлбөрийн хэрэгсэл", icon: CreditCard },
       { id: "addresses", label: "Хүргэлтийн хаяг", icon: MapPin },
     ],
   },
