@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {
-  User, Sliders, Bell, Shield, Store, List, Truck, Package,
+  User, Sliders, Bell, Shield, Store, Truck, Package,
 } from 'lucide-react';
 
 export interface SettingsLink {
@@ -21,7 +21,6 @@ export const ACCOUNT_LINKS: SettingsLink[] = [
 export const SELLER_LINKS: SettingsLink[] = [
   { id: 'shop', label: 'Дэлгүүрийн мэдээлэл', icon: Store },
   { id: 'selling', label: 'Худалдааны тохиргоо', icon: Sliders },
-  { id: 'listing', label: 'Барааны жагсаалтын тохиргоо', icon: List },
   { id: 'shipping', label: 'Хүргэлтийн тохиргоо', icon: Truck },
   { id: 'orders', label: 'Захиалгын тохиргоо', icon: Package },
 ];

@@ -8,7 +8,6 @@ import { PreferencesPanel } from '@/features/seller-hub/components/settings/Pref
 import { NotificationsPanel } from '@/features/seller-hub/components/settings/NotificationsPanel';
 import { SecurityPanel } from '@/features/seller-hub/components/settings/SecurityPanel';
 import { SellingPreferencesPanel } from '@/features/seller-hub/components/settings/SellingPreferencesPanel';
-import { ListingSettingsPanel } from '@/features/seller-hub/components/settings/ListingSettingsPanel';
 import { ShippingSettingsPanel } from '@/features/seller-hub/components/settings/ShippingSettingsPanel';
 import { OrderSettingsPanel } from '@/features/seller-hub/components/settings/OrderSettingsPanel';
 
@@ -24,7 +23,6 @@ const PANELS: Record<string, React.FC> = {
   security: SecurityPanel,
   shop: ShopInformationPanel,
   selling: SellingPreferencesPanel,
-  listing: ListingSettingsPanel,
   shipping: ShippingSettingsPanel,
   orders: OrderSettingsPanel,
 };
