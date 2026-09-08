@@ -72,7 +72,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ title, initialDraft, o
         <button onClick={() => onSave(draft, false)} className={btn("outline", "pill")}>
           Ноорогт хадгалах
         </button>
-        <button onClick={() => onSave(draft, true)} className={btn("lime", "pillWide")}>
+        <button onClick={() => onSave(draft, true)} className={btn("ink", "pillWide")}>
           Нийтлэх
         </button>
       </div>

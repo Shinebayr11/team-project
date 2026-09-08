@@ -24,7 +24,7 @@ const METRIC_LABELS: Record<ChartMetric, string> = {
  */
 const CHART = {
   ink: '#0e0b18',        // --wn-admin-ink
-  accent: '#c9f73d',     // --wn-admin-lime
+  accent: '#5b3fe0',     // --wn-admin-accent
   muted: '#63616e',      // --wn-admin-muted
   grid: '#e7e5ea',       // --wn-admin-card-border
   cursor: '#d9d6de',     // --wn-admin-outline

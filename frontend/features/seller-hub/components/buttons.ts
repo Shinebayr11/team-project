@@ -16,17 +16,23 @@
  *
  * Одоо ӨНГӨ нь `tone`, ХЭЛБЭР нь `size` — хоёр тэнхлэг тусдаа. Хэлбэр олон
  * байх нь зөв (мөрөнд суух товч ба самбарын доод талын өргөн товч өөр байх
- * ёстой); өнгө нь гурав л байна.
+ * ёстой); өнгө нь ХОЁР л байна — үндсэн үйлдэл хар, хоёрдогч нь хүрээтэй.
  */
 
 const BASE =
   "inline-flex items-center justify-center gap-2 font-[700] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--wn-admin-accent)] disabled:cursor-not-allowed"
 
 const TONE = {
-  /** Сонгогдсон/үндсэн үйлдэл. Цагаан бичигтэй 19.45:1. */
+  /**
+   * Самбарын ҮНДСЭН өнгө. Хадгалах, нийтлэх, нэмэх — бүх гол үйлдэл, түүнчлэн
+   * сонгогдсон цэс, таб бүгд энэ дээр. Цагаан бичигтэй 19.45:1.
+   *
+   * Өмнө нь гол үйлдлүүд `--wn-admin-lime` (#c9f73d) дээр тусдаа явдаг байсан
+   * тул нэг дэлгэц дээр "Нийтлэх" ногоон-шар, "Бараа нэмэх" хар гэсэн хоёр
+   * өөр "гол товч" зэрэгцэж, аль нь үндсэн үйлдэл нь болох нь ойлгогдохгүй
+   * байв. Одоо самбарт ганц үндсэн өнгө — хар.
+   */
   ink: "bg-[var(--wn-admin-ink)] text-white hover:bg-[var(--wn-admin-btn-hover)] disabled:bg-[var(--wn-admin-chip-2)] disabled:text-[var(--wn-admin-muted)]",
-  /** Гадаргуу дээрх гол үйлдэл (хадгалах, илгээх). Хар бичигтэй 16.86:1. */
-  lime: "bg-[var(--wn-admin-lime)] text-[var(--wn-admin-ink)] hover:bg-[var(--wn-admin-lime-hover)] disabled:bg-[var(--wn-admin-chip-2)] disabled:text-[var(--wn-admin-muted)]",
   /** Хоёрдогч үйлдэл. Хүрээ нь 3.38:1 — SC 1.4.11-ийг давна. */
   outline:
     "border border-[var(--wn-ink-4)] bg-white text-[var(--wn-admin-ink)] hover:bg-[var(--wn-admin-row-rule)]",

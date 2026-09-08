@@ -50,7 +50,7 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ onGenerateLabel, onS
 
         <button
           onClick={() => onShip(carrier, tracking.trim())}
-          className={`${btn("lime", "block")} mt-2`}
+          className={`${btn("ink", "block")} mt-2`}
         >
           Илгээсэн гэж тэмдэглэх
         </button>

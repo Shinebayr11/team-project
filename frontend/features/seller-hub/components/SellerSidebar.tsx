@@ -26,15 +26,11 @@ const linkClass = (active: boolean) =>
       : 'text-[var(--wn-admin-ink-2)] hover:bg-[var(--wn-admin-nav-hover)]'
   }`;
 
-/* Зураас нь өмнө нь #F5A623 байсан — самбарт lime CTA, хөх холбоостой зэрэгцэн
-   гурав дахь accent болж байв. Одоо самбарын ганц accent болох lime дээр. */
-const ActiveRail = () => <div className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[var(--wn-admin-lime)]" />;
-
 export const SellerBrand: React.FC<{ onNavigate?: () => void }> = ({ onNavigate }) => (
   <Link to="/home" onClick={onNavigate} className="flex items-center gap-2">
     <span className="font-display text-[20px] font-[800] tracking-[-0.04em] text-black">WhyNot</span>
     <span className="px-2 py-0.5 border border-[var(--wn-admin-card-border)] bg-[var(--wn-admin-row-rule)] rounded-md text-[11px] font-[700] text-[var(--wn-admin-ink-2)] uppercase tracking-wider">
-      Худалдагчийн төв
+      Sellerhub
     </span>
   </Link>
 );
@@ -57,7 +53,6 @@ export const SellerNav: React.FC<SellerNavProps> = ({ path, pendingOrders, onNav
 
           return (
             <Link key={nav.label} to={nav.to} onClick={onNavigate} className={linkClass(active)}>
-              {active && <ActiveRail />}
               <div className="flex items-center gap-3">
                 <Icon className={`w-4 h-4 ${active ? 'text-white' : 'text-[var(--wn-admin-muted)]'}`} />
                 {nav.label}
@@ -74,7 +69,6 @@ export const SellerNav: React.FC<SellerNavProps> = ({ path, pendingOrders, onNav
 
       <div className="p-3 border-t border-[var(--wn-admin-card-border)] flex flex-col gap-1 shrink-0">
         <Link to="/seller/settings" onClick={onNavigate} className={linkClass(settingsActive)}>
-          {settingsActive && <ActiveRail />}
           <div className="flex items-center gap-3">
             <Settings className={`w-4 h-4 ${settingsActive ? 'text-white' : 'text-[var(--wn-admin-muted)]'}`} />
             Тохиргоо

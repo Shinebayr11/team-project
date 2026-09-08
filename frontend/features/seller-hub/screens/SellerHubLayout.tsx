@@ -67,7 +67,7 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
           `components/ui/sheet.tsx`-ийг дахин ашиглав — фокус баригдана, ESC
           ажиллана, фокус буцаж очно. */}
       <Sheet open={navOpen} onOpenChange={setNavOpen}>
-        <SheetHeader title="Худалдагчийн төв" />
+        <SheetHeader title="Sellerhub" />
         <SheetBody className="flex flex-col px-0 py-0">
           <SellerNav
             path={pathname}
