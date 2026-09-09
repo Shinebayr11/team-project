@@ -43,9 +43,13 @@ export const postUsers = async (c: Context) => {
             );
         }
 
+        // `avatar_url` нь ЗӨВХӨН шинэ хэрэглэгч үүсэхэд Clerk-ээс сууна.
+        // `$set`-д байсан тул хуудас ачаалагдах бүрд (UserSync) хэрэглэгчийн
+        // өөрөө сонгосон зургийг Clerk-ийн зургаар дарж бичдэг байв — профайл
+        // зургаа солих боломж энэ мөрөөс болж ажиллахгүй.
         const newUser = await User.findOneAndUpdate(
             { clerk_user_id },
-            { $set: { display_name, avatar_url, shop_name } },
+            { $set: { display_name, shop_name }, $setOnInsert: { avatar_url } },
             { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true }
         )
 
@@ -71,6 +75,18 @@ const notificationsSchema = z.object({
     promotions: z.boolean(),
 })
 
+/**
+ * Зургийн хаяг. Хоосон мөр нь "зургаа хас" гэсэн үг тул зөвшөөрөгдөнө —
+ * эс тэгвээс тавьсан зургаа хэзээ ч буцааж авч чадахгүй.
+ */
+const imageUrl = z
+    .string()
+    .trim()
+    .max(500, "Зургийн хаяг хэт урт байна")
+    .refine((value) => value === "" || /^https:\/\//.test(value), {
+        message: "Зургийн хаяг https байх ёстой",
+    })
+
 /** Панель бүр зөвхөн өөрийн хэсгээ явуулдаг тул талбар бүр сонголттой. */
 const accountSchema = z
     .object({
@@ -80,6 +96,8 @@ const accountSchema = z
             .min(2, "Нэр 2-оос доошгүй тэмдэгт байна")
             .max(40, "Нэр 40-өөс ихгүй тэмдэгт байна"),
         bio: z.string().trim().max(300, "Танилцуулга 300-аас ихгүй тэмдэгт байна"),
+        avatar_url: imageUrl,
+        cover_url: imageUrl,
         preferences: preferencesSchema,
         notifications: notificationsSchema,
     })
@@ -125,7 +143,7 @@ export const updateAccount = async (c: Context) => {
             userId,
             { $set: parsed.data },
             { new: true, runValidators: true }
-        ).select("display_name bio avatar_url preferences notifications")
+        ).select("display_name bio avatar_url cover_url preferences notifications")
 
         if (!updated) {
             return c.json({ message: "Хэрэглэгч олдсонгүй" }, 404)

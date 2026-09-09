@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import { useSearchParams } from "@/lib/router"
 import { useStore } from "@/store"
+import { useAccount } from "@/hooks/useAccount"
 import { useFollow } from "@/hooks/useFollow"
 import { useMyPurchases } from "@/hooks/useMyPurchases"
 import { useLiveShows } from "@/hooks/useLiveShows"
@@ -28,6 +29,10 @@ export const Profile: React.FC = () => {
   const { shows } = useLiveShows()
   const savedShows = shows.filter((show) => show.saved)
   const { user, isLoaded } = useUser()
+  // Хажуугийн самбар, тохиргооны таб хоёулаа бүртгэлийн зургийг хардаг —
+  // энд НЭГ удаа уншаад доош дамжуулна, эс тэгвээс нэг хуудас /api/users/me
+  // рүү хоёр хүсэлт явуулна.
+  const { account, save: saveAccount } = useAccount()
   const router = useRouter()
   const nameInputRef = useRef<HTMLInputElement>(null)
 
@@ -65,6 +70,8 @@ export const Profile: React.FC = () => {
         return (
           <SettingsTab
             nameInputRef={nameInputRef}
+            account={account}
+            saveAccount={saveAccount}
             onSave={() => addToast("Хадгалагдлаа.")}
           />
         )
@@ -87,6 +94,7 @@ export const Profile: React.FC = () => {
     <div className="mx-auto flex max-w-[1200px] flex-col gap-8 px-4 py-8 lg:flex-row lg:gap-12 lg:px-6 lg:py-10">
       <ProfileSidebar
         activeTab={tab}
+        avatarUrl={account?.avatar_url}
         onSelect={goToTab}
         onEditProfile={handleEditProfile}
       />

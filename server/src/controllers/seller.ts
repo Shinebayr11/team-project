@@ -493,7 +493,7 @@ export const getSellerShop = async (c: Context) => {
         }
 
         const user = await User.findOne({ $or: or }).select(
-            "display_name shop_name avatar_url followers createdAt " +
+            "display_name shop_name avatar_url cover_url followers createdAt " +
             "sellerProfile.status sellerProfile.storeName sellerProfile.storeSlug " +
             "sellerProfile.sellerType sellerProfile.category sellerProfile.activatedAt"
         )
@@ -510,6 +510,7 @@ export const getSellerShop = async (c: Context) => {
                     display_name: user.display_name,
                     shop_name: user.shop_name,
                     avatar_url: user.avatar_url,
+                    cover_url: user.cover_url,
                     storeName: profile?.storeName,
                     storeSlug: profile?.storeSlug,
                     sellerType: profile?.sellerType,

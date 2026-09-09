@@ -22,6 +22,8 @@ export type ProfileTab =
 
 interface ProfileSidebarProps {
   activeTab: string
+  /** Бүртгэл дээр хадгалагдсан профайл зураг. Байхгүй бол нэрний эхний үсэг. */
+  avatarUrl?: string
   onSelect: (tab: ProfileTab) => void
   onEditProfile: () => void
 }
@@ -50,6 +52,7 @@ const NAV_GROUPS: {
 
 export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
   activeTab,
+  avatarUrl,
   onSelect,
   onEditProfile,
 }) => {
@@ -59,9 +62,17 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
   return (
     <aside className="flex w-full flex-col gap-8 lg:w-[240px] lg:shrink-0">
       <div className="flex flex-col items-center text-center">
-        <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-[#E6E6EE] text-[32px] font-[700] text-[var(--wn-ink)] uppercase">
-          {initial}
-        </div>
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt={displayName}
+            className="mb-4 size-24 rounded-full object-cover"
+          />
+        ) : (
+          <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-[#E6E6EE] text-[32px] font-[700] text-[var(--wn-ink)] uppercase">
+            {initial}
+          </div>
+        )}
         <h1 className="text-[20px] leading-tight font-[800] text-[var(--wn-ink)]">
           {displayName}
         </h1>

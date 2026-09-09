@@ -10,6 +10,7 @@ export interface ShopSeller {
   display_name?: string
   shop_name?: string
   avatar_url?: string
+  cover_url?: string
   storeName?: string
   storeSlug?: string
   category?: string
