@@ -12,6 +12,7 @@ import {
 } from "@/features/seller-hub/components/SellerSidebar"
 import { SellerTopbar } from "@/features/seller-hub/components/SellerTopbar"
 import { useInventoryHydration } from "@/features/seller-hub/hooks/useSellerInventory"
+import { Skeleton, SkeletonScreen } from "@/components/ui/Skeleton"
 
 const OPEN_FULFILLMENT = ["PENDING", "PROCESSING", "READY_TO_SHIP"]
 
@@ -40,19 +41,74 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
     OPEN_FULFILLMENT.includes(o.fulfillmentStatus)
   ).length
 
-  // Шалгаж дуустал самбарыг харуулахгүй — эс тэгвээс идэвхгүй хэрэглэгчид
-  // хормын зуур самбар харагдчихна.
-  if (isLoading || !isActive) return null
+  // Идэвхгүй хэрэглэгч рүү самбарыг ҮЗҮҮЛЭХГҮЙ — дээрх effect нүүр рүү
+  // буцааж байгаа тул энэ хормыг хоосон өнгөрөөнө.
+  if (!isActive && !isLoading) return null
+
+  // Худалдагч мөн эсэхийг шалгах хооронд бүтэн ЦАГААН дэлгэц гарч байв.
+  // Skeleton нь самбарын БАЙРЛАЛЫГ л эзэлнэ — цэсний нэр, тоо, худалдагчийн
+  // ямар ч мэдээлэл агуулаагүй тул шалгалт бүтэлгүйтвэл ч юу ч задруулахгүй.
+  if (isLoading) {
+    return (
+      <SkeletonScreen
+        className="flex min-h-svh bg-[var(--wn-page)]"
+        label="Худалдагчийн самбарыг уншиж байна"
+      >
+        <div className="hidden w-[240px] shrink-0 flex-col gap-2 border-r border-[var(--wn-admin-card-border)] bg-white p-3 lg:flex">
+          <Skeleton className="mb-4 ml-3 mt-4 h-6 w-32" />
+          {[0, 1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-9 w-full rounded-lg" />
+          ))}
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div className="flex h-16 shrink-0 items-center justify-end gap-4 border-b border-[var(--wn-admin-card-border)] bg-white px-4 lg:px-8">
+            <Skeleton className="size-5 rounded-md" />
+            <Skeleton className="size-8 rounded-full" />
+          </div>
+          <div className="flex flex-col gap-8 p-4 lg:p-8">
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-7 w-56" />
+              <Skeleton className="h-4 w-72" />
+            </div>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+              {[0, 1, 2].map((i) => (
+                <Skeleton key={i} className="h-[132px] rounded-2xl" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </SkeletonScreen>
+    )
+  }
 
   // Бараа уншиж дуустал дэлгэцүүд хоосон тоо (0 бараа, 0 нөөц) харуулах тул
   // хүлээнэ — эс тэгвээс тойм, аналитик хоромхон зуур худал үзүүлэлт үзүүлнэ.
-  if (inventory.loading) {
-    return (
-      <div className="flex min-h-svh items-center justify-center bg-[var(--wn-page)]">
-        <div className="size-6 animate-spin rounded-full border-2 border-[var(--wn-ink-4)] border-t-transparent" />
+  // Хажуугийн самбар, толгой нь бараанаас хамаардаггүй тул шууд зурагдана —
+  // зөвхөн дэлгэцийн бие нь орлуулагдана. Ингэснээр уншиж дуусахад самбар
+  // байрандаа үлдэж, зөвхөн агуулга солигдоно.
+  const body = inventory.loading ? (
+    <SkeletonScreen className="flex flex-col gap-8">
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-7 w-56" />
+        <Skeleton className="h-4 w-72" />
       </div>
-    )
-  }
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        {[0, 1, 2].map((i) => (
+          <Skeleton key={i} className="h-[132px] rounded-2xl" />
+        ))}
+      </div>
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        {[0, 1].map((i) => (
+          <div key={i} className="flex flex-col gap-4">
+            <Skeleton className="h-5 w-44" />
+            <Skeleton className="h-[104px] rounded-2xl" />
+          </div>
+        ))}
+      </div>
+    </SkeletonScreen>
+  ) : (
+    children
+  )
 
   return (
     <div className="flex min-h-svh bg-[var(--wn-page)] font-[var(--wn-font)] text-[var(--wn-admin-ink)]">
@@ -60,7 +116,7 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
 
       <div className="flex min-w-0 flex-1 flex-col">
         <SellerTopbar onOpenNav={() => setNavOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8">{body}</main>
       </div>
 
       {/* 1024px-ээс доош хажуугийн самбар нуугддаг тул цэс нь эндээс гарна.

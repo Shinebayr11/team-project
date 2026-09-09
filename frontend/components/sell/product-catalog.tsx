@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useRef, useState } from "react"
+import { SkeletonRows, SkeletonScreen } from "@/components/ui/Skeleton"
 import { ImagePlus, Package, Plus, X } from "lucide-react"
 import { useApiClient } from "@/hooks/useApiClient"
 import { AuctionProduct } from "@/hooks/useAuction"
@@ -245,7 +246,9 @@ export function ProductCatalog({
 
       <div className="mt-4 flex flex-col gap-2">
         {loading ? (
-          <p className="text-[14px] text-[var(--wn-ink-3)]">Уншиж байна...</p>
+          <SkeletonScreen label="Барааг уншиж байна">
+            <SkeletonRows rows={3} />
+          </SkeletonScreen>
         ) : products.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-[var(--wn-line-3)] p-6 text-center">
             <Package className="mx-auto size-6 text-[var(--wn-ink-3)]" />

@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react';
+import { SkeletonRows, SkeletonScreen } from '@/components/ui/Skeleton';
 import { useNavigate } from '@/lib/router';
 import { useFollow, followedSellerName } from '@/hooks/useFollow';
 import { Avatar } from '../ui/Avatar';
@@ -65,9 +66,9 @@ export const FollowingTab: React.FC = () => {
         })}
 
         {loading ? (
-          <div className="py-12 text-center text-[15px] font-[600] text-[var(--wn-ink-3)]">
-            Уншиж байна...
-          </div>
+          <SkeletonScreen label="Дагаж буй худалдагчдыг уншиж байна">
+            <SkeletonRows rows={4} />
+          </SkeletonScreen>
         ) : (
           sellers.length === 0 && (
             <div className="py-12 text-center text-[15px] font-[600] text-[var(--wn-ink-3)]">
