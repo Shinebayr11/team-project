@@ -22,32 +22,32 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
     {product.tag === 'Buy now' && (
       <>
         <button onClick={onBuy} className={`${primary} bg-[var(--wn-accent)] hover:bg-[var(--wn-accent-hover)]`}>
-          Buy now — ₮{(parsePrice(product.price) * qty).toLocaleString()}
+          Худалдаж авах — ₮{(parsePrice(product.price) * qty).toLocaleString()}
         </button>
         <button
           onClick={onAddToCart}
           className="w-full h-[52px] rounded-xl border-2 border-[var(--wn-line-2)] text-[var(--wn-ink)] text-[16px] font-[800] hover:bg-[var(--wn-accent-wash)] transition-colors"
         >
-          Add to cart
+          Сагсанд нэмэх
         </button>
       </>
     )}
 
     {product.tag === 'Live now' && (
       <button onClick={onWatchLive} className={`${primary} bg-[var(--wn-live)] hover:bg-[#D03D42]`}>
-        Watch live now
+        Шууд эфир үзэх
       </button>
     )}
 
     {product.tag === 'Giveaway' && (
       <button onClick={onEnterGiveaway} className={`${primary} bg-[var(--wn-accent)] hover:bg-[var(--wn-accent-hover)]`}>
-        Enter giveaway
+        Бэлгэнд оролцох
       </button>
     )}
 
     {product.tag === 'Sold' && (
       <button disabled className="w-full h-[52px] rounded-xl bg-[var(--wn-surface-2)] text-[var(--wn-ink-4)] text-[16px] font-[800] cursor-not-allowed">
-        Sold
+        Зарагдсан
       </button>
     )}
   </div>

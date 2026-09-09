@@ -14,15 +14,17 @@ import { ProductBuyPanel } from "@/components/product/ProductBuyPanel"
 
 const FALLBACK_SELLER = "amyperrin"
 
+// Ангиллын нэрс (`cat1`, `cat2`) нь үрийн өгөгдлийн чөлөөт бичвэр тул хэвээр
+// үлдэнэ — жинхэнэ дэлгүүр нь эдгээрийг API-аас авдаг.
 const buildDescription = (seller: SellerRecord, product: SellerProduct) => {
-  const intro = `A hand-picked ${seller.cat2.toLowerCase()} piece from ${seller.slug}'s ${seller.cat1} collection. `
+  const intro = `${seller.slug} дэлгүүрийн ${seller.cat1} цуглуулгаас сонгосон ${seller.cat2} эдлэл. `
   if (product.tag === "Live now")
-    return `${intro}Currently live — up for grabs while the show is on air.`
+    return `${intro}Яг одоо шууд эфирт байна — дамжуулалт үргэлжилж байхад авах боломжтой.`
   if (product.tag === "Giveaway")
-    return `${intro}One lucky entrant wins this for free — follow the show to enter.`
+    return `${intro}Азтай нэг оролцогч үнэгүй хожино — оролцохын тулд дамжуулалтыг дагаарай.`
   if (product.tag === "Sold")
-    return `${intro}This exact piece already found a home, but more like it show up in every stream.`
-  return `${intro}Ships within 1–2 business days, carefully packed to survive the trip.`
+    return `${intro}Энэ эдлэл эзэнтэй болсон ч дамжуулалт бүрт иймэрхүү эд зүйл гарсаар байна.`
+  return `${intro}1–2 ажлын өдөрт нямбай баглаж илгээнэ.`
 }
 
 export const Product: React.FC = () => {
@@ -47,7 +49,7 @@ export const Product: React.FC = () => {
       price: product.price,
       qty,
     })
-    addToast(`Added ${qty} to cart`)
+    addToast(`Сагсанд ${qty} ширхэг нэмлээ.`)
   }
 
   return (

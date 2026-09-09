@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react';
+import { productTagLabel } from '@/types/catalogLabels';
 import { Search } from 'lucide-react';
 import { ReelProduct, ReelTab } from '../../types';
 import { LiveDot } from '../ui/LiveDot';
@@ -17,15 +18,6 @@ const TABS: { id: ReelTab; label: string }[] = [
   { id: 'giveaways', label: 'Бэлэг' },
   { id: 'sold', label: 'Зарагдсан' },
 ];
-
-/** Өгөгдлийн шошгыг харагдац руу буулгана — `tagClass`-ийн түлхүүр хэвээр. */
-const TAG_LABELS: Record<string, string> = {
-  'Live now': 'Шууд явж байна',
-  'Sold': 'Зарагдсан',
-  'Giveaway': 'Бэлэг',
-  'Buy now': 'Шууд авах',
-  'Follow to enter': 'Дагаад оролц',
-};
 
 const tagClass = (tag: string) => {
   if (tag === 'Live now') return 'bg-[var(--wn-live-soft)] text-[var(--wn-live)]';
@@ -82,7 +74,7 @@ export const ShowProductList: React.FC<ShowProductListProps> = ({
             </div>
           </div>
           <div className={`px-2 py-1 rounded-md text-[10px] font-[700] shrink-0 ${tagClass(product.tag)}`}>
-            {TAG_LABELS[product.tag] ?? product.tag}
+            {productTagLabel(product.tag)}
           </div>
         </div>
       ))}

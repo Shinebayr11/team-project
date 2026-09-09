@@ -43,12 +43,12 @@ export const ProductBuyPanel: React.FC<ProductBuyPanelProps> = ({
 
     {product.tag === 'Buy now' && (
       <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--wn-surface-2)] text-[14px] font-[600] text-[var(--wn-ink-2)] mb-6">
-        <Truck className="w-5 h-5 text-[var(--wn-ink-3)]" /> Ships in 1–2 days · arrives in 5–9 days
+        <Truck className="w-5 h-5 text-[var(--wn-ink-3)]" /> 1–2 хоногт илгээнэ · 5–9 хоногт хүрнэ
       </div>
     )}
     {product.tag === 'Giveaway' && (
       <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--wn-accent-soft)] text-[14px] font-[600] text-[var(--wn-accent)] mb-6">
-        <Gift className="w-5 h-5" /> Entries close when the show ends
+        <Gift className="w-5 h-5" /> Шууд эфир дуусахад оролцоо хаагдана
       </div>
     )}
 
