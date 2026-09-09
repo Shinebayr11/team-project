@@ -35,7 +35,7 @@ const TONE = {
   ink: "bg-[var(--wn-admin-ink)] text-white hover:bg-[var(--wn-admin-btn-hover)] disabled:bg-[var(--wn-admin-chip-2)] disabled:text-[var(--wn-admin-muted)]",
   /** Хоёрдогч үйлдэл. Хүрээ нь 3.38:1 — SC 1.4.11-ийг давна. */
   outline:
-    "border border-[var(--wn-ink-4)] bg-white text-[var(--wn-admin-ink)] hover:bg-[var(--wn-admin-row-rule)]",
+    "border border-[var(--wn-ink-4)] bg-white text-[var(--wn-admin-ink)] hover:bg-[var(--wn-admin-row-rule)] disabled:border-[var(--wn-admin-outline)] disabled:bg-white disabled:text-[var(--wn-admin-muted)] disabled:hover:bg-white",
 } as const
 
 const SIZE = {
