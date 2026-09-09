@@ -1,41 +1,50 @@
 "use client"
 
 import React, { useState } from 'react';
-import { ProductTag } from '../../types';
-import { productTagLabel } from '@/types/catalogLabels';
-import { LiveDot } from '../ui/LiveDot';
+import { Package } from 'lucide-react';
 
-const THUMB_COUNT = 5;
-
-const tagClass = (tag: ProductTag) => {
-  if (tag === 'Live now') return 'bg-black/40 backdrop-blur-md text-white';
-  if (tag === 'Giveaway') return 'bg-[var(--wn-accent-soft)] text-[var(--wn-accent)]';
-  return 'bg-white/90 backdrop-blur-md text-[var(--wn-ink)]';
-};
-
-export const ProductGallery: React.FC<{ tag: ProductTag }> = ({ tag }) => {
-  const [activeThumb, setActiveThumb] = useState(0);
+/**
+ * Барааны зургууд. Өмнө нь энэ нь 5 ХООСОН бараан дөрвөлжин зурдаг, шошгыг нь
+ * статик demo өгөгдлөөс авдаг байв — одоо худалдагчийн байршуулсан жинхэнэ
+ * зургуудыг харуулна.
+ */
+export const ProductGallery: React.FC<{ images: string[]; name: string }> = ({ images, name }) => {
+  const [active, setActive] = useState(0);
+  const current = images[active];
 
   return (
-    <div className="flex-1 flex flex-col gap-4">
-      <div className="w-full aspect-square bg-[var(--wn-shot)] rounded-[24px] relative overflow-hidden">
-        <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-[13px] font-[600] flex items-center gap-2 ${tagClass(tag)}`}>
-          {tag === 'Live now' && <LiveDot className="w-2 h-2" />}
-          {productTagLabel(tag)}
-        </div>
+    <div className="flex flex-1 flex-col gap-4">
+      <div className="relative aspect-square w-full overflow-hidden rounded-[24px] bg-[var(--wn-shot)]">
+        {current ? (
+          // Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
+          <img src={current} alt={name} className="size-full object-cover" />
+        ) : (
+          <div className="flex size-full flex-col items-center justify-center gap-2 text-white/40">
+            <Package className="size-7" />
+            <span className="text-[13px] font-[600]">Зураг оруулаагүй</span>
+          </div>
+        )}
       </div>
 
-      <div className="flex gap-2 sm:gap-4">
-        {Array.from({ length: THUMB_COUNT }, (_, i) => (
-          <div
-            key={i}
-            onClick={() => setActiveThumb(i)}
-            className={`flex-1 aspect-square rounded-[12px] bg-[var(--wn-shot)] cursor-pointer border-2 transition-colors ${
-              i === activeThumb ? 'border-[var(--wn-accent)]' : 'border-transparent hover:border-[var(--wn-line-3)]'
-            }`}
-          />
-        ))}
-      </div>
+      {/* Ганц зурагтай бол сонгох зүйл байхгүй тул мөр нь огт гарахгүй. */}
+      {images.length > 1 && (
+        <div className="flex gap-2 sm:gap-4">
+          {images.map((url, i) => (
+            <button
+              key={url}
+              type="button"
+              onClick={() => setActive(i)}
+              aria-label={`${i + 1}-р зураг`}
+              aria-pressed={i === active}
+              className={`aspect-square flex-1 overflow-hidden rounded-[12px] border-2 bg-[var(--wn-shot)] transition-colors ${
+                i === active ? 'border-[var(--wn-accent)]' : 'border-transparent hover:border-[var(--wn-line-3)]'
+              }`}
+            >
+              <img src={url} alt="" className="size-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

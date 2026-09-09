@@ -1,4 +1,5 @@
 import { Context } from "hono"
+import mongoose from "mongoose"
 import { Product } from "../models/Product.js"
 import { ProductListing } from "../models/ProductListing.js"
 
@@ -14,6 +15,36 @@ export const getProduct = async (c: Context) => {
         }, 500)
     }
 
+}
+
+/**
+ * Нэг бараа — барааны хуудас үүгээр уншина.
+ *
+ * Худалдагчийг нь ХАМТ буцаана: хуудас нь дэлгүүрийн нэр, аватарыг харуулж,
+ * дэлгүүр рүү нь холбодог тул тусад нь дуудвал хоёр дахин явалт болно.
+ * Нээлттэй — худалдан авагч нэвтрэхгүйгээр бараа үзнэ.
+ */
+export const getProductById = async (c: Context) => {
+    try {
+        const id = c.req.param("id")
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return c.json({ message: "Бараа олдсонгүй" }, 404)
+        }
+
+        const product = await Product.findById(id).populate(
+            "seller_id",
+            "display_name shop_name avatar_url sellerProfile.storeName sellerProfile.storeSlug sellerProfile.category"
+        )
+
+        if (!product) {
+            return c.json({ message: "Бараа олдсонгүй" }, 404)
+        }
+
+        return c.json({ product })
+    } catch (error) {
+        console.error("getProductById алдаа:", error)
+        return c.json({ message: "Серверийн алдаа гарлаа" }, 500)
+    }
 }
 
 /** Нэвтэрсэн худалдагчийн өөрийн бараанууд — аукционд гаргах сонголтод хэрэгтэй. */
