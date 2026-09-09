@@ -31,6 +31,9 @@ const startShowHref = (show?: SellerShow) => {
     showId: show.id,
     title: show.title,
     category: show.category,
+    // Хэлбэрийг нь ч дагуулна — товлохдоо сонгосон утга эфирт орох үед
+    // алдагдвал худалдагч дахин сонгох шаардлагатай болно.
+    type: show.type,
   })
   return `/seller/shows/start?${params.toString()}`
 }

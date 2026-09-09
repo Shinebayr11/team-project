@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import { CalendarClock } from 'lucide-react';
 import { SellerShow } from '@/features/seller-hub/types';
 import { PageHeader } from '../PageHeader';
-import { CONTROL, TextField, SelectField, TextAreaField, Field } from '../FormField';
+import { CONTROL, TextField, SelectField, TextAreaField } from '../FormField';
 import { PRODUCT_CATEGORY_LABELS } from '../products/productDraft';
 import { ShowPreview } from './ShowPreview';
+import { ShowTypePicker } from './ShowTypePicker';
 import { btn } from "@/features/seller-hub/components/buttons"
 import {
-  SHOW_TYPES,
   defaultScheduledAt,
   humanWhen,
   schedulePresets,
@@ -149,29 +149,7 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
             onChange={e => patch({ category: e.target.value })}
           />
 
-          <Field label="Худалдааны хэлбэр *">
-            <div className="flex flex-col gap-2">
-              {SHOW_TYPES.map(({ value, label, hint }) => {
-                const chosen = draft.type === value;
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => patch({ type: value })}
-                    aria-pressed={chosen}
-                    className={`rounded-xl border px-4 py-3 text-left transition-colors ${
-                      chosen
-                        ? 'border-[var(--wn-admin-ink)] bg-[var(--wn-admin-row-rule)]'
-                        : 'border-[var(--wn-ink-4)] hover:bg-[var(--wn-admin-row-rule)]'
-                    }`}
-                  >
-                    <div className="text-[14px] font-[800] text-black">{label}</div>
-                    <div className="mt-0.5 text-[13px] font-[500] text-[var(--wn-admin-muted)]">{hint}</div>
-                  </button>
-                );
-              })}
-            </div>
-          </Field>
+          <ShowTypePicker value={draft.type} onChange={type => patch({ type })} />
 
           <TextAreaField
             label="Тайлбар"

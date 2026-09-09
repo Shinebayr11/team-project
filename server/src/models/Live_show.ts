@@ -11,6 +11,9 @@ const Live_showsSchema = new Schema(
         viewer_count: { type: Number },
         started_at: { type: Date },
         category: { type: String },
+        // Худалдааны хэлбэр: "auction" | "buy_it_now" | "mixed".
+        // Товлосон дамжуулалтын сонголт эфирт орох үед энд бууна.
+        type: { type: String, default: "mixed" },
         tags: { type: String },
         sponsored: { type: Boolean, default: false }
     },
