@@ -37,17 +37,35 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     [],
   );
 
+  /**
+   * ЗӨВХӨН `update`-аас хамаардаг slice-ууд тусдаа memo-д сууна.
+   *
+   * Тэднийг `state`-тэй нэг memo дотор үүсгэвэл төлөв өөрчлөгдөх бүрд
+   * функцүүд нь ШИНЭ ишлэл болдог. `setInventory` яг ийм байсан бөгөөд
+   * үүнээс болж Seller Hub төгсгөлгүй давталтад ордог байв:
+   *
+   *   setInventory шинэ ишлэл → useRefreshInventory-ийн useCallback шинэчлэгдэнэ
+   *   → useInventoryHydration-ийн effect дахин ажиллана → /api/product/mine
+   *   → setInventory дуудагдаж төлөв өөрчлөгдөнө → эхнээсээ.
+   *
+   * Хэмжихэд ачаалж дууссан хуудас 6 секундэд 12 хүсэлт явуулж, хэзээ ч
+   * зогсдоггүй байлаа. Одоо эдгээр функц насан туршдаа тогтвортой.
+   */
+  const writers = useMemo(() => ({
+    ...createInventorySlice(update),
+    ...createOrdersSlice(update),
+    ...createShowsSlice(update),
+  }), [update]);
+
   const value = useMemo<StoreContextType>(() => ({
     state,
     ...createWalletSlice(state, update),
     ...createCartSlice(state, update),
     ...createSocialSlice(state, update),
     ...createMessagesSlice(state, update),
-    ...createInventorySlice(update),
-    ...createOrdersSlice(update),
-    ...createShowsSlice(update),
+    ...writers,
     ...ui,
-  }), [state, update, ui]);
+  }), [state, update, writers, ui]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 };
