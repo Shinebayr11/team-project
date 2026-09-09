@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ProductTag } from '../../types';
+import { productTagLabel } from '@/types/catalogLabels';
 import { LiveDot } from '../ui/LiveDot';
 
 const THUMB_COUNT = 5;
@@ -20,7 +21,7 @@ export const ProductGallery: React.FC<{ tag: ProductTag }> = ({ tag }) => {
       <div className="w-full aspect-square bg-[var(--wn-shot)] rounded-[24px] relative overflow-hidden">
         <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-[13px] font-[600] flex items-center gap-2 ${tagClass(tag)}`}>
           {tag === 'Live now' && <LiveDot className="w-2 h-2" />}
-          {tag}
+          {productTagLabel(tag)}
         </div>
       </div>
 
