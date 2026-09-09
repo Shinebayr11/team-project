@@ -23,6 +23,7 @@ export const buildProducts = (
   const push = (product: AuctionProduct) => {
     const current = onBlock?._id === product._id
     const row: ReelProduct = {
+      id: product._id,
       name: product.name,
       price: current ? livePrice : String(product.price_coins ?? 0),
       tag: current ? (running ? "Шууд явж байна" : "Зарагдсан") : "Удахгүй",

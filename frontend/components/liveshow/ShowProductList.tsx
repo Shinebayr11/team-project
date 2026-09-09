@@ -56,10 +56,11 @@ export const ShowProductList: React.FC<ShowProductListProps> = ({
       {/* Ижил нэртэй бараа жагсаалтад орж болох тул нэрийг ганцаараа key болгож
           болохгүй. */}
       {products[activeTab].map((product, index) => (
-        <div
+        <button
+          type="button"
           key={`${product.name}-${index}`}
           onClick={() => onSelect(product)}
-          className="flex items-center gap-3 p-2 rounded-xl hover:bg-[var(--wn-accent-wash)] cursor-pointer transition-colors"
+          className="flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors hover:bg-[var(--wn-accent-wash)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--wn-accent)]"
         >
           <div className="w-[48px] h-[48px] rounded-lg bg-[var(--wn-shot)] shrink-0 relative overflow-hidden">
             {product.image && (
@@ -76,7 +77,7 @@ export const ShowProductList: React.FC<ShowProductListProps> = ({
           <div className={`px-2 py-1 rounded-md text-[10px] font-[700] shrink-0 ${tagClass(product.tag)}`}>
             {productTagLabel(product.tag)}
           </div>
-        </div>
+        </button>
       ))}
     </div>
   </>

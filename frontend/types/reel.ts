@@ -17,6 +17,9 @@ export type ReelTab = "buynow" | "giveaways" | "sold";
 
 /** Reel tags are free-form (e.g. "Ends in 1:05"), so this is looser than SellerProduct. */
 export interface ReelProduct {
+  /** Жинхэнэ барааны id. Reel-ийн mock өгөгдөлд байхгүй тул сонголттой —
+      байвал мөр нь барааны хуудас руу холбогдоно. */
+  id?: string;
   name: string;
   price: string;
   tag: string;

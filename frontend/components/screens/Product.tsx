@@ -1,88 +1,103 @@
 "use client"
 
 import React, { useState } from "react"
-import { useSearchParams, useNavigate } from "@/lib/router"
-import { SellerProduct, SellerRecord } from "@/types"
-import { SELLERS } from "@/data"
+import { useSearchParams } from "@/lib/router"
 import { useStore } from "@/store"
 import { useRequireAuth } from "@/hooks/useRequireAuth"
+import { useProduct, sellerOf, shopKeyOf } from "@/hooks/useProduct"
 import { BackButton } from "@/components/ui/BackButton"
-import { ReviewSummary } from "@/components/reviews/ReviewSummary"
-import { ReviewList } from "@/components/reviews/ReviewList"
+import { Skeleton, SkeletonScreen } from "@/components/ui/Skeleton"
 import { ProductGallery } from "@/components/product/ProductGallery"
 import { ProductBuyPanel } from "@/components/product/ProductBuyPanel"
 
-const FALLBACK_SELLER = "amyperrin"
-
-// Ангиллын нэрс (`cat1`, `cat2`) нь үрийн өгөгдлийн чөлөөт бичвэр тул хэвээр
-// үлдэнэ — жинхэнэ дэлгүүр нь эдгээрийг API-аас авдаг.
-const buildDescription = (seller: SellerRecord, product: SellerProduct) => {
-  const intro = `${seller.slug} дэлгүүрийн ${seller.cat1} цуглуулгаас сонгосон ${seller.cat2} эдлэл. `
-  if (product.tag === "Live now")
-    return `${intro}Яг одоо шууд эфирт байна — дамжуулалт үргэлжилж байхад авах боломжтой.`
-  if (product.tag === "Giveaway")
-    return `${intro}Азтай нэг оролцогч үнэгүй хожино — оролцохын тулд дамжуулалтыг дагаарай.`
-  if (product.tag === "Sold")
-    return `${intro}Энэ эдлэл эзэнтэй болсон ч дамжуулалт бүрт иймэрхүү эд зүйл гарсаар байна.`
-  return `${intro}1–2 ажлын өдөрт нямбай баглаж илгээнэ.`
-}
-
+/**
+ * Барааны хуудас.
+ *
+ * Өмнө нь `data/sellers.ts` дэх СТАТИК demo өгөгдлөөс уншдаг байсан тул
+ * худалдагчийн жинхэнэ нэмсэн бараа энд хэзээ ч гарч ирдэггүй, зураг нь
+ * үргэлж хоосон бараан дөрвөлжин, үнэлгээ нь зохиомол байв. Одоо
+ * `GET /api/product/:id`-аас уншина — дэлгүүрийн сүлжээ ба шууд эфирийн
+ * барааны жагсаалт хоёулаа энэ рүү холбогдоно.
+ */
 export const Product: React.FC = () => {
   const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
   const { openModal, addToCart, addToast } = useStore()
   const { requireAuth } = useRequireAuth()
 
-  const slug = searchParams.get("seller") || FALLBACK_SELLER
-  const productName = searchParams.get("product") || ""
-
-  const seller = SELLERS[slug] || SELLERS[FALLBACK_SELLER]
-  const product =
-    seller.products.find((p) => p.name === productName) || seller.products[0]
-
+  const id = searchParams.get("id")
+  const { product, loading, notFound } = useProduct(id)
   const [qty, setQty] = useState(1)
 
-  const handleAddToCart = () => {
-    addToCart({
-      seller: seller.slug,
+  const seller = sellerOf(product)
+  const backTo = seller ? `/shop?seller=${encodeURIComponent(shopKeyOf(seller))}` : "/home"
+
+  if (loading) {
+    return (
+      <SkeletonScreen className="mx-auto max-w-[1120px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <Skeleton className="mb-8 h-5 w-20" />
+        <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
+          <Skeleton className="aspect-square flex-1 rounded-[24px]" />
+          <div className="flex w-full flex-col gap-4 lg:w-[420px] lg:shrink-0">
+            <Skeleton className="h-10 w-48 rounded-full" />
+            <Skeleton className="h-7 w-3/4" />
+            <Skeleton className="h-9 w-32" />
+            <Skeleton className="h-12 w-full rounded-xl" />
+            <Skeleton className="h-[52px] w-full rounded-xl" />
+            <Skeleton className="h-[52px] w-full rounded-xl" />
+          </div>
+        </div>
+      </SkeletonScreen>
+    )
+  }
+
+  if (!id || notFound || !product) {
+    return (
+      <div className="mx-auto max-w-[1120px] px-4 py-24 text-center">
+        <BackButton className="mb-6" fallback="/home" />
+        <p className="text-[16px] font-[700] text-[var(--wn-ink)]">Бараа олдсонгүй.</p>
+        <p className="mt-1 text-[14px] text-[var(--wn-ink-3)]">
+          Холбоос хуучирсан эсвэл бараа устсан байж магадгүй.
+        </p>
+      </div>
+    )
+  }
+
+  // `BuyModal` нь шууд эфирийн талтай хуваалцдаг тул түүний хүлээдэг хэлбэрт
+  // тааруулж дамжуулна — модалыг өөрчилвөл эфирийн урсгал хөндөгдөнө.
+  const buyPayload = {
+    product: {
       name: product.name,
-      price: product.price,
-      qty,
-    })
-    addToast(`Сагсанд ${qty} ширхэг нэмлээ.`)
+      price: String(product.price_coins ?? 0),
+      tag: "Buy now" as const,
+    },
+    seller: shopKeyOf(seller),
+    qty,
   }
 
   return (
     <div className="mx-auto max-w-[1120px] px-4 py-6 pb-20 sm:px-6 lg:px-8 lg:py-8 lg:pb-24">
-      <BackButton className="mb-8" fallback={`/shop?seller=${seller.slug}`} />
+      <BackButton className="mb-8" fallback={backTo} />
 
-      <div className="mb-12 lg:mb-16 flex flex-col gap-8 lg:flex-row lg:gap-10">
-        <ProductGallery tag={product.tag} />
+      <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
+        <ProductGallery images={product.images ?? []} name={product.name} />
         <ProductBuyPanel
-          seller={seller}
           product={product}
-          description={buildDescription(seller, product)}
+          seller={seller}
           qty={qty}
           onQtyChange={setQty}
-          onBuy={() =>
-            requireAuth(() =>
-              openModal("buy", { product, seller: seller.slug, qty })
-            )
-          }
-          onAddToCart={() => requireAuth(handleAddToCart)}
-          onWatchLive={() => navigate(`/live-show?show=${seller.slug}`)}
-          onEnterGiveaway={() =>
-            requireAuth(() => openModal("giveaway", { product }))
+          onBuy={() => requireAuth(() => openModal("buy", buyPayload))}
+          onAddToCart={() =>
+            requireAuth(() => {
+              addToCart({
+                seller: shopKeyOf(seller),
+                name: product.name,
+                price: String(product.price_coins ?? 0),
+                qty,
+              })
+              addToast(`Сагсанд ${qty} ширхэг нэмлээ.`)
+            })
           }
         />
-      </div>
-
-      <div className="max-w-[800px]">
-        <h2 className="mb-2 text-[22px] font-[800] text-[var(--wn-ink)]">
-          Reviews for {seller.slug}
-        </h2>
-        <ReviewSummary rating={seller.rating} count={seller.reviewCount} />
-        <ReviewList reviews={seller.reviews} />
       </div>
     </div>
   )

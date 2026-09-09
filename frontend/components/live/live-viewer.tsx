@@ -5,6 +5,7 @@ import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react"
 import "@livekit/components-styles"
 
 import { buildProducts } from "@/lib/reelProducts"
+import { useNavigate } from "@/lib/router"
 import { useAuction } from "@/hooks/useAuction"
 import { useShowProducts } from "@/hooks/useShowProducts"
 import { LiveShowDoc } from "@/lib/liveShows"
@@ -37,6 +38,7 @@ export function LiveViewer({
 }) {
   const { listing, bids, placeBid } = useAuction(showId)
   const { entries } = useShowProducts(showId)
+  const navigate = useNavigate()
   const [tab, setTab] = useState<ReelTab>("buynow")
 
   const sellerDoc =
@@ -77,7 +79,11 @@ export function LiveViewer({
               products={buildProducts(entries, listing)}
               activeTab={tab}
               onTabChange={setTab}
-              onSelect={() => {}}
+              // Эфирт гарч буй барааг дарахад дэлгэрэнгүй нь нээгдэнэ. Mock
+              // reel-д id байдаггүй тул зөвхөн жинхэнэ бараанд ажиллана.
+              onSelect={(product) => {
+                if (product.id) navigate(`/product?id=${product.id}`)
+              }}
             />
           </div>
 
