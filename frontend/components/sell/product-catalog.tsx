@@ -207,7 +207,7 @@ export function ProductCatalog({
               ) : (
                 <label
                   htmlFor="product-image"
-                  className="mt-1 flex size-24 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[var(--wn-line-3)] text-[var(--wn-ink-3)] transition-colors hover:bg-[var(--wn-surface-2)]"
+                  className="mt-1 flex size-24 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[var(--wn-line-3)] text-[var(--wn-ink-3)] transition-colors hover:bg-[var(--wn-accent-wash)]"
                 >
                   <ImagePlus className="size-5" />
                   <span className="mt-1 text-[11px]">

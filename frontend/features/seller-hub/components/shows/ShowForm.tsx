@@ -1,10 +1,12 @@
 "use client"
 
 import React, { useState } from 'react';
+import { CONTROL } from "@/features/seller-hub/components/FormField"
 import { SellerShow } from '@/features/seller-hub/types';
 import { PageHeader } from '../PageHeader';
 import { TextField, SelectField, TextAreaField, Field } from '../FormField';
 import { PRODUCT_CATEGORY_LABELS } from '../products/productDraft';
+import { btn } from "@/features/seller-hub/components/buttons"
 
 export interface ShowDraft {
   title: string;
@@ -42,7 +44,7 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
     <>
       <PageHeader title="Шууд дамжуулалт үүсгэх" onBack={onCancel} />
 
-      <div className="max-w-[600px] bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+      <div className="max-w-[600px] bg-white border border-[var(--wn-admin-card-border)] rounded-2xl p-6 shadow-sm">
         <div className="flex flex-col gap-5">
           <TextField label="Шууд дамжуулалтын нэр *" value={draft.title} onChange={e => patch({ title: e.target.value })} />
 
@@ -58,7 +60,7 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
               <select
                 value={draft.type}
                 onChange={e => patch({ type: e.target.value as SellerShow['type'] })}
-                className="w-full h-10 rounded-lg border border-gray-300 px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
+                className={CONTROL}
               >
                 {TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
@@ -80,10 +82,10 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
           />
 
           <div className="flex justify-end gap-3 mt-4">
-            <button onClick={onCancel} className="px-5 py-2 rounded-full text-[14px] font-[700] text-gray-600 hover:bg-gray-100 transition-colors">
+            <button onClick={onCancel} className="px-5 py-2 rounded-full text-[14px] font-[700] text-[var(--wn-admin-ink-2)] hover:bg-[var(--wn-admin-nav-hover)] transition-colors">
               Цуцлах
             </button>
-            <button onClick={() => onCreate(draft)} className="px-6 py-2 rounded-full bg-black text-white text-[14px] font-[800] hover:bg-gray-800 transition-colors">
+            <button onClick={() => onCreate(draft)} className={btn("ink", "pillWide")}>
               Ноорог үүсгэх
             </button>
           </div>

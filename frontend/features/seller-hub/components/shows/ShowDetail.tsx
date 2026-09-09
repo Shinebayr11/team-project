@@ -41,7 +41,7 @@ export const ShowDetail: React.FC<ShowDetailProps> = ({
           />
         </div>
 
-        <div className="w-full lg:w-[340px] lg:shrink-0 flex flex-col gap-6">
+        <div className="w-full lg:w-[320px] lg:shrink-0 flex flex-col gap-6">
           <ShowStatusPanel show={show} onChangeStatus={onChangeStatus} onGoLive={onGoLive} />
           {showsStats && <ShowStatsPanel stats={show.stats} />}
         </div>

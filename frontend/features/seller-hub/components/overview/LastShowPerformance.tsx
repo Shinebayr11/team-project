@@ -10,7 +10,7 @@ interface LastShowPerformanceProps {
 
 const Metric: React.FC<{ label: string; value: string | number }> = ({ label, value }) => (
   <div>
-    <div className="text-[13px] font-[700] text-gray-500 mb-1">{label}</div>
+    <div className="text-[13px] font-[700] text-[var(--wn-admin-muted)] mb-1">{label}</div>
     <div className="text-[20px] font-[800] text-black">{value}</div>
   </div>
 );
@@ -18,9 +18,9 @@ const Metric: React.FC<{ label: string; value: string | number }> = ({ label, va
 export const LastShowPerformance: React.FC<LastShowPerformanceProps> = ({ show, onViewAnalytics }) => (
   <div className="flex flex-col gap-4">
     <h2 className="text-[18px] font-[800] text-black">Сүүлийн шууд дамжуулалтын үзүүлэлт</h2>
-    <div className="p-6 rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <div className="text-[15px] font-[800] text-black mb-1">{show.title ?? "Шууд дамжуулалт"}</div>
-      <div className="text-[13px] text-gray-500 font-[500] mb-6">
+    <div className="p-6 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white shadow-sm">
+      <div className="text-[14px] font-[800] text-black mb-1">{show.title ?? "Шууд дамжуулалт"}</div>
+      <div className="text-[13px] text-[var(--wn-admin-muted)] font-[500] mb-6">
         {new Date(show.ended_at ?? show.createdAt ?? Date.now()).toLocaleDateString()}
       </div>
 
@@ -32,7 +32,7 @@ export const LastShowPerformance: React.FC<LastShowPerformanceProps> = ({ show, 
 
       <button
         onClick={onViewAnalytics}
-        className="w-full mt-6 py-2.5 rounded-xl bg-gray-100 text-black text-[14px] font-[700] hover:bg-gray-200 transition-colors"
+        className="w-full mt-6 py-2.5 rounded-xl bg-[var(--wn-admin-chip)] text-black text-[14px] font-[700] hover:bg-[var(--wn-admin-chip-2)] transition-colors"
       >
         Дэлгэрэнгүй тайлан харах
       </button>

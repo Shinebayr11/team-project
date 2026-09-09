@@ -6,7 +6,6 @@ import {
   Heart,
   Users,
   Settings,
-  CreditCard,
   MapPin,
   LogOut,
 } from "lucide-react"
@@ -19,7 +18,6 @@ export type ProfileTab =
   | "saved"
   | "following"
   | "settings"
-  | "payment"
   | "addresses"
 
 interface ProfileSidebarProps {
@@ -45,7 +43,6 @@ const NAV_GROUPS: {
     section: "Бүртгэл",
     items: [
       { id: "settings", label: "Тохиргоо", icon: Settings },
-      { id: "payment", label: "Төлбөрийн хэрэгсэл", icon: CreditCard },
       { id: "addresses", label: "Хүргэлтийн хаяг", icon: MapPin },
     ],
   },
@@ -73,7 +70,7 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
         </div>
         <button
           onClick={onEditProfile}
-          className="w-full rounded-full border border-[var(--wn-line-2)] py-2 text-[13px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-surface-2)]"
+          className="w-full rounded-full border border-[var(--wn-line-2)] py-2 text-[13px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-accent-wash)]"
         >
           Профайл засах
         </button>
@@ -93,7 +90,7 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
                   className={`flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] font-[600] transition-colors ${
                     activeTab === id
                       ? "bg-[var(--wn-surface-2)] text-[var(--wn-ink)]"
-                      : "text-[var(--wn-ink-2)] hover:bg-[var(--wn-surface-2)]"
+                      : "text-[var(--wn-ink-2)] hover:bg-[var(--wn-accent-wash)]"
                   }`}
                 >
                   <Icon className="h-4 w-4" />

@@ -9,6 +9,7 @@ import { Panel } from '../DataCard';
 import { ShippingForm } from './ShippingForm';
 import { useSellerProfile } from '@/hooks/useSellerProfile';
 import { settingsOf } from '@/features/seller-hub/sellerSettings';
+import { btn } from "@/features/seller-hub/components/buttons"
 
 interface FulfillmentPanelProps {
   order: SellerOrder;
@@ -17,7 +18,7 @@ interface FulfillmentPanelProps {
   onShip: (carrier: string, trackingNumber: string) => void;
 }
 
-const primaryButton = 'w-full py-2.5 rounded-xl bg-black text-white text-[14px] font-[700] hover:bg-gray-800 transition-colors';
+const primaryButton = btn("ink", "block");
 
 export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
   order, onAdvance, onGenerateLabel, onShip,
@@ -42,8 +43,8 @@ export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
       {order.fulfillmentStatus === 'READY_TO_SHIP' && (
         <>
           {packingSlipNote && (
-            <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
-              <div className="text-[12px] font-[700] text-gray-500">Баглааны тэмдэглэл</div>
+            <div className="p-3 rounded-xl bg-[var(--wn-admin-row-rule)] border border-[var(--wn-admin-card-border)]">
+              <div className="text-[12px] font-[700] text-[var(--wn-admin-muted)]">Баглааны тэмдэглэл</div>
               <div className="mt-0.5 text-[13px] font-[500] text-black">{packingSlipNote}</div>
             </div>
           )}
@@ -53,8 +54,8 @@ export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
 
       {order.fulfillmentStatus === 'SHIPPED' && (
         <>
-          <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 flex flex-col gap-1 mb-2">
-            <div className="text-[12px] font-[700] text-gray-500">Хүргэлтийн мэдээлэл</div>
+          <div className="p-4 rounded-xl bg-[var(--wn-admin-row-rule)] border border-[var(--wn-admin-card-border)] flex flex-col gap-1 mb-2">
+            <div className="text-[12px] font-[700] text-[var(--wn-admin-muted)]">Хүргэлтийн мэдээлэл</div>
             <div className="text-[14px] font-[700] text-black">{order.carrier} — {order.trackingNumber}</div>
           </div>
           <button onClick={() => onAdvance('DELIVERED')} className={`${primaryButton} flex items-center justify-center gap-2`}>
@@ -64,11 +65,11 @@ export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
       )}
 
       {order.fulfillmentStatus === 'DELIVERED' && (
-        <div className="p-4 rounded-xl bg-[#E6F4EA] border border-[#166534]/20 flex flex-col gap-1">
-          <div className="text-[12px] font-[700] text-[#166534]">Төлөв</div>
-          <div className="text-[14px] font-[700] text-[#166534]">Бараа хүргэгдсэн</div>
+        <div className="p-4 rounded-xl bg-[var(--wn-admin-ok-soft)] border border-[var(--wn-admin-ok)]/20 flex flex-col gap-1">
+          <div className="text-[12px] font-[700] text-[var(--wn-admin-ok)]">Төлөв</div>
+          <div className="text-[14px] font-[700] text-[var(--wn-admin-ok)]">Бараа хүргэгдсэн</div>
           {order.trackingNumber && (
-            <div className="text-[12px] font-[500] text-[#166534]/80 mt-1">{order.carrier} — {order.trackingNumber}</div>
+            <div className="text-[12px] font-[500] text-[var(--wn-admin-ok)] mt-1">{order.carrier} — {order.trackingNumber}</div>
           )}
         </div>
       )}

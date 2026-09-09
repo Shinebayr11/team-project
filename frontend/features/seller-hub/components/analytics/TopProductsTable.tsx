@@ -21,17 +21,17 @@ export const TopProductsTable: React.FC<TopProductsTableProps> = ({
     isEmpty={products.length === 0}
   >
     {products.map(product => (
-      <tr key={product.productId} className="text-[14px] hover:bg-gray-50 transition-colors cursor-pointer" onClick={onViewInventory}>
+      <tr key={product.productId} className="text-[14px] hover:bg-[var(--wn-admin-row-rule)] transition-colors cursor-pointer" onClick={onViewInventory}>
         <td className="p-4 font-[700] text-black">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 shrink-0" />
+            <div className="w-10 h-10 rounded-lg bg-[var(--wn-admin-chip)] border border-[var(--wn-admin-card-border)] shrink-0" />
             <div className="truncate max-w-[180px]">{product.name}</div>
           </div>
         </td>
-        <td className="p-4 text-right font-[600] text-gray-600">{product.sold}</td>
+        <td className="p-4 text-right font-[600] text-[var(--wn-admin-ink-2)]">{product.sold}</td>
         <td className="p-4 text-right font-[800] text-black">
           <div>₮{product.revenue.toLocaleString()}</div>
-          <div className="text-[11px] font-[600] text-gray-400 mt-0.5">
+          <div className="text-[11px] font-[600] text-[var(--wn-admin-muted)] mt-0.5">
             нийт дүнгийн {grossSales > 0 ? Math.round((product.revenue / grossSales) * 100) : 0}%
           </div>
         </td>

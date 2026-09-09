@@ -497,7 +497,7 @@ export const SellerActivationSheet: React.FC<SellerActivationSheetProps> = ({
                 type="button"
                 onClick={onClose}
                 disabled={locked}
-                className="h-[44px] w-full rounded-xl text-[15px] font-[700] text-[var(--wn-ink-3)] transition-colors hover:bg-[var(--wn-surface-2)] disabled:opacity-50"
+                className="h-[44px] w-full rounded-xl text-[15px] font-[700] text-[var(--wn-ink-3)] transition-colors hover:bg-[var(--wn-accent-wash)] disabled:opacity-50"
               >
                 Дараа
               </button>

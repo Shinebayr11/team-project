@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { Field } from "@/features/seller-hub/components/FormField"
+import { CONTROL, Field } from "@/features/seller-hub/components/FormField"
 import { useAccount } from "@/hooks/useAccount"
 import type { AccountLanguage, AccountSettings, AccountUpdateBody } from "@/types/account"
 import { SettingsSaveBar } from "./SettingsSaveBar"
@@ -19,9 +19,6 @@ const TIMEZONES = [
   { value: "UTC", label: "UTC" },
 ]
 
-const control =
-  "w-full h-10 rounded-lg border border-[var(--wn-ink-4)] px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
-
 const PreferencesForm: React.FC<{
   account: AccountSettings
   save: (body: AccountUpdateBody) => Promise<unknown>
@@ -36,13 +33,13 @@ const PreferencesForm: React.FC<{
   const canSubmit = phase !== "saving" && dirty
 
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="flex flex-col gap-5 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
       <Field label="Хэл">
         <select
           value={language}
           onChange={(event) => setLanguage(event.target.value as AccountLanguage)}
           disabled={phase === "saving"}
-          className={control}
+          className={CONTROL}
         >
           {LANGUAGES.map((option) => (
             <option key={option.value} value={option.value}>
@@ -57,7 +54,7 @@ const PreferencesForm: React.FC<{
           value={timezone}
           onChange={(event) => setTimezone(event.target.value)}
           disabled={phase === "saving"}
-          className={control}
+          className={CONTROL}
         >
           {TIMEZONES.map((option) => (
             <option key={option.value} value={option.value}>
@@ -84,17 +81,17 @@ export const PreferencesPanel: React.FC = () => {
     <div>
       <div className="mb-6">
         <h2 className="text-[24px] font-[800] mb-1 text-black">Тохиргоо</h2>
-        <p className="text-[14px] text-gray-500 font-[500]">
+        <p className="text-[14px] text-[var(--wn-admin-muted)] font-[500]">
           Хэл, цагийн бүсээ энд сонгоно.
         </p>
       </div>
 
       {loading ? (
-        <p className="text-[14px] text-gray-500">Уншиж байна...</p>
+        <p className="text-[14px] text-[var(--wn-admin-muted)]">Уншиж байна...</p>
       ) : account ? (
         <PreferencesForm account={account} save={save} />
       ) : (
-        <p className="text-[14px] font-[600] text-red-600">
+        <p className="text-[14px] font-[600] text-[var(--wn-admin-danger)]">
           Тохиргоо уншиж чадсангүй. Хуудсаа шинэчилнэ үү.
         </p>
       )}

@@ -82,7 +82,7 @@ export const PurchasesTab: React.FC<PurchasesTabProps> = ({ purchases, bids, loa
                     key={p.id}
                     type="button"
                     onClick={() => setSelected(p)}
-                    className="flex w-full items-center justify-between gap-4 p-4 rounded-[16px] border border-[var(--wn-line)] text-left transition-colors hover:border-[var(--wn-line-2)] hover:bg-[var(--wn-surface-2)]"
+                    className="flex w-full items-center justify-between gap-4 p-4 rounded-[16px] border border-[var(--wn-line)] text-left transition-colors hover:border-[var(--wn-line-2)] hover:bg-[var(--wn-accent-wash)]"
                   >
                     <div className="flex min-w-0 flex-1 items-center gap-4">
                       <ProductThumb product={p.product} size={44} />

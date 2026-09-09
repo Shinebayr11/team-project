@@ -8,6 +8,7 @@ import type {
   AccountSettings,
   AccountUpdateBody,
 } from "@/types/account"
+import { Toggle } from "@/features/seller-hub/components/Toggle"
 import { SettingsSaveBar } from "./SettingsSaveBar"
 import { useSettingsSave } from "./useSettingsSave"
 
@@ -39,31 +40,6 @@ const TOPICS: { key: keyof AccountNotifications; label: string; description: str
   },
 ]
 
-const Toggle: React.FC<{
-  checked: boolean
-  disabled: boolean
-  label: string
-  onChange: () => void
-}> = ({ checked, disabled, label, onChange }) => (
-  <button
-    type="button"
-    onClick={onChange}
-    disabled={disabled}
-    role="switch"
-    aria-checked={checked}
-    aria-label={label}
-    className={`relative h-6 w-10 shrink-0 rounded-full transition-colors disabled:opacity-60 ${
-      checked ? "bg-[#34C759]" : "bg-gray-300"
-    }`}
-  >
-    <span
-      className={`absolute top-1 size-4 rounded-full bg-white shadow-sm transition-all ${
-        checked ? "right-1" : "left-1"
-      }`}
-    />
-  </button>
-)
-
 const NotificationsForm: React.FC<{
   account: AccountSettings
   save: (body: AccountUpdateBody) => Promise<unknown>
@@ -75,12 +51,12 @@ const NotificationsForm: React.FC<{
   const canSubmit = phase !== "saving" && dirty
 
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="flex flex-col gap-5 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
       {TOPICS.map(({ key, label, description }) => (
         <div key={key} className="flex items-start justify-between gap-4">
           <div>
             <div className="text-[14px] font-[700] text-black">{label}</div>
-            <div className="mt-0.5 text-[12.5px] leading-tight text-gray-500">
+            <div className="mt-0.5 text-[13px] leading-tight text-[var(--wn-admin-muted)]">
               {description}
             </div>
           </div>
@@ -110,17 +86,17 @@ export const NotificationsPanel: React.FC = () => {
     <div>
       <div className="mb-6">
         <h2 className="text-[24px] font-[800] mb-1 text-black">Мэдэгдэл</h2>
-        <p className="text-[14px] text-gray-500 font-[500]">
+        <p className="text-[14px] text-[var(--wn-admin-muted)] font-[500]">
           Ямар үед мэдэгдэл авахаа сонгоно уу.
         </p>
       </div>
 
       {loading ? (
-        <p className="text-[14px] text-gray-500">Уншиж байна...</p>
+        <p className="text-[14px] text-[var(--wn-admin-muted)]">Уншиж байна...</p>
       ) : account ? (
         <NotificationsForm account={account} save={save} />
       ) : (
-        <p className="text-[14px] font-[600] text-red-600">
+        <p className="text-[14px] font-[600] text-[var(--wn-admin-danger)]">
           Мэдэгдлийн тохиргоо уншиж чадсангүй. Хуудсаа шинэчилнэ үү.
         </p>
       )}

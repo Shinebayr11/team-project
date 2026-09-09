@@ -27,6 +27,8 @@ import {
   draftFromProduct,
   statusForDraft,
 } from "@/features/seller-hub/components/products/productDraft"
+import { btn } from "@/features/seller-hub/components/buttons"
+import { FILTER_CONTROL } from "@/features/seller-hub/components/FormField"
 
 const STATUS_OPTIONS = [
   { value: "ALL", label: "Бүх төлөв" },
@@ -157,13 +159,13 @@ export const SellerProducts: React.FC = () => {
       >
         <button
           onClick={() => setEditing({ draft: emptyProductDraft(sellerSettings), id: null })}
-          className="flex items-center gap-2 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-[14px] font-[700] text-white transition-colors hover:bg-black"
+          className={btn("ink", "pill")}
         >
           <Plus className="h-4 w-4" /> Бараа нэмэх
         </button>
       </PageHeader>
 
-      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+      <div className="mb-8 grid grid-cols-2 gap-6 lg:grid-cols-4">
         <KpiCard
           title="Нийт бараа"
           value={inventory.length}
@@ -191,7 +193,7 @@ export const SellerProducts: React.FC = () => {
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
                 aria-label="Төлвөөр шүүх"
-                className="h-10 rounded-lg border border-gray-300 bg-white px-3 text-[14px] font-[600] text-gray-700 outline-none"
+                className={FILTER_CONTROL}
               >
                 {STATUS_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>

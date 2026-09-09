@@ -17,13 +17,13 @@ const NEUTRAL_ACTIONS: { action: BulkAction; label: string }[] = [
 
 export const BulkActionBar: React.FC<BulkActionBarProps> = ({ count, onAction }) => (
   <div className="flex flex-wrap items-center gap-2">
-    <span className="text-[13px] font-[600] text-gray-600 mr-2">{count} сонгогдсон</span>
+    <span className="text-[13px] font-[600] text-[var(--wn-admin-ink-2)] mr-2">{count} сонгогдсон</span>
 
     {NEUTRAL_ACTIONS.map(({ action, label }) => (
       <button
         key={action}
         onClick={() => onAction(action)}
-        className="px-3 py-1.5 rounded-lg bg-white border border-gray-300 text-[13px] font-[600] text-black hover:bg-gray-50"
+        className="px-3 py-1.5 rounded-lg bg-white border border-[var(--wn-ink-4)] text-[13px] font-[600] text-black hover:bg-[var(--wn-admin-row-rule)]"
       >
         {label}
       </button>
@@ -31,7 +31,7 @@ export const BulkActionBar: React.FC<BulkActionBarProps> = ({ count, onAction })
 
     <button
       onClick={() => onAction('delete')}
-      className="px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 text-[13px] font-[600] text-red-600 hover:bg-red-100"
+      className="px-3 py-1.5 rounded-lg bg-[var(--wn-admin-danger-soft)] border border-[var(--wn-admin-danger)]/30 text-[13px] font-[600] text-[var(--wn-admin-danger)] hover:bg-[var(--wn-admin-danger-soft)]"
     >
       Устгах
     </button>

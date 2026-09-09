@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { Field, TextField, SelectField } from "@/features/seller-hub/components/FormField"
+import { CONTROL, Field, TextField, SelectField } from "@/features/seller-hub/components/FormField"
 import { ApiError } from "@/lib/api"
 import { useApiClient } from "@/hooks/useApiClient"
 import { useSellerProfile } from "@/hooks/useSellerProfile"
@@ -19,6 +19,7 @@ import type {
   SellerUpdateResponse,
   SlugAvailableResponse,
 } from "@/types/seller"
+import { btn } from "@/features/seller-hub/components/buttons"
 
 const SLUG_DEBOUNCE_MS = 300
 const SAVED_HOLD_MS = 1800
@@ -178,31 +179,31 @@ export const ShopInformationPanel: React.FC = () => {
 
   const nameHint = (() => {
     if (!trimmedName) {
-      return <p className="text-[12.5px] text-gray-500">Дэлгүүрийн нэр 3–30 тэмдэгт.</p>
+      return <p className="text-[13px] text-[var(--wn-admin-muted)]">Дэлгүүрийн нэр 3–30 тэмдэгт.</p>
     }
     if (!nameHasLetter) {
       return (
-        <p className="text-[12.5px] font-[600] text-red-600">
+        <p className="text-[13px] font-[600] text-[var(--wn-admin-danger)]">
           Зөвхөн тооноос бус, ядаж нэг үсэг агуулсан нэр оруулна уу.
         </p>
       )
     }
     if (!slugValid) {
       return (
-        <p className="text-[12.5px] text-gray-500">
+        <p className="text-[13px] text-[var(--wn-admin-muted)]">
           Латин үсэг эсвэл тоо агуулсан нэр оруулна уу.
         </p>
       )
     }
     return (
-      <p className="flex flex-wrap items-center gap-1.5 text-[12.5px]">
-        <span className="font-[600] text-gray-500">whynot.mn/@{slug}</span>
-        {slugState === "checking" && <span className="text-gray-400">шалгаж байна…</span>}
+      <p className="flex flex-wrap items-center gap-1.5 text-[13px]">
+        <span className="font-[600] text-[var(--wn-admin-muted)]">whynot.mn/@{slug}</span>
+        {slugState === "checking" && <span className="text-[var(--wn-admin-muted)]">шалгаж байна…</span>}
         {slugState === "available" && (
-          <span className="font-[700] text-emerald-600">Боломжтой</span>
+          <span className="font-[700] text-[var(--wn-admin-ok)]">Боломжтой</span>
         )}
         {slugState === "taken" && (
-          <span className="font-[700] text-red-600">Ашиглагдсан</span>
+          <span className="font-[700] text-[var(--wn-admin-danger)]">Ашиглагдсан</span>
         )}
       </p>
     )
@@ -212,12 +213,12 @@ export const ShopInformationPanel: React.FC = () => {
     <div>
       <div className="mb-6">
         <h2 className="text-[24px] font-[800] mb-1 text-black">Дэлгүүрийн мэдээлэл</h2>
-        <p className="text-[14px] text-gray-500 font-[500]">
+        <p className="text-[14px] text-[var(--wn-admin-muted)] font-[500]">
           Дэлгүүрийнхээ нэр, төрөл, хаягийг энд засварлана.
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-col gap-5 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
         <div>
           <Field label="Дэлгүүрийн нэр">
             <input
@@ -229,11 +230,11 @@ export const ShopInformationPanel: React.FC = () => {
               maxLength={30}
               autoComplete="off"
               disabled={phase === "saving"}
-              className="w-full h-10 rounded-lg border border-[var(--wn-ink-4)] px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
+              className={CONTROL}
             />
           </Field>
           {(errors.storeName ?? errors.storeSlug) ? (
-            <p className="mt-1 text-[12.5px] font-[600] text-red-600">
+            <p className="mt-1 text-[13px] font-[600] text-[var(--wn-admin-danger)]">
               {errors.storeName ?? errors.storeSlug}
             </p>
           ) : (
@@ -270,7 +271,7 @@ export const ShopInformationPanel: React.FC = () => {
             disabled={phase === "saving"}
           />
           {errors.address && (
-            <p className="mt-1 text-[12.5px] font-[600] text-red-600">{errors.address}</p>
+            <p className="mt-1 text-[13px] font-[600] text-[var(--wn-admin-danger)]">{errors.address}</p>
           )}
         </div>
 
@@ -289,17 +290,17 @@ export const ShopInformationPanel: React.FC = () => {
             disabled={phase === "saving"}
           />
           {errors.phone && (
-            <p className="mt-1 text-[12.5px] font-[600] text-red-600">{errors.phone}</p>
+            <p className="mt-1 text-[13px] font-[600] text-[var(--wn-admin-danger)]">{errors.phone}</p>
           )}
         </div>
 
         {footerError && (
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-red-50 px-3.5 py-2.5">
-            <p className="text-[13px] font-[600] text-red-600">{footerError}</p>
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-[var(--wn-admin-danger-soft)] px-3.5 py-2.5">
+            <p className="text-[13px] font-[600] text-[var(--wn-admin-danger)]">{footerError}</p>
             <button
               type="button"
               onClick={submit}
-              className="text-[13px] font-[800] text-red-600 underline underline-offset-2"
+              className="text-[13px] font-[800] text-[var(--wn-admin-danger)] underline underline-offset-2"
             >
               Дахин оролдох
             </button>
@@ -311,12 +312,12 @@ export const ShopInformationPanel: React.FC = () => {
             type="button"
             onClick={submit}
             disabled={!canSubmit}
-            className="h-10 rounded-lg bg-black px-5 text-[14px] font-[700] text-white transition-colors hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500"
+            className={btn("ink", "field")}
           >
             {phase === "saving" ? "Хадгалж байна…" : "Хадгалах"}
           </button>
           {phase === "saved" && (
-            <span className="text-[13px] font-[700] text-emerald-600">Хадгалагдлаа</span>
+            <span className="text-[13px] font-[700] text-[var(--wn-admin-ok)]">Хадгалагдлаа</span>
           )}
         </div>
       </div>

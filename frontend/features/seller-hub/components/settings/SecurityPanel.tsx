@@ -3,8 +3,9 @@
 import * as React from "react"
 import { useSession, useUser } from "@clerk/nextjs"
 
-import { Field } from "@/features/seller-hub/components/FormField"
+import { CONTROL, Field } from "@/features/seller-hub/components/FormField"
 import { useLoad } from "@/hooks/useLoad"
+import { btn } from "@/features/seller-hub/components/buttons"
 
 const PASSWORD_MIN = 8
 const SAVED_HOLD_MS = 1800
@@ -13,9 +14,6 @@ const SAVED_HOLD_MS = 1800
 // API-аас гаргаж авна.
 type ClerkUser = NonNullable<ReturnType<typeof useUser>["user"]>
 type UserSession = Awaited<ReturnType<ClerkUser["getSessions"]>>[number]
-
-const control =
-  "w-full h-10 rounded-lg border border-[var(--wn-ink-4)] px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
 
 /** Clerk-ийн алдаанууд `errors[].longMessage` дотор ирдэг. */
 const clerkMessage = (error: unknown): string => {
@@ -119,18 +117,18 @@ export const SecurityPanel: React.FC = () => {
     <div>
       <div className="mb-6">
         <h2 className="text-[24px] font-[800] mb-1 text-black">Аюулгүй байдал</h2>
-        <p className="text-[14px] text-gray-500 font-[500]">
+        <p className="text-[14px] text-[var(--wn-admin-muted)] font-[500]">
           Нууц үг, нэвтэрсэн төхөөрөмжүүдээ эндээс удирдана.
         </p>
       </div>
 
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-5 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
           <div>
             <h3 className="text-[16px] font-[800] text-black">
               {hasPassword ? "Нууц үг солих" : "Нууц үг үүсгэх"}
             </h3>
-            <p className="mt-0.5 text-[12.5px] text-gray-500">
+            <p className="mt-0.5 text-[13px] text-[var(--wn-admin-muted)]">
               {hasPassword
                 ? "Шинэ нууц үг тавьснаар бусад төхөөрөмжөөс автоматаар гарна."
                 : "Та одоогоор нууц үггүй (утасны код эсвэл Google зэрэг гадаад бүртгэлээр) нэвтэрдэг. Нууц үг тавивал нэмэлт нэвтрэх арга нээгдэнэ."}
@@ -148,7 +146,7 @@ export const SecurityPanel: React.FC = () => {
                 }}
                 autoComplete="current-password"
                 disabled={phase === "saving"}
-                className={control}
+                className={CONTROL}
               />
             </Field>
           )}
@@ -164,10 +162,10 @@ export const SecurityPanel: React.FC = () => {
                 }}
                 autoComplete="new-password"
                 disabled={phase === "saving"}
-                className={control}
+                className={CONTROL}
               />
             </Field>
-            <p className="mt-1 text-[12.5px] text-gray-500">
+            <p className="mt-1 text-[13px] text-[var(--wn-admin-muted)]">
               {PASSWORD_MIN}-аас доошгүй тэмдэгт.
             </p>
           </div>
@@ -183,19 +181,19 @@ export const SecurityPanel: React.FC = () => {
                 }}
                 autoComplete="new-password"
                 disabled={phase === "saving"}
-                className={control}
+                className={CONTROL}
               />
             </Field>
             {confirmPassword.length > 0 && !passwordsMatch && (
-              <p className="mt-1 text-[12.5px] font-[600] text-red-600">
+              <p className="mt-1 text-[13px] font-[600] text-[var(--wn-admin-danger)]">
                 Хоёр нууц үг таарахгүй байна.
               </p>
             )}
           </div>
 
           {error && (
-            <div className="rounded-xl bg-red-50 px-3.5 py-2.5">
-              <p className="text-[13px] font-[600] text-red-600">{error}</p>
+            <div className="rounded-xl bg-[var(--wn-admin-danger-soft)] px-3.5 py-2.5">
+              <p className="text-[13px] font-[600] text-[var(--wn-admin-danger)]">{error}</p>
             </div>
           )}
 
@@ -204,37 +202,17 @@ export const SecurityPanel: React.FC = () => {
               type="button"
               onClick={submitPassword}
               disabled={!canSubmit}
-              className="h-10 rounded-lg bg-black px-5 text-[14px] font-[700] text-white transition-colors hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500"
+              className={btn("ink", "field")}
             >
               {phase === "saving" ? "Хадгалж байна…" : "Нууц үг хадгалах"}
             </button>
             {phase === "saved" && (
-              <span className="text-[13px] font-[700] text-emerald-600">Шинэчлэгдлээ</span>
+              <span className="text-[13px] font-[700] text-[var(--wn-admin-ok)]">Шинэчлэгдлээ</span>
             )}
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-[16px] font-[800] text-black">Хоёр шатлалт баталгаажуулалт</h3>
-            <span
-              className={`rounded-md px-2.5 py-1 text-[11px] font-[800] tracking-wider uppercase ${
-                user.twoFactorEnabled
-                  ? "bg-[#E6F4EA] text-[#166534]"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {user.twoFactorEnabled ? "Идэвхтэй" : "Идэвхгүй"}
-            </span>
-          </div>
-          <p className="text-[13px] text-gray-500">
-            {user.twoFactorEnabled
-              ? "Нэвтрэх бүрд нэг удаагийн код шаардана."
-              : "Нэмэлт хамгаалалт болгож нэг удаагийн код үүсгэдэг апп холбож болно."}
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-4 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-[16px] font-[800] text-black">Нэвтэрсэн төхөөрөмжүүд</h3>
             {otherSessions.length > 0 && (
@@ -242,7 +220,7 @@ export const SecurityPanel: React.FC = () => {
                 type="button"
                 onClick={revokeOthers}
                 disabled={revoking}
-                className="text-[13px] font-[800] text-red-600 underline underline-offset-2 disabled:opacity-60"
+                className="text-[13px] font-[800] text-[var(--wn-admin-danger)] underline underline-offset-2 disabled:opacity-60"
               >
                 {revoking ? "Гаргаж байна…" : "Бусад төхөөрөмжөөс гарах"}
               </button>
@@ -250,22 +228,22 @@ export const SecurityPanel: React.FC = () => {
           </div>
 
           {sessions === null ? (
-            <p className="text-[13px] text-gray-500">Уншиж байна...</p>
+            <p className="text-[13px] text-[var(--wn-admin-muted)]">Уншиж байна...</p>
           ) : (
             <div className="flex flex-col gap-3">
               {sessions.map((row) => (
                 <div
                   key={row.id}
-                  className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0"
+                  className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--wn-admin-row-rule)] pb-3 last:border-b-0 last:pb-0"
                 >
                   <div>
                     <div className="text-[14px] font-[600] text-black">{sessionLabel(row)}</div>
-                    <div className="mt-0.5 text-[12.5px] text-gray-500">
+                    <div className="mt-0.5 text-[13px] text-[var(--wn-admin-muted)]">
                       Сүүлд идэвхтэй: {new Date(row.lastActiveAt).toLocaleString()}
                     </div>
                   </div>
                   {row.id === session?.id && (
-                    <span className="rounded-md bg-[#E6F4EA] px-2.5 py-1 text-[11px] font-[800] tracking-wider text-[#166534] uppercase">
+                    <span className="rounded-md bg-[var(--wn-admin-ok-soft)] px-2.5 py-1 text-[11px] font-[800] tracking-wider text-[var(--wn-admin-ok)] uppercase">
                       Энэ төхөөрөмж
                     </span>
                   )}

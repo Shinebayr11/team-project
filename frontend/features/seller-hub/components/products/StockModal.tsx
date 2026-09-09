@@ -1,6 +1,8 @@
 "use client"
 
 import React, { useState } from 'react';
+import { CONTROL } from '@/features/seller-hub/components/FormField';
+import { btn } from "@/features/seller-hub/components/buttons"
 
 export type StockAdjustType = 'add' | 'remove' | 'set';
 
@@ -33,13 +35,13 @@ export const StockModal: React.FC<StockModalProps> = ({ onClose, onSave }) => {
       <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-[400px] max-h-[92dvh] sm:max-h-[85dvh] overflow-y-auto p-6 shadow-xl">
         <h2 className="text-[18px] font-[800] text-black mb-4">Нөөц тохируулах</h2>
 
-        <div className="flex p-1 bg-gray-100 rounded-xl mb-6">
+        <div className="flex p-1 bg-[var(--wn-admin-chip)] rounded-xl mb-6">
           {TYPES.map(option => (
             <button
               key={option.value}
               onClick={() => setType(option.value)}
               className={`flex-1 py-1.5 rounded-lg text-[13px] font-[700] transition-colors ${
-                type === option.value ? 'bg-white text-black shadow-sm' : 'text-gray-600'
+                type === option.value ? 'bg-white text-black shadow-sm' : 'text-[var(--wn-admin-ink-2)]'
               }`}
             >
               {option.label}
@@ -48,22 +50,22 @@ export const StockModal: React.FC<StockModalProps> = ({ onClose, onSave }) => {
         </div>
 
         <div className="mb-6">
-          <label className="block text-[12px] font-[700] text-gray-500 mb-1" htmlFor="stockAmount">Тоо хэмжээ</label>
+          <label className="block text-[12px] font-[700] text-[var(--wn-admin-muted)] mb-1" htmlFor="stockAmount">Тоо хэмжээ</label>
           <input
             id="stockAmount"
             type="number"
             value={amount}
             onChange={e => setAmount(e.target.value)}
             autoFocus
-            className="w-full h-10 rounded-lg border border-gray-300 px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
+            className={CONTROL}
           />
         </div>
 
         <div className="flex items-center justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 rounded-full text-[14px] font-[700] text-gray-600 hover:bg-gray-100">
+          <button onClick={onClose} className="px-4 py-2 rounded-full text-[14px] font-[700] text-[var(--wn-admin-ink-2)] hover:bg-[var(--wn-admin-nav-hover)]">
             Цуцлах
           </button>
-          <button onClick={handleSave} className="px-6 py-2 rounded-full bg-black text-white text-[14px] font-[700] hover:bg-gray-800">
+          <button onClick={handleSave} className={btn("ink", "pillWide")}>
             Хадгалах
           </button>
         </div>

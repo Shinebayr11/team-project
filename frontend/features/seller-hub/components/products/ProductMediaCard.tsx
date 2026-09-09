@@ -53,7 +53,7 @@ export const ProductMediaCard: React.FC<ProductMediaCardProps> = ({ images, onCh
   return (
     <Panel title="Зураг">
       {!uploadReady ? (
-        <p className="text-[13px] font-[600] text-gray-500">
+        <p className="text-[13px] font-[600] text-[var(--wn-admin-muted)]">
           Зураг байршуулах тохиргоо хийгдээгүй байна.
         </p>
       ) : (
@@ -63,7 +63,7 @@ export const ProductMediaCard: React.FC<ProductMediaCardProps> = ({ images, onCh
               type="button"
               onClick={() => inputRef.current?.click()}
               disabled={uploading || remaining <= 0}
-              className="w-[100px] h-[100px] shrink-0 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-500 hover:bg-gray-50 hover:border-gray-400 transition-colors disabled:opacity-50"
+              className="w-[100px] h-[100px] shrink-0 rounded-xl border-2 border-dashed border-[var(--wn-ink-4)] flex flex-col items-center justify-center text-[var(--wn-admin-muted)] hover:bg-[var(--wn-admin-row-rule)] hover:border-[var(--wn-ink-4)] transition-colors disabled:opacity-50"
             >
               {uploading ? (
                 <Loader2 className="w-6 h-6 mb-1 animate-spin" />
@@ -78,7 +78,7 @@ export const ProductMediaCard: React.FC<ProductMediaCardProps> = ({ images, onCh
             {images.map((url, index) => (
               <div
                 key={url}
-                className="w-[100px] h-[100px] shrink-0 rounded-xl bg-gray-100 border border-gray-200 relative"
+                className="w-[100px] h-[100px] shrink-0 rounded-xl bg-[var(--wn-admin-chip)] border border-[var(--wn-admin-card-border)] relative"
               >
                 {/* Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо
                     шаардахгүйн тулд энгийн <img> ашиглав. */}
@@ -91,7 +91,7 @@ export const ProductMediaCard: React.FC<ProductMediaCardProps> = ({ images, onCh
                   type="button"
                   onClick={() => onChange(images.filter((item) => item !== url))}
                   aria-label={`${index + 1}-р зургийг устгах`}
-                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-black"
+                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white border border-[var(--wn-admin-card-border)] shadow-sm flex items-center justify-center text-[var(--wn-admin-muted)] hover:text-black"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -109,9 +109,9 @@ export const ProductMediaCard: React.FC<ProductMediaCardProps> = ({ images, onCh
           />
 
           {error ? (
-            <p className="mt-2 text-[12.5px] font-[600] text-red-600">{error}</p>
+            <p className="mt-2 text-[13px] font-[600] text-[var(--wn-admin-danger)]">{error}</p>
           ) : (
-            <p className="mt-2 text-[12.5px] text-gray-500">
+            <p className="mt-2 text-[13px] text-[var(--wn-admin-muted)]">
               JPG, PNG, WEBP, GIF · 5MB хүртэл · {images.length}/{MAX_IMAGES} зураг.
               Эхний зураг нь жагсаалтад харагдана.
             </p>

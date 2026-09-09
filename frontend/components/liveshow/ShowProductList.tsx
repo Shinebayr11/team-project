@@ -67,7 +67,7 @@ export const ShowProductList: React.FC<ShowProductListProps> = ({
         <div
           key={`${product.name}-${index}`}
           onClick={() => onSelect(product)}
-          className="flex items-center gap-3 p-2 rounded-xl hover:bg-[var(--wn-surface-2)] cursor-pointer transition-colors"
+          className="flex items-center gap-3 p-2 rounded-xl hover:bg-[var(--wn-accent-wash)] cursor-pointer transition-colors"
         >
           <div className="w-[48px] h-[48px] rounded-lg bg-[var(--wn-shot)] shrink-0 relative overflow-hidden">
             {product.image && (

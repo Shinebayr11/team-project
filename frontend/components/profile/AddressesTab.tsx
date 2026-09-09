@@ -131,7 +131,7 @@ export const AddressesTab: React.FC = () => {
 
           <button
             onClick={openNew}
-            className="flex h-[48px] items-center justify-center gap-2 rounded-xl border-2 border-[var(--wn-line-2)] text-[14px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-surface-2)]"
+            className="flex h-[48px] items-center justify-center gap-2 rounded-xl border-2 border-[var(--wn-line-2)] text-[14px] font-[700] text-[var(--wn-ink)] transition-colors hover:bg-[var(--wn-accent-wash)]"
           >
             <Plus className="size-4" /> Шинэ хаяг нэмэх
           </button>

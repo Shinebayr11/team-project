@@ -19,27 +19,27 @@ export const AnalyticsTableCard: React.FC<AnalyticsTableCardProps> = ({
     <div className="flex items-center justify-between mb-4">
       <h3 className="text-[16px] font-[800] text-black">{title}</h3>
       {actionLabel && onAction && (
-        <button onClick={onAction} className="text-[13px] font-[700] text-blue-600 hover:underline">
+        <button onClick={onAction} className="text-[13px] font-[700] text-[var(--wn-admin-accent)] hover:underline">
           {actionLabel}
         </button>
       )}
     </div>
 
-    <div className="border border-gray-200 rounded-2xl bg-white shadow-sm overflow-hidden">
+    <div className="border border-[var(--wn-admin-card-border)] rounded-2xl bg-white shadow-sm overflow-hidden">
       {/* Хүснэгт нарийн дэлгэц дээр тайрагдахгүй, дотроо гүйнэ. */}
       <div className="overflow-x-auto">
       <table className="w-full min-w-[420px] text-left border-collapse">
         <thead>
-          <tr className="bg-gray-50 text-[11px] font-[800] text-gray-500 uppercase tracking-wider border-b border-gray-200">
+          <tr className="bg-[var(--wn-admin-row-rule)] text-[11px] font-[800] text-[var(--wn-admin-muted)] uppercase tracking-wider border-b border-[var(--wn-admin-card-border)]">
             {headers.map((header, i) => (
               <th key={header} className={`p-4 ${i === 0 ? '' : 'text-right'}`}>{header}</th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100">
+        <tbody className="divide-y divide-[var(--wn-admin-row-rule)]">
           {isEmpty ? (
             <tr>
-              <td colSpan={headers.length} className="p-8 text-center text-[13px] font-[500] text-gray-500">
+              <td colSpan={headers.length} className="p-8 text-center text-[13px] font-[500] text-[var(--wn-admin-muted)]">
                 Одоогоор хангалттай мэдээлэл алга.
               </td>
             </tr>

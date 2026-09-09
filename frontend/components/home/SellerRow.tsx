@@ -14,7 +14,7 @@ export const SellerRow: React.FC<SellerRowProps> = ({ name, avatarUrl, onClick }
   <button
     type="button"
     onClick={onClick}
-    className="flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors hover:bg-[var(--wn-surface-2)]"
+    className="flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors hover:bg-[var(--wn-accent-wash)]"
   >
     {avatarUrl ? (
       // Clerk/Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.

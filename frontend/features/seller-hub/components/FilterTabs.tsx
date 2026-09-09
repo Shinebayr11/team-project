@@ -20,7 +20,9 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({ tabs, active, onChange }
         key={tab.value}
         onClick={() => onChange(tab.value)}
         className={`px-4 py-2 rounded-full text-[13px] font-[700] whitespace-nowrap transition-colors ${
-          active === tab.value ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+          active === tab.value
+            ? 'bg-[var(--wn-admin-ink)] text-white'
+            : 'bg-white border border-[var(--wn-admin-card-border)] text-[var(--wn-admin-ink-2)] hover:bg-[var(--wn-admin-row-rule)]'
         }`}
       >
         {tab.label}

@@ -60,7 +60,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
               key={p.id}
               type="button"
               onClick={() => setSelected(p)}
-              className="flex w-full items-center justify-between p-4 rounded-[16px] border border-[var(--wn-line)] text-left transition-colors hover:border-[var(--wn-line-2)] hover:bg-[var(--wn-surface-2)]"
+              className="flex w-full items-center justify-between p-4 rounded-[16px] border border-[var(--wn-line)] text-left transition-colors hover:border-[var(--wn-line-2)] hover:bg-[var(--wn-accent-wash)]"
             >
               <div className="flex items-center gap-4">
                 <ProductThumb product={p.product} size={48} />

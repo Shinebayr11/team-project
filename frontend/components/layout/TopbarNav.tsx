@@ -25,9 +25,14 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({ path }) => (
 
     {LINKS.map(({ to, label, icon: Icon, exact }) => {
       const active = isActive(path, to, exact);
+      // Идэвхтэй линк нь `--wn-accent-soft` дээр суудаг байсан: аппын бусад
+      // бүх ягаан (түрийвчний тэмдэг, "Шууд үзэх", "Нэвтрэх") бол цагаан
+      // бичигтэй ДҮҮРГЭСЭН `--wn-accent` тул навигацийн цайвар лаванда нь
+      // ганцаараа өөр палетраас ирсэн мэт харагддаг байв. Цагаан бичиг
+      // --wn-accent дээр 6.50:1 — AA давна.
       const tone = active
-        ? 'bg-[var(--wn-accent-soft)] text-[var(--wn-accent)]'
-        : 'text-[var(--wn-ink)] hover:bg-[var(--wn-surface-2)]';
+        ? 'bg-[var(--wn-accent)] text-white hover:bg-[var(--wn-accent-hover)]'
+        : 'text-[var(--wn-ink)] hover:bg-[var(--wn-accent-wash)]';
 
       return (
         <React.Fragment key={to}>

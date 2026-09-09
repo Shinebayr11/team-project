@@ -60,7 +60,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
             type="button"
             onClick={onBack}
             aria-label="Яриаг хаах"
-            className="md:hidden -ml-1 shrink-0 p-1.5 rounded-full text-[var(--wn-ink-2)] hover:bg-[var(--wn-surface-2)] transition-colors"
+            className="md:hidden -ml-1 shrink-0 p-1.5 rounded-full text-[var(--wn-ink-2)] hover:bg-[var(--wn-accent-wash)] transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -73,7 +73,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
         </div>
         <button
           onClick={onOpenShop}
-          className="shrink-0 px-4 py-2 rounded-full border border-[var(--wn-line-2)] text-[13px] font-[700] text-[var(--wn-ink)] hover:bg-[var(--wn-surface-2)] transition-colors"
+          className="shrink-0 px-4 py-2 rounded-full border border-[var(--wn-line-2)] text-[13px] font-[700] text-[var(--wn-ink)] hover:bg-[var(--wn-accent-wash)] transition-colors"
         >
           Дэлгүүр үзэх
         </button>
