@@ -2,9 +2,8 @@
 
 import React, { useState } from "react"
 import { useNavigate } from "@/lib/router"
-import { Download, Users, Package, Tag } from "lucide-react"
+import { Download, Users, Package } from "lucide-react"
 import { useStore } from "@/store"
-import { AUCTION_INSIGHTS } from "@/features/seller-hub/data/sellerStats"
 import {
   useSellerAnalytics,
   DateRange,
@@ -18,6 +17,7 @@ import { ShowPerformanceTable } from "@/features/seller-hub/components/analytics
 import { InsightPanel } from "@/features/seller-hub/components/analytics/InsightPanel"
 import { FILTER_CONTROL } from "@/features/seller-hub/components/FormField"
 import { btn } from "@/features/seller-hub/components/buttons"
+import { downloadCsv } from "@/features/seller-hub/lib/csv"
 
 const RANGES: { value: DateRange; label: string }[] = [
   { value: "7d", label: "Сүүлийн 7 хоног" },
@@ -34,6 +34,15 @@ export const SellerAnalytics: React.FC = () => {
   const [range, setRange] = useState<DateRange>("30d")
   const [metric, setMetric] = useState<ChartMetric>("revenue")
   const stats = useSellerAnalytics(state, range)
+
+  // Дэлгэц дээр харагдаж буй ЯГ тэр хугацааны өдөр тутмын мөрүүд — товч нь
+  // өмнө нь ямар ч үйлдэлгүй байв.
+  const exportCsv = () =>
+    downloadCsv(
+      `analytics-${range}.csv`,
+      ["Огноо", "Борлуулалт", "Захиалга", "Зарагдсан бараа"],
+      stats.chartData.map((row) => [row.name, row.revenue, row.orders, row.items])
+    )
 
   return (
     <>
@@ -53,7 +62,12 @@ export const SellerAnalytics: React.FC = () => {
             </option>
           ))}
         </select>
-        <button className={btn("outline", "field")}>
+        <button
+          type="button"
+          onClick={exportCsv}
+          disabled={stats.chartData.length === 0}
+          className={btn("outline", "field")}
+        >
           <Download className="h-4 w-4" /> Татах
         </button>
       </PageHeader>
@@ -100,7 +114,7 @@ export const SellerAnalytics: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <InsightPanel
           title="Худалдан авагчийн үзүүлэлт"
           icon={Users}
@@ -130,24 +144,6 @@ export const SellerAnalytics: React.FC = () => {
               label: "Дууссан бараа",
               value: stats.outOfStockCount,
               tone: "red",
-            },
-          ]}
-        />
-        <InsightPanel
-          title="Дуудлага худалдааны үзүүлэлт"
-          icon={Tag}
-          rows={[
-            {
-              label: "Дууссан дуудлага худалдаа",
-              value: AUCTION_INSIGHTS.completedAuctions,
-            },
-            {
-              label: "Амжилтын хувь",
-              value: AUCTION_INSIGHTS.successRate,
-            },
-            {
-              label: "Дундаж хожсон үнэ",
-              value: AUCTION_INSIGHTS.avgWinningPrice,
             },
           ]}
         />

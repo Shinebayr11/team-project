@@ -24,11 +24,6 @@ export const UpcomingShows: React.FC<{ shows: HomeShow[] }> = ({ shows }) => {
               {show.at}
             </div>
 
-            <div className="absolute bottom-3 left-3 right-3">
-              <button className="w-full py-2 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white text-[13px] font-[700] hover:bg-white/30 transition-colors">
-                Remind Me
-              </button>
-            </div>
           </div>
 
           <div>

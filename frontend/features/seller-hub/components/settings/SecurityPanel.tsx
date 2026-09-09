@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useSession, useUser } from "@clerk/nextjs"
 
-import { Field } from "@/features/seller-hub/components/FormField"
+import { CONTROL, Field } from "@/features/seller-hub/components/FormField"
 import { useLoad } from "@/hooks/useLoad"
 import { btn } from "@/features/seller-hub/components/buttons"
 
@@ -14,9 +14,6 @@ const SAVED_HOLD_MS = 1800
 // API-аас гаргаж авна.
 type ClerkUser = NonNullable<ReturnType<typeof useUser>["user"]>
 type UserSession = Awaited<ReturnType<ClerkUser["getSessions"]>>[number]
-
-const control =
-  "w-full h-10 rounded-lg border border-[var(--wn-ink-4)] px-3 text-[14px] font-[500] text-black outline-none focus:border-black"
 
 /** Clerk-ийн алдаанууд `errors[].longMessage` дотор ирдэг. */
 const clerkMessage = (error: unknown): string => {
@@ -149,7 +146,7 @@ export const SecurityPanel: React.FC = () => {
                 }}
                 autoComplete="current-password"
                 disabled={phase === "saving"}
-                className={control}
+                className={CONTROL}
               />
             </Field>
           )}
@@ -165,7 +162,7 @@ export const SecurityPanel: React.FC = () => {
                 }}
                 autoComplete="new-password"
                 disabled={phase === "saving"}
-                className={control}
+                className={CONTROL}
               />
             </Field>
             <p className="mt-1 text-[13px] text-[var(--wn-admin-muted)]">
@@ -184,7 +181,7 @@ export const SecurityPanel: React.FC = () => {
                 }}
                 autoComplete="new-password"
                 disabled={phase === "saving"}
-                className={control}
+                className={CONTROL}
               />
             </Field>
             {confirmPassword.length > 0 && !passwordsMatch && (
@@ -213,26 +210,6 @@ export const SecurityPanel: React.FC = () => {
               <span className="text-[13px] font-[700] text-[var(--wn-admin-ok)]">Шинэчлэгдлээ</span>
             )}
           </div>
-        </div>
-
-        <div className="flex flex-col gap-4 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-[16px] font-[800] text-black">Хоёр шатлалт баталгаажуулалт</h3>
-            <span
-              className={`rounded-md px-2.5 py-1 text-[11px] font-[800] tracking-wider uppercase ${
-                user.twoFactorEnabled
-                  ? "bg-[var(--wn-admin-ok-soft)] text-[var(--wn-admin-ok)]"
-                  : "bg-[var(--wn-admin-chip)] text-[var(--wn-admin-ink-2)]"
-              }`}
-            >
-              {user.twoFactorEnabled ? "Идэвхтэй" : "Идэвхгүй"}
-            </span>
-          </div>
-          <p className="text-[13px] text-[var(--wn-admin-muted)]">
-            {user.twoFactorEnabled
-              ? "Нэвтрэх бүрд нэг удаагийн код шаардана."
-              : "Нэмэлт хамгаалалт болгож нэг удаагийн код үүсгэдэг апп холбож болно."}
-          </p>
         </div>
 
         <div className="flex flex-col gap-4 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">

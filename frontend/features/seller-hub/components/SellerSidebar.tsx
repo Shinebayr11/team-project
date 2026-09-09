@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Link } from '@/lib/router';
-import { Home, Package, ShoppingBag, Video, BarChart2, Settings, AlertTriangle } from 'lucide-react';
+import { Home, Package, ShoppingBag, Video, BarChart2, Settings } from 'lucide-react';
 
 interface SellerNavProps {
   path: string;
@@ -74,10 +74,6 @@ export const SellerNav: React.FC<SellerNavProps> = ({ path, pendingOrders, onNav
             Тохиргоо
           </div>
         </Link>
-        <button className="flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-[600] text-[var(--wn-admin-ink-2)] hover:bg-[var(--wn-admin-nav-hover)] transition-all">
-          <AlertTriangle className="w-4 h-4 text-[var(--wn-admin-muted)]" />
-          Алдаа мэдээлэх
-        </button>
       </div>
     </>
   );
