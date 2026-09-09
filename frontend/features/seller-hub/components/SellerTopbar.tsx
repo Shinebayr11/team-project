@@ -35,7 +35,7 @@ export const SellerTopbar: React.FC<SellerTopbarProps> = ({ onOpenNav }) => {
 
       <div className="flex items-center gap-4 sm:gap-5 shrink-0">
         <Link
-          to="/messages"
+          to="/seller/messages"
           aria-label="Зурвас"
           className="text-[var(--wn-admin-ink-2)] hover:text-black transition-colors"
         >

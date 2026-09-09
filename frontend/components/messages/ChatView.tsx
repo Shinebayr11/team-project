@@ -12,7 +12,9 @@ interface ChatViewProps {
   messages: ChatLine[];
   loading: boolean;
   onSend: (text: string) => Promise<{ ok: boolean; message?: string }>;
-  onOpenShop: () => void;
+  /** Худалдагчийн самбарт нөгөө тал нь ХУДАЛДАН АВАГЧ тул дэлгүүр байхгүй —
+   *  тэр үед энэ нь өгөгдөхгүй бөгөөд нэр, товч хоёр даралтгүй болно. */
+  onOpenShop?: () => void;
   /** Нарийн дэлгэц дээр яриа нь жагсаалтыг бүтнээр нь орлодог тул буцах гарц
    *  зөвхөн энд байна — эс тэгвэл хөтчийн "back" л үлдэнэ. */
   onBack: () => void;
@@ -65,19 +67,24 @@ export const ChatView: React.FC<ChatViewProps> = ({
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-3 min-w-0 cursor-pointer group" onClick={onOpenShop}>
+          <div
+            className={`flex items-center gap-3 min-w-0 group ${onOpenShop ? "cursor-pointer" : ""}`}
+            onClick={onOpenShop}
+          >
             <Avatar name={name} />
             <span className="truncate text-[16px] font-[800] text-[var(--wn-ink)] group-hover:text-[var(--wn-accent)] transition-colors">
               {name}
             </span>
           </div>
         </div>
-        <button
-          onClick={onOpenShop}
-          className="shrink-0 px-4 py-2 rounded-full border border-[var(--wn-line-2)] text-[13px] font-[700] text-[var(--wn-ink)] hover:bg-[var(--wn-accent-wash)] transition-colors"
-        >
-          Дэлгүүр үзэх
-        </button>
+        {onOpenShop && (
+          <button
+            onClick={onOpenShop}
+            className="shrink-0 px-4 py-2 rounded-full border border-[var(--wn-line-2)] text-[13px] font-[700] text-[var(--wn-ink)] hover:bg-[var(--wn-accent-wash)] transition-colors"
+          >
+            Дэлгүүр үзэх
+          </button>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col gap-4">

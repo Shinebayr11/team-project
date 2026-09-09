@@ -8,7 +8,20 @@ import { BackButton } from "@/components/ui/BackButton"
 import { ThreadList } from "@/components/messages/ThreadList"
 import { ChatView } from "@/components/messages/ChatView"
 
-export const Messages: React.FC = () => {
+interface MessagesProps {
+  /** Хаяг нь ямар замаас эхлэхийг заана. Худалдагчийн самбар дотор чат нь
+   *  `/seller/messages` дээр амьдардаг тул яриа сонгох, буцах бүх шилжилт
+   *  тэр замаараа явах ёстой — эс тэгвэл худалдагч самбараасаа унана. */
+  basePath?: string
+  /** Самбар дотор дуудахад өөрийн бүрхүүлээ (буцах товч, талбайн зай, дугуй
+   *  хүрээ) зурахгүй — SellerHubLayout-ын `main` аль хэдийн тэдгээрийг өгсөн. */
+  embedded?: boolean
+}
+
+export const Messages: React.FC<MessagesProps> = ({
+  basePath = "/messages",
+  embedded = false,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
   const { conversations, loading, openWith, refresh } = useConversations()
@@ -62,16 +75,24 @@ export const Messages: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6 lg:py-8">
+    <div className={embedded ? "" : "mx-auto max-w-[1180px] px-4 py-6 sm:px-6 lg:py-8"}>
       {/* Хуудсын түвшний буцах — мэдэгдэл, худалдан авалт, дэлгүүрээс чат руу
           орж ирдэг тул өмнөх хуудас руугаа буцах зам хэрэгтэй. ChatView доторх
-          сум нь өөр үүрэгтэй: нарийн дэлгэц дээр ярианы ЖАГСААЛТ руу сэлгэнэ. */}
-      <BackButton className="mb-4" fallback="/home" />
+          сум нь өөр үүрэгтэй: нарийн дэлгэц дээр ярианы ЖАГСААЛТ руу сэлгэнэ.
+          Самбар дотор цэс нь байнга харагдаж байдаг тул хэрэггүй. */}
+      {!embedded && <BackButton className="mb-4" fallback="/home" />}
 
       {/* `svh` — гар утасны хөтчийн хаяг мөр өндрөө өөрчлөхөд зурвас бичих
           талбар нүднээс далд орохгүй. Хасаж буй утга нь Topbar (68px),
-          хуудасны зай, дээрх буцах товчийг нийлүүлсэн өндөр. */}
-      <div className="flex h-[calc(100svh-180px)] overflow-hidden rounded-[24px] border border-[var(--wn-line)] bg-white shadow-sm md:h-[720px]">
+          хуудасны зай, дээрх буцах товчийг нийлүүлсэн өндөр. Самбар дотор
+          зөвхөн 64px толгой, 16/32px зай хасагдана. */}
+      <div
+        className={`flex overflow-hidden rounded-[24px] border border-[var(--wn-line)] bg-white shadow-sm ${
+          embedded
+            ? "h-[calc(100svh-96px)] lg:h-[calc(100svh-128px)]"
+            : "h-[calc(100svh-180px)] md:h-[720px]"
+        }`}
+      >
         {/* Нарийн дэлгэц дээр жагсаалт, яриа хоёр зэрэг багтахгүй тул нэг нь
             нөгөөгөө сольж гарна; md-ээс дээш хоёул зэрэг харагдана. */}
         <div
@@ -83,7 +104,7 @@ export const Messages: React.FC = () => {
             conversations={conversations}
             activeId={conversationId}
             loading={loading}
-            onSelect={(id) => navigate(`/messages?c=${id}`)}
+            onSelect={(id) => navigate(`${basePath}?c=${id}`)}
           />
         </div>
 
@@ -103,9 +124,12 @@ export const Messages: React.FC = () => {
               loading={messagesLoading}
               onSend={handleSend}
               // Нарийн дэлгэц дээр жагсаалт руу буцаах цорын ганц гарц.
-              onBack={() => navigate("/messages")}
-              onOpenShop={() =>
-                navigate(`/shop?seller=${encodeURIComponent(shopName)}`)
+              onBack={() => navigate(basePath)}
+              // Самбарт нөгөө тал нь худалдан авагч — очих дэлгүүр байхгүй.
+              onOpenShop={
+                embedded
+                  ? undefined
+                  : () => navigate(`/shop?seller=${encodeURIComponent(shopName)}`)
               }
             />
           ) : openFailed ? (
