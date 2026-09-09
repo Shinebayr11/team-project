@@ -116,7 +116,11 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
 
       <div className="flex min-w-0 flex-1 flex-col">
         <SellerTopbar onOpenNav={() => setNavOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8">{body}</main>
+        {/* `overflow-y-auto` байсан нь ХОЁР талаараа буруу: эцэг нь `min-h-svh`
+            (`h-svh` биш) тул main өөрөө хэзээ ч гүйдэггүй — гүйлт баримт дээр
+            явдаг; гэтэл position:sticky нь хамгийн ойрын гүйлтийн хүрээ рүү
+            уягддаг тул дотор нь байгаа юу ч наалддаггүй байв. */}
+        <main className="flex-1 p-4 lg:p-8">{body}</main>
       </div>
 
       {/* 1024px-ээс доош хажуугийн самбар нуугддаг тул цэс нь эндээс гарна.
