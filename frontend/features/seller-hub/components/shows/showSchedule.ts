@@ -13,6 +13,10 @@ const pad = (n: number) => String(n).padStart(2, "0")
 export const toLocalInput = (date: Date) =>
   `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
 
+/** «9-р сарын 10 · 20:00» — худалдан авагчийн карт дээрх богино хэлбэр. */
+export const shortWhen = (date: Date) =>
+  `${date.getMonth() + 1}-р сарын ${date.getDate()} · ${pad(date.getHours())}:${pad(date.getMinutes())}`
+
 const WEEKDAYS = ["Ням", "Даваа", "Мягмар", "Лхагва", "Пүрэв", "Баасан", "Бямба"]
 
 /** «Мягмар гараг · 9-р сарын 15 · 20:00» */

@@ -6,6 +6,7 @@ import { SellerShow } from '@/features/seller-hub/types';
 import { PageHeader } from '../PageHeader';
 import { CONTROL, TextField, SelectField, TextAreaField, Field } from '../FormField';
 import { PRODUCT_CATEGORY_LABELS } from '../products/productDraft';
+import { ShowPreview } from './ShowPreview';
 import { btn } from "@/features/seller-hub/components/buttons"
 import {
   SHOW_TYPES,
@@ -71,7 +72,13 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
     <>
       <PageHeader title="Шууд дамжуулалт үүсгэх" onBack={onCancel} />
 
-      <div className="max-w-[600px] rounded-2xl border border-[var(--wn-admin-card-border)] bg-white shadow-sm">
+      {/* Маягт 600px-ээс хэтрэхгүй байх нь зөв (урт мөр уншихад хэцүү) ч
+          өргөн дэлгэц дээр баруун тал нь бүтэн хоосон үлддэг байв. Тэр зайд
+          худалдан авагчийн харах карт орно — чимэглэл биш, худалдагч юу
+          зарлаж байгаагаа бичиж байхдаа шууд хардаг. 1280px-ээс доош доошоо
+          жагсана. */}
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,600px)_minmax(260px,320px)]">
+      <div className="self-start rounded-2xl border border-[var(--wn-admin-card-border)] bg-white shadow-sm">
         {/* ── Хэзээ. Энэ дамжуулалтыг дамжуулалт болгож байгаа зүйл. ── */}
         <div className="flex flex-col gap-4 border-b border-[var(--wn-admin-row-rule)] p-6">
           <div className="flex items-center gap-2">
@@ -201,6 +208,22 @@ export const ShowForm: React.FC<ShowFormProps> = ({ onCancel, onCreate }) => {
           >
             Товлох
           </button>
+        </div>
+      </div>
+
+        {/* Sticky нь grid item ӨӨР ДЭЭР нь ажиллахгүй: стретч болсон item аль
+            хэдийн мөрийн бүтэн өндөртэй тул наахад юу ч өөрчлөгдөхгүй, дотор
+            нь суусан карт нь item-ийнхээ дээд ирмэгтэй хамт гүйнэ. Наалддаг нь
+            ХҮҮ элемент байх ёстой. */}
+        <div>
+          <div className="xl:sticky xl:top-24">
+            <ShowPreview
+              title={draft.title}
+              category={draft.category}
+              type={draft.type}
+              when={valid ? when : null}
+            />
+          </div>
         </div>
       </div>
     </>
