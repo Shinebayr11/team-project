@@ -84,6 +84,7 @@ export default function LivePage({
           serverUrl={stream.url}
           isHost
           showId={showId}
+          showType={show?.type}
         />
       </div>
     </main>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useApiClient } from "@/hooks/useApiClient"
 import { useCountdown } from "@/components/live/auction-countdown"
 import { AuctionBid, AuctionProduct, Listing, isActive } from "@/hooks/useAuction"
+import { ShowProduct, productOfEntry } from "@/hooks/useShowProducts"
 
 const DURATIONS = [30, 60, 120]
 
@@ -80,8 +81,12 @@ function WinnerBanner({ listing }: { listing: Listing }) {
 
 /** Худалдагч дуудлага худалдаанд гаргах бараагаа сонгох хэсэг. */
 function StartAuctionForm({
+  lineup,
   onStart,
 }: {
+  /** Энэ эфирт оруулсан бараа. Хоосон биш бол ЗӨВХӨН эдгээр лот болно —
+   *  худалдагч эфир эхлэхийн өмнө яг эдгээрийг зарахаар эмхэлсэн байдаг. */
+  lineup: ShowProduct[]
   onStart: (input: {
     product_id: string
     starting_price_coins: number
@@ -89,20 +94,33 @@ function StartAuctionForm({
   }) => Promise<{ ok: boolean; message?: string }>
 }) {
   const { callApi } = useApiClient()
-  const [products, setProducts] = useState<AuctionProduct[]>([])
-  const [productId, setProductId] = useState("")
-  const [price, setPrice] = useState("100")
+  const [allProducts, setAllProducts] = useState<AuctionProduct[]>([])
+  // Сонголт, үнэ хоёрыг ДАРАЛТ болгож хадгална: `null` бол "анхдагчийг дага".
+  // Бараа хожуу ирэхэд state-ээ effect-ээр залруулах шаардлагагүй болно.
+  const [pickedId, setPickedId] = useState<string | null>(null)
+  const [typedPrice, setTypedPrice] = useState<string | null>(null)
   const [duration, setDuration] = useState(60)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const fromLineup = lineup
+    .map(productOfEntry)
+    .filter((product): product is AuctionProduct => !!product)
+
+  // Жагсаалт хоосон үед л бүх бараагаа санал болгоно — эс тэгвээс эфирт
+  // оруулаагүй барааг андуурч лот болгох эрсдэлтэй.
+  const products = fromLineup.length ? fromLineup : allProducts
+
+  // Жагсаалттай бол бүх бараагаа татах шаардлагагүй.
+  const needsAll = fromLineup.length === 0
+
   useEffect(() => {
+    if (!needsAll) return
     let cancelled = false
     callApi<{ products: AuctionProduct[] }>("/api/product/mine")
       .then((res) => {
         if (cancelled) return
-        setProducts(res.products)
-        setProductId((current) => current || res.products[0]?._id || "")
+        setAllProducts(res.products)
       })
       .catch(() => {
         if (!cancelled) setError("Бараагаа уншиж чадсангүй")
@@ -110,7 +128,17 @@ function StartAuctionForm({
     return () => {
       cancelled = true
     }
-  }, [callApi])
+  }, [callApi, needsAll])
+
+  // Сонголт нь үргэлж одоогийн жагсаалтад байх ёстой — жагсаалт хожуу ирэхэд
+  // сонгосон бараа нь тэнд байхгүй бол эхний бараа руу өөрөө буцна.
+  const selected =
+    products.find((product) => product._id === pickedId) ?? products[0]
+  const productId = selected?._id ?? ""
+
+  // Лотын эхлэх үнэ анхдагчаараа барааныхаа үнэ — худалдагч гараар бичих
+  // шаардлагагүй, бичсэн бол түүнийг нь дарж бичихгүй.
+  const price = typedPrice ?? String(selected?.price_coins ?? 0)
 
   const start = async () => {
     setBusy(true)
@@ -149,7 +177,11 @@ function StartAuctionForm({
               type="button"
               role="radio"
               aria-checked={selected}
-              onClick={() => setProductId(product._id)}
+              onClick={() => {
+                setPickedId(product._id)
+                // Өөр бараа сонгоход үнэ нь шинэ барааныхаа үнэ рүү буцна.
+                setTypedPrice(null)
+              }}
               className={`flex items-center gap-2.5 rounded-xl border p-2 text-left transition-colors ${
                 selected
                   ? "border-[var(--wn-accent)] bg-[var(--wn-accent-soft)]"
@@ -177,7 +209,7 @@ function StartAuctionForm({
           type="number"
           min={0}
           value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={(e) => setTypedPrice(e.target.value)}
           className="mt-1 h-9 w-full rounded-lg border border-[var(--wn-line)] bg-white px-2 text-[13px] font-[600] text-[var(--wn-ink)]"
         />
       </label>
@@ -214,11 +246,13 @@ function StartAuctionForm({
 export function BidsPanel({
   listing,
   bids,
+  lineup,
   onStart,
   onClose,
 }: {
   listing: Listing | null
   bids: AuctionBid[]
+  lineup: ShowProduct[]
   onStart: (input: {
     product_id: string
     starting_price_coins: number
@@ -260,7 +294,7 @@ export function BidsPanel({
               </div>
             )
           )}
-          <StartAuctionForm onStart={onStart} />
+          <StartAuctionForm lineup={lineup} onStart={onStart} />
         </div>
       ) : (
         <>

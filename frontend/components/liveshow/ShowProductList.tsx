@@ -11,6 +11,9 @@ interface ShowProductListProps {
   activeTab: ReelTab;
   onTabChange: (tab: ReelTab) => void;
   onSelect: (product: ReelProduct) => void;
+  /** Тогтсон үнээр шууд авах. Зөвхөн шууд худалдах, хосолсон эфирт өгөгдөнө —
+   *  цэвэр дуудлага худалдааны эфирт үнэ нь саналаар тодордог тул товч гарахгүй. */
+  onBuy?: (product: ReelProduct) => void;
 }
 
 const TABS: { id: ReelTab; label: string }[] = [
@@ -26,7 +29,7 @@ const tagClass = (tag: string) => {
 };
 
 export const ShowProductList: React.FC<ShowProductListProps> = ({
-  products, activeTab, onTabChange, onSelect,
+  products, activeTab, onTabChange, onSelect, onBuy,
 }) => (
   <>
     <div className="flex items-center px-2 pt-2 border-b border-[var(--wn-line)]">
@@ -55,30 +58,51 @@ export const ShowProductList: React.FC<ShowProductListProps> = ({
     <div className="flex-1 overflow-y-auto p-2">
       {/* Ижил нэртэй бараа жагсаалтад орж болох тул нэрийг ганцаараа key болгож
           болохгүй. */}
-      {products[activeTab].map((product, index) => (
-        <button
-          type="button"
-          key={`${product.name}-${index}`}
-          onClick={() => onSelect(product)}
-          className="flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors hover:bg-[var(--wn-accent-wash)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--wn-accent)]"
-        >
-          <div className="w-[48px] h-[48px] rounded-lg bg-[var(--wn-shot)] shrink-0 relative overflow-hidden">
-            {product.image && (
-              <img src={product.image} alt={product.name} className="absolute inset-0 w-full h-full object-cover" />
+      {products[activeTab].map((product, index) => {
+        // Дуудлага худалдаанд яг одоо байгаа, эсвэл зарагдсан барааг тогтсон
+        // үнээр авч болохгүй — тэр мөрөнд шошго нь хэвээр үлдэнэ.
+        const buyable = !!onBuy && !product.live && product.tag !== 'Sold' && product.tag !== 'Зарагдсан';
+
+        return (
+          <div
+            key={`${product.name}-${index}`}
+            className="flex w-full items-center gap-3 rounded-xl p-2 transition-colors hover:bg-[var(--wn-accent-wash)]"
+          >
+            <button
+              type="button"
+              onClick={() => onSelect(product)}
+              className="flex min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--wn-accent)]"
+            >
+              <div className="w-[48px] h-[48px] rounded-lg bg-[var(--wn-shot)] shrink-0 relative overflow-hidden">
+                {product.image && (
+                  <img src={product.image} alt={product.name} className="absolute inset-0 w-full h-full object-cover" />
+                )}
+                {product.live && <LiveDot className="absolute top-1 left-1 w-1.5 h-1.5 z-10" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[13px] font-[600] text-[var(--wn-ink)] truncate">{product.name}</div>
+                <div className="text-[12px] font-[700] text-[var(--wn-ink-2)] mt-0.5">
+                  {product.price === 'Free' ? 'Үнэгүй' : `₮${product.price}`}
+                </div>
+              </div>
+            </button>
+
+            {buyable ? (
+              <button
+                type="button"
+                onClick={() => onBuy(product)}
+                className="shrink-0 rounded-md bg-[var(--wn-accent-soft)] px-2 py-1 text-[10px] font-[700] text-[var(--wn-accent)] transition-colors hover:bg-[var(--wn-accent-soft-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--wn-accent)]"
+              >
+                Шууд авах
+              </button>
+            ) : (
+              <div className={`px-2 py-1 rounded-md text-[10px] font-[700] shrink-0 ${tagClass(product.tag)}`}>
+                {productTagLabel(product.tag)}
+              </div>
             )}
-            {product.live && <LiveDot className="absolute top-1 left-1 w-1.5 h-1.5 z-10" />}
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-[600] text-[var(--wn-ink)] truncate">{product.name}</div>
-            <div className="text-[12px] font-[700] text-[var(--wn-ink-2)] mt-0.5">
-              {product.price === 'Free' ? 'Үнэгүй' : `₮${product.price}`}
-            </div>
-          </div>
-          <div className={`px-2 py-1 rounded-md text-[10px] font-[700] shrink-0 ${tagClass(product.tag)}`}>
-            {productTagLabel(product.tag)}
-          </div>
-        </button>
-      ))}
+        );
+      })}
     </div>
   </>
 );

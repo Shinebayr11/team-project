@@ -8,9 +8,22 @@ export interface LiveShowSeller {
   avatar_url?: string
 }
 
+/**
+ * Худалдааны хэлбэр. Худалдагч эфирт орохын өмнө сонгодог (`ShowTypePicker`)
+ * бөгөөд эфирийн ДОТОР юу харагдахыг энэ шийднэ.
+ */
+export type ShowType = "auction" | "buy_it_now" | "mixed"
+
+/** Дуудлага худалдааны самбар, лот гаргах хэсэг харагдах эсэх. */
+export const allowsAuction = (type?: ShowType | string) => type !== "buy_it_now"
+
+/** Барааг тогтсон үнээр шууд авах товч гарах эсэх. */
+export const allowsBuyNow = (type?: ShowType | string) => type !== "auction"
+
 export interface LiveShowDoc {
   _id: string
   title: string
+  type?: ShowType
   status?: string
   thumbnail_url?: string
   viewer_count?: number
