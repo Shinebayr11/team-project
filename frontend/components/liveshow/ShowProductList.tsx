@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react';
+import { productTagLabel } from '@/types/catalogLabels';
 import { Search } from 'lucide-react';
 import { ReelProduct, ReelTab } from '../../types';
 import { LiveDot } from '../ui/LiveDot';
@@ -17,15 +18,6 @@ const TABS: { id: ReelTab; label: string }[] = [
   { id: 'giveaways', label: 'Бэлэг' },
   { id: 'sold', label: 'Зарагдсан' },
 ];
-
-/** Өгөгдлийн шошгыг харагдац руу буулгана — `tagClass`-ийн түлхүүр хэвээр. */
-const TAG_LABELS: Record<string, string> = {
-  'Live now': 'Шууд явж байна',
-  'Sold': 'Зарагдсан',
-  'Giveaway': 'Бэлэг',
-  'Buy now': 'Шууд авах',
-  'Follow to enter': 'Дагаад оролц',
-};
 
 const tagClass = (tag: string) => {
   if (tag === 'Live now') return 'bg-[var(--wn-live-soft)] text-[var(--wn-live)]';
@@ -64,10 +56,11 @@ export const ShowProductList: React.FC<ShowProductListProps> = ({
       {/* Ижил нэртэй бараа жагсаалтад орж болох тул нэрийг ганцаараа key болгож
           болохгүй. */}
       {products[activeTab].map((product, index) => (
-        <div
+        <button
+          type="button"
           key={`${product.name}-${index}`}
           onClick={() => onSelect(product)}
-          className="flex items-center gap-3 p-2 rounded-xl hover:bg-[var(--wn-accent-wash)] cursor-pointer transition-colors"
+          className="flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors hover:bg-[var(--wn-accent-wash)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--wn-accent)]"
         >
           <div className="w-[48px] h-[48px] rounded-lg bg-[var(--wn-shot)] shrink-0 relative overflow-hidden">
             {product.image && (
@@ -82,9 +75,9 @@ export const ShowProductList: React.FC<ShowProductListProps> = ({
             </div>
           </div>
           <div className={`px-2 py-1 rounded-md text-[10px] font-[700] shrink-0 ${tagClass(product.tag)}`}>
-            {TAG_LABELS[product.tag] ?? product.tag}
+            {productTagLabel(product.tag)}
           </div>
-        </div>
+        </button>
       ))}
     </div>
   </>
