@@ -222,7 +222,7 @@ export const postliveshow = async (c: Context) => {
     try {
         const seller_id = c.get("userId")
         const body = await c.req.json()
-        const { title, thumbnail_url, livekit_room_name, viewer_count, category, tags, sponsored, status, started_at } = body
+        const { title, thumbnail_url, livekit_room_name, viewer_count, category, tags, sponsored, status, started_at, type } = body
         if (!seller_id || !title || !livekit_room_name) {
             return c.json({
                 message: "shaardlagtai medeelel dutuu bn"
@@ -230,7 +230,7 @@ export const postliveshow = async (c: Context) => {
 
         }
         const data = await Live_Show.create({
-            seller_id, title, thumbnail_url, livekit_room_name, viewer_count, category, tags, sponsored, status, started_at
+            seller_id, title, thumbnail_url, livekit_room_name, viewer_count, category, tags, sponsored, status, started_at, type
         })
         return c.json({
             message: "Amjilttai hadgallaa", data

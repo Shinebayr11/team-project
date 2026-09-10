@@ -55,7 +55,7 @@ export const SellerOverview: React.FC = () => {
           tone="amber"
         />
         <KpiCard
-          title="Хүргэж өгөх лот"
+          title="Хүргэж өгөх бараа"
           value={overview.pendingHandover.length}
           caption="ялагчтайгаа холбогдоно уу"
           tone="coral"
@@ -91,13 +91,10 @@ export const SellerOverview: React.FC = () => {
             actionLabel="Харах"
             onAction={goToShows}
             subtitle={(show) =>
-              `₮${show.revenue.toLocaleString()} • ${show.soldCount} лот зарагдсан`
+              `₮${show.revenue.toLocaleString()} • ${show.soldCount} бараа зарагдсан`
             }
-            emptyMessage={
-              overview.loading
-                ? "Уншиж байна..."
-                : "Дууссан шууд дамжуулалт алга байна."
-            }
+            loading={overview.loading}
+            emptyMessage="Дууссан шууд дамжуулалт алга байна."
           />
         </div>
       </div>

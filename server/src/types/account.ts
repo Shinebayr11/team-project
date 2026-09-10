@@ -26,6 +26,7 @@ export interface AccountSettings {
   display_name: string
   bio?: string
   avatar_url?: string
+  cover_url?: string
   preferences: AccountPreferences
   notifications: AccountNotifications
 }
@@ -37,6 +38,9 @@ export interface AccountSettings {
 export interface AccountUpdateBody {
   display_name?: string
   bio?: string
+  /** Cloudinary-гийн хаяг. Хоосон мөр нь "зургаа хас" гэсэн үг. */
+  avatar_url?: string
+  cover_url?: string
   preferences?: AccountPreferences
   notifications?: AccountNotifications
 }

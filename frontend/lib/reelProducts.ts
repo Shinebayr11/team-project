@@ -1,5 +1,6 @@
 import { ReelProduct, ReelTab } from "@/types"
 import { AuctionProduct, Listing, isActive } from "@/hooks/useAuction"
+import { ShowType, allowsBuyNow } from "@/lib/liveShows"
 import { ShowProduct, productOfEntry } from "@/hooks/useShowProducts"
 
 /**
@@ -8,8 +9,12 @@ import { ShowProduct, productOfEntry } from "@/hooks/useShowProducts"
  */
 export const buildProducts = (
   entries: ShowProduct[],
-  listing: Listing | null
+  listing: Listing | null,
+  showType?: ShowType | string
 ): Record<ReelTab, ReelProduct[]> => {
+  // Зөвхөн дуудлага худалдааны эфирт бараа ээлжээ хүлээж байгаа тул "Удахгүй";
+  // шууд худалдах эфирт мөр бүр яг одоо авах боломжтой.
+  const waitingTag = allowsBuyNow(showType) ? "Buy now" : "Удахгүй"
   const onBlock =
     listing && typeof listing.product_id === "object" ? listing.product_id : null
   const running = isActive(listing)
@@ -23,9 +28,10 @@ export const buildProducts = (
   const push = (product: AuctionProduct) => {
     const current = onBlock?._id === product._id
     const row: ReelProduct = {
+      id: product._id,
       name: product.name,
       price: current ? livePrice : String(product.price_coins ?? 0),
-      tag: current ? (running ? "Шууд явж байна" : "Зарагдсан") : "Удахгүй",
+      tag: current ? (running ? "Шууд явж байна" : "Зарагдсан") : waitingTag,
       live: current && running,
       image: product.images?.[0],
     }

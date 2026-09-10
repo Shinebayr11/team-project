@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from "react"
+import { SkeletonRows, SkeletonScreen } from "@/components/ui/Skeleton"
 import { Bell, Package, Trophy, Tag } from "lucide-react"
 import { useNavigate } from "@/lib/router"
 import { AuctionWin, useMyWins, winProduct, winSeller } from "@/hooks/useMyWins"
@@ -259,9 +260,9 @@ export const NotificationsMenu: React.FC = () => {
 
           <div className="max-h-[380px] overflow-y-auto">
             {loading || salesLoading ? (
-              <p className="p-4 text-[13px] text-[var(--wn-ink-3)]">
-                Уншиж байна...
-              </p>
+              <SkeletonScreen label="Мэдэгдлүүдийг уншиж байна">
+                <SkeletonRows rows={3} card={false} className="gap-0" />
+              </SkeletonScreen>
             ) : feed.length === 0 ? (
               <div className="p-6 text-center">
                 <Bell className="mx-auto size-6 text-[var(--wn-ink-4)]" />

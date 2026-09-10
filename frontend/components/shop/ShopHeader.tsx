@@ -20,7 +20,16 @@ export const ShopHeader: React.FC<ShopHeaderProps> = ({
 
   return (
     <>
-      <div className="h-[200px] w-full rounded-b-[20px] bg-gradient-to-br from-[var(--wn-accent-soft)] to-[var(--wn-surface-3)]" />
+      {/* Худалдагчийн тохиргооноос сонгосон ковер. Тавиагүй бол градиент. */}
+      <div className="relative h-[200px] w-full overflow-hidden rounded-b-[20px] bg-gradient-to-br from-[var(--wn-accent-soft)] to-[var(--wn-surface-3)]">
+        {seller.cover_url && (
+          <img
+            src={seller.cover_url}
+            alt=""
+            className="absolute inset-0 size-full object-cover"
+          />
+        )}
+      </div>
 
       {/* Аватар + нэр + товчнууд 320px дээр нэг мөрөнд багтахгүй тул
           sm-ээс доош хоёр давхар болно. */}

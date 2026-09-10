@@ -130,6 +130,8 @@ const userSchema = new Schema(
         display_name: { type: String, required: true },
         bio: { type: String, trim: true, maxlength: 300 },
         avatar_url: { type: String },
+        // Профайл, дэлгүүрийн хуудасны дээд талын өргөн зураг.
+        cover_url: { type: String },
         shop_name: { type: String },
         preferences: { type: preferencesSchema, required: true, default: () => ({}) },
         notifications: { type: notificationsSchema, required: true, default: () => ({}) },

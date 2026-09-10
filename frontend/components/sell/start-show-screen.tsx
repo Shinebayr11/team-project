@@ -17,6 +17,10 @@ import { Field } from "@/features/seller-hub/components/FormField"
 import { Input } from "@/components/ui/input"
 import { Select } from "@/components/ui/select"
 import { LiveDot } from "@/components/ui/LiveDot"
+import {
+  ShowTypePicker,
+  asShowType,
+} from "@/features/seller-hub/components/shows/ShowTypePicker"
 import { ProductCatalog } from "@/components/sell/product-catalog"
 import { ShowLineup } from "@/components/sell/show-lineup"
 import { PastShows } from "@/components/sell/past-shows"
@@ -52,6 +56,9 @@ export function StartShowScreen() {
   const [category, setCategory] = useState(
     params.get("category") || EXPLORE_CATEGORIES[0].name
   )
+  // Товлосон дамжуулалтаас ирсэн бол хэлбэрийг нь дагана — худалдагч товлохдоо
+  // аль хэдийн сонгосон байдаг тул дахин асуухдаа буруу утга үзүүлэх ёсгүй.
+  const [showType, setShowType] = useState(() => asShowType(params.get("type")))
   const [starting, setStarting] = useState(false)
   const [startError, setStartError] = useState<string | null>(null)
 
@@ -117,6 +124,7 @@ export function StartShowScreen() {
             livekit_room_name: roomName,
             status: "live",
             category,
+            type: showType,
             // Хэзээ эхэлснийг тэмдэглэнэ: нүүрний том карт хамгийн сүүлийн
             // шууд дамжуулалтыг үүгээр сонгодог, host дэлгэцийн үргэлжлэх хугацаа
             // (`useElapsed`) ч үүнийг уншдаг.
@@ -282,6 +290,8 @@ export function StartShowScreen() {
                     </p>
                   )}
                 </div>
+
+                <ShowTypePicker value={showType} onChange={setShowType} />
 
                 <button
                   type="button"

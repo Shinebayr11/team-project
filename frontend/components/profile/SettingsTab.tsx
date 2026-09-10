@@ -3,10 +3,15 @@
 import React, { useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { DISPLAY_NAME_KEY, useDisplayName } from '@/hooks/useDisplayName';
+import { ProfileImagesCard } from '@/components/settings/ProfileImagesCard';
+import type { AccountSettings, AccountUpdateBody } from '@/types/account';
 
 interface SettingsTabProps {
   // React 19 types useRef<T>(null) as RefObject<T | null>.
   nameInputRef: React.RefObject<HTMLInputElement | null>;
+  /** `Profile` дээр нэг удаа уншсан бүртгэл — уншиж дуустал `null`. */
+  account: AccountSettings | null;
+  saveAccount: (body: AccountUpdateBody) => Promise<unknown>;
   onSave: () => void;
 }
 
@@ -15,7 +20,7 @@ const NOTIFICATIONS = ['Захиалгын шинэчлэл', 'Дагасан х
 const fieldClass = 'w-full h-[44px] rounded-xl border border-[var(--wn-line-2)] px-4 text-[15px] text-[var(--wn-ink)] outline-none focus:border-[var(--wn-accent)] transition-colors';
 const labelClass = 'block text-[13px] font-[700] text-[var(--wn-ink-2)] mb-2';
 
-export const SettingsTab: React.FC<SettingsTabProps> = ({ nameInputRef, onSave }) => {
+export const SettingsTab: React.FC<SettingsTabProps> = ({ nameInputRef, account, saveAccount, onSave }) => {
   const { user } = useUser();
   const { displayName } = useDisplayName();
   const [name, setName] = useState(displayName);
@@ -45,6 +50,15 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ nameInputRef, onSave }
   return (
   <div className="flex flex-col gap-6 max-w-[480px]">
     <h2 className="text-[24px] font-[800] text-[var(--wn-ink)]">Тохиргоо</h2>
+
+    {account && (
+      <ProfileImagesCard
+        name={displayName}
+        avatarUrl={account.avatar_url}
+        coverUrl={account.cover_url}
+        save={saveAccount}
+      />
+    )}
 
     <div>
       <label className={labelClass} htmlFor="displayName">Харагдах нэр</label>

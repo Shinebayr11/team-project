@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
+import { Skeleton, SkeletonRows, SkeletonScreen } from '@/components/ui/Skeleton';
 import { ChevronRight } from 'lucide-react';
 import { HomeShow } from '../../types';
 import { MyPurchase } from '@/hooks/useMyPurchases';
@@ -50,7 +51,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
     </div>
 
     {loading ? (
-      <p className="text-[15px] font-[600] text-[var(--wn-ink-3)]">Уншиж байна...</p>
+      <SkeletonScreen className="flex flex-col gap-4">
+        <Skeleton className="h-5 w-48" />
+        <SkeletonRows rows={3} />
+      </SkeletonScreen>
     ) : purchases.length > 0 ? (
       <div>
         <SectionHeader title="Сүүлийн худалдан авалт" onViewAll={() => onNavigate('purchases')} />

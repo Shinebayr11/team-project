@@ -31,6 +31,9 @@ const startShowHref = (show?: SellerShow) => {
     showId: show.id,
     title: show.title,
     category: show.category,
+    // Хэлбэрийг нь ч дагуулна — товлохдоо сонгосон утга эфирт орох үед
+    // алдагдвал худалдагч дахин сонгох шаардлагатай болно.
+    type: show.type,
   })
   return `/seller/shows/start?${params.toString()}`
 }
@@ -74,7 +77,7 @@ export const SellerShows: React.FC = () => {
     .filter((s) => s.id === selectedId)
     .map(withLiveStatus)[0]
 
-  const handleCreate = (draft: ShowDraft) => {
+  const handleCreate = (draft: ShowDraft, status: "SCHEDULED" | "DRAFT") => {
     if (!draft.title.trim() || !draft.scheduledAt) {
       addToast("Шаардлагатай бүх талбарыг бөглөнө үү.")
       return
@@ -85,9 +88,16 @@ export const SellerShows: React.FC = () => {
       description: draft.description,
       type: draft.type,
       scheduledAt: new Date(draft.scheduledAt).toISOString(),
-      status: "DRAFT",
+      status,
     })
-    addToast("Шууд дамжуулалт ноорог хэлбэрээр үүслээ.")
+    addToast(
+      status === "SCHEDULED"
+        ? "Шууд дамжуулалт товлогдлоо."
+        : "Шууд дамжуулалт ноорог хэлбэрээр хадгалагдлаа."
+    )
+    // Товлосон бол шинэ дамжуулалт нь ЯГ ТЭР табд харагдана — үүсгэсэн зүйлээ
+    // «Бүгд» дотроос хайхгүй.
+    setActiveTab(status)
     setMode("list")
   }
 

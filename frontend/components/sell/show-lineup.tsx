@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useState } from "react"
+import { SkeletonRows, SkeletonScreen } from "@/components/ui/Skeleton"
 import { ListOrdered, Plus, X } from "lucide-react"
 import { ProductThumb } from "@/components/ui/ProductThumb"
 import { useApiClient } from "@/hooks/useApiClient"
@@ -121,7 +122,9 @@ export function ShowLineup({ lineup }: { lineup: ShowLineupState }) {
 
       <div className="mt-4 flex flex-col gap-2">
         {loading ? (
-          <p className="text-[14px] text-[var(--wn-ink-3)]">Уншиж байна...</p>
+          <SkeletonScreen label="Лотуудыг уншиж байна">
+            <SkeletonRows rows={3} />
+          </SkeletonScreen>
         ) : entries.length === 0 ? (
           <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center">
             <ListOrdered className="mx-auto size-6 text-[var(--wn-ink-3)]" />

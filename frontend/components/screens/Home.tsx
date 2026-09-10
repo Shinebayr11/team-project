@@ -9,6 +9,7 @@ import { HomeFeedHeader } from '@/components/home/HomeFeedHeader';
 import { FeaturedShow } from '@/components/home/FeaturedShow';
 import { CategorySection } from '@/components/home/CategorySection';
 import { ShowGrid } from '@/components/home/ShowGrid';
+import { Skeleton, SkeletonScreen, SkeletonCardGrid } from '@/components/ui/Skeleton';
 
 export const Home: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,10 +24,25 @@ export const Home: React.FC = () => {
 
   const clearSearch = () => setSearchParams(prev => { prev.delete('q'); return prev; });
 
+  // Хажуугийн самбар нь тэжээлээс хамаардаггүй тул уншиж байх үед ч ЖИНХЭНЭ
+  // байдлаараа зурагдана — зөвхөн тэжээл нь орлуулагдана.
   if (loading) {
     return (
-      <div className="max-w-[1440px] mx-auto flex items-center justify-center px-4 py-16 sm:px-6 lg:px-7 lg:py-24">
-        <div className="w-8 h-8 border-2 border-[var(--wn-ink-3)] border-t-transparent rounded-full animate-spin opacity-50" />
+      <div className="max-w-[1440px] mx-auto flex gap-8 px-4 py-6 sm:px-6 lg:px-7 lg:py-8">
+        <HomeSidebar />
+        <SkeletonScreen className="flex-1 min-w-0">
+          <Skeleton className="h-9 w-48 mb-6" />
+          <div className="flex items-center gap-2 mb-8">
+            {["w-16", "w-32", "w-28", "w-24"].map((width) => (
+              <Skeleton key={width} className={`h-8 rounded-full ${width}`} />
+            ))}
+          </div>
+          <Skeleton className="h-[260px] sm:h-[320px] lg:h-[360px] w-full rounded-[24px] mb-8 lg:mb-12" />
+          <SkeletonCardGrid
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10"
+            count={8}
+          />
+        </SkeletonScreen>
       </div>
     );
   }
@@ -63,8 +79,11 @@ export const Home: React.FC = () => {
           <>
             <ShowGrid shows={displayShows} />
             {hasMore && (
-              <div ref={loaderRef} className="h-20 w-full flex items-center justify-center mt-8">
-                <div className="w-6 h-6 border-2 border-[var(--wn-ink-3)] border-t-transparent rounded-full animate-spin opacity-50" />
+              <div ref={loaderRef} className="mt-10 w-full">
+                <SkeletonCardGrid
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10"
+                  count={4}
+                />
               </div>
             )}
           </>

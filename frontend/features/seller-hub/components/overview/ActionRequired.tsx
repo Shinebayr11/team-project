@@ -25,7 +25,7 @@ export const ActionRequired: React.FC<ActionRequiredProps> = ({
         <ActionCard
           icon={ShoppingBag}
           tone="red"
-          title={`${pendingHandover} лот хүргэлт хүлээж байна`}
+          title={`${pendingHandover} бараа хүргэлт хүлээж байна`}
           description="Ялагчтай холбогдож хүргэлт, төлбөрөө тохирно уу."
           onClick={() => navigate('/seller/orders')}
         />

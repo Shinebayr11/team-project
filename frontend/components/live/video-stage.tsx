@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react"
 import "@livekit/components-styles"
@@ -8,6 +9,11 @@ import { useApiClient } from "@/hooks/useApiClient"
 import { writeActiveStream } from "@/hooks/useActiveStream"
 import { useDisplayName } from "@/hooks/useDisplayName"
 import { useAuction } from "@/hooks/useAuction"
+import { useShowProducts } from "@/hooks/useShowProducts"
+import { buildProducts } from "@/lib/reelProducts"
+import { ShowType, allowsAuction } from "@/lib/liveShows"
+import { ReelTab } from "@/types"
+import { ShowProductList } from "@/components/liveshow/ShowProductList"
 import { LiveChat } from "@/components/live/live-chat"
 import { BidsPanel } from "@/components/live/bids-panel"
 import { HostControls } from "@/components/live/host-controls"
@@ -25,16 +31,23 @@ export function VideoStage({
   serverUrl,
   isHost,
   showId,
+  showType,
 }: {
   token: string
   serverUrl: string
   isHost: boolean
   showId?: string
+  /** Худалдагчийн сонгосон худалдааны хэлбэр — дуудлага худалдааны самбар
+   *  харагдах эсэхийг шийднэ. */
+  showType?: ShowType
 }) {
   const router = useRouter()
   const { callApi } = useApiClient()
   const { displayName } = useDisplayName()
   const { listing, bids, startAuction, closeAuction } = useAuction(showId)
+  const lineup = useShowProducts(showId)
+  const [tab, setTab] = useState<ReelTab>("buynow")
+  const auctionOn = allowsAuction(showType)
 
   const endStream = () => {
     if (showId) {
@@ -68,12 +81,31 @@ export function VideoStage({
             самбар мөрийн шууд хүүхэд болно. Гар утсан дээр л өндөр өгнө. */}
         <div className="flex h-[360px] gap-4 overflow-x-auto lg:contents">
           <LiveChat hostName={displayName} />
-          <BidsPanel
-            listing={listing}
-            bids={bids}
-            onStart={startAuction}
-            onClose={closeAuction}
-          />
+          {auctionOn ? (
+            <BidsPanel
+              listing={listing}
+              bids={bids}
+              lineup={lineup.entries}
+              onStart={startAuction}
+              onClose={closeAuction}
+            />
+          ) : (
+            // Шууд худалдах эфирт лот гаргах зүйл алга — худалдагчид хэрэгтэй
+            // нь үзэгчид яг юуг ямар үнээр харж байгаа нь.
+            <div className="flex h-full w-[280px] shrink-0 flex-col overflow-hidden rounded-[20px] border border-[var(--wn-line)] bg-white">
+              <div className="border-b border-[var(--wn-line)] p-3">
+                <h2 className="text-[14px] font-[800] text-[var(--wn-ink)]">
+                  Эфирийн бараа
+                </h2>
+              </div>
+              <ShowProductList
+                products={buildProducts(lineup.entries, null, showType)}
+                activeTab={tab}
+                onTabChange={setTab}
+                onSelect={() => {}}
+              />
+            </div>
+          )}
         </div>
       </div>
 

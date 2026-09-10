@@ -7,6 +7,8 @@ import type { SellerProfile, SellerSettings } from "@/types/seller"
  */
 export const DEFAULT_SELLER_SETTINGS: SellerSettings = {
   selling: { defaultListingType: "buy_it_now", acceptOffers: true },
+  // `listing` нь тохиргооны дэлгэцээс хасагдсан — эдгээр нь одоо шинэ барааны
+  // маягтын тогтмол урьдчилсан утга (`productDraft.ts`) болж үлдэв.
   listing: { defaultCategory: "Sneakers", defaultCondition: "New", defaultQuantity: 1 },
   shipping: { defaultCarrier: "USPS", processingDays: 2 },
   orders: { autoConfirm: false, packingSlipNote: "" },

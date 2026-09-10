@@ -1,10 +1,11 @@
 "use client"
 
 import { useCallback, useRef, useState } from "react"
+import { SkeletonRows, SkeletonScreen } from "@/components/ui/Skeleton"
 import { ImagePlus, Package, Plus, X } from "lucide-react"
 import { useApiClient } from "@/hooks/useApiClient"
 import { AuctionProduct } from "@/hooks/useAuction"
-import { isImageUploadReady, uploadImage } from "@/lib/cloudinary"
+import { uploadFile } from "@/lib/upload"
 import { lineupEntryOf, ShowLineupState } from "@/hooks/useShowProducts"
 import { ProductThumb } from "@/components/ui/ProductThumb"
 import { useLoad } from "@/hooks/useLoad"
@@ -59,7 +60,7 @@ export function ProductCatalog({
     setUploading(true)
     setError(null)
     try {
-      setImageUrl(await uploadImage(file))
+      setImageUrl(await uploadFile(file))
     } catch (uploadError) {
       setError(
         uploadError instanceof Error
@@ -75,7 +76,9 @@ export function ProductCatalog({
 
   const load = useCallback(async () => {
     try {
-      const res = await callApi<{ products: AuctionProduct[] }>("/api/product/mine")
+      const res = await callApi<{ products: AuctionProduct[] }>(
+        "/api/product/mine"
+      )
       setProducts(res.products)
     } catch {
       setError("Бараагаа уншиж чадсангүй")
@@ -128,7 +131,11 @@ export function ProductCatalog({
           </p>
         </div>
         {!adding && (
-          <button type="button" onClick={() => setAdding(true)} className={pillOutline}>
+          <button
+            type="button"
+            onClick={() => setAdding(true)}
+            className={pillOutline}
+          >
             <Plus className="mr-1 size-3.5" />
             Нэмэх
           </button>
@@ -137,7 +144,10 @@ export function ProductCatalog({
 
       {adding && (
         <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
-          <label className="block text-[13px] font-[700] text-[var(--wn-ink-2)]" htmlFor="product-name">
+          <label
+            className="block text-[13px] font-[700] text-[var(--wn-ink-2)]"
+            htmlFor="product-name"
+          >
             Барааны нэр
             <input
               id="product-name"
@@ -150,7 +160,10 @@ export function ProductCatalog({
           </label>
 
           <div className="mt-3 flex gap-3">
-            <label className="flex-1 text-[13px] font-[700] text-[var(--wn-ink-2)]" htmlFor="product-price">
+            <label
+              className="flex-1 text-[13px] font-[700] text-[var(--wn-ink-2)]"
+              htmlFor="product-price"
+            >
               Үнэ (₮)
               <input
                 id="product-price"
@@ -161,7 +174,10 @@ export function ProductCatalog({
                 className={fieldClass}
               />
             </label>
-            <label className="w-28 text-[13px] font-[700] text-[var(--wn-ink-2)]" htmlFor="product-stock">
+            <label
+              className="w-28 text-[13px] font-[700] text-[var(--wn-ink-2)]"
+              htmlFor="product-stock"
+            >
               Тоо
               <input
                 id="product-stock"
@@ -174,51 +190,55 @@ export function ProductCatalog({
             </label>
           </div>
 
-          {isImageUploadReady() && (
-            <div className="mt-3">
-              <span className="text-[13px] font-[700] text-[var(--wn-ink-2)]">Зураг</span>
-              <input
-                ref={fileInputRef}
-                id="product-image"
-                type="file"
-                accept="image/*"
-                className="sr-only"
-                onChange={(e) => pickImage(e.target.files?.[0])}
-              />
+          <div className="mt-3">
+            <span className="text-[13px] font-[700] text-[var(--wn-ink-2)]">
+              Зураг
+            </span>
+            <input
+              ref={fileInputRef}
+              id="product-image"
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(e) => pickImage(e.target.files?.[0])}
+            />
 
-              {imageUrl ? (
-                <div className="relative mt-1 w-fit">
-                  {/* Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо
+            {imageUrl ? (
+              <div className="relative mt-1 w-fit">
+                {/* Blob-ийн хаяг тул next/image-ийн домэйн тохиргоо
                       шаардахгүйн тулд энгийн img ашиглав. */}
-                  <img
-                    src={imageUrl}
-                    alt="Барааны зураг"
-                    className="size-24 rounded-xl border border-[var(--wn-line)] object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setImageUrl(null)}
-                    aria-label="Зургийг хасах"
-                    className="absolute -top-2 -right-2 rounded-full bg-[var(--wn-ink)] p-1 text-white"
-                  >
-                    <X className="size-3" />
-                  </button>
-                </div>
-              ) : (
-                <label
-                  htmlFor="product-image"
-                  className="mt-1 flex size-24 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[var(--wn-line-3)] text-[var(--wn-ink-3)] transition-colors hover:bg-[var(--wn-accent-wash)]"
+                <img
+                  src={imageUrl}
+                  alt="Барааны зураг"
+                  className="size-24 rounded-xl border border-[var(--wn-line)] object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => setImageUrl(null)}
+                  aria-label="Зургийг хасах"
+                  className="absolute -top-2 -right-2 rounded-full bg-[var(--wn-ink)] p-1 text-white"
                 >
-                  <ImagePlus className="size-5" />
-                  <span className="mt-1 text-[11px]">
-                    {uploading ? "..." : "Сонгох"}
-                  </span>
-                </label>
-              )}
-            </div>
-          )}
+                  <X className="size-3" />
+                </button>
+              </div>
+            ) : (
+              <label
+                htmlFor="product-image"
+                className="mt-1 flex size-24 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[var(--wn-line-3)] text-[var(--wn-ink-3)] transition-colors hover:bg-[var(--wn-accent-wash)]"
+              >
+                <ImagePlus className="size-5" />
+                <span className="mt-1 text-[11px]">
+                  {uploading ? "..." : "Сонгох"}
+                </span>
+              </label>
+            )}
+          </div>
 
-          {error && <p className="mt-2 text-[13px] font-[600] text-[var(--wn-live-deep)]">{error}</p>}
+          {error && (
+            <p className="mt-2 text-[13px] font-[600] text-[var(--wn-live-deep)]">
+              {error}
+            </p>
+          )}
 
           <div className="mt-4 flex gap-2">
             <button
@@ -245,7 +265,9 @@ export function ProductCatalog({
 
       <div className="mt-4 flex flex-col gap-2">
         {loading ? (
-          <p className="text-[14px] text-[var(--wn-ink-3)]">Уншиж байна...</p>
+          <SkeletonScreen label="Барааг уншиж байна">
+            <SkeletonRows rows={3} />
+          </SkeletonScreen>
         ) : products.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-[var(--wn-line-3)] p-6 text-center">
             <Package className="mx-auto size-6 text-[var(--wn-ink-3)]" />
@@ -287,7 +309,11 @@ export function ProductCatalog({
                 type="button"
                 onClick={() => putOnShow(product._id)}
                 disabled={!!onShow || busy}
-                title={onShow ? 'Шууд дамжуулалт дээр гарсан' : 'Шууд дамжуулалт дээр гаргах'}
+                title={
+                  onShow
+                    ? "Шууд дамжуулалт дээр гарсан"
+                    : "Шууд дамжуулалт дээр гаргах"
+                }
                 className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3 transition-colors hover:bg-gray-50 disabled:cursor-default disabled:hover:bg-transparent"
               >
                 {row}
@@ -304,7 +330,9 @@ export function ProductCatalog({
         )}
 
         {showError && (
-          <p className="text-[13px] font-[600] text-[var(--wn-live-deep)]">{showError}</p>
+          <p className="text-[13px] font-[600] text-[var(--wn-live-deep)]">
+            {showError}
+          </p>
         )}
       </div>
     </div>

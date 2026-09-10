@@ -5,9 +5,12 @@ import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react"
 import "@livekit/components-styles"
 
 import { buildProducts } from "@/lib/reelProducts"
+import { useNavigate } from "@/lib/router"
+import { useStore } from "@/store"
 import { useAuction } from "@/hooks/useAuction"
+import { useRequireAuth } from "@/hooks/useRequireAuth"
 import { useShowProducts } from "@/hooks/useShowProducts"
-import { LiveShowDoc } from "@/lib/liveShows"
+import { LiveShowDoc, allowsAuction, allowsBuyNow } from "@/lib/liveShows"
 import { ReelTab } from "@/types"
 import { ShowProductList } from "@/components/liveshow/ShowProductList"
 import { LiveChat } from "@/components/live/live-chat"
@@ -37,7 +40,16 @@ export function LiveViewer({
 }) {
   const { listing, bids, placeBid } = useAuction(showId)
   const { entries } = useShowProducts(showId)
+  const navigate = useNavigate()
+  const { openModal } = useStore()
+  const { requireAuth } = useRequireAuth()
   const [tab, setTab] = useState<ReelTab>("buynow")
+
+  // Худалдагчийн сонгосон хэлбэр эфирт юу харагдахыг шийднэ: цэвэр дуудлага
+  // худалдаанд шууд авах товч утгагүй (үнэ нь саналаар тодорно), цэвэр шууд
+  // худалдаанд дуудлага худалдааны самбар харуулах юм алга.
+  const auctionOn = allowsAuction(show?.type)
+  const buyNowOn = allowsBuyNow(show?.type)
 
   const sellerDoc =
     typeof show?.seller_id === "object" ? show.seller_id : undefined
@@ -60,7 +72,9 @@ export function LiveViewer({
           сольж байна. */}
       <div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-4 py-4 lg:h-[calc(100vh-68px)] lg:flex-row">
         <ViewerStage shareLabel={`whynot.live/${seller}`} className="lg:order-2">
-          <AuctionBidPanel listing={listing} bids={bids} onBid={placeBid} />
+          {auctionOn && (
+            <AuctionBidPanel listing={listing} bids={bids} onBid={placeBid} />
+          )}
         </ViewerStage>
 
         {/* `lg:contents` — дэлгэц дээр энэ бүрхүүл layout-аас арилж, гурван
@@ -74,10 +88,30 @@ export function LiveViewer({
               category={category}
             />
             <ShowProductList
-              products={buildProducts(entries, listing)}
+              products={buildProducts(entries, listing, show?.type)}
               activeTab={tab}
               onTabChange={setTab}
-              onSelect={() => {}}
+              onBuy={
+                buyNowOn
+                  ? (product) =>
+                      requireAuth(() =>
+                        openModal("buy", {
+                          product: {
+                            name: product.name,
+                            price: product.price,
+                            tag: "Buy now" as const,
+                          },
+                          seller,
+                          qty: 1,
+                        })
+                      )
+                  : undefined
+              }
+              // Эфирт гарч буй барааг дарахад дэлгэрэнгүй нь нээгдэнэ. Mock
+              // reel-д id байдаггүй тул зөвхөн жинхэнэ бараанд ажиллана.
+              onSelect={(product) => {
+                if (product.id) navigate(`/product?id=${product.id}`)
+              }}
             />
           </div>
 
