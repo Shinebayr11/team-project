@@ -1,5 +1,12 @@
 import { Hono } from "hono";
-import { getMyOrders, getMySellerOrders, getOrder, postOrder } from "../controllers/orderController.js";
+import {
+    getMyOrders,
+    getMySellerOrders,
+    getOrder,
+    postOrder,
+    updateOrderFulfillment,
+    updateOrderTracking,
+} from "../controllers/orderController.js";
 import { requireAuth } from "../middleware/auth.js";
 
 const orderRoutes = new Hono()
@@ -8,4 +15,6 @@ orderRoutes.get("/mine", requireAuth, getMyOrders)
 orderRoutes.get("/seller", requireAuth, getMySellerOrders)
 orderRoutes.get("/", getOrder)
 orderRoutes.post("/", requireAuth, postOrder)
+orderRoutes.patch("/:id/status", requireAuth, updateOrderFulfillment)
+orderRoutes.patch("/:id/tracking", requireAuth, updateOrderTracking)
 export default orderRoutes

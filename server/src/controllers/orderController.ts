@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { Order } from "../models/Order.js";
+import { FULFILLMENT_STATUSES, Order } from "../models/Order.js";
 import { Product } from "../models/Product.js";
 import { Wallet } from "../models/Wallet.js";
 import { CoinTransaction } from "../models/Cointransaction.js";
@@ -211,6 +211,93 @@ export const getMySellerOrders = async (c: Context) => {
         return c.json({ data }, 200)
     } catch (error) {
         console.error("getMySellerOrders алдаа:", error)
+        return c.json({ message: "Aldaa garlaa" }, 500)
+    }
+}
+
+/** Захиалгыг барааны эзэн худалдагч л өөрчлөх эрхтэй. */
+const findOwnedOrder = async (id: string, sellerId: unknown) => {
+    const order = await Order.findById(id).populate("product_id", "seller_id")
+    if (!order) return { order: null, forbidden: false }
+    const product = order.product_id as unknown as { seller_id?: unknown } | null
+    const forbidden = !product?.seller_id || String(product.seller_id) !== String(sellerId)
+    return { order, forbidden }
+}
+
+/**
+ * PATCH /api/order/:id/status
+ *
+ * Худалдагч захиалгын хүргэлтийн явцыг ахиулна (Хүлээгдэж буй →
+ * Боловсруулж буй → Хүргэхэд бэлэн → Хүргэгдсэн гэх мэт).
+ */
+export const updateOrderFulfillment = async (c: Context) => {
+    try {
+        const userId = c.get("userId")
+        const id = c.req.param("id")
+        const body = await c.req.json()
+        const fulfillment_status = body.fulfillment_status as string
+
+        if (!id) {
+            return c.json({ message: "Захиалга олдсонгүй" }, 404)
+        }
+        if (!FULFILLMENT_STATUSES.includes(fulfillment_status as (typeof FULFILLMENT_STATUSES)[number])) {
+            return c.json({ message: "Төлөв буруу байна" }, 400)
+        }
+
+        const { order, forbidden } = await findOwnedOrder(id, userId)
+        if (!order) {
+            return c.json({ message: "Захиалга олдсонгүй" }, 404)
+        }
+        if (forbidden) {
+            return c.json({ message: "Энэ захиалгыг өөрчлөх эрхгүй байна" }, 403)
+        }
+
+        order.fulfillment_status = fulfillment_status as (typeof FULFILLMENT_STATUSES)[number]
+        await order.save()
+
+        return c.json({ message: "Шинэчлэгдлээ", data: order }, 200)
+    } catch (error) {
+        console.error("updateOrderFulfillment алдаа:", error)
+        return c.json({ message: "Aldaa garlaa" }, 500)
+    }
+}
+
+/**
+ * PATCH /api/order/:id/tracking
+ *
+ * Захиалгыг илгээсэн гэж тэмдэглэнэ — тээвэрлэгч, хүргэлтийн кодыг
+ * хадгалж, хүргэлтийн явцыг шууд "SHIPPED" болгоно.
+ */
+export const updateOrderTracking = async (c: Context) => {
+    try {
+        const userId = c.get("userId")
+        const id = c.req.param("id")
+        const body = await c.req.json()
+        const { carrier, tracking_number } = body
+
+        if (!id) {
+            return c.json({ message: "Захиалга олдсонгүй" }, 404)
+        }
+        if (!carrier || !tracking_number) {
+            return c.json({ message: "Тээвэрлэгч, хүргэлтийн код шаардлагатай" }, 400)
+        }
+
+        const { order, forbidden } = await findOwnedOrder(id, userId)
+        if (!order) {
+            return c.json({ message: "Захиалга олдсонгүй" }, 404)
+        }
+        if (forbidden) {
+            return c.json({ message: "Энэ захиалгыг өөрчлөх эрхгүй байна" }, 403)
+        }
+
+        order.carrier = carrier
+        order.tracking_number = tracking_number
+        order.fulfillment_status = "SHIPPED"
+        await order.save()
+
+        return c.json({ message: "Шинэчлэгдлээ", data: order }, 200)
+    } catch (error) {
+        console.error("updateOrderTracking алдаа:", error)
         return c.json({ message: "Aldaa garlaa" }, 500)
     }
 }
