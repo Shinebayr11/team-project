@@ -1,14 +1,19 @@
-// Ажиллуулах:  npm run seed:demo-shop          — үүсгэнэ / шинэчилнэ
-//              npm run seed:demo-shop -- --clean — өөрийн үүсгэснийг устгана
+// Ажиллуулах:  npm run seed:demo-shop          — бараа бөглөж, захиалга үүсгэнэ
+//              npm run seed:demo-shop -- --clean — үүсгэсэн захиалгыг устгана
 //
 // Зорилго: НЭГ худалдагчийн Seller Hub-ыг (Бараа, Захиалга, Аналитик) бодит
 // мэт өгөгдлөөр дүүргэх. Захиалга нь `Order` цуглуулгад `seller_id`-тайгаа
 // сууна — `GET /api/order/mine` зөвхөн эзэн нь уншдаг тул ӨӨР ХЭН Ч энэ
-// өгөгдлийг харахгүй. Repo дахь `seedOrders.ts` нь бүх зочинд ачаалагддаг тул
-// тэр замаар "зөвхөн нэг хүнд" гэдэг боломжгүй байсан.
+// өгөгдлийг харахгүй.
 //
-// Бүх бичлэг `demo_seed: true` тэмдэгтэй тул `--clean` нь бодит бараа,
-// захиалганд хэзээ ч хүрэхгүй.
+// БАРААГ ЭНЭ SCRIPT ҮҮСГЭХГҮЙ. Худалдагч зургаа аппаараа аль хэдийн оруулсан
+// бөгөөд нэр, үнэ нь хоосон үлдсэн байдаг. Энэ нь тэдгээрийг ЗУРГААР НЬ олж
+// дэлгэрэнгүйг нь бөглөнө — ингэснээр байршуулсан зураг хэвээр үлдэж,
+// давхардсан бараа ч үүсэхгүй.
+//
+// `--clean` нь ЗӨВХӨН захиалгыг арилгана. Барааны нэр, үнэ буцаж "." болохгүй —
+// түүнийг аппаасаа засна.
+import assert from "node:assert"
 import mongoose from "mongoose"
 import { connectDb } from "../src/lib/db.js"
 import { Order } from "../src/models/Order.js"
@@ -27,37 +32,32 @@ const CLERK_USER_ID = "user_3IQq6KOP8O0s87IgJ6OYVgiMHKw"
  */
 const DAYS = 90
 
-/**
- * Барааны зураг: `frontend/public/demo/` доторх файлууд.
- *
- * Vercel Blob руу байршуулах шаардлагагүй — Next тэдгээрийг өөрөө түгээх тул
- * `/demo/<нэр>` гэсэн харьцангуй зам хөтөч дээр шууд ажиллана. Файлыг тэр
- * хавтсанд хийгээд доорх нэрсийг таарууллаа гэхэд болно.
- */
-const IMG = (name: string) => `/demo/${name}`
-
 interface Seed {
+    /**
+     * Зургийн хаяг доторх ЦОРЫН ГАНЦ хэсэг. Аль бараанд тохирохыг үүгээр олно —
+     * Mongo-гийн id нь орчин бүрд өөр тул script дотор бичих нь эмзэг.
+     */
+    match: string
     name: string
     sku: string
     price: number
     stock: number
     category: string
     condition: string
-    images: string[]
     description: string
     /** Эрэлтийн жин — захиалгад хэр олон удаа таарахыг тодорхойлно. */
     weight: number
 }
 
 const PRODUCTS: Seed[] = [
-    { name: "Half-Zip Sweatshirt", sku: "UNQ-HZ-001", price: 129000, stock: 28, category: "Fashion", condition: "New", images: [IMG("halfzip-pair.jpg")], description: "Зөөлөн флисс, зогсоо захтай, хагас цахилгаантай. Хар ба цөцгий өнгөтэй.", weight: 16 },
-    { name: "Wool Bomber Jacket — Brown", sku: "UNQ-BM-002", price: 449000, stock: 9, category: "Fashion", condition: "New", images: [IMG("bomber-wool-brown.jpg")], description: "Ноосон холимог, эргүүлж болох зогсоо зах, резинэн ханцуйвч.", weight: 2 },
-    { name: "Knit Zip Polo — Stone", sku: "UNQ-PL-003", price: 149000, stock: 22, category: "Fashion", condition: "New", images: [IMG("polo-knit-stone.jpg")], description: "Сүлжмэл, богино ханцуйтай, унжсан хэлбэртэй хагас цахилгаант поло.", weight: 13 },
-    { name: "Ribbed Tank Top — Charcoal", sku: "UNQ-TT-004", price: 45000, stock: 64, category: "Fashion", condition: "New", images: [IMG("tank-ribbed-charcoal.jpg")], description: "Угаалгын боловсруулалттай хөвөн; өнгөний жигд бус байдал нь загварын нэг хэсэг.", weight: 20 },
-    { name: "Tailored Trousers — Navy", sku: "UNQ-TR-005", price: 159000, stock: 4, category: "Fashion", condition: "New", images: [IMG("trousers-navy-tailored.jpg")], description: "Индүүдсэн эвхэцтэй, шулуун хэлбэр. Ажлын өдөр тутам.", weight: 9 },
-    { name: "Leather Bomber Jacket — Camel", sku: "UNQ-LB-006", price: 690000, stock: 3, category: "Fashion", condition: "New", images: [IMG("bomber-leather-camel.jpg")], description: "Жинхэнэ арьс, товчлууртай халаас, резинэн бүсэлхий.", weight: 1 },
-    { name: "Leather Bomber Jacket — Black", sku: "UNQ-LB-007", price: 690000, stock: 0, category: "Fashion", condition: "New", images: [IMG("bomber-leather-black.jpg")], description: "Гялалзсан арьс, сонгодог захтай bomber.", weight: 1 },
-    { name: "Slim Fit Trousers — Navy", sku: "UNQ-TR-008", price: 149000, stock: 31, category: "Fashion", condition: "New", images: [IMG("trousers-navy-slim.jpg")], description: "Нарийссан хэлбэр, эвхэцгүй. 46-56 размер.", weight: 12 },
+    { match: "/zara%201-", name: "Half-Zip Sweatshirt", sku: "ZRA-HZ-001", price: 129000, stock: 28, category: "Fashion", condition: "New", description: "Зөөлөн флисс, зогсоо захтай, хагас цахилгаантай. Хар ба цөцгий өнгөтэй.", weight: 16 },
+    { match: "/zara%202-", name: "Wool Bomber Jacket — Brown", sku: "ZRA-BM-002", price: 449000, stock: 9, category: "Fashion", condition: "New", description: "Ноосон холимог, эргүүлж болох зогсоо зах, резинэн ханцуйвч.", weight: 2 },
+    { match: "/zara%203-", name: "Knit Zip Polo — Stone", sku: "ZRA-PL-003", price: 149000, stock: 22, category: "Fashion", condition: "New", description: "Сүлжмэл, богино ханцуйтай, унжсан хэлбэртэй хагас цахилгаант поло.", weight: 13 },
+    { match: "/zara2-", name: "Ribbed Tank Top — Charcoal", sku: "ZRA-TT-004", price: 45000, stock: 64, category: "Fashion", condition: "New", description: "Угаалгын боловсруулалттай хөвөн; өнгөний жигд бус байдал нь загварын нэг хэсэг.", weight: 20 },
+    { match: "/zar9-", name: "Tailored Trousers — Navy", sku: "ZRA-TR-005", price: 159000, stock: 4, category: "Fashion", condition: "New", description: "Индүүдсэн эвхэцтэй, шулуун хэлбэр. Ажлын өдөр тутам.", weight: 9 },
+    { match: "/zara5-", name: "Leather Bomber Jacket — Camel", sku: "ZRA-LB-006", price: 690000, stock: 3, category: "Fashion", condition: "New", description: "Жинхэнэ арьс, товчлууртай халаас, резинэн бүсэлхий.", weight: 1 },
+    { match: "/zara6-", name: "Leather Bomber Jacket — Black", sku: "ZRA-LB-007", price: 690000, stock: 0, category: "Fashion", condition: "New", description: "Гялалзсан арьс, сонгодог захтай bomber.", weight: 1 },
+    { match: "/zara7-", name: "Slim Fit Trousers — Navy", sku: "ZRA-TR-008", price: 149000, stock: 31, category: "Fashion", condition: "New", description: "Нарийссан хэлбэр, эвхэцгүй. 46-56 размер.", weight: 12 },
 ]
 
 /**
@@ -128,36 +128,58 @@ async function main() {
     }
     console.log(`Худалдагч: ${seller.display_name} (${seller.shop_name ?? "-"}) ${seller._id}\n`)
 
-    // Дахин ажиллуулахад хуулбар үүсгэхгүй — өмнөх seed-ээ үргэлж эхлээд арилгана.
+    // Дахин ажиллуулахад хуулбар үүсгэхгүй — өмнөх захиалгаа үргэлж эхлээд арилгана.
     const removedOrders = await Order.deleteMany({ seller_id: seller._id, demo_seed: true })
+    // Энэ script урьд нь бараагаа өөрөө үүсгэдэг байсан. Одоо худалдагчийн
+    // өөрийнхийг нь бөглөдөг тул тэр үеийн хуулбаруудыг цэвэрлэнэ.
     const removedProducts = await Product.deleteMany({ seller_id: seller._id, demo_seed: true })
-    console.log(`Хассан: ${removedProducts.deletedCount} бараа, ${removedOrders.deletedCount} захиалга`)
+    console.log(`Хассан: ${removedOrders.deletedCount} захиалга, ${removedProducts.deletedCount} хуучин үзүүлэнгийн бараа`)
 
     if (clean) {
-        console.log("--clean: цэвэрлээд зогслоо.")
+        console.log("--clean: цэвэрлээд зогслоо. Барааны нэр, үнэ хэвээр үлдэв.")
         await mongoose.disconnect()
         return
     }
 
-    // --- Бараа ---------------------------------------------------------------
-    const created = await Product.insertMany(
-        PRODUCTS.map((p) => ({
-            seller_id: seller._id,
-            name: p.name,
-            description: p.description,
-            price_coins: p.price,
-            stock_quantity: p.stock,
-            images: p.images,
-            sku: p.sku,
-            category: p.category,
-            condition: p.condition,
-            listing_type: "buy_it_now",
-            status: p.stock === 0 ? "OUT_OF_STOCK" : "ACTIVE",
-            sold_quantity: 0,
-            demo_seed: true,
-        }))
-    )
-    console.log(`Нэмсэн: ${created.length} бараа`)
+    // --- Бараа: аппаас оруулсан зурагтай мөрүүдийг олж бөглөнө -------------
+    const owned = await Product.find({ seller_id: seller._id })
+
+    const created = PRODUCTS.map((seed) => {
+        const hits = owned.filter((doc) =>
+            (doc.images ?? []).some((url) => url.includes(seed.match))
+        )
+        // Дуугүй буруу бараанд наахаас, чангаар унасан нь дээр: зураг нэмэгдэх,
+        // солигдох бүрд энэ шалгалт эхлээд хэлнэ.
+        assert.equal(
+            hits.length,
+            1,
+            `"${seed.match}" → ${hits.length} бараа таарлаа (яг 1 байх ёстой): ${seed.name}`
+        )
+        return hits[0]
+    })
+
+    for (const [i, doc] of created.entries()) {
+        const seed = PRODUCTS[i]
+        await Product.updateOne(
+            { _id: doc._id },
+            {
+                $set: {
+                    name: seed.name,
+                    description: seed.description,
+                    price_coins: seed.price,
+                    stock_quantity: seed.stock,
+                    sku: seed.sku,
+                    category: seed.category,
+                    condition: seed.condition,
+                    listing_type: "buy_it_now",
+                    status: seed.stock === 0 ? "OUT_OF_STOCK" : "ACTIVE",
+                    sold_quantity: 0,
+                },
+            }
+        )
+        console.log(`  ${seed.sku}  ${seed.name}`)
+    }
+    console.log(`Бөглөсөн: ${created.length} бараа`)
 
     // --- Захиалга ------------------------------------------------------------
     const now = Date.now()
