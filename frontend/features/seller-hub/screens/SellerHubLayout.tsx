@@ -2,7 +2,6 @@
 
 import React from "react"
 import { useLocation, useNavigate } from "@/lib/router"
-import { useStore } from "@/store"
 import { useSellerProfile } from "@/hooks/useSellerProfile"
 import { useMySellerOrders } from "@/hooks/useMySellerOrders"
 import { SELLER_GATE_PARAM, SELLER_GATE_RETURN } from "@/hooks/useSellerGate"
@@ -22,7 +21,6 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
   const { pathname } = useLocation()
-  const { state } = useStore()
   const { isActive, isLoading } = useSellerProfile()
   const { orders: realOrders } = useMySellerOrders()
   const navigate = useNavigate()
@@ -39,9 +37,9 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
     navigate(`${SELLER_GATE_RETURN}?${SELLER_GATE_PARAM}=1`, { replace: true })
   }, [isLoading, isActive, navigate])
 
-  const pendingOrders =
-    state.sellerOrders.filter((o) => OPEN_FULFILLMENT.includes(o.fulfillmentStatus)).length +
-    realOrders.filter((o) => OPEN_FULFILLMENT.includes(o.fulfillment_status ?? "PENDING")).length
+  const pendingOrders = realOrders.filter((o) =>
+    OPEN_FULFILLMENT.includes(o.fulfillment_status ?? "PENDING")
+  ).length
 
   // Идэвхгүй хэрэглэгч рүү самбарыг ҮЗҮҮЛЭХГҮЙ — дээрх effect нүүр рүү
   // буцааж байгаа тул энэ хормыг хоосон өнгөрөөнө.
