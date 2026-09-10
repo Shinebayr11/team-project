@@ -5,12 +5,22 @@ import { useUser } from "@clerk/nextjs"
 
 import { useApiClient } from "./useApiClient"
 import { AuctionProduct } from "./useAuction"
+import type { SellerOrder } from "@/features/seller-hub/types"
 
 export interface OrderBuyer {
   _id: string
   display_name?: string
   shop_name?: string
   avatar_url?: string
+}
+
+export interface OrderShippingAddress {
+  fullName: string
+  phone: string
+  city: string
+  district: string
+  khoroo?: string
+  detail: string
 }
 
 export interface DirectOrder {
@@ -20,6 +30,10 @@ export interface DirectOrder {
   quantity: number
   price_coins?: number
   status?: string
+  fulfillment_status?: SellerOrder["fulfillmentStatus"]
+  carrier?: string
+  tracking_number?: string
+  shipping_address?: OrderShippingAddress
   createdAt?: string
   updatedAt?: string
 }
@@ -78,10 +92,34 @@ export function useMySellerOrders() {
     }
   }, [isLoaded, isSignedIn, refresh])
 
+  const updateStatus = useCallback(
+    async (id: string, status: SellerOrder["fulfillmentStatus"]) => {
+      await callApi(`/api/order/${id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ fulfillment_status: status }),
+      })
+      await refresh()
+    },
+    [callApi, refresh]
+  )
+
+  const updateTracking = useCallback(
+    async (id: string, carrier: string, trackingNumber: string) => {
+      await callApi(`/api/order/${id}/tracking`, {
+        method: "PATCH",
+        body: JSON.stringify({ carrier, tracking_number: trackingNumber }),
+      })
+      await refresh()
+    },
+    [callApi, refresh]
+  )
+
   return {
     orders,
     loading: !isLoaded || (isSignedIn === true && !settled),
     error,
     refresh,
+    updateStatus,
+    updateTracking,
   }
 }

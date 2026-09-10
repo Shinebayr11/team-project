@@ -20,6 +20,8 @@ export interface InventoryProduct {
 export interface SellerOrder {
   id: string;
   buyerName: string;
+  /** Бодит захиалгад л байдаг — mock мөрүүдэд байхгүй. */
+  buyerPhone?: string;
   date: string;
   total: number;
   paymentStatus: 'PENDING' | 'PAID' | 'REFUNDED';
