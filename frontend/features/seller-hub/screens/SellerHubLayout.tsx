@@ -12,6 +12,7 @@ import {
 } from "@/features/seller-hub/components/SellerSidebar"
 import { SellerTopbar } from "@/features/seller-hub/components/SellerTopbar"
 import { useInventoryHydration } from "@/features/seller-hub/hooks/useSellerInventory"
+import { useSellerOrdersHydration } from "@/features/seller-hub/hooks/useSellerOrders"
 import { Skeleton, SkeletonScreen } from "@/components/ui/Skeleton"
 
 const OPEN_FULFILLMENT = ["PENDING", "PROCESSING", "READY_TO_SHIP"]
@@ -29,6 +30,9 @@ export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({
   // Барааг бүрхүүл дээр нэг л удаа уншина — бараа, шууд дамжуулалт, тойм, аналитик бүгд
   // store доторх нэг кэшийг хардаг.
   const inventory = useInventoryHydration()
+
+  // Захиалга нь бүх аналитикийн эх сурвалж — мөн адил бүрхүүл дээр нэг л удаа.
+  useSellerOrdersHydration()
 
   // Идэвхгүй худалдагчийг нүүр рүү буцааж, идэвхжүүлэх хуудсыг нээнэ.
   // Нэвтрээгүй тохиолдлыг proxy.ts аль хэдийн барьсан байна.

@@ -35,6 +35,12 @@ export const ProductSchema = new Schema(
         /** Шууд дамжуулалтад гаргахаар барьцаалсан ба зарагдсан тоо. */
         reserved_quantity: { type: Number, default: 0, min: 0 },
         sold_quantity: { type: Number, default: 0, min: 0 },
+
+        /**
+         * Үзүүлэнгийн өгөгдөл эсэх. `seed:demo-shop` үүнийг тавьж, `--clean`
+         * үүгээр л устгана — бодит бараанд хэзээ ч хүрэхгүй.
+         */
+        demo_seed: { type: Boolean, default: false, index: true },
     },
     { timestamps: true }
 )

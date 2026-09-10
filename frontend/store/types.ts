@@ -58,6 +58,8 @@ export interface InventorySlice {
 }
 
 export interface OrdersSlice {
+  /** Серверээс уншсан захиалгаар кэшийг бүхэлд нь солино. */
+  setSellerOrders: (orders: SellerOrder[]) => void;
   updateSellerOrderStatus: (id: string, status: SellerOrder['fulfillmentStatus']) => void;
   setOrderTracking: (id: string, carrier: string, trackingNumber: string) => void;
 }

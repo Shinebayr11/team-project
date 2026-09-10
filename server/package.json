@@ -6,6 +6,7 @@
     "start:dev": "vercel dev",
     "typecheck": "tsc --noEmit",
     "seed:categories": "tsx --env-file=.env scripts/seedCategoryShows.ts",
+    "seed:demo-shop": "tsx --env-file=.env scripts/seedDemoShop.ts",
     "fix:conversation-index": "tsx --env-file=.env scripts/fixConversationIndex.ts"
   },
   "dependencies": {

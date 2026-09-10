@@ -1,6 +1,10 @@
 import { StateUpdater, OrdersSlice } from '@/store/types';
 
 export const createOrdersSlice = (update: StateUpdater): OrdersSlice => ({
+  setSellerOrders: (orders) => {
+    update(s => ({ ...s, sellerOrders: orders }));
+  },
+
   updateSellerOrderStatus: (id, status) => {
     update(s => ({
       ...s,
