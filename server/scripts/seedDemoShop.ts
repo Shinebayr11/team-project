@@ -16,8 +16,10 @@
 import assert from "node:assert"
 import mongoose from "mongoose"
 import { connectDb } from "../src/lib/db.js"
+import { Live_Show } from "../src/models/Live_show.js"
 import { Order } from "../src/models/Order.js"
 import { Product } from "../src/models/Product.js"
+import { ProductListing } from "../src/models/ProductListing.js"
 import { User } from "../src/models/User.js"
 
 /** Хэний самбарыг дүүргэх вэ. Clerk-ийн id — Mongo `_id` нь орчноос хамаарч өөр. */
@@ -91,6 +93,18 @@ const DISTRICTS = [
 
 const CARRIERS = ["Тээвэрлэгч Экспресс", "Шуурхай Хүргэлт", "Mongol Post"]
 
+/** Дууссан эфирийн гарчиг. Ерөнхий тоймын "Сүүлийн шууд дамжуулалт" эдгээрийг харуулна. */
+const SHOW_TITLES = [
+    "Намрын шинэ ирц — гадуур хувцас",
+    "Арьсан хүрэмний тусгай эфир",
+    "Ажлын хувцас: өмд, цамц",
+    "Долоо хоногийн шилдэг сонголт",
+    "Сүлжмэл ба поло цуглуулга",
+    "Өвлийн бэлтгэл — ноосон бүтээгдэхүүн",
+    "Basics: өдөр тутмын хувцас",
+    "Сарын эцсийн хямдрал",
+]
+
 /**
  * Тогтвортой санамсаргүй тоо (LCG).
  *
@@ -133,7 +147,17 @@ async function main() {
     // Энэ script урьд нь бараагаа өөрөө үүсгэдэг байсан. Одоо худалдагчийн
     // өөрийнхийг нь бөглөдөг тул тэр үеийн хуулбаруудыг цэвэрлэнэ.
     const removedProducts = await Product.deleteMany({ seller_id: seller._id, demo_seed: true })
-    console.log(`Хассан: ${removedOrders.deletedCount} захиалга, ${removedProducts.deletedCount} хуучин үзүүлэнгийн бараа`)
+    // Эфирийн лотыг эфирээсээ ӨМНӨ хасна — эс тэгвэл эзэнгүй лот үлдэнэ.
+    const oldShows = await Live_Show.find({ seller_id: seller._id, demo_seed: true }).select("_id")
+    const removedLots = await ProductListing.deleteMany({
+        live_show_id: { $in: oldShows.map((show) => show._id) },
+        demo_seed: true,
+    })
+    const removedShows = await Live_Show.deleteMany({ seller_id: seller._id, demo_seed: true })
+    console.log(
+        `Хассан: ${removedOrders.deletedCount} захиалга, ${removedShows.deletedCount} эфир, ` +
+            `${removedLots.deletedCount} лот, ${removedProducts.deletedCount} хуучин үзүүлэнгийн бараа`
+    )
 
     if (clean) {
         console.log("--clean: цэвэрлээд зогслоо. Барааны нэр, үнэ хэвээр үлдэв.")
@@ -275,6 +299,61 @@ async function main() {
     // бичих тул бүх захиалга нэг өдрийнх болж, график нэг баганад хураагдана.
     await Order.insertMany(orders, { timestamps: false })
     console.log(`Нэмсэн: ${orders.length} захиалга (${DAYS} хоног)`)
+
+    // --- Дууссан эфир ба тэн дээр зарагдсан лот -----------------------------
+    // Ерөнхий тоймын "Сүүлийн шууд дамжуулалт" нь захиалгаас БИШ, эфир дээр
+    // зарагдсан лотоос (`ProductListing.status = "sold"`) тоологддог тул
+    // эдгээрийг тусад нь үүсгэнэ. Дуудлага худалдаа нь `Order` үүсгэдэггүй —
+    // тиймээс энэ нь дээрх захиалгуудтай давхцахгүй, тусдаа суваг.
+    const showDocs = await Live_Show.insertMany(
+        SHOW_TITLES.map((title, i) => {
+            // Хамгийн сүүлийнх нь 18 цагийн өмнө, цаашлаад 11 хоног тутам.
+            // Худалдагчийн хуучин жишээ эфир (0 борлуулалттай) 1 хоногийн өмнө
+            // дууссан тул түүнээс ХОЙШ байх ёстой — эс тэгвэл "Сүүлийн шууд
+            // дамжуулалтын үзүүлэлт" том карт дээр ₮0 гарсаар байна.
+            const endedAt = new Date(now - (0.75 + i * 11) * 86_400_000)
+            const startedAt = new Date(endedAt.getTime() - between(45, 95) * 60_000)
+            return {
+                seller_id: seller._id,
+                title,
+                status: "ended",
+                category: "Fashion",
+                type: "mixed",
+                viewer_count: between(180, 1450),
+                started_at: startedAt,
+                ended_at: endedAt,
+                thumbnail_url: created[i % created.length].images?.[0],
+                demo_seed: true,
+            }
+        })
+    )
+
+    const lots = showDocs.flatMap((show, showIndex) =>
+        Array.from({ length: between(3, 6) }, () => {
+            const index = weightedPick(PRODUCTS)
+            const seed = PRODUCTS[index]
+            // Дуудлага худалдаа тул эцсийн үнэ жагсаалтын үнээс дээш ч, доош ч
+            // байж болно — үргэлж жагсаалтын үнээр бичвэл аукцион мэт харагдахгүй.
+            const finalPrice = Math.round((seed.price * (0.75 + rnd() * 0.6)) / 1000) * 1000
+            return {
+                product_id: created[index]._id,
+                live_show_id: show._id,
+                sale_type: "auction",
+                starting_price_coins: Math.round((seed.price * 0.5) / 1000) * 1000,
+                current_highest_bid_coins: finalPrice,
+                timer_ends_at: showDocs[showIndex].ended_at,
+                status: "sold",
+                demo_seed: true,
+            }
+        })
+    )
+    await ProductListing.insertMany(lots)
+
+    const lotRevenue = lots.reduce((sum, lot) => sum + lot.current_highest_bid_coins, 0)
+    console.log(
+        `Нэмсэн: ${showDocs.length} дууссан эфир, ${lots.length} зарагдсан лот ` +
+            `(₮${lotRevenue.toLocaleString("en-US")})`
+    )
 
     // --- Зарагдсан тоог захиалгатай нь тааруулна --------------------------
     // Аналитикийн "sell-through" нь `sold / (sold + үлдэгдэл)`-ээр бодогддог тул
