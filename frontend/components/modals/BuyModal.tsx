@@ -1,8 +1,11 @@
 "use client"
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SellerProduct } from '../../types';
 import { useStore, parsePrice } from '../../store';
+import { useApiClient } from '@/hooks/useApiClient';
+import { useWallet } from '@/hooks/useWallet';
+import { ApiError } from '@/lib/api';
 import { Modal } from '../ui/Modal';
 import { BalanceSummary } from './BalanceSummary';
 import { ModalActionButton } from './ModalActionButton';
@@ -15,15 +18,39 @@ export interface BuyModalData {
 
 export const BuyModal: React.FC<{ data: BuyModalData }> = ({ data }) => {
   const { closeModal, credits, buy, addToast } = useStore();
+  const { callApi } = useApiClient();
+  const { available, loading: walletLoading, refresh: refreshWallet } = useWallet();
   const { product, seller, qty } = data;
+  const [submitting, setSubmitting] = useState(false);
 
   const total = parsePrice(product.price) * qty;
-  const balance = credits();
+  // Бодит `productId`-тай бол сервер дээрх Wallet-ийг ашиглана — mock
+  // localStorage-ийн `credits` нь энэ тохиолдолд огт хөндөгдөхгүй.
+  const isReal = !!product.productId;
+  const balance = isReal ? available : credits();
 
-  const handleBuy = () => {
-    if (!buy({ title: product.name, seller, price: product.price, qty })) return;
-    closeModal();
-    addToast('Захиалга баталгаажлаа.');
+  const handleBuy = async () => {
+    if (!isReal) {
+      if (!buy({ title: product.name, seller, price: product.price, qty })) return;
+      closeModal();
+      addToast('Захиалга баталгаажлаа.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await callApi('/api/order', {
+        method: 'POST',
+        body: JSON.stringify({ product_id: product.productId, quantity: qty }),
+      });
+      closeModal();
+      addToast('Захиалга баталгаажлаа.');
+      refreshWallet();
+    } catch (error) {
+      addToast(error instanceof ApiError ? error.message : 'Худалдан авахад алдаа гарлаа.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -51,8 +78,9 @@ export const BuyModal: React.FC<{ data: BuyModalData }> = ({ data }) => {
 
         <ModalActionButton
           onClick={handleBuy}
-          enabled={balance >= total}
-          label={`Худалдаж авах — ₮${total.toLocaleString()}`}
+          enabled={balance >= total && !submitting && !(isReal && walletLoading)}
+          label={submitting ? 'Боловсруулж байна…' : `Худалдаж авах — ₮${total.toLocaleString()}`}
+          disabledLabel={isReal && walletLoading ? 'Үлдэгдэл шалгаж байна…' : undefined}
         />
       </div>
     </Modal>

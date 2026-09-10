@@ -4,6 +4,7 @@ import React, { createContext, useCallback, useEffect, useMemo, useState, ReactN
 import { StoreState } from '../types';
 import { StoreContextType } from './types';
 import { defaultState, loadState, persistState } from './state';
+import { useApiClient } from '@/hooks/useApiClient';
 import { createWalletSlice } from './slices/walletSlice';
 import { createCartSlice } from './slices/cartSlice';
 import { createSocialSlice } from './slices/socialSlice';
@@ -22,6 +23,7 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [state, setState] = useState<StoreState>(defaultState);
   const [hydrated, setHydrated] = useState(false);
   const ui = useUiSlice();
+  const { callApi } = useApiClient();
 
   useEffect(() => {
     setState(loadState());
@@ -60,12 +62,12 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const value = useMemo<StoreContextType>(() => ({
     state,
     ...createWalletSlice(state, update),
-    ...createCartSlice(state, update),
+    ...createCartSlice(state, update, callApi),
     ...createSocialSlice(state, update),
     ...createMessagesSlice(state, update),
     ...writers,
     ...ui,
-  }), [state, update, writers, ui]);
+  }), [state, update, writers, ui, callApi]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 };

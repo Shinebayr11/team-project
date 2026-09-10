@@ -100,6 +100,7 @@ export function LiveViewer({
                             name: product.name,
                             price: product.price,
                             tag: "Buy now" as const,
+                            productId: product.id,
                           },
                           seller,
                           qty: 1,

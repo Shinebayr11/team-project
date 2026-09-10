@@ -5,6 +5,8 @@ export interface SellerProduct {
   price: string;
   tag: ProductTag;
   live?: true;
+  /** Бодит барааны `_id` — байвал `BuyModal` серверт бодит захиалга үүсгэнэ. */
+  productId?: string;
 }
 
 export interface SellerReview {

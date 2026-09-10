@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react"
 import { SkeletonRows, SkeletonScreen } from "@/components/ui/Skeleton"
-import { Bell, Package, Trophy, Tag } from "lucide-react"
+import { Bell, Package, Trophy, Tag, ShoppingBag } from "lucide-react"
 import { useNavigate } from "@/lib/router"
 import { AuctionWin, useMyWins, winProduct, winSeller } from "@/hooks/useMyWins"
 import {
@@ -12,6 +12,13 @@ import {
   useMySales,
   winnerName,
 } from "@/hooks/useMySales"
+import {
+  DirectOrder,
+  orderBuyer,
+  orderBuyerName,
+  orderProduct,
+  useMySellerOrders,
+} from "@/hooks/useMySellerOrders"
 import { useSeenIds } from "@/hooks/useSeenIds"
 
 const iconButton =
@@ -140,6 +147,62 @@ function SaleRow({
   )
 }
 
+/** Худалдагчийн тал: "Худалдаж авах" товчоор шууд зарагдсан бараа. */
+function OrderRow({
+  order,
+  unseen,
+  onOpen,
+}: {
+  order: DirectOrder
+  unseen: boolean
+  onOpen: () => void
+}) {
+  const product = orderProduct(order)
+  const buyer = orderBuyer(order)
+
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className={`flex w-full items-start gap-3 border-b border-[var(--wn-line)] p-3 text-left transition-colors last:border-b-0 hover:bg-[var(--wn-accent-wash)] ${
+        unseen ? "bg-[var(--wn-accent-soft)]" : ""
+      }`}
+    >
+      {product?.images?.[0] ? (
+        <img
+          src={product.images[0]}
+          alt={product.name}
+          className="size-11 shrink-0 rounded-lg object-cover"
+        />
+      ) : (
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-[var(--wn-surface-2)]">
+          <Package className="size-5 text-[var(--wn-ink-3)]" />
+        </div>
+      )}
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5">
+          <ShoppingBag className="size-3.5 shrink-0 text-emerald-600" />
+          <span className="text-[13px] font-[800] text-emerald-600">
+            Таны бараа зарагдлаа
+          </span>
+        </div>
+        <p className="mt-0.5 text-[14px] font-[600] text-[var(--wn-ink)]">
+          <span className="font-[800]">{product?.name ?? "Бараа"}</span>-г{" "}
+          {orderBuyerName(buyer)} авлаа
+        </p>
+        <p className="mt-0.5 text-[12px] text-[var(--wn-ink-3)]">
+          ₮{order.price_coins ?? 0} · {relativeTime(order.updatedAt ?? order.createdAt)}
+        </p>
+      </div>
+
+      {unseen && (
+        <span className="mt-1 size-2 shrink-0 rounded-full bg-[var(--wn-live)]" />
+      )}
+    </button>
+  )
+}
+
 /**
  * Мэдэгдлийн хонх. Одоогоор дуудлага худалдаа хожсон тухай мэдэгдлийг харуулна —
  * хэрэглэгч барааг авах эрх үүсмэгц энд орж ирнэ.
@@ -147,9 +210,10 @@ function SaleRow({
 export const NotificationsMenu: React.FC = () => {
   const navigate = useNavigate()
   const { wins, loading } = useMyWins()
-  // Худалдагчийн тал: өөрийн зарагдсан лотууд. Хожил, борлуулалт хоёр нэг
-  // жагсаалтад цагийн дарааллаар орно.
+  // Худалдагчийн тал: өөрийн зарагдсан лотууд, шууд захиалгууд. Хожил,
+  // борлуулалт, шууд захиалга гурав нэг жагсаалтад цагийн дарааллаар орно.
   const { sales, loading: salesLoading } = useMySales()
+  const { orders, loading: ordersLoading } = useMySellerOrders()
 
   const feed = React.useMemo(() => {
     const winIds = new Set(wins.map((win) => win._id))
@@ -158,6 +222,8 @@ export const NotificationsMenu: React.FC = () => {
     // Өөрөөсөө худалдан авсан лот хожил, борлуулалт ХОЁУЛАНД нь ирдэг: түлхүүр
     // давхардаад зогсохгүй, холбогдох нөгөө тал байхгүй тул чат ч нээгдэхгүй
     // (сервер "Өөртэйгөө зурвас бичих боломжгүй" гэж татгалзана). Иймд алгасна.
+    // Шууд захиалга (`Order`) нь аукционы `ProductListing`-тай огт өөр
+    // цуглуулга тул давхцлын асуудал гарахгүй.
     return [
       ...wins
         .filter((win) => !saleIds.has(win._id))
@@ -165,8 +231,13 @@ export const NotificationsMenu: React.FC = () => {
       ...sales
         .filter((sale) => !winIds.has(sale._id))
         .map((sale) => ({ kind: "sale" as const, at: sale.updatedAt, sale })),
+      ...orders.map((order) => ({
+        kind: "order" as const,
+        at: order.updatedAt ?? order.createdAt,
+        order,
+      })),
     ].sort((a, b) => new Date(b.at ?? 0).getTime() - new Date(a.at ?? 0).getTime())
-  }, [wins, sales])
+  }, [wins, sales, orders])
 
   // "Уншсан" тэмдэглэгээ нь жагсаалтад ҮНЭХЭЭР харагдаж буй мөрүүдээр
   // тоологдоно — эс тэгвээс хонхны тоо мөрийн тооноос зөрнө.
@@ -178,12 +249,21 @@ export const NotificationsMenu: React.FC = () => {
     () => feed.flatMap((item) => (item.kind === "sale" ? [item.sale._id] : [])),
     [feed]
   )
+  const feedOrderIds = React.useMemo(
+    () => feed.flatMap((item) => (item.kind === "order" ? [item.order._id] : [])),
+    [feed]
+  )
   const { unseenCount, markAllSeen, isUnseen } = useSeenIds("auctionWinsSeen", feedWinIds)
   const {
     unseenCount: unseenSales,
     markAllSeen: markSalesSeen,
     isUnseen: isSaleUnseen,
   } = useSeenIds("auctionSalesSeen", feedSaleIds)
+  const {
+    unseenCount: unseenOrders,
+    markAllSeen: markOrdersSeen,
+    isUnseen: isOrderUnseen,
+  } = useSeenIds("directOrdersSeen", feedOrderIds)
 
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -211,6 +291,7 @@ export const NotificationsMenu: React.FC = () => {
       if (!prev) {
         markAllSeen()
         markSalesSeen()
+        markOrdersSeen()
       }
       return !prev
     })
@@ -234,6 +315,13 @@ export const NotificationsMenu: React.FC = () => {
     else navigate("/seller/orders")
   }
 
+  const openOrder = (order: DirectOrder) => {
+    setOpen(false)
+    const buyer = orderBuyer(order)
+    if (buyer?._id) navigate(`/messages?user=${buyer._id}`)
+    else navigate("/seller/orders")
+  }
+
   return (
     <div ref={rootRef} className="relative">
       <button
@@ -243,9 +331,9 @@ export const NotificationsMenu: React.FC = () => {
         aria-expanded={open}
       >
         <Bell className="h-5 w-5" />
-        {unseenCount + unseenSales > 0 && (
+        {unseenCount + unseenSales + unseenOrders > 0 && (
           <span className="absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--wn-live)] px-1 text-[10px] font-[800] text-white">
-            {unseenCount + unseenSales > 9 ? "9+" : unseenCount + unseenSales}
+            {unseenCount + unseenSales + unseenOrders > 9 ? "9+" : unseenCount + unseenSales + unseenOrders}
           </span>
         )}
       </button>
@@ -259,7 +347,7 @@ export const NotificationsMenu: React.FC = () => {
           </div>
 
           <div className="max-h-[380px] overflow-y-auto">
-            {loading || salesLoading ? (
+            {loading || salesLoading || ordersLoading ? (
               <SkeletonScreen label="Мэдэгдлүүдийг уншиж байна">
                 <SkeletonRows rows={3} card={false} className="gap-0" />
               </SkeletonScreen>
@@ -271,23 +359,36 @@ export const NotificationsMenu: React.FC = () => {
                 </p>
               </div>
             ) : (
-              feed.map((item) =>
-                item.kind === "win" ? (
-                  <WinRow
-                    key={`win-${item.win._id}`}
-                    win={item.win}
-                    unseen={isUnseen(item.win._id)}
-                    onOpen={() => openWin(item.win)}
-                  />
-                ) : (
-                  <SaleRow
-                    key={`sale-${item.sale._id}`}
-                    sale={item.sale}
-                    unseen={isSaleUnseen(item.sale._id)}
-                    onOpen={() => openSale(item.sale)}
+              feed.map((item) => {
+                if (item.kind === "win") {
+                  return (
+                    <WinRow
+                      key={`win-${item.win._id}`}
+                      win={item.win}
+                      unseen={isUnseen(item.win._id)}
+                      onOpen={() => openWin(item.win)}
+                    />
+                  )
+                }
+                if (item.kind === "sale") {
+                  return (
+                    <SaleRow
+                      key={`sale-${item.sale._id}`}
+                      sale={item.sale}
+                      unseen={isSaleUnseen(item.sale._id)}
+                      onOpen={() => openSale(item.sale)}
+                    />
+                  )
+                }
+                return (
+                  <OrderRow
+                    key={`order-${item.order._id}`}
+                    order={item.order}
+                    unseen={isOrderUnseen(item.order._id)}
+                    onOpen={() => openOrder(item.order)}
                   />
                 )
-              )
+              })
             )}
           </div>
         </div>
