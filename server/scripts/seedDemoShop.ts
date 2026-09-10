@@ -50,16 +50,14 @@ interface Seed {
 }
 
 const PRODUCTS: Seed[] = [
-    { name: "Oversized Hoodie — Charcoal", sku: "UNQ-HD-001", price: 89000, stock: 24, category: "Fashion", condition: "New", images: [IMG("hoodie-charcoal.jpg")], description: "Хөвөнгөн флисс, унжсан мөртэй. Өдөр тутмын өмсгөл.", weight: 10 },
-    { name: "Heattech Crew Neck — Black", sku: "UNQ-TS-002", price: 39000, stock: 60, category: "Fashion", condition: "New", images: [IMG("heattech-black.jpg")], description: "Нимгэн ч дулаан. Давхарлаж өмсөхөд тохиромжтой.", weight: 14 },
-    { name: "Slim Fit Jeans — Indigo", sku: "UNQ-JN-003", price: 129000, stock: 18, category: "Fashion", condition: "New", images: [IMG("jeans-indigo.jpg")], description: "Сунадаг деним, шулуун хэлбэр. 28-36 размер.", weight: 8 },
-    { name: "Ultra Light Down Jacket", sku: "UNQ-JK-004", price: 249000, stock: 12, category: "Fashion", condition: "New", images: [IMG("down-jacket.jpg")], description: "Хөнгөн доошний куртка, уут дотроо багтана.", weight: 7 },
-    { name: "Merino Wool Sweater — Camel", sku: "UNQ-SW-005", price: 159000, stock: 4, category: "Fashion", condition: "New", images: [IMG("sweater-camel.jpg")], description: "100% мерино ноос. Зөөлөн, зурдаггүй.", weight: 6 },
-    { name: "Oxford Shirt — White", sku: "UNQ-SH-006", price: 79000, stock: 32, category: "Fashion", condition: "New", images: [IMG("oxford-white.jpg")], description: "Сонгодог оксфорд даавуу. Ажил, өдөр тутам.", weight: 9 },
-    { name: "Canvas Backpack — Olive", sku: "UNQ-BG-007", price: 119000, stock: 0, category: "Accessories", condition: "New", images: [IMG("backpack-olive.jpg")], description: "16\" зөөврийн компьютерын халаастай.", weight: 5 },
-    { name: "Knit Beanie — Rust", sku: "UNQ-AC-008", price: 29000, stock: 45, category: "Accessories", condition: "New", images: [IMG("beanie-rust.jpg")], description: "Хоёр давхар сүлжмэл. Нэг размер.", weight: 11 },
-    { name: "Wide Leg Trousers — Beige", sku: "UNQ-TR-009", price: 109000, stock: 3, category: "Fashion", condition: "New", images: [IMG("trousers-beige.jpg")], description: "Өргөн хөлтэй, унжсан хэлбэр.", weight: 6 },
-    { name: "Cotton Socks 3-Pack", sku: "UNQ-AC-010", price: 19000, stock: 80, category: "Accessories", condition: "New", images: [IMG("socks-3pack.jpg")], description: "Хөвөн холимог, гурван хос.", weight: 12 },
+    { name: "Half-Zip Sweatshirt", sku: "UNQ-HZ-001", price: 129000, stock: 28, category: "Fashion", condition: "New", images: [IMG("halfzip-pair.jpg")], description: "Зөөлөн флисс, зогсоо захтай, хагас цахилгаантай. Хар ба цөцгий өнгөтэй.", weight: 16 },
+    { name: "Wool Bomber Jacket — Brown", sku: "UNQ-BM-002", price: 449000, stock: 9, category: "Fashion", condition: "New", images: [IMG("bomber-wool-brown.jpg")], description: "Ноосон холимог, эргүүлж болох зогсоо зах, резинэн ханцуйвч.", weight: 2 },
+    { name: "Knit Zip Polo — Stone", sku: "UNQ-PL-003", price: 149000, stock: 22, category: "Fashion", condition: "New", images: [IMG("polo-knit-stone.jpg")], description: "Сүлжмэл, богино ханцуйтай, унжсан хэлбэртэй хагас цахилгаант поло.", weight: 13 },
+    { name: "Ribbed Tank Top — Charcoal", sku: "UNQ-TT-004", price: 45000, stock: 64, category: "Fashion", condition: "New", images: [IMG("tank-ribbed-charcoal.jpg")], description: "Угаалгын боловсруулалттай хөвөн; өнгөний жигд бус байдал нь загварын нэг хэсэг.", weight: 20 },
+    { name: "Tailored Trousers — Navy", sku: "UNQ-TR-005", price: 159000, stock: 4, category: "Fashion", condition: "New", images: [IMG("trousers-navy-tailored.jpg")], description: "Индүүдсэн эвхэцтэй, шулуун хэлбэр. Ажлын өдөр тутам.", weight: 9 },
+    { name: "Leather Bomber Jacket — Camel", sku: "UNQ-LB-006", price: 690000, stock: 3, category: "Fashion", condition: "New", images: [IMG("bomber-leather-camel.jpg")], description: "Жинхэнэ арьс, товчлууртай халаас, резинэн бүсэлхий.", weight: 1 },
+    { name: "Leather Bomber Jacket — Black", sku: "UNQ-LB-007", price: 690000, stock: 0, category: "Fashion", condition: "New", images: [IMG("bomber-leather-black.jpg")], description: "Гялалзсан арьс, сонгодог захтай bomber.", weight: 1 },
+    { name: "Slim Fit Trousers — Navy", sku: "UNQ-TR-008", price: 149000, stock: 31, category: "Fashion", condition: "New", images: [IMG("trousers-navy-slim.jpg")], description: "Нарийссан хэлбэр, эвхэцгүй. 46-56 размер.", weight: 12 },
 ]
 
 /**
