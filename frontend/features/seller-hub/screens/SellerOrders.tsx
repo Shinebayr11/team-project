@@ -27,8 +27,7 @@ const TABS = [
 ] as const
 
 export const SellerOrders: React.FC = () => {
-  const { state, updateSellerOrderStatus, setOrderTracking, addToast } =
-    useStore()
+  const { addToast } = useStore()
   const {
     orders: realOrders,
     updateStatus: updateRealStatus,
@@ -42,21 +41,20 @@ export const SellerOrders: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("ALL")
   const [search, setSearch] = useState("")
 
-  // Бодит захиалгуудыг (BuyModal-ийн "Худалдаж авах") mock хэлбэрт
-  // хөрвүүлж, хуучин жишээ захиалгуудтай НЭГ жагсаалтад нэгтгэнэ —
+  // Бодит захиалгуудыг (BuyModal-ийн "Худалдаж авах") mock UI-ийн хүлээдэг
+  // `SellerOrder` хэлбэрт хөрвүүлнэ — жишээ өгөгдөл энд орохоо больсон.
   // `realOrderById` нь товч дүрсэлсэн id-гаар бодит эх Order руу буцаана.
   const { allOrders, realOrderById } = useMemo(() => {
     const realOrderById = new Map<string, DirectOrder>()
-    const converted = realOrders.map((order) => {
-      const sellerOrder = toSellerOrder(order)
-      realOrderById.set(sellerOrder.id, order)
-      return sellerOrder
-    })
-    const allOrders = [...converted, ...state.sellerOrders].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    )
+    const allOrders = realOrders
+      .map((order) => {
+        const sellerOrder = toSellerOrder(order)
+        realOrderById.set(sellerOrder.id, order)
+        return sellerOrder
+      })
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     return { allOrders, realOrderById }
-  }, [realOrders, state.sellerOrders])
+  }, [realOrders])
 
   const filteredOrders = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -72,17 +70,12 @@ export const SellerOrders: React.FC = () => {
 
   const selectedOrder = allOrders.find((o) => o.id === selectedId)
 
-  // Захиалга бодит бол сервер рүү, mock бол хуучин локал үйлдлээр
-  // явна — дэлгэц/товч бүгд адилхан ажиллана.
   const advanceStatus = (id: string, status: SellerOrder["fulfillmentStatus"]) => {
     const real = realOrderById.get(id)
-    if (real) {
-      updateRealStatus(real._id, status).catch(() =>
-        addToast("Төлөв шинэчлэхэд алдаа гарлаа.")
-      )
-      return
-    }
-    updateSellerOrderStatus(id, status)
+    if (!real) return
+    updateRealStatus(real._id, status).catch(() =>
+      addToast("Төлөв шинэчлэхэд алдаа гарлаа.")
+    )
   }
 
   // "Захиалгыг шууд баталгаажуулах" тохиргоо асаалттай бол хүлээгдэж буй
@@ -110,13 +103,10 @@ export const SellerOrders: React.FC = () => {
     }
 
     const real = realOrderById.get(selectedId)
-    if (real) {
-      updateRealTracking(real._id, carrier, trackingNumber).catch(() =>
-        addToast("Хүргэлтийн мэдээлэл хадгалахад алдаа гарлаа.")
-      )
-    } else {
-      setOrderTracking(selectedId, carrier, trackingNumber)
-    }
+    if (!real) return
+    updateRealTracking(real._id, carrier, trackingNumber).catch(() =>
+      addToast("Хүргэлтийн мэдээлэл хадгалахад алдаа гарлаа.")
+    )
     addToast("Захиалгыг илгээсэн гэж тэмдэглэлээ.")
   }
 
@@ -142,8 +132,7 @@ export const SellerOrders: React.FC = () => {
       />
       {/* Дуудлага худалдааны ялагчид болон шууд захиалгууд — хурдан
           нэг харцаар харах, чат руу шууд орох самбарууд. Доорх хүснэгт
-          эдгээрийг (мөн жишээ захиалгуудыг) явц удирдах горимоор
-          нэгтгэж харуулна. */}
+          эдгээрийг явц удирдах горимоор харуулна. */}
       <AuctionSalesPanel />
       <OrderSalesPanel />
 
