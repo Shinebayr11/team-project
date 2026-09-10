@@ -1,54 +1,67 @@
 import { auth } from "@clerk/nextjs/server"
-import { handleUpload, type HandleUploadBody } from "@vercel/blob/client"
+import { put } from "@vercel/blob"
 import { NextResponse } from "next/server"
 
-import { ALLOWED_TYPES, FIXED_PAYLOAD, MAX_BYTES } from "@/lib/upload"
+import { ALLOWED_TYPES, MAX_BYTES } from "@/lib/upload"
 
 /**
- * Vercel Blob руу байршуулах эрхийн богино хугацааны токен олгоно.
+ * Зургийг Vercel Blob руу байршуулна.
  *
  * ЗАМ НЬ `/api/...` БИШ байх ёстой: `next.config.ts` доторх rewrite нь
  * `/api/:path*`-ыг бүхэлд нь Hono сервер рүү (`beforeFiles`) дамжуулдаг тул
  * тэнд байрлуулсан route handler хэзээ ч дуудагдахгүй.
  *
- * Файл нь хөтчөөс ШУУД Blob руу очно — сервер нь зөвхөн зөвшөөрөл олгоно.
- * Ингэснээр Vercel-ийн 4.5MB-ын хүсэлтийн биеийн хязгаарт хамаарахгүй.
+ * Өмнө нь энэ нь зөвхөн ТОКЕН олгодог байсан бөгөөд файл нь хөтчөөс ШУУД
+ * `vercel.com/api/blob` рүү явдаг байв. Тэр загварын бодит асуудал нь: Blob
+ * татгалзвал (400) хариу нь CORS толгойгүй ирдэг тул хөтөч биеийг нь JS-д
+ * огт үзүүлэхгүй — хэрэглэгч ч, бид ч ЯАГААД гэдгийг хэзээ ч мэдэхгүй,
+ * зөвхөн "Failed to fetch" үлддэг. Одоо файл өөрийн сервер дээгүүр явдаг тул
+ * CORS огт байхгүй бөгөөд Vercel-ийн жинхэнэ мессеж хэрэглэгчид хүрнэ.
  */
 export async function POST(request: Request) {
-  const body = (await request.json()) as HandleUploadBody
+  const { userId } = await auth()
+  if (!userId) {
+    return NextResponse.json({ message: "Нэвтэрч орно уу" }, { status: 401 })
+  }
 
   try {
-    const result = await handleUpload({
-      body,
-      request,
-      onBeforeGenerateToken: async (_pathname, clientPayload) => {
-        // Токен олгохын өмнө нэвтрэлт шалгана — эс тэгвээс хэн ч бидний
-        // хадгалах санд файл байршуулж чадна.
-        const { userId } = await auth()
-        if (!userId) throw new Error("Нэвтэрч орно уу")
+    const form = await request.formData()
+    const file = form.get("file")
+    // Тогтмол зам — шууд дамжуулалтын урьдчилсан зураг нэг байрыг дарж бичдэг.
+    const fixedPath = form.get("path")
 
-        // Шууд дамжуулалтын урьдчилсан зураг нэг л байрыг 20 секунд тутам
-        // дарж бичдэг; бусад нь санамсаргүй дагавартай шинэ файл болно.
-        const fixed = clientPayload === FIXED_PAYLOAD
+    if (!(file instanceof File)) {
+      return NextResponse.json({ message: "Файл алга байна" }, { status: 400 })
+    }
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return NextResponse.json(
+        { message: "Зөвхөн JPG, PNG, WEBP, GIF зураг оруулна уу" },
+        { status: 400 }
+      )
+    }
+    if (file.size > MAX_BYTES) {
+      return NextResponse.json(
+        { message: `Зургийн хэмжээ ${MAX_BYTES / 1024 / 1024}MB-аас бага байх ёстой` },
+        { status: 400 }
+      )
+    }
 
-        return {
-          allowedContentTypes: [...ALLOWED_TYPES],
-          maximumSizeInBytes: MAX_BYTES.video,
-          addRandomSuffix: !fixed,
-          allowOverwrite: fixed,
-        }
-      },
-      // Байршуулалт дуусахад клиент хаягийг нь шууд авдаг тул энд хийх ажил
-      // алга. Localhost дээр энэ callback дуудагдахгүй ч байршуулалт бүтнэ.
-      onUploadCompleted: async () => {},
+    const fixed = typeof fixedPath === "string" && fixedPath.length > 0
+
+    const blob = await put(fixed ? fixedPath : file.name, file, {
+      access: "public",
+      contentType: file.type,
+      addRandomSuffix: !fixed,
+      allowOverwrite: fixed,
     })
 
-    return NextResponse.json(result)
+    return NextResponse.json({ url: blob.url })
   } catch (error) {
+    // Vercel-ийн шалтгааныг битгий залги — store-ын тохиргоо, эрх, хэмжээний
+    // алдааг ялгах цорын ганц мэдээлэл нь энэ мессеж.
+    console.error("blob upload error:", error)
     return NextResponse.json(
-      {
-        message: error instanceof Error ? error.message : "Байршуулж чадсангүй",
-      },
+      { message: error instanceof Error ? error.message : "Байршуулж чадсангүй" },
       { status: 400 }
     )
   }

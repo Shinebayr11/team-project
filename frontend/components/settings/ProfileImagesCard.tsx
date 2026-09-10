@@ -17,7 +17,7 @@ interface ProfileImagesCardProps {
   save: (body: AccountUpdateBody) => Promise<unknown>
 }
 
-const HINT = "JPG, PNG, WEBP, GIF · 5MB хүртэл"
+const HINT = "JPG, PNG, WEBP, GIF · 4MB хүртэл"
 
 /**
  * Профайл ба ковер зураг.
