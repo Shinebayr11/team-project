@@ -1,14 +1,20 @@
 "use client"
 
-import React, { useState } from "react"
-import { Gavel } from "lucide-react"
+import React, { useEffect, useState } from "react"
+import { ChevronLeft, ChevronRight, Gavel } from "lucide-react"
 
 import { useApiClient } from "@/hooks/useApiClient"
 import { useRequireAuth } from "@/hooks/useRequireAuth"
 import { useWallet } from "@/hooks/useWallet"
-import { Listing, isActive } from "@/hooks/useAuction"
+import { AuctionBid, Listing, bidderName, isActive } from "@/hooks/useAuction"
+import { Avatar } from "@/components/ui/Avatar"
 import { AuctionBidModal } from "@/components/live/auction-bid-modal"
 import { CountdownRing, useCountdown } from "@/components/live/auction-countdown"
+
+/** Нэг хуудсанд харагдах саналын тоо. */
+// ponytail: сервер хамгийн ихдээ 50 санал буцаадаг тул 10 хуудас хүртэл
+// харагдана. Илүү гүн шаардвал `/api/bids`-д skip/limit нэмнэ.
+const PAGE_SIZE = 5
 
 /** Үлдсэн хугацааг хоног/цагаар. Пост хэлбэр нь хоногоор үргэлжилдэг тул зөвхөн секунд хангалтгүй. */
 const remainingLabel = (seconds: number) => {
@@ -41,6 +47,8 @@ export const ProductAuctionPanel: React.FC<{
     refresh: refreshWallet,
   } = useWallet()
   const [open, setOpen] = useState(false)
+  const [bids, setBids] = useState<AuctionBid[]>([])
+  const [page, setPage] = useState(0)
 
   const running = isActive(listing)
   const { seconds, progress, urgent } = useCountdown(
@@ -49,6 +57,29 @@ export const ProductAuctionPanel: React.FC<{
 
   const current = listing.current_highest_bid_coins
   const starting = listing.starting_price_coins ?? 0
+
+  // Тэргүүлж буй үнэ өөрчлөгдөх бүрд шинэ санал орсон гэсэн үг — жагсаалтаа
+  // дахин уншина. Хуудас өөрөө ажиллаж буй лотыг тогтмол сорьдоггүй тул
+  // энэ нь `onBidPlaced` -> `refresh` -ийн дараа ажиллана.
+  useEffect(() => {
+    let cancelled = false
+    callApi<{ data: AuctionBid[] }>(`/api/bids?listing_id=${listing._id}`)
+      .then((res) => {
+        if (!cancelled) setBids(res.data)
+      })
+      .catch((error) => {
+        console.error("Үнийн саналууд уншиж чадсангүй:", error)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [callApi, listing._id, current])
+
+  const pages = Math.max(Math.ceil(bids.length / PAGE_SIZE), 1)
+  // Хуудсыг ДАРАЛТ болгож барина: жагсаалт богиносоход сүүлийн хуудас руу
+  // өөрөө буцна — эс бөгөөс хоосон хуудсан дээр гацна.
+  const shown = Math.min(page, pages - 1)
+  const visible = bids.slice(shown * PAGE_SIZE, shown * PAGE_SIZE + PAGE_SIZE)
 
   const placeBid = async (amount: number) => {
     try {
@@ -101,6 +132,83 @@ export const ProductAuctionPanel: React.FC<{
         >
           {running ? "Үнийн санал өгөх" : "Хугацаа дууслаа"}
         </button>
+
+        <div className="mt-4 border-t border-[var(--wn-line)] pt-3">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-[11px] font-[800] tracking-wider text-[var(--wn-ink-3)] uppercase">
+              Үнийн саналууд
+            </span>
+            {bids.length > 0 && (
+              <span className="text-[12px] font-[600] text-[var(--wn-ink-3)] tabular-nums">
+                {bids.length}
+              </span>
+            )}
+          </div>
+
+          {bids.length === 0 ? (
+            <p className="py-2 text-[13px] font-[600] text-[var(--wn-ink-3)]">
+              Одоогоор үнийн санал алга.
+            </p>
+          ) : (
+            <ul>
+              {visible.map((bid, index) => {
+                // Эхний хуудасны эхний мөр л тэргүүлнэ — сервер дүнгээр
+                // буурахаар эрэмбэлж өгдөг.
+                const leading = shown === 0 && index === 0
+                const name = bidderName(bid)
+                return (
+                  <li
+                    key={bid._id}
+                    className={`flex items-center gap-3 rounded-xl p-2 ${
+                      leading ? "bg-[var(--wn-accent-soft)]" : ""
+                    }`}
+                  >
+                    <Avatar name={name} size={32} tint="var(--wn-surface)" />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-[13px] font-[600] text-[var(--wn-ink)]">
+                        {name}
+                      </div>
+                      {leading && (
+                        <div className="text-[11px] font-[700] text-[var(--wn-accent)]">
+                          {running ? "Тэргүүлж буй санал" : "Ялсан санал"}
+                        </div>
+                      )}
+                    </div>
+                    <span className="shrink-0 text-[13px] font-[700] text-[var(--wn-ink-2)] tabular-nums">
+                      ₮{bid.amount_coins.toLocaleString()}
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+
+          {pages > 1 && (
+            <div className="mt-2 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                aria-label="Өмнөх хуудас"
+                onClick={() => setPage(shown - 1)}
+                disabled={shown === 0}
+                className="grid size-7 place-items-center rounded-lg border border-[var(--wn-line)] text-[var(--wn-ink-2)] transition-colors hover:bg-[var(--wn-accent-wash)] disabled:opacity-40 disabled:hover:bg-transparent"
+              >
+                <ChevronLeft className="size-4" />
+              </button>
+              <span className="text-[12px] font-[700] text-[var(--wn-ink-3)] tabular-nums">
+                {shown + 1} / {pages}
+              </span>
+              <button
+                type="button"
+                aria-label="Дараах хуудас"
+                onClick={() => setPage(shown + 1)}
+                disabled={shown >= pages - 1}
+                className="grid size-7 place-items-center rounded-lg border border-[var(--wn-line)] text-[var(--wn-ink-2)] transition-colors hover:bg-[var(--wn-accent-wash)] disabled:opacity-40 disabled:hover:bg-transparent"
+              >
+                <ChevronRight className="size-4" />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {open && (

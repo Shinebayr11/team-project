@@ -7,7 +7,7 @@ import { ProductThumb } from "@/components/ui/ProductThumb"
 import { Button } from "@/components/ui/button"
 import { useApiClient } from "@/hooks/useApiClient"
 import { useCountdown } from "@/components/live/auction-countdown"
-import { AuctionBid, AuctionProduct, Listing, isActive } from "@/hooks/useAuction"
+import { AuctionBid, AuctionProduct, Listing, bidderName, isActive } from "@/hooks/useAuction"
 import { ShowProduct, productOfEntry } from "@/hooks/useShowProducts"
 
 const DURATIONS = [30, 60, 120]
@@ -18,9 +18,6 @@ const MAX_DURATION = 60 * 60
 
 const productOf = (listing: Listing): AuctionProduct | undefined =>
   typeof listing.product_id === "object" ? listing.product_id : undefined
-
-const bidderName = (bid: AuctionBid) =>
-  (typeof bid.buyer_id === "object" && bid.buyer_id?.display_name) || "Хэрэглэгч"
 
 const winnerOf = (listing: Listing) =>
   typeof listing.current_winner_id === "object" && listing.current_winner_id
