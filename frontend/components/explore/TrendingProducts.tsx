@@ -35,11 +35,7 @@ export const TrendingProducts: React.FC<{ products: TrendingProduct[] }> = ({ pr
           <div
             key={product._id}
             className="group flex cursor-pointer flex-col gap-2"
-            // Барааны дэлгэрэнгүй хуудас одоогоор бодит бараа дэмждэггүй тул
-            // худалдагчийн дэлгүүр рүү аваачна.
-            onClick={() =>
-              navigate(`/shop?seller=${product.seller?._id ?? encodeURIComponent(seller)}`)
-            }
+            onClick={() => navigate(`/product?id=${product._id}`)}
           >
             <div className="relative aspect-square w-full overflow-hidden rounded-[16px] bg-[var(--wn-shot)]">
               {product.images?.[0] ? (
