@@ -6,7 +6,8 @@ export interface ReelChatLine {
 
 export interface ReelItem {
   name: string;
-  mode: "bid" | "buynow";
+  /** "watch" — жинхэнэ эфир: энд худалдах зүйл байхгүй, эфир рүү нь оруулна. */
+  mode: "bid" | "buynow" | "watch";
   price: string;
   next: string;
   seconds: number;
@@ -41,6 +42,13 @@ export interface ReelShow {
   followers: string;
   viewers: number;
   thumbnail?: string;
+  /** Эфирийн бичлэг. Байвал зураг дээр давхарлаж, чимээгүй давтагдан тоглоно. */
+  video?: string;
+  /**
+   * ЖИНХЭНЭ эфирийн зам (`/live/<room>`). Байвал энэ мөр нь mock биш — дарахад
+   * бодит дамжуулалт руу орно.
+   */
+  watchPath?: string;
   item: ReelItem;
   products: Record<ReelTab, ReelProduct[]>;
   chat: ReelChatLine[];

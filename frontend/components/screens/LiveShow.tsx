@@ -1,10 +1,12 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useSearchParams, useNavigate } from "@/lib/router"
 import { ReelProduct, ReelShow, ReelTab } from "@/types"
 import { REEL_SHOWS } from "@/data"
 import { useStore } from "@/store"
+import { useLiveShows } from "@/hooks/useLiveShows"
+import { toReelShow } from "@/lib/reelFromLive"
 import { useReelPlayer } from "@/hooks/useReelPlayer"
 import { useRequireAuth } from "@/hooks/useRequireAuth"
 import { ShowInfoPanel } from "@/components/liveshow/ShowInfoPanel"
@@ -17,6 +19,7 @@ import { ReelActionRail } from "@/components/liveshow/ReelActionRail"
 import { ReelMobileChat } from "@/components/liveshow/ReelMobileChat"
 import { ReelMobileBottomBar } from "@/components/liveshow/ReelMobileBottomBar"
 import { ReelItemSheet } from "@/components/liveshow/ReelItemSheet"
+import { RouteFallback } from "@/components/layout/AppShell"
 
 const VIEWER_NAME = "junglefinds"
 const SCROLL_HINT_MS = 4200
@@ -27,10 +30,22 @@ export const LiveShow: React.FC = () => {
   const { openModal, isFollowing, toggleFollow, addToast, cartCount } = useStore()
   const { requireAuth } = useRequireAuth()
 
+  // Жинхэнэ эфир байвал жагсаалтын ЭХЭНД гарна — mock-ууд доошоо шилжинэ.
+  // Үзэгч "Шууд" таб руу орохдоо яг одоо явж байгаа хүнийг эхлээд харах ёстой.
+  const { shows: liveShows, loading: liveLoading } = useLiveShows()
+
+  const shows = useMemo(() => {
+    const live = liveShows
+      .filter((show) => show.live !== undefined)
+      .sort((a, b) => (b.live ?? 0) - (a.live ?? 0))
+      .map(toReelShow)
+    return [...live, ...REEL_SHOWS]
+  }, [liveShows])
+
   const requestedSlug = searchParams.get("show")
   const startIndex = Math.max(
     0,
-    REEL_SHOWS.findIndex((s) => s.slug === requestedSlug)
+    shows.findIndex((s) => s.slug === requestedSlug)
   )
 
   const [tab, setTab] = useState<ReelTab>("buynow")
@@ -47,7 +62,7 @@ export const LiveShow: React.FC = () => {
     goTo,
     handleWheel,
     pushChatLine,
-  } = useReelPlayer(REEL_SHOWS, startIndex)
+  } = useReelPlayer(shows, startIndex)
 
   useEffect(() => {
     const timer = setTimeout(() => setShowScrollHint(false), SCROLL_HINT_MS)
@@ -64,8 +79,17 @@ export const LiveShow: React.FC = () => {
     )
   }
 
-  const handleItemAction = (show: ReelShow) =>
-    requireAuth(() => {
+  const handleItemAction = (show: ReelShow) => {
+    // Жинхэнэ эфирт энд худалдах зүйл алга — бараа, дуудлага худалдаа нь
+    // `/live/<room>` дээр бодитоор явж байгаа тул тэр рүү нь оруулна.
+    if (show.item.mode === "watch") {
+      if (show.watchPath) navigate(show.watchPath)
+      // Room-гүй эфир нь өгөгдлийн сан дахь жишээ мөр — үзэх дамжуулалт алга.
+      else addToast("Энэ эфирийг одоогоор үзэх боломжгүй байна.")
+      return
+    }
+
+    return requireAuth(() => {
       if (show.item.mode === "bid") {
         openModal("bid", { show })
         return
@@ -80,6 +104,11 @@ export const LiveShow: React.FC = () => {
         qty: 1,
       })
     })
+  }
+
+  // Жинхэнэ эфирүүд ирэхээс өмнө зурвал жагсаалт нь дараа нь урдаасаа уртсаж,
+  // үзэгчийн харж байсан мөр өөр рүү үсэрнэ. Уншиж дуустал хүлээнэ.
+  if (liveLoading) return <RouteFallback />
 
   const shareUrl = `whynot.live/${currentShow.slug}`
   const itemCount = currentShow.products.buynow.length
@@ -92,7 +121,7 @@ export const LiveShow: React.FC = () => {
         style={{ height: '100dvh', maxHeight: '100dvh' }}
       >
         <ReelStage
-          shows={REEL_SHOWS}
+          shows={shows}
           currentIndex={currentIndex}
           countdown={countdown}
           viewers={viewers}
@@ -170,7 +199,7 @@ export const LiveShow: React.FC = () => {
         </div>
 
         <ReelStage
-          shows={REEL_SHOWS}
+          shows={shows}
           currentIndex={currentIndex}
           countdown={countdown}
           viewers={viewers}

@@ -28,6 +28,7 @@ export const ReelMobileBottomBar: React.FC<ReelMobileBottomBarProps> = ({
   };
 
   const isBidding = item.mode === 'bid';
+  const isWatch = item.mode === 'watch';
 
   return (
     <div
@@ -42,7 +43,9 @@ export const ReelMobileBottomBar: React.FC<ReelMobileBottomBarProps> = ({
         <div className="w-[48px] h-[48px] rounded-lg bg-[var(--wn-shot)] shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="text-[12px] font-[700] text-white truncate">{item.name}</div>
-          <div className="text-[11px] font-[600] text-white/80 mt-0.5">₮{item.price}</div>
+          {!isWatch && (
+            <div className="text-[11px] font-[600] text-white/80 mt-0.5">₮{item.price}</div>
+          )}
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
@@ -55,7 +58,7 @@ export const ReelMobileBottomBar: React.FC<ReelMobileBottomBarProps> = ({
             onClick={onAction}
             className="h-[36px] px-4 rounded-lg bg-[var(--wn-accent)] text-white text-[12px] font-[800] hover:bg-[var(--wn-accent-hover)] transition-colors shrink-0"
           >
-            {isBidding ? 'Санал' : 'Авах'}
+            {isWatch ? 'Үзэх' : isBidding ? 'Санал' : 'Авах'}
           </button>
         </div>
       </div>
