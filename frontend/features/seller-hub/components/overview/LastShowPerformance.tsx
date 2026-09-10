@@ -26,7 +26,7 @@ export const LastShowPerformance: React.FC<LastShowPerformanceProps> = ({ show, 
 
       <div className="grid grid-cols-1 gap-y-5 gap-x-4 min-[380px]:grid-cols-2 sm:gap-y-6">
         <Metric label="Орлого" value={`₮${show.revenue.toLocaleString()}`} />
-        <Metric label="Зарагдсан лот" value={show.soldCount} />
+        <Metric label="Зарагдсан бараа" value={show.soldCount} />
         <Metric label="Үзэгч" value={show.viewer_count ?? 0} />
       </div>
 

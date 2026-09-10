@@ -74,8 +74,8 @@ export function useMySales() {
       try {
         await refresh()
       } catch (loadError) {
-        console.error("Зарагдсан лот уншиж чадсангүй:", loadError)
-        if (!cancelled) setError("Зарагдсан лот уншиж чадсангүй.")
+        console.error("Зарагдсан бараа уншиж чадсангүй:", loadError)
+        if (!cancelled) setError("Зарагдсан бараа уншиж чадсангүй.")
       }
       if (cancelled) return
       setSettled(true)

@@ -286,7 +286,7 @@ export function BidsPanel({
           ) : (
             listing && (
               <div className="border-b border-[var(--wn-line)] p-3 text-[12px] text-[var(--wn-ink-3)]">
-                Сүүлийн лот{" "}
+                Сүүлийн бараа{" "}
                 <span className="font-[700] text-[var(--wn-ink-2)]">
                   {productOf(listing)?.name}
                 </span>{" "}
