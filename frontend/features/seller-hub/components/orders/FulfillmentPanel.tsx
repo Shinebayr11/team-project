@@ -33,14 +33,10 @@ export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
   >
     <div className="flex flex-col gap-4">
       {order.fulfillmentStatus === 'PENDING' && (
-        <button onClick={() => onAdvance('PROCESSING')} className={primaryButton}>Боловсруулж эхлэх</button>
+        <button onClick={() => onAdvance('CONFIRMED')} className={primaryButton}>Захиалга баталгаажуулах</button>
       )}
 
-      {order.fulfillmentStatus === 'PROCESSING' && (
-        <button onClick={() => onAdvance('READY_TO_SHIP')} className={primaryButton}>Хүргэхэд бэлэн гэж тэмдэглэх</button>
-      )}
-
-      {order.fulfillmentStatus === 'READY_TO_SHIP' && (
+      {order.fulfillmentStatus === 'CONFIRMED' && (
         <>
           {packingSlipNote && (
             <div className="p-3 rounded-xl bg-[var(--wn-admin-row-rule)] border border-[var(--wn-admin-card-border)]">

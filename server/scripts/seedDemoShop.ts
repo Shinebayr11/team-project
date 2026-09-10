@@ -234,9 +234,9 @@ async function main() {
             // Хүргэлт нь ЦАГ ХУГАЦААНААС хамаарна: өчигдрийн захиалга хүргэгдсэн
             // байх ёсгүй, сарын өмнөх нь хүлээгдэж байх ёсгүй.
             let fulfillment: string
-            if (day <= 1) fulfillment = pick(["PENDING", "PROCESSING"])
-            else if (day <= 3) fulfillment = pick(["PROCESSING", "READY_TO_SHIP"])
-            else if (day <= 6) fulfillment = pick(["READY_TO_SHIP", "SHIPPED"])
+            if (day <= 1) fulfillment = pick(["PENDING", "CONFIRMED"])
+            else if (day <= 3) fulfillment = "CONFIRMED"
+            else if (day <= 6) fulfillment = pick(["CONFIRMED", "SHIPPED"])
             else fulfillment = rnd() < 0.92 ? "DELIVERED" : rnd() < 0.6 ? "CANCELLED" : "RETURNED"
 
             const [city, district, khoroo, detail] = pick(DISTRICTS)
@@ -346,7 +346,7 @@ async function main() {
             price_coins: lots[i].current_highest_bid_coins,
             // Эфир дөнгөж дууссан бол илгээгээгүй байх нь жам ёсны.
             fulfillment_status:
-                daysAgo <= 1 ? "PENDING" : daysAgo <= 4 ? "PROCESSING" : "DELIVERED",
+                daysAgo <= 1 ? "PENDING" : daysAgo <= 4 ? "CONFIRMED" : "DELIVERED",
             shipping_address: {
                 fullName: buyer,
                 phone: `9${between(1000000, 9999999)}`,

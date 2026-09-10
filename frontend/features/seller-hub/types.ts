@@ -25,7 +25,8 @@ export interface SellerOrder {
   date: string;
   total: number;
   paymentStatus: 'PENDING' | 'PAID' | 'REFUNDED';
-  fulfillmentStatus: 'PENDING' | 'PROCESSING' | 'READY_TO_SHIP' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | 'RETURNED';
+  /** Урсгал: PENDING → CONFIRMED → SHIPPED → DELIVERED. Сүүлийн хоёр нь онцгой төгсгөл. */
+  fulfillmentStatus: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | 'RETURNED';
   items: {
     productId: string;
     name: string;

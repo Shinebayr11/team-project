@@ -18,7 +18,7 @@ const RANGE_DAYS = 30;
  * үүнийг ашиглана — тус тусдаа жагсаалт барьвал нэг дэлгэц дээр хоёр өөр тоо
  * харагдана.
  */
-export const OPEN_FULFILLMENT = ["PENDING", "PROCESSING", "READY_TO_SHIP"];
+export const OPEN_FULFILLMENT = ["PENDING", "CONFIRMED"];
 
 /**
  * Ерөнхий тоймын өгөгдөл — бүгд БОДИТ эх сурвалжаас.
