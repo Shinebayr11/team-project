@@ -3,12 +3,12 @@
 import { RefObject, useEffect, useRef } from "react"
 
 import { useApiClient } from "@/hooks/useApiClient"
-import { isImageUploadReady, uploadImage } from "@/lib/cloudinary"
+import { uploadFile } from "@/lib/upload"
 
 /**
  * Хоёр байршуулалтын хоорондох завсар.
  *
- * Богиносгох тусам нүүрэн дэх зураг шинэлэг болох ч Cloudinary руу илгээх
+ * Богиносгох тусам нүүрэн дэх зураг шинэлэг болох ч Blob руу илгээх
  * файлын тоо шууд өснө (1 цагийн шууд дамжуулалт ≈ 3600 / энэ утга). 20 секунд нь
  * "саяхны дүр зураг" мэдрэмжийг өгөхүйц шинэлэг, гэхдээ нэг цагт ~180 зурагт
  * багтах тэнцвэр.
@@ -39,11 +39,11 @@ export function useLiveThumbnail(
 ) {
   const { callApi } = useApiClient()
   // Сүлжээ удаан үед өмнөх байршуулалт дуусаагүй байхад дараагийнх эхлэхээс
-  // сэргийлнэ — эс тэгвэл давхарлаад Cloudinary руу дэмий ачаалал өгнө.
+  // сэргийлнэ — эс тэгвэл давхарлаад дэмий ачаалал өгнө.
   const busy = useRef(false)
 
   useEffect(() => {
-    if (!enabled || !showId || !isImageUploadReady()) return
+    if (!enabled || !showId) return
 
     const capture = async () => {
       const video = videoRef.current
@@ -74,11 +74,11 @@ export function useLiveThumbnail(
         )
         if (!blob) return
 
-        // Шууд дамжуулалт бүр Cloudinary дээр ГАНЦ файлтай: 20 секунд тутам түүнийг дарж
+        // Шууд дамжуулалт бүр Blob дээр ГАНЦ файлтай: 20 секунд тутам түүнийг дарж
         // бичнэ. Өмнө нь дуудалт бүрд шинэ файл үүсэж, устгагддаггүй байв.
-        const url = await uploadImage(
+        const url = await uploadFile(
           new File([blob], `live-${showId}.jpg`, { type: "image/jpeg" }),
-          `live-shows/${showId}`
+          `live-shows/${showId}.jpg`
         )
 
         await callApi(`/api/liveshow/${showId}`, {

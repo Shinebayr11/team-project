@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { Camera, ImageOff, Loader2, X } from "lucide-react"
+import { Camera, Loader2, X } from "lucide-react"
 
 import { Avatar } from "@/components/ui/Avatar"
-import { isImageUploadReady, uploadImage } from "@/lib/cloudinary"
+import { uploadFile } from "@/lib/upload"
 import type { AccountUpdateBody } from "@/types/account"
 
 type Slot = "avatar_url" | "cover_url"
@@ -26,8 +26,8 @@ const HINT = "JPG, PNG, WEBP, GIF · 5MB хүртэл"
  * хуудсанд, `/shop` дээр дэлгүүрийн толгойд яг эдгээр зураг гарна. Тиймээс
  * худалдагчийн самбар, худалдан авагчийн тохиргоо хоёр ижил хэсгийг дуудна.
  *
- * Зураг Cloudinary руу шууд хөтчөөс очиж, зөвхөн хаяг нь хадгалагдана
- * (`lib/cloudinary.ts`).
+ * Зураг Vercel Blob руу шууд хөтчөөс очиж, зөвхөн хаяг нь хадгалагдана
+ * (`lib/upload.ts`).
  */
 export const ProfileImagesCard: React.FC<ProfileImagesCardProps> = ({
   name,
@@ -39,8 +39,6 @@ export const ProfileImagesCard: React.FC<ProfileImagesCardProps> = ({
   const avatarInput = React.useRef<HTMLInputElement>(null)
   const [busy, setBusy] = React.useState<Slot | null>(null)
   const [error, setError] = React.useState<string | null>(null)
-
-  const uploadReady = isImageUploadReady()
 
   const put = async (slot: Slot, url: string) => {
     setBusy(slot)
@@ -63,7 +61,7 @@ export const ProfileImagesCard: React.FC<ProfileImagesCardProps> = ({
     setBusy(slot)
     setError(null)
     try {
-      const url = await uploadImage(file)
+      const url = await uploadFile(file)
       await save({ [slot]: url })
     } catch (uploadError) {
       setError(
@@ -77,20 +75,6 @@ export const ProfileImagesCard: React.FC<ProfileImagesCardProps> = ({
       const input = slot === "cover_url" ? coverInput : avatarInput
       if (input.current) input.current.value = ""
     }
-  }
-
-  if (!uploadReady) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-[var(--wn-line)] bg-white px-6 py-10 text-center">
-        <ImageOff className="size-6 text-[var(--wn-ink-4)]" />
-        <p className="text-[14px] font-[700] text-[var(--wn-ink-2)]">
-          Зураг байршуулах боломж идэвхгүй байна
-        </p>
-        <p className="max-w-[380px] text-[13px] font-[500] text-[var(--wn-ink-3)]">
-          Админтайгаа холбогдож байршуулалтын тохиргоог идэвхжүүлнэ үү.
-        </p>
-      </div>
-    )
   }
 
   const iconBtn =
