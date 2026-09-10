@@ -24,7 +24,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({ title, description, onBa
         </button>
       )}
       <div>
-        <h1 className="text-[24px] font-[800] tracking-tight text-black">{title}</h1>
+        <h1 className="text-[20px] font-[800] tracking-tight text-black">{title}</h1>
         {description && <p className="text-[14px] text-[var(--wn-admin-muted)] font-[500] mt-1">{description}</p>}
       </div>
     </div>
