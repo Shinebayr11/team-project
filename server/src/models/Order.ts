@@ -40,6 +40,11 @@ const OrderSchema = new Schema(
         product_id: { type: Schema.Types.ObjectId, ref: "Product" },
         video_id: { type: Schema.Types.ObjectId, ref: "Video" },
         live_show_id: { type: Schema.Types.ObjectId, ref: "Live_Show" },
+        /**
+         * Аукционы лотоос үүссэн бол аль лот вэ. Нэг лот НЭГ л захиалга үүсгэнэ —
+         * `sparse` тул гараар хийсэн захиалгууд индекст ороогүй.
+         */
+        listing_id: { type: Schema.Types.ObjectId, ref: "ProductListing" },
         quantity: { type: Number },
         price_coins: { type: Number },
         status: { type: String },
@@ -80,5 +85,7 @@ const OrderSchema = new Schema(
     },
     { timestamps: true }
 )
+
+OrderSchema.index({ listing_id: 1 }, { unique: true, sparse: true })
 
 export const Order = mongoose.model("Order", OrderSchema)

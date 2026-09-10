@@ -1,6 +1,9 @@
 import { Types } from "mongoose"
 import { ProductListing } from "../models/ProductListing.js"
 import { Live_Show } from "../models/Live_show.js"
+import { Order } from "../models/Order.js"
+import { Product } from "../models/Product.js"
+import { User } from "../models/User.js"
 import { Wallet } from "../models/Wallet.js"
 import { CoinTransaction } from "../models/Cointransaction.js"
 
@@ -147,6 +150,42 @@ export const settleExpiredListings = async (filter: Record<string, unknown> = {}
             wallet_id: sellerWallet._id,
             type: "auction_sale",
             amount,
+        })
+
+        // Ялсан лот бол ЗАХИАЛГА: худалдагч барааг нь илгээх ажил үлдсэн.
+        //
+        // Өмнө нь энэ нь захиалга үүсгэдэггүй байсан тул Seller Hub ялагчдыг
+        // "Захиалга" хүснэгтэндээ биш, түүний ДЭЭР тусдаа самбар дээр харуулж,
+        // мөн орлого, хүргэлтийн тоонд ч ордоггүй байв.
+        //
+        // Төлбөр нь ЭНД аль хэдийн хийгдсэн (зоос шилжсэн) тул PAID; харин
+        // хүргэлт нь хараахан эхлээгүй.
+        const [product, winner] = await Promise.all([
+            Product.findById(claimed.product_id).select("name sku"),
+            User.findById(claimed.current_winner_id).select("display_name"),
+        ])
+
+        await Order.create({
+            seller_id: show.seller_id,
+            buyer_id: claimed.current_winner_id,
+            listing_id: claimed._id,
+            live_show_id: claimed.live_show_id,
+            product_id: claimed.product_id,
+            buyer_name: winner?.display_name ?? "Хэрэглэгч",
+            items: [
+                {
+                    product_id: claimed.product_id,
+                    name: product?.name ?? "Бараа",
+                    sku: product?.sku ?? "",
+                    price_coins: amount,
+                    quantity: 1,
+                },
+            ],
+            quantity: 1,
+            price_coins: amount,
+            total_coins: amount,
+            payment_status: "PAID",
+            fulfillment_status: "PENDING",
         })
       } catch (error) {
         console.error(`Аукцион ${listing._id} хаахад алдаа гарлаа:`, error)

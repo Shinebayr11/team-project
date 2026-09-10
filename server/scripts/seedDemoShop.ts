@@ -347,12 +347,60 @@ async function main() {
             }
         })
     )
-    await ProductListing.insertMany(lots)
+    const lotDocs = await ProductListing.insertMany(lots)
+
+    // Зарагдсан лот бүр ЗАХИАЛГА болно — `settleExpiredListings` бодит
+    // аукционд яг үүнийг хийдэг. Ингэснээр ялагчид "Захиалга" хүснэгтэд
+    // бусад захиалгын хамт, ижил шүүлтүүрээр харагдана.
+    const lotOrders = lotDocs.map((lot, i) => {
+        const show = showDocs.find((s) => String(s._id) === String(lot.live_show_id))!
+        const endedAt = show.ended_at as Date
+        const daysAgo = Math.floor((now - endedAt.getTime()) / 86_400_000)
+        const buyer = pick(BUYERS)
+        const [city, state, line] = pick(DISTRICTS)
+        const seedItem = lots[i]
+
+        return {
+            seller_id: seller._id,
+            listing_id: lot._id,
+            live_show_id: lot.live_show_id,
+            product_id: lot.product_id,
+            buyer_name: buyer,
+            items: [
+                {
+                    product_id: lot.product_id,
+                    name: created.find((d) => String(d._id) === String(lot.product_id))!.name,
+                    sku: created.find((d) => String(d._id) === String(lot.product_id))!.sku ?? "",
+                    price_coins: seedItem.current_highest_bid_coins,
+                    quantity: 1,
+                },
+            ],
+            quantity: 1,
+            price_coins: seedItem.current_highest_bid_coins,
+            total_coins: seedItem.current_highest_bid_coins,
+            payment_status: "PAID",
+            // Эфир дөнгөж дууссан бол илгээгээгүй байх нь жам ёсны.
+            fulfillment_status:
+                daysAgo <= 1 ? "PENDING" : daysAgo <= 4 ? "PROCESSING" : "DELIVERED",
+            shipping_address: {
+                fullName: buyer,
+                addressLine1: line,
+                city,
+                state,
+                postalCode: String(between(11000, 19999)),
+                country: "Mongolia",
+            },
+            demo_seed: true,
+            createdAt: endedAt,
+            updatedAt: endedAt,
+        }
+    })
+    await Order.insertMany(lotOrders, { timestamps: false })
 
     const lotRevenue = lots.reduce((sum, lot) => sum + lot.current_highest_bid_coins, 0)
     console.log(
         `Нэмсэн: ${showDocs.length} дууссан эфир, ${lots.length} зарагдсан лот ` +
-            `(₮${lotRevenue.toLocaleString("en-US")})`
+            `(₮${lotRevenue.toLocaleString("en-US")}) — лот бүрд захиалга`
     )
 
     // --- Зарагдсан тоог захиалгатай нь тааруулна --------------------------

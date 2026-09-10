@@ -9,7 +9,6 @@ import { SellerSearchField } from "@/features/seller-hub/components/SellerSearch
 import { DataCard } from "@/features/seller-hub/components/DataCard"
 import { OrdersTable } from "@/features/seller-hub/components/orders/OrdersTable"
 import { OrderDetail } from "@/features/seller-hub/components/orders/OrderDetail"
-import { AuctionSalesPanel } from "@/features/seller-hub/components/orders/AuctionSalesPanel"
 import { FULFILLMENT_STATUS_LABELS } from "@/features/seller-hub/components/statusTones"
 import { useSellerProfile } from "@/hooks/useSellerProfile"
 import { settingsOf } from "@/features/seller-hub/sellerSettings"
@@ -95,10 +94,10 @@ export const SellerOrders: React.FC = () => {
         title="Захиалга, хүргэлт"
         description="Сүүлийн үеийн худалдан авалтуудаа удирдаж, биелүүлнэ үү."
       />
-      {/* Дуудлага худалдааны ялагчид — жинхэнэ өгөгдөл. Доорх хүснэгт нь
-          одоогоор жишээ захиалгууд. */}
-      <AuctionSalesPanel />
-
+      {/* Дуудлага худалдааны ялагчид ДООРХ хүснэгтэд бусад захиалгын хамт
+          орно: лот зарагдахдаа захиалга үүсгэдэг болсон (`lib/auction.ts`).
+          Өмнө нь тэдгээр нь хүснэгтийн дээр тусдаа самбар дээр гарч, шүүлтүүрт
+          ч ороогүй, орлого, хүргэлтийн тоонд ч тоологдоогүй байв. */}
       <FilterTabs tabs={TABS} active={activeTab} onChange={setActiveTab} />
 
       <DataCard
