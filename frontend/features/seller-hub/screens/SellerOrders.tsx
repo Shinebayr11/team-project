@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react"
 import { SellerOrder } from "@/features/seller-hub/types"
 import { useStore } from "@/store"
+import { ApiError } from "@/lib/api"
 import { DirectOrder, useMySellerOrders } from "@/hooks/useMySellerOrders"
 import { toSellerOrder } from "@/features/seller-hub/lib/toSellerOrder"
 import { PageHeader } from "@/features/seller-hub/components/PageHeader"
@@ -29,7 +30,7 @@ export const SellerOrders: React.FC = () => {
   const {
     orders: realOrders,
     updateStatus: updateRealStatus,
-    updateTracking: updateRealTracking,
+    updateDelivery: updateRealDelivery,
   } = useMySellerOrders()
 
   const { profile } = useSellerProfile()
@@ -93,19 +94,21 @@ export const SellerOrders: React.FC = () => {
     addToast(`Захиалгыг "${FULFILLMENT_STATUS_LABELS[status]}" төлөвт шилжүүллээ.`)
   }
 
-  const handleShip = (carrier: string, trackingNumber: string) => {
+  const handleShip = (driverPhone: string, vehiclePlate: string) => {
     if (!selectedId) return
-    if (!trackingNumber) {
-      addToast("Хүргэлтийн код оруулна уу.")
+    if (!driverPhone || !vehiclePlate) {
+      addToast("Жолоочийн утас, машины дугаарыг оруулна уу.")
       return
     }
 
     const real = realOrderById.get(selectedId)
     if (!real) return
-    updateRealTracking(real._id, carrier, trackingNumber).catch(() =>
-      addToast("Хүргэлтийн мэдээлэл хадгалахад алдаа гарлаа.")
+    updateRealDelivery(real._id, driverPhone, vehiclePlate).catch((error) =>
+      addToast(
+        error instanceof ApiError ? error.message : "Хүргэлтийн мэдээлэл хадгалахад алдаа гарлаа."
+      )
     )
-    addToast("Захиалгыг илгээсэн гэж тэмдэглэлээ.")
+    addToast("Захиалгыг хүргэлтэд гарсан гэж тэмдэглэлээ.")
   }
 
   if (selectedOrder) {

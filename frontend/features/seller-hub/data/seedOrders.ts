@@ -67,8 +67,8 @@ export const SEED_SELLER_ORDERS: SellerOrder[] = [
     total: 147600,
     paymentStatus: "PAID",
     fulfillmentStatus: "SHIPPED",
-    trackingNumber: "1Z9999999999999999",
-    carrier: "UPS",
+    driverPhone: "99118822",
+    vehiclePlate: "4512 УБА",
     items: [
       { productId: "inv_1", name: "Nike Dunk Low 'Dusty Olive'", sku: "NK-DUNK-DO-10", price: 147600, qty: 1 }
     ],
@@ -88,8 +88,8 @@ export const SEED_SELLER_ORDERS: SellerOrder[] = [
     total: 99000,
     paymentStatus: "PAID",
     fulfillmentStatus: "DELIVERED",
-    trackingNumber: "9400100000000000000000",
-    carrier: "USPS",
+    driverPhone: "88052277",
+    vehiclePlate: "7830 УБВ",
     items: [
       { productId: "inv_2", name: "Vintage Glass Vase", sku: "VG-VASE-01", price: 99000, qty: 1 }
     ],

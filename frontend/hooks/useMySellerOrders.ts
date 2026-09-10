@@ -33,8 +33,8 @@ export interface DirectOrder {
   price_coins?: number
   status?: string
   fulfillment_status?: SellerOrder["fulfillmentStatus"]
-  carrier?: string
-  tracking_number?: string
+  driver_phone?: string
+  vehicle_plate?: string
   shipping_address?: OrderShippingAddress
   createdAt?: string
   updatedAt?: string
@@ -105,11 +105,11 @@ export function useMySellerOrders() {
     [callApi, refresh]
   )
 
-  const updateTracking = useCallback(
-    async (id: string, carrier: string, trackingNumber: string) => {
-      await callApi(`/api/order/${id}/tracking`, {
+  const updateDelivery = useCallback(
+    async (id: string, driverPhone: string, vehiclePlate: string) => {
+      await callApi(`/api/order/${id}/delivery`, {
         method: "PATCH",
-        body: JSON.stringify({ carrier, tracking_number: trackingNumber }),
+        body: JSON.stringify({ driver_phone: driverPhone, vehicle_plate: vehiclePlate }),
       })
       await refresh()
     },
@@ -122,6 +122,6 @@ export function useMySellerOrders() {
     error,
     refresh,
     updateStatus,
-    updateTracking,
+    updateDelivery,
   }
 }

@@ -65,7 +65,7 @@ export interface InventorySlice {
 
 export interface OrdersSlice {
   updateSellerOrderStatus: (id: string, status: SellerOrder['fulfillmentStatus']) => void;
-  setOrderTracking: (id: string, carrier: string, trackingNumber: string) => void;
+  setOrderDelivery: (id: string, driverPhone: string, vehiclePlate: string) => void;
 }
 
 export interface ShowsSlice {

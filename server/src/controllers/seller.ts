@@ -345,7 +345,6 @@ const settingsSchema = z
                 .max(9999, "Тоо ширхэг 9999-өөс ихгүй байна"),
         }),
         shipping: z.object({
-            defaultCarrier: z.string().trim().min(1, required("Тээвэрлэгч")),
             processingDays: z
                 .number()
                 .int("Хоног бүхэл тоо байна")

@@ -4,8 +4,8 @@ import {
     getMySellerOrders,
     getOrder,
     postOrder,
+    updateOrderDelivery,
     updateOrderFulfillment,
-    updateOrderTracking,
 } from "../controllers/orderController.js";
 import { requireAuth } from "../middleware/auth.js";
 
@@ -17,5 +17,5 @@ orderRoutes.get("/seller", requireAuth, getMySellerOrders)
 orderRoutes.get("/", requireAuth, getOrder)
 orderRoutes.post("/", requireAuth, postOrder)
 orderRoutes.patch("/:id/status", requireAuth, updateOrderFulfillment)
-orderRoutes.patch("/:id/tracking", requireAuth, updateOrderTracking)
+orderRoutes.patch("/:id/delivery", requireAuth, updateOrderDelivery)
 export default orderRoutes

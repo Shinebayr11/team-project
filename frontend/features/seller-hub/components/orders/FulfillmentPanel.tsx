@@ -15,7 +15,7 @@ interface FulfillmentPanelProps {
   order: SellerOrder;
   onAdvance: (status: SellerOrder['fulfillmentStatus']) => void;
   onGenerateLabel: () => void;
-  onShip: (carrier: string, trackingNumber: string) => void;
+  onShip: (driverPhone: string, vehiclePlate: string) => void;
 }
 
 const primaryButton = btn("ink", "block");
@@ -51,8 +51,8 @@ export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
       {order.fulfillmentStatus === 'SHIPPED' && (
         <>
           <div className="p-4 rounded-xl bg-[var(--wn-admin-row-rule)] border border-[var(--wn-admin-card-border)] flex flex-col gap-1 mb-2">
-            <div className="text-[12px] font-[700] text-[var(--wn-admin-muted)]">Хүргэлтийн мэдээлэл</div>
-            <div className="text-[14px] font-[700] text-black">{order.carrier} — {order.trackingNumber}</div>
+            <div className="text-[12px] font-[700] text-[var(--wn-admin-muted)]">Жолооч</div>
+            <div className="text-[14px] font-[700] text-black">{order.driverPhone} · {order.vehiclePlate}</div>
           </div>
           <button onClick={() => onAdvance('DELIVERED')} className={`${primaryButton} flex items-center justify-center gap-2`}>
             <CheckCircle2 className="w-4 h-4" /> Хүргэгдсэн гэж тэмдэглэх
@@ -64,8 +64,8 @@ export const FulfillmentPanel: React.FC<FulfillmentPanelProps> = ({
         <div className="p-4 rounded-xl bg-[var(--wn-admin-ok-soft)] border border-[var(--wn-admin-ok)]/20 flex flex-col gap-1">
           <div className="text-[12px] font-[700] text-[var(--wn-admin-ok)]">Төлөв</div>
           <div className="text-[14px] font-[700] text-[var(--wn-admin-ok)]">Бараа хүргэгдсэн</div>
-          {order.trackingNumber && (
-            <div className="text-[12px] font-[500] text-[var(--wn-admin-ok)] mt-1">{order.carrier} — {order.trackingNumber}</div>
+          {order.driverPhone && (
+            <div className="text-[12px] font-[500] text-[var(--wn-admin-ok)] mt-1">{order.driverPhone} · {order.vehiclePlate}</div>
           )}
         </div>
       )}

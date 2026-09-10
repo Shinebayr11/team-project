@@ -40,8 +40,9 @@ const OrderSchema = new Schema(
         /** Үзүүлэнгийн өгөгдөл эсэх. `seed:demo-shop` тавьж, `--clean` үүгээр л устгана. */
         demo_seed: { type: Boolean, default: false, index: true },
         fulfillment_status: { type: String, enum: FULFILLMENT_STATUSES, default: "PENDING" },
-        carrier: { type: String },
-        tracking_number: { type: String },
+        /** Хүргэлтэд гарахад бөглөнө — барааг хүргэж яваа жолоочийн мэдээлэл. */
+        driver_phone: { type: String },
+        vehicle_plate: { type: String },
         /** Захиалга үүсэх үеийн хаягийн хэвлэмэл хуулбар — `User.addresses`-ийн
          * тухайн бичлэг дараа засагдаж/устсан ч захиалга дээрх хаяг өөрчлөгдөхгүй. */
         shipping_address: {

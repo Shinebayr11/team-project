@@ -83,7 +83,6 @@ export interface SellerListingSettings {
 }
 
 export interface SellerShippingSettings {
-  defaultCarrier: string
   /** Захиалгыг илгээхэд шаардагдах ажлын өдөр. */
   processingDays: number
 }

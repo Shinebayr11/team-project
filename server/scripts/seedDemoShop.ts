@@ -92,7 +92,8 @@ const DISTRICTS = [
     ["Эрдэнэт", "Баян-Өндөр", "4-р баг", "Найрамдал хороолол 8-р байр 11 тоот"],
 ]
 
-const CARRIERS = ["Тээвэрлэгч Экспресс", "Шуурхай Хүргэлт", "Mongol Post"]
+/** Машины дугаарын үсгэн хэсэг — "1234 УБА" хэлбэрийн сүүлийн гурав. */
+const PLATE_LETTERS = ["УБА", "УБВ", "УБЕ", "УНС", "УБО", "УБК"]
 
 /** Дууссан эфирийн гарчиг. Ерөнхий тоймын "Сүүлийн шууд дамжуулалт" эдгээрийг харуулна. */
 const SHOW_TITLES = [
@@ -264,7 +265,10 @@ async function main() {
                     detail,
                 },
                 ...(shipped
-                    ? { carrier: pick(CARRIERS), tracking_number: `MN${between(100000000, 999999999)}` }
+                    ? {
+                          driver_phone: `9${between(1000000, 9999999)}`,
+                          vehicle_plate: `${between(1000, 9999)} ${pick(PLATE_LETTERS)}`,
+                      }
                     : {}),
                 demo_seed: true,
                 createdAt: at,
