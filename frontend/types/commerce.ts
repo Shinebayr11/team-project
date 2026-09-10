@@ -23,5 +23,7 @@ export interface CartLine {
   name: string;
   price: string;
   qty: number;
+  /** Бодит барааны `_id` — байвал checkout серверт бодит захиалга үүсгэнэ. */
+  productId?: string;
 }
 

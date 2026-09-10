@@ -70,6 +70,7 @@ export const Product: React.FC = () => {
       name: product.name,
       price: String(product.price_coins ?? 0),
       tag: "Buy now" as const,
+      productId: product._id,
     },
     seller: shopKeyOf(seller),
     qty,
@@ -99,6 +100,7 @@ export const Product: React.FC = () => {
                 name: product.name,
                 price: String(product.price_coins ?? 0),
                 qty,
+                productId: product._id,
               })
               addToast(`Сагсанд ${qty} ширхэг нэмлээ.`)
             })

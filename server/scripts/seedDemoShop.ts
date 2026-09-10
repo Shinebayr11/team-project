@@ -82,13 +82,14 @@ const BUYERS = [
     "Э. Хүрэлбаатар", "Б. Түвшинбаяр", "Д. Мөнхтуяа", "Г. Цолмон", "Н. Ууганбаяр",
 ]
 
+/** [хот, дүүрэг/сум, хороо/баг, дэлгэрэнгүй] — `Order.shipping_address`-тай ижил бүтэц. */
 const DISTRICTS = [
-    ["Улаанбаатар", "Сүхбаатар", "16 -р хороолол, 4 -р байр 21 тоот"],
-    ["Улаанбаатар", "Хан-Уул", "Зайсан, Ривер гарден 12 тоот"],
-    ["Улаанбаатар", "Баянзүрх", "13 -р хороолол, 45А байр 7 тоот"],
-    ["Улаанбаатар", "Чингэлтэй", "5 -р хороо, Сансар 3 -р байр 14 тоот"],
-    ["Дархан", "Дархан сум", "1 -р баг, 22 -р байр 3 тоот"],
-    ["Эрдэнэт", "Баян-Өндөр", "Найрамдал хороолол 8 -р байр 11 тоот"],
+    ["Улаанбаатар", "Сүхбаатар", "6-р хороо", "16-р хороолол, 4-р байр 21 тоот"],
+    ["Улаанбаатар", "Хан-Уул", "11-р хороо", "Зайсан, Ривер гарден 12 тоот"],
+    ["Улаанбаатар", "Баянзүрх", "13-р хороо", "13-р хороолол, 45А байр 7 тоот"],
+    ["Улаанбаатар", "Чингэлтэй", "5-р хороо", "Сансар, 3-р байр 14 тоот"],
+    ["Дархан", "Дархан сум", "1-р баг", "22-р байр 3 тоот"],
+    ["Эрдэнэт", "Баян-Өндөр", "4-р баг", "Найрамдал хороолол 8-р байр 11 тоот"],
 ]
 
 const CARRIERS = ["Тээвэрлэгч Экспресс", "Шуурхай Хүргэлт", "Mongol Post"]
@@ -221,45 +222,24 @@ async function main() {
         const count = Math.max(0, Math.round(base + (rnd() - 0.5) * 2.4))
 
         for (let n = 0; n < count; n += 1) {
-            const lineCount = rnd() < 0.65 ? 1 : rnd() < 0.85 ? 2 : 3
-            const chosen = new Set<number>()
-            while (chosen.size < lineCount) chosen.add(weightedPick(PRODUCTS))
-
-            const items = [...chosen].map((index) => {
-                const product = PRODUCTS[index]
-                const doc = created[index]
-                const quantity = rnd() < 0.78 ? 1 : between(2, 3)
-                soldByProduct.set(
-                    String(doc._id),
-                    (soldByProduct.get(String(doc._id)) ?? 0) + quantity
-                )
-                return {
-                    product_id: doc._id,
-                    name: product.name,
-                    sku: product.sku,
-                    price_coins: product.price,
-                    quantity,
-                }
-            })
-
-            const total = items.reduce((sum, i) => sum + i.price_coins * i.quantity, 0)
-
-            // Төлбөр: голдуу төлөгдсөн. Цөөн хэдэн хүлээгдэж буй, буцаалттай нь
-            // байхгүй бол самбар хэт "цэвэр" харагдаж, жинхэнэ мэт болохгүй.
-            const payRoll = rnd()
-            const payment = payRoll < 0.88 ? "PAID" : payRoll < 0.96 ? "PENDING" : "REFUNDED"
+            // Тэдний `Order` нь НЭГ бараатай (`product_id` + `quantity`) бөгөөд
+            // `getMySellerOrders` эзнийг нь БАРААГААР нь олдог. Тиймээс энд
+            // нэг захиалга = нэг бараа.
+            const index = weightedPick(PRODUCTS)
+            const seed = PRODUCTS[index]
+            const doc = created[index]
+            const quantity = rnd() < 0.78 ? 1 : between(2, 3)
+            soldByProduct.set(String(doc._id), (soldByProduct.get(String(doc._id)) ?? 0) + quantity)
 
             // Хүргэлт нь ЦАГ ХУГАЦААНААС хамаарна: өчигдрийн захиалга хүргэгдсэн
             // байх ёсгүй, сарын өмнөх нь хүлээгдэж байх ёсгүй.
             let fulfillment: string
-            if (payment === "REFUNDED") fulfillment = "RETURNED"
-            else if (payment === "PENDING") fulfillment = "PENDING"
-            else if (day <= 1) fulfillment = pick(["PENDING", "PROCESSING"])
+            if (day <= 1) fulfillment = pick(["PENDING", "PROCESSING"])
             else if (day <= 3) fulfillment = pick(["PROCESSING", "READY_TO_SHIP"])
             else if (day <= 6) fulfillment = pick(["READY_TO_SHIP", "SHIPPED"])
-            else fulfillment = rnd() < 0.94 ? "DELIVERED" : "CANCELLED"
+            else fulfillment = rnd() < 0.92 ? "DELIVERED" : rnd() < 0.6 ? "CANCELLED" : "RETURNED"
 
-            const [city, state, line] = pick(DISTRICTS)
+            const [city, district, khoroo, detail] = pick(DISTRICTS)
             const buyer = pick(BUYERS)
             const shipped = ["SHIPPED", "DELIVERED"].includes(fulfillment)
 
@@ -268,25 +248,23 @@ async function main() {
             at.setHours(between(9, 22), between(0, 59), between(0, 59), 0)
 
             orders.push({
-                seller_id: seller._id,
+                // `buyer_id` ЗОРИУДААР хоосон: бодит хэрэглэгч рүү заавал
+                // тэдний "Миний захиалга" жагсаалтад үзүүлэнгийн мөр орж хутгална.
                 buyer_name: buyer,
-                items,
-                total_coins: total,
-                payment_status: payment,
+                product_id: doc._id,
+                quantity,
+                price_coins: seed.price * quantity,
                 fulfillment_status: fulfillment,
                 shipping_address: {
                     fullName: buyer,
-                    addressLine1: line,
+                    phone: `9${between(1000000, 9999999)}`,
                     city,
-                    state,
-                    postalCode: String(between(11000, 19999)),
-                    country: "Mongolia",
+                    district,
+                    khoroo,
+                    detail,
                 },
                 ...(shipped
-                    ? {
-                          carrier: pick(CARRIERS),
-                          tracking_number: `MN${between(100000000, 999999999)}`,
-                      }
+                    ? { carrier: pick(CARRIERS), tracking_number: `MN${between(100000000, 999999999)}` }
                     : {}),
                 demo_seed: true,
                 createdAt: at,
@@ -357,38 +335,25 @@ async function main() {
         const endedAt = show.ended_at as Date
         const daysAgo = Math.floor((now - endedAt.getTime()) / 86_400_000)
         const buyer = pick(BUYERS)
-        const [city, state, line] = pick(DISTRICTS)
-        const seedItem = lots[i]
+        const [city, district, khoroo, detail] = pick(DISTRICTS)
 
         return {
-            seller_id: seller._id,
+            buyer_name: buyer,
+            product_id: lot.product_id,
             listing_id: lot._id,
             live_show_id: lot.live_show_id,
-            product_id: lot.product_id,
-            buyer_name: buyer,
-            items: [
-                {
-                    product_id: lot.product_id,
-                    name: created.find((d) => String(d._id) === String(lot.product_id))!.name,
-                    sku: created.find((d) => String(d._id) === String(lot.product_id))!.sku ?? "",
-                    price_coins: seedItem.current_highest_bid_coins,
-                    quantity: 1,
-                },
-            ],
             quantity: 1,
-            price_coins: seedItem.current_highest_bid_coins,
-            total_coins: seedItem.current_highest_bid_coins,
-            payment_status: "PAID",
+            price_coins: lots[i].current_highest_bid_coins,
             // Эфир дөнгөж дууссан бол илгээгээгүй байх нь жам ёсны.
             fulfillment_status:
                 daysAgo <= 1 ? "PENDING" : daysAgo <= 4 ? "PROCESSING" : "DELIVERED",
             shipping_address: {
                 fullName: buyer,
-                addressLine1: line,
+                phone: `9${between(1000000, 9999999)}`,
                 city,
-                state,
-                postalCode: String(between(11000, 19999)),
-                country: "Mongolia",
+                district,
+                khoroo,
+                detail,
             },
             demo_seed: true,
             createdAt: endedAt,
@@ -411,10 +376,9 @@ async function main() {
         await Product.updateOne({ _id: doc._id }, { $set: { sold_quantity: sold } })
     }
 
-    const paid = orders.filter((o) => o.payment_status === "PAID")
-    const revenue = paid.reduce((sum, o) => sum + (o.total_coins as number), 0)
-    console.log(`\nТөлөгдсөн: ${paid.length} захиалга · ₮${revenue.toLocaleString("en-US")}`)
-    console.log(`Дундаж чек: ₮${Math.round(revenue / paid.length).toLocaleString("en-US")}`)
+    const revenue = orders.reduce((sum, o) => sum + (o.price_coins as number), 0)
+    console.log(`\nНийт: ${orders.length} захиалга · ₮${revenue.toLocaleString("en-US")}`)
+    console.log(`Дундаж чек: ₮${Math.round(revenue / orders.length).toLocaleString("en-US")}`)
 
     await mongoose.disconnect()
 }

@@ -5,13 +5,8 @@ import { SkeletonRows, SkeletonScreen } from '@/components/ui/Skeleton';
 import { MapPin, Plus } from 'lucide-react';
 import { useAddresses } from '@/hooks/useAddresses';
 import type { Address, AddressBody } from '@/types/account';
+import { addressLine } from '@/lib/address';
 import { AddressFormSheet } from './AddressFormSheet';
-
-/** Хаягийг нэг мөрөнд уншигдахаар нийлүүлнэ. */
-const addressLine = (address: Address) =>
-  [address.city, address.district, address.khoroo, address.detail]
-    .filter(Boolean)
-    .join(', ');
 
 export const AddressesTab: React.FC = () => {
   const { addresses, loading, create, update, remove } = useAddresses();

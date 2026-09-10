@@ -5,6 +5,7 @@ import { useLocation, Link } from '@/lib/router';
 import { Search } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useStore } from '../../store';
+import { useWallet } from '@/hooks/useWallet';
 import { cn } from '@/lib/utils';
 import { TopbarNav } from './TopbarNav';
 import { TopbarActions } from './TopbarActions';
@@ -16,7 +17,8 @@ import { TopbarActions } from './TopbarActions';
  * энэ үндсэн элемент дээр нь шууд өгнө.
  */
 export const Topbar: React.FC<{ className?: string }> = ({ className }) => {
-  const { creditsLabel, cartCount, openModal } = useStore();
+  const { cartCount, openModal } = useStore();
+  const { available } = useWallet();
   const { pathname } = useLocation();
   const { user } = useUser();
 
@@ -43,7 +45,7 @@ export const Topbar: React.FC<{ className?: string }> = ({ className }) => {
 
       {user ? (
         <TopbarActions
-          creditsLabel={creditsLabel()}
+          creditsLabel={available.toLocaleString()}
           cartCount={cartCount()}
           onOpenCart={() => openModal('cart')}
         />

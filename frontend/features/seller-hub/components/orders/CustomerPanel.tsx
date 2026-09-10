@@ -23,6 +23,7 @@ export const CustomerPanel: React.FC<{ order: SellerOrder }> = ({ order }) => {
         <div>{address.addressLine1}</div>
         <div>{address.city}, {address.state} {address.postalCode}</div>
         <div>{address.country}</div>
+        {order.buyerPhone && <div className="mt-1 font-[600] text-black">{order.buyerPhone}</div>}
       </div>
     </div>
   );

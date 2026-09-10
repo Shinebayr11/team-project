@@ -1,38 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
-/**
- * Захиалга.
- *
- * Доорх `buyer_id`/`product_id`/`quantity`/`price_coins` нь АНХНЫ, нэг бараатай
- * хэлбэр — хуучин бичлэгүүд тэрчлэн үлдсэн тул хэвээр байна. Seller Hub-ын
- * "Захиалга" ба "Аналитик" хэсэг нь үүнээс илүү ихийг шаарддаг: нэг захиалгад
- * олон бараа, төлбөр/хүргэлтийн ТУСДАА төлөв, хүргэх хаяг, худалдагч хэн бэ.
- * Тэдгээрийг доор нэмсэн бөгөөд бүгд сонголттой — хуучин бичлэг эвдрэхгүй.
- */
-
-/** Захиалгын нэг мөр. Нэр/үнэ нь ТЭР ҮЕИЙН хуулбар — бараа хожим өөрчлөгдөхөд захиалга хөдлөхгүй. */
-const orderItemSchema = new Schema(
-    {
-        product_id: { type: Schema.Types.ObjectId, ref: "Product" },
-        name: { type: String, required: true },
-        sku: { type: String, default: "" },
-        price_coins: { type: Number, required: true },
-        quantity: { type: Number, required: true, min: 1 },
-    },
-    { _id: false }
-)
-
-const shippingAddressSchema = new Schema(
-    {
-        fullName: { type: String, default: "" },
-        addressLine1: { type: String, default: "" },
-        city: { type: String, default: "" },
-        state: { type: String, default: "" },
-        postalCode: { type: String, default: "" },
-        country: { type: String, default: "Mongolia" },
-    },
-    { _id: false }
-)
+/** Худалдагчийн хүргэлтийн явц. `features/seller-hub/types.ts`-ийн
+ * `SellerOrder['fulfillmentStatus']`-той яг ижил утгууд. */
+export const FULFILLMENT_STATUSES = [
+    "PENDING",
+    "PROCESSING",
+    "READY_TO_SHIP",
+    "SHIPPED",
+    "DELIVERED",
+    "CANCELLED",
+    "RETURNED",
+] as const
 
 const OrderSchema = new Schema(
     {
@@ -40,52 +18,38 @@ const OrderSchema = new Schema(
         product_id: { type: Schema.Types.ObjectId, ref: "Product" },
         video_id: { type: Schema.Types.ObjectId, ref: "Video" },
         live_show_id: { type: Schema.Types.ObjectId, ref: "Live_Show" },
-        /**
-         * Аукционы лотоос үүссэн бол аль лот вэ. Нэг лот НЭГ л захиалга үүсгэнэ —
-         * `sparse` тул гараар хийсэн захиалгууд индекст ороогүй.
-         */
-        listing_id: { type: Schema.Types.ObjectId, ref: "ProductListing" },
         quantity: { type: Number },
         price_coins: { type: Number },
         status: { type: String },
-
-        /** Худалдагч. `GET /api/order/mine` ЗӨВХӨН үүгээр шүүнэ. */
-        seller_id: { type: Schema.Types.ObjectId, ref: "User", index: true },
-        /** Худалдан авагчийн нэрийн хуулбар — бүртгэл устсан ч захиалга уншигдана. */
-        buyer_name: { type: String, default: "" },
-        items: { type: [orderItemSchema], default: [] },
-        total_coins: { type: Number, default: 0 },
-        payment_status: {
-            type: String,
-            enum: ["PENDING", "PAID", "REFUNDED"],
-            default: "PENDING",
-        },
-        fulfillment_status: {
-            type: String,
-            enum: [
-                "PENDING",
-                "PROCESSING",
-                "READY_TO_SHIP",
-                "SHIPPED",
-                "DELIVERED",
-                "CANCELLED",
-                "RETURNED",
-            ],
-            default: "PENDING",
-        },
-        shipping_address: { type: shippingAddressSchema, default: () => ({}) },
-        tracking_number: { type: String },
-        carrier: { type: String },
-
         /**
-         * Үзүүлэнгийн өгөгдөл эсэх. Seed script үүнийг тавьж, `--clean` үүгээр
-         * л устгана — бодит захиалгад хэзээ ч хүрэхгүй.
+         * Худалдан авагчийн нэрийн хуулбар. `buyer_id`-г populate хийж нэрийг нь
+         * авдаг ч бүртгэл устсан, эсвэл захиалга нь бүртгэлгүй эх сурвалжтай
+         * (үзүүлэнгийн өгөгдөл) үед энэ л үлдэнэ.
          */
+        buyer_name: { type: String },
+        /**
+         * Аукционы лотоос үүссэн бол аль лот вэ. Нэг лот НЭГ л захиалга үүсгэнэ
+         * (доорх `sparse` unique индекс) — шууд худалдан авалтууд индекст ороогүй.
+         */
+        listing_id: { type: Schema.Types.ObjectId, ref: "ProductListing" },
+        /** Үзүүлэнгийн өгөгдөл эсэх. `seed:demo-shop` тавьж, `--clean` үүгээр л устгана. */
         demo_seed: { type: Boolean, default: false, index: true },
+        fulfillment_status: { type: String, enum: FULFILLMENT_STATUSES, default: "PENDING" },
+        carrier: { type: String },
+        tracking_number: { type: String },
+        /** Захиалга үүсэх үеийн хаягийн хэвлэмэл хуулбар — `User.addresses`-ийн
+         * тухайн бичлэг дараа засагдаж/устсан ч захиалга дээрх хаяг өөрчлөгдөхгүй. */
+        shipping_address: {
+            fullName: { type: String },
+            phone: { type: String },
+            city: { type: String },
+            district: { type: String },
+            khoroo: { type: String },
+            detail: { type: String },
+        },
     },
     { timestamps: true }
 )
-
 OrderSchema.index({ listing_id: 1 }, { unique: true, sparse: true })
 
 export const Order = mongoose.model("Order", OrderSchema)

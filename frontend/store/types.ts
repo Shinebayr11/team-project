@@ -22,6 +22,11 @@ export interface WalletSlice {
   bid: (item: { title: string; seller: string; amount: string }) => void;
 }
 
+export interface CheckoutSummary {
+  succeeded: number;
+  failed: { line: CartLine; message: string }[];
+}
+
 export interface CartSlice {
   cart: () => CartLine[];
   cartCount: () => number;
@@ -29,7 +34,8 @@ export interface CartSlice {
   addToCart: (item: CartLine) => void;
   setCartQty: (index: number, qty: number) => void;
   removeFromCart: (index: number) => void;
-  checkoutCart: () => boolean;
+  /** `null` — сагс хоосон байсан тул юу ч хийгээгүй. */
+  checkoutCart: () => Promise<CheckoutSummary | null>;
 }
 
 export interface SocialSlice {
@@ -58,8 +64,6 @@ export interface InventorySlice {
 }
 
 export interface OrdersSlice {
-  /** Серверээс уншсан захиалгаар кэшийг бүхэлд нь солино. */
-  setSellerOrders: (orders: SellerOrder[]) => void;
   updateSellerOrderStatus: (id: string, status: SellerOrder['fulfillmentStatus']) => void;
   setOrderTracking: (id: string, carrier: string, trackingNumber: string) => void;
 }
