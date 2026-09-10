@@ -1,7 +1,8 @@
 "use client"
 
-import React from 'react';
-import { useStore } from '../../store';
+import React, { useState } from 'react';
+import { useStore, parsePrice } from '../../store';
+import { useWallet } from '@/hooks/useWallet';
 import { Modal } from '../ui/Modal';
 import { CartLineRow } from './CartLineRow';
 import { CartStaticRow } from './CartStaticRow';
@@ -14,17 +15,45 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
 );
 
 export const CartModal: React.FC = () => {
-  const { state, closeModal, cart, cartTotal, canAfford, setCartQty, removeFromCart, checkoutCart, addToast } = useStore();
+  const { state, closeModal, cart, cartTotal, credits, setCartQty, removeFromCart, checkoutCart, addToast } = useStore();
+  const { available: realAvailable, refresh: refreshWallet } = useWallet();
+  const [submitting, setSubmitting] = useState(false);
 
   const items = cart();
   const { bids, purchases } = state;
   const total = cartTotal();
   const isEmpty = items.length === 0 && bids.length === 0 && purchases.length === 0;
 
-  const handleCheckout = () => {
-    if (!checkoutCart()) return;
-    closeModal();
-    addToast(`${items.length} барааны ₮${total.toLocaleString()} төлбөр амжилттай хийгдлээ.`);
+  // Сагс өөр өөр эх сурвалжийн мөр агуулж болно: `productId`-тэй мөр
+  // бодит Wallet-аас, id-гүй нь mock `credits`-ээс төлөгдөнө — тул
+  // хоёуланг нь тус тусад нь шалгана.
+  const realTotal = items.reduce(
+    (sum, line) => sum + (line.productId ? parsePrice(line.price) * line.qty : 0),
+    0,
+  );
+  const mockTotal = total - realTotal;
+  const affordable = realTotal <= realAvailable && mockTotal <= credits();
+
+  const handleCheckout = async () => {
+    setSubmitting(true);
+    try {
+      const result = await checkoutCart();
+      if (!result) return;
+
+      if (result.failed.length === 0) {
+        closeModal();
+        addToast(`${result.succeeded} барааны ₮${total.toLocaleString()} төлбөр амжилттай хийгдлээ.`);
+      } else if (result.succeeded > 0) {
+        addToast(
+          `${result.succeeded} бараа амжилттай, ${result.failed.length} бараа амжилтгүй: ${result.failed[0].message}`,
+        );
+      } else {
+        addToast(result.failed[0].message);
+      }
+      refreshWallet();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -74,10 +103,14 @@ export const CartModal: React.FC = () => {
             </div>
             <button
               onClick={handleCheckout}
-              disabled={!canAfford(total)}
+              disabled={!affordable || submitting}
               className="w-full h-[52px] rounded-xl bg-[var(--wn-accent)] text-white text-[16px] font-[800] hover:bg-[var(--wn-accent-hover)] transition-colors disabled:opacity-50 disabled:bg-[var(--wn-ink-4)]"
             >
-              {canAfford(total) ? `Төлбөр хийх — ₮${total.toLocaleString()}` : 'Үлдэгдэл хүрэлцэхгүй'}
+              {submitting
+                ? 'Боловсруулж байна…'
+                : affordable
+                  ? `Төлбөр хийх — ₮${total.toLocaleString()}`
+                  : 'Үлдэгдэл хүрэлцэхгүй'}
             </button>
           </div>
         )}
