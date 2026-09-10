@@ -8,6 +8,16 @@ const OrderSchema = new Schema(
         quantity: { type: Number },
         price_coins: { type: Number },
         status: { type: String },
+        /** Захиалга үүсэх үеийн хаягийн хэвлэмэл хуулбар — `User.addresses`-ийн
+         * тухайн бичлэг дараа засагдаж/устсан ч захиалга дээрх хаяг өөрчлөгдөхгүй. */
+        shipping_address: {
+            fullName: { type: String },
+            phone: { type: String },
+            city: { type: String },
+            district: { type: String },
+            khoroo: { type: String },
+            detail: { type: String },
+        },
     },
     { timestamps: true }
 )
