@@ -42,6 +42,39 @@ export const ReelStage: React.FC<ReelStageProps> = ({
     el.scrollTo({ top: currentIndex * el.clientHeight, behavior: 'smooth' });
   }, [currentIndex]);
 
+/**
+ * Эфирийн дэвсгэр. Видеотой бол түүнийг, эс бөгөөс урьдчилсан зургийг үзүүлнэ.
+ *
+ * Видео нь ЗӨВХӨН харагдаж буй эфирт тоглоно: 10 бичлэгийг зэрэг ачаалуулбал
+ * гар утсан дээр санах ой, сүлжээ хоёулаа дийлэхгүй. Бусад нь зурагтайгаа
+ * үлдэх тул гүйлгэх үед хоосон хар дөрвөлжин харагдахгүй.
+ */
+const ReelMedia: React.FC<{ show: ReelShow; active: boolean; className?: string }> = ({
+  show, active, className = '',
+}) => {
+  const common = `absolute inset-0 w-full h-full object-cover ${className}`;
+
+  if (show.video && active) {
+    return (
+      // `muted` нь заавал: чимээтэй видеог хөтөч автоматаар тоглуулахгүй.
+      <video
+        key={show.video}
+        src={show.video}
+        poster={show.thumbnail}
+        autoPlay
+        muted
+        loop
+        playsInline
+        className={common}
+      />
+    );
+  }
+
+  return show.thumbnail ? (
+    <img src={show.thumbnail} alt={show.title} className={common} />
+  ) : null;
+};
+
   return (
   <>
     {/* Desktop layout (lg and above) */}
@@ -55,9 +88,7 @@ export const ReelStage: React.FC<ReelStageProps> = ({
       >
         {shows.map((show, i) => (
           <div key={show.slug} className="w-full h-full relative bg-[var(--wn-shot)]">
-            {show.thumbnail && (
-              <img src={show.thumbnail} alt={show.title} className="absolute inset-0 w-full h-full object-cover opacity-50" />
-            )}
+            <ReelMedia show={show} active={i === currentIndex} className="opacity-50" />
 
             <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md text-white text-[12px] font-[600] z-10">
               <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
@@ -108,13 +139,7 @@ export const ReelStage: React.FC<ReelStageProps> = ({
           className="w-screen relative bg-[var(--wn-shot)] shrink-0 snap-start"
           style={{ height: '100dvh' }}
         >
-          {show.thumbnail && (
-            <img
-              src={show.thumbnail}
-              alt={show.title}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          )}
+          <ReelMedia show={show} active={i === currentIndex} />
 
           {i === currentIndex && (
             <ReelItemBar

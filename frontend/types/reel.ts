@@ -41,6 +41,8 @@ export interface ReelShow {
   followers: string;
   viewers: number;
   thumbnail?: string;
+  /** Эфирийн бичлэг. Байвал зураг дээр давхарлаж, чимээгүй давтагдан тоглоно. */
+  video?: string;
   item: ReelItem;
   products: Record<ReelTab, ReelProduct[]>;
   chat: ReelChatLine[];
