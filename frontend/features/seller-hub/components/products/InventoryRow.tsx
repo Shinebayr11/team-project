@@ -33,7 +33,7 @@ export const InventoryRow: React.FC<InventoryRowProps> = ({
 
       <td className="p-4 font-[700] text-black">
         <div className="flex items-center gap-3">
-          {/* Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй. */}
+          {/* Vercel Blob-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй. */}
           {product.images?.[0] ? (
             <img
               src={product.images[0]}

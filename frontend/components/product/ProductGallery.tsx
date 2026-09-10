@@ -16,7 +16,7 @@ export const ProductGallery: React.FC<{ images: string[]; name: string }> = ({ i
     <div className="flex flex-1 flex-col gap-4">
       <div className="relative aspect-square w-full overflow-hidden rounded-[24px] bg-[var(--wn-shot)]">
         {current ? (
-          // Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
+          // Vercel Blob-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
           <img src={current} alt={name} className="size-full object-cover" />
         ) : (
           <div className="flex size-full flex-col items-center justify-center gap-2 text-white/40">

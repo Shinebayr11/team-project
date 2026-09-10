@@ -36,7 +36,7 @@ export const ShopHeader: React.FC<ShopHeaderProps> = ({
       <div className="relative z-10 -mt-10 mb-8 flex flex-col items-start gap-4 px-4 sm:-mt-12 sm:flex-row sm:items-end sm:justify-between sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-end gap-4 sm:gap-5">
           {seller.avatar_url ? (
-            // Clerk/Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
+            // Clerk/Vercel Blob-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
             <img
               src={seller.avatar_url}
               alt={name}

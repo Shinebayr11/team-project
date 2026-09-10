@@ -38,7 +38,7 @@ export interface AccountSettings {
 export interface AccountUpdateBody {
   display_name?: string
   bio?: string
-  /** Cloudinary-гийн хаяг. Хоосон мөр нь "зургаа хас" гэсэн үг. */
+  /** Vercel Blob-ийн хаяг. Хоосон мөр нь "зургаа хас" гэсэн үг. */
   avatar_url?: string
   cover_url?: string
   preferences?: AccountPreferences

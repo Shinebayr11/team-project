@@ -29,7 +29,7 @@ export const PurchaseDetailSheet: React.FC<{
 
         <SheetBody>
           {purchase.product?.images?.[0] && (
-            // Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
+            // Vercel Blob-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
             <img
               src={purchase.product.images[0]}
               alt={purchase.title}

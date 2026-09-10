@@ -17,7 +17,7 @@ export const SellerRow: React.FC<SellerRowProps> = ({ name, avatarUrl, onClick }
     className="flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors hover:bg-[var(--wn-accent-wash)]"
   >
     {avatarUrl ? (
-      // Clerk/Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
+      // Clerk/Vercel Blob-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
       <img src={avatarUrl} alt={name} className="size-8 shrink-0 rounded-full object-cover" />
     ) : (
       <Avatar name={name} size={32} tint="var(--wn-accent-soft)" />

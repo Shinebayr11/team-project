@@ -18,7 +18,7 @@ export function ProductThumb({
   const style = { width: size, height: size }
 
   return product?.images?.[0] ? (
-    // Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүйн тулд
+    // Vercel Blob-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүйн тулд
     // энгийн img ашиглав.
     <img
       src={product.images[0]}

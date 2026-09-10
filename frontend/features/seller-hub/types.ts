@@ -12,7 +12,7 @@ export interface InventoryProduct {
   status: 'ACTIVE' | 'DRAFT' | 'ARCHIVED' | 'OUT_OF_STOCK';
   listingType: 'buy_it_now' | 'auction';
   condition: string;
-  /** Cloudinary-ийн хаягууд. Эхнийх нь жагсаалтын зураг болно. */
+  /** Vercel Blob-ийн хаягууд. Эхнийх нь жагсаалтын зураг болно. */
   images?: string[];
   createdAt: string;
 }

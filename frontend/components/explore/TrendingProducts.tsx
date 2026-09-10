@@ -43,7 +43,7 @@ export const TrendingProducts: React.FC<{ products: TrendingProduct[] }> = ({ pr
           >
             <div className="relative aspect-square w-full overflow-hidden rounded-[16px] bg-[var(--wn-shot)]">
               {product.images?.[0] ? (
-                // Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
+                // Vercel Blob-ийн хаяг тул next/image-ийн домэйн тохиргоо шаардахгүй.
                 <img
                   src={product.images[0]}
                   alt={product.name}

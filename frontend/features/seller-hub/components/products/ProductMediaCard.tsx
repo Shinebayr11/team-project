@@ -126,7 +126,7 @@ export const ProductMediaCard: React.FC<ProductMediaCardProps> = ({
               key={url}
               className="group relative aspect-square overflow-hidden rounded-xl border border-[var(--wn-admin-card-border)] bg-[var(--wn-admin-chip)]"
             >
-              {/* Cloudinary-ийн хаяг тул next/image-ийн домэйн тохиргоо
+              {/* Vercel Blob-ийн хаяг тул next/image-ийн домэйн тохиргоо
                   шаардахгүйн тулд энгийн <img> ашиглав. */}
               <img
                 src={url}
