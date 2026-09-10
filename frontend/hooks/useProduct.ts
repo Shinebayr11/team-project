@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { useApiClient } from "./useApiClient"
+import type { Listing } from "./useAuction"
 
 /** Худалдагч нь бараатай ХАМТ ирдэг (`GET /api/product/:id` populate хийдэг). */
 export interface ProductSeller {
@@ -47,15 +48,20 @@ export const shopKeyOf = (seller: ProductSeller | null) =>
 export function useProduct(id: string | null) {
   const { callApi } = useApiClient()
   const [product, setProduct] = useState<ShopProduct | null>(null)
+  // Барааны хуудсан дээр явж буй пост хэлбэрийн дуудлага худалдаа. Бараатай
+  // ХАМТ ирнэ — тусад нь дуудвал үнэ, тоолуур хоёр өөр хормыг харуулна.
+  const [listing, setListing] = useState<Listing | null>(null)
   const [settled, setSettled] = useState(false)
   const [notFound, setNotFound] = useState(false)
 
   const load = useCallback(async () => {
     if (!id) return
-    const { product: row } = await callApi<{ product: ShopProduct }>(
-      `/api/product/${encodeURIComponent(id)}`
-    )
+    const { product: row, listing: auction } = await callApi<{
+      product: ShopProduct
+      listing: Listing | null
+    }>(`/api/product/${encodeURIComponent(id)}`)
     setProduct(row)
+    setListing(auction ?? null)
   }, [callApi, id])
 
   useEffect(() => {
@@ -82,5 +88,5 @@ export function useProduct(id: string | null) {
     }
   }, [id, load])
 
-  return { product, loading: !!id && !settled, notFound }
+  return { product, listing, loading: !!id && !settled, notFound, refresh: load }
 }

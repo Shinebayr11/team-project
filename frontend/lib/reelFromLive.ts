@@ -25,6 +25,8 @@ export const toReelShow = (show: HomeShow): ReelShow => {
   return {
     slug: show.roomId || show.showId || seller,
     seller,
+    // `slug` нь өрөөний нэр тул дэлгүүр/дагах үйлдэлд тохирохгүй — үүнийг өгнө.
+    sellerId: show.sellerId,
     initial: seller.charAt(0).toUpperCase(),
     avatarBg: tintOf(seller),
     title: show.title,

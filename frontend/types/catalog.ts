@@ -51,5 +51,7 @@ export interface HomeShow {
   startedAt?: string;
   /** Live_Show document id — lets the watch page load seller/product details. */
   showId?: string;
+  /** Худалдагчийн бодит id. Дэлгүүр, дагах зэрэг нь өрөөний нэрээр биш үүгээр ажиллана. */
+  sellerId?: string;
 }
 

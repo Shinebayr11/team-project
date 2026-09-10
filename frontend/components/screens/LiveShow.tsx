@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react"
 import { useSearchParams, useNavigate } from "@/lib/router"
-import { ReelProduct, ReelShow, ReelTab } from "@/types"
+import { HomeShow, ReelProduct, ReelShow, ReelTab } from "@/types"
 import { REEL_SHOWS } from "@/data"
 import { useStore } from "@/store"
 import { useLiveShows } from "@/hooks/useLiveShows"
@@ -24,7 +24,21 @@ import { RouteFallback } from "@/components/layout/AppShell"
 const VIEWER_NAME = "junglefinds"
 const SCROLL_HINT_MS = 4200
 
+/**
+ * Реел нь жинхэнэ эфирүүд ирсний ДАРАА л mount хийгдэнэ.
+ *
+ * `useReelPlayer` эхлэх индексээ `useState`-ээр ганц удаа авдаг. Mock-only
+ * жагсаалтаар эхэлбэл дараа нь жагсаалт урдаасаа уртсахад тэр индекс нь хуучирч,
+ * `?show=<slug>` deep link огт өөр эфир нээнэ. Өмнө нь энэ шалгалт бүх hook-ийн
+ * ДАРАА байсан тул юунаас ч хамгаалдаггүй байв — тиймээс тусдаа бүрхүүл.
+ */
 export const LiveShow: React.FC = () => {
+  const { shows: liveShows, loading } = useLiveShows()
+  if (loading) return <RouteFallback />
+  return <LiveShowReel liveShows={liveShows} />
+}
+
+const LiveShowReel: React.FC<{ liveShows: HomeShow[] }> = ({ liveShows }) => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { openModal, isFollowing, toggleFollow, addToast, cartCount } = useStore()
@@ -32,11 +46,13 @@ export const LiveShow: React.FC = () => {
 
   // Жинхэнэ эфир байвал жагсаалтын ЭХЭНД гарна — mock-ууд доошоо шилжинэ.
   // Үзэгч "Шууд" таб руу орохдоо яг одоо явж байгаа хүнийг эхлээд харах ёстой.
-  const { shows: liveShows, loading: liveLoading } = useLiveShows()
-
+  //
+  // Өрөөгүй (`roomId`) мөр нь өгөгдлийн сан дахь жишээ — үзэх дамжуулалт нь
+  // байхгүй. Түүнийг хамгийн дээр гаргачихаад дараа нь "үзэх боломжгүй" гэж
+  // хэлэхийн оронд огт оруулахгүй. `useHomeFeed` ч мөн ийм шүүлт хийдэг.
   const shows = useMemo(() => {
     const live = liveShows
-      .filter((show) => show.live !== undefined)
+      .filter((show) => show.live !== undefined && show.roomId)
       .sort((a, b) => (b.live ?? 0) - (a.live ?? 0))
       .map(toReelShow)
     return [...live, ...REEL_SHOWS]
@@ -84,7 +100,8 @@ export const LiveShow: React.FC = () => {
     // `/live/<room>` дээр бодитоор явж байгаа тул тэр рүү нь оруулна.
     if (show.item.mode === "watch") {
       if (show.watchPath) navigate(show.watchPath)
-      // Room-гүй эфир нь өгөгдлийн сан дахь жишээ мөр — үзэх дамжуулалт алга.
+      // Өрөөгүй мөрийг дээр шүүсэн тул энд хүрэхгүй — гэхдээ `watchPath` нь
+      // заавал биш талбар учир чимээгүй ажиллахгүй товч үлдээхийн оронд хэлнэ.
       else addToast("Энэ эфирийг одоогоор үзэх боломжгүй байна.")
       return
     }
@@ -106,12 +123,20 @@ export const LiveShow: React.FC = () => {
     })
   }
 
-  // Жинхэнэ эфирүүд ирэхээс өмнө зурвал жагсаалт нь дараа нь урдаасаа уртсаж,
-  // үзэгчийн харж байсан мөр өөр рүү үсэрнэ. Уншиж дуустал хүлээнэ.
-  if (liveLoading) return <RouteFallback />
-
-  const shareUrl = `whynot.live/${currentShow.slug}`
+  // ReelStage дэлгэцэн дээр `whynot.live/<seller>` гэж бичдэг — хуулах товч нь
+  // ЯГ ТҮҮНИЙГ өгөх ёстой. Өмнө нь энэ `slug`-ээс бүтдэг байсан тул харагдсан
+  // хаяг, хуулагдсан хаяг хоёр өөр байв.
+  const shareUrl = `whynot.live/${currentShow.seller}`
   const itemCount = currentShow.products.buynow.length
+
+  // Жинхэнэ эфирт `slug` нь LiveKit өрөөний нэр — дэлгүүр, дагах бүртгэлийг
+  // түүгээр түлхүүрлэвэл эфир дуусахад алга болно. Mock мөрөнд `sellerId` алга
+  // тул хуучин зан хэвээр.
+  const sellerKey = currentShow.sellerId ?? currentShow.slug
+
+  // Жинхэнэ эфирийн чат нь `/live/<room>` дотор явдаг. Энд харагдах чат нь
+  // зөвхөн локал — үзэгч бичвэл хэн ч хүлээж авахгүй тул огт гаргахгүй.
+  const isWatch = currentShow.item.mode === "watch"
 
   return (
     <>
@@ -138,15 +163,15 @@ export const LiveShow: React.FC = () => {
           onClose={() => navigate("/home")}
         />
 
-        {chatVisible && (
+        {chatVisible && !isWatch && (
           <ReelMobileChat lines={chatLines} hostName={currentShow.seller} />
         )}
 
         <ReelSellerRow
           sellerName={currentShow.seller}
           rating={currentShow.rating}
-          following={isFollowing(currentShow.slug)}
-          onToggleFollow={() => toggleFollow(currentShow.slug)}
+          following={isFollowing(sellerKey)}
+          onToggleFollow={() => toggleFollow(sellerKey)}
         />
 
         <ReelActionRail
@@ -176,8 +201,8 @@ export const LiveShow: React.FC = () => {
           activeTab={tab}
           onTabChange={setTab}
           onProductSelect={handleProductSelect}
-          following={isFollowing(currentShow.slug)}
-          onToggleFollow={() => toggleFollow(currentShow.slug)}
+          following={isFollowing(sellerKey)}
+          onToggleFollow={() => toggleFollow(sellerKey)}
         />
       </div>
 
@@ -186,9 +211,9 @@ export const LiveShow: React.FC = () => {
         <div className="flex h-full w-[280px] shrink-0 flex-col overflow-hidden rounded-[20px] border border-[var(--wn-line)] bg-white">
           <ShowInfoPanel
             show={currentShow}
-            following={isFollowing(currentShow.slug)}
-            onToggleFollow={() => toggleFollow(currentShow.slug)}
-            onOpenShop={() => navigate(`/shop?seller=${currentShow.slug}`)}
+            following={isFollowing(sellerKey)}
+            onToggleFollow={() => toggleFollow(sellerKey)}
+            onOpenShop={() => navigate(`/shop?seller=${sellerKey}`)}
           />
           <ShowProductList
             products={currentShow.products}
@@ -209,12 +234,14 @@ export const LiveShow: React.FC = () => {
           onItemAction={handleItemAction}
         />
 
-        <ChatPanel
-          lines={chatLines}
-          viewers={viewers}
-          hostName={currentShow.seller}
-          onSend={(text) => pushChatLine({ name: VIEWER_NAME, text })}
-        />
+        {!isWatch && (
+          <ChatPanel
+            lines={chatLines}
+            viewers={viewers}
+            hostName={currentShow.seller}
+            onSend={(text) => pushChatLine({ name: VIEWER_NAME, text })}
+          />
+        )}
       </div>
     </>
   )

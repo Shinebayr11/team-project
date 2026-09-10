@@ -12,9 +12,9 @@ import {
 } from "@/features/seller-hub/components/SellerSidebar"
 import { SellerTopbar } from "@/features/seller-hub/components/SellerTopbar"
 import { useInventoryHydration } from "@/features/seller-hub/hooks/useSellerInventory"
+import { OPEN_FULFILLMENT } from "@/features/seller-hub/hooks/useSellerOverview"
 import { Skeleton, SkeletonScreen } from "@/components/ui/Skeleton"
 
-const OPEN_FULFILLMENT = ["PENDING", "PROCESSING", "READY_TO_SHIP"]
 
 // The App Router nests routes through `children` where react-router used <Outlet />.
 export const SellerHubLayout: React.FC<{ children?: React.ReactNode }> = ({

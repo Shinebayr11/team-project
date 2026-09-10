@@ -63,7 +63,11 @@ export const ReelMobileBottomBar: React.FC<ReelMobileBottomBarProps> = ({
         </div>
       </div>
 
-      {/* Row 2: Chat input */}
+      {/* Row 2: Chat input.
+          Жинхэнэ эфирт ЭНД БАЙХГҮЙ: бичсэн мессеж нь зөвхөн локал `chatLines`
+          рүү ордог тул үзэгч илгээлээ гэж бодох ч хэн ч хүлээж авахгүй. Бодит
+          чат нь `/live/<room>` дотор явдаг. */}
+      {!isWatch && (
       <form onSubmit={handleSubmit} className="mx-3 mb-2">
         <div className="relative flex items-center w-full h-[36px] rounded-full bg-white/20 backdrop-blur-sm border border-white/30 px-3">
           <input
@@ -77,6 +81,7 @@ export const ReelMobileBottomBar: React.FC<ReelMobileBottomBarProps> = ({
           />
         </div>
       </form>
+      )}
     </div>
   );
 };

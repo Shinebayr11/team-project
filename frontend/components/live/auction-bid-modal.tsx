@@ -52,6 +52,9 @@ export function AuctionBidModal({
     running ? listing.timer_ends_at : undefined
   )
   const [increment, setIncrement] = useState(25)
+  // Гараар бичсэн дүн. `null` бол "товчны сонголтыг дага" — bids-panel-ийн
+  // үнэ, хугацаатай ижил загвар.
+  const [typedAmount, setTypedAmount] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -61,10 +64,17 @@ export function AuctionBidModal({
   // утгаар эхэлж, зөвхөн хэрэглэгч өөрөө баталсан үед л шинэчлэгдэнэ.
   const [basis, setBasis] = useState(minimum)
 
-  const myBid = basis + increment
-  // Сонгосон дүн шинэ доод үнэд хүрэхгүй болсон үед л зогсоож батлуулна —
-  // өөр хүн санал өгсөн болгонд тасалдуулбал хэрэглэгч товч дээрээ хүрэхгүй.
-  const stale = myBid < minimum
+  const myBid =
+    typedAmount !== null ? Math.max(0, Math.floor(Number(typedAmount) || 0)) : basis + increment
+
+  // Доод дүнд хүрэхгүй байгаагийн ХОЁР өөр шалтгааныг ялгана: өөр хүн
+  // давуулсан уу, эсвэл хэрэглэгч өөрөө бага дүн бичсэн үү. Хоёуланг нь
+  // "Таныг давуулав" гэж хэлбэл гараар бичихэд ойлгомжгүй болно.
+  const tooLow = myBid < minimum
+  // Хэрэглэгчийн сүүлд зөвшөөрсөн доод үнэ хуучирсан — өөр хүн санал өгчээ.
+  // Санал өгсөн болгонд тасалдуулбал хэрэглэгч товч дээрээ хүрэхгүй тул
+  // зөвхөн дүн нь хүрэлцэхгүй болсон үед зогсооно.
+  const stale = tooLow && basis < minimum
   const product = productOf(listing)
   const leader = winnerName(listing)
   const current = listing.current_highest_bid_coins
@@ -118,9 +128,21 @@ export function AuctionBidModal({
           <div className="mb-2 text-[12px] font-[800] tracking-wider text-[var(--wn-ink-4)] uppercase">
             Таны санал
           </div>
-          <div className="mb-6 text-[48px] leading-none font-[800] tracking-tight text-[var(--wn-ink)] tabular-nums">
-            ₮{myBid.toLocaleString()}
-          </div>
+          {/* Бэлэн алхмууд түгээмэл тохиолдлыг хурдан болгоно, гэхдээ дуудлага
+              худалдаанд хүн өөрийн дүнгээ шийддэг — тоог нь шууд засаж болно. */}
+          <label className="mb-6 flex items-baseline justify-center gap-1">
+            <span className="text-[48px] leading-none font-[800] text-[var(--wn-ink)]">₮</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={minimum}
+              value={typedAmount ?? myBid}
+              onChange={(e) => setTypedAmount(e.target.value)}
+              onFocus={(e) => e.currentTarget.select()}
+              aria-label="Саналын дүн"
+              className="w-[min(260px,60vw)] border-0 bg-transparent p-0 text-center text-[48px] leading-none font-[800] tracking-tight text-[var(--wn-ink)] tabular-nums outline-none focus:underline focus:decoration-[var(--wn-accent)] focus:decoration-2 focus:underline-offset-8 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+          </label>
 
           <div
             className="flex items-center gap-3"
@@ -131,10 +153,13 @@ export function AuctionBidModal({
               <button
                 key={value}
                 role="radio"
-                aria-checked={increment === value}
-                onClick={() => setIncrement(value)}
+                aria-checked={typedAmount === null && increment === value}
+                onClick={() => {
+                  setIncrement(value)
+                  setTypedAmount(null)
+                }}
                 className={`rounded-full px-4 py-2 text-[14px] font-[700] transition-colors ${
-                  increment === value
+                  typedAmount === null && increment === value
                     ? "bg-[var(--wn-ink)] text-white"
                     : "bg-[var(--wn-surface-2)] text-[var(--wn-ink)] hover:bg-[var(--wn-line)]"
                 }`}
@@ -177,6 +202,9 @@ export function AuctionBidModal({
             <ModalActionButton
               onClick={() => {
                 setBasis(minimum)
+                // Гараар бичсэн хуучин дүнг орхино — эс тэгвэл товч шинэ дүн
+                // амлаад, оролт нь хуучнаа хэвээр үлдэнэ.
+                setTypedAmount(null)
                 setError(null)
               }}
               enabled
@@ -189,10 +217,12 @@ export function AuctionBidModal({
             // Хугацаа дуусахыг сервер шийднэ: төхөөрөмжийн цаг түрүүлж яваа
             // хэрэглэгчийг локал тоолуураар хааж болохгүй. Лот үнэхээр дуусахад
             // эцэг панель цонхыг хаана.
-            enabled={affordable && balanceKnown && !busy}
+            enabled={affordable && balanceKnown && !tooLow && !busy}
             label={`Санал өгөх — ₮${myBid.toLocaleString()}`}
             disabledLabel={
-              busy
+              tooLow
+                ? `Доод дүн ₮${minimum.toLocaleString()}`
+                : busy
                 ? "Илгээж байна..."
                 : balanceLoading
                   ? "Үлдэгдэл шалгаж байна..."

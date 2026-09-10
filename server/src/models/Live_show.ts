@@ -15,7 +15,12 @@ const Live_showsSchema = new Schema(
         // Товлосон дамжуулалтын сонголт эфирт орох үед энд бууна.
         type: { type: String, default: "mixed" },
         tags: { type: String },
-        sponsored: { type: Boolean, default: false }
+        sponsored: { type: Boolean, default: false },
+        /**
+         * Үзүүлэнгийн өгөгдөл эсэх. `seed:demo-shop` үүнийг тавьж, `--clean`
+         * үүгээр л устгана — бодит өгөгдөлд хэзээ ч хүрэхгүй.
+         */
+        demo_seed: { type: Boolean, default: false, index: true },
     },
     { timestamps: true }
 )

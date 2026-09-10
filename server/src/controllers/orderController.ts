@@ -20,17 +20,35 @@ type OrderAddress = {
 type AuthedUser = { addresses?: OrderAddress[] }
 const authedUser = (c: Context): AuthedUser => c.get("user") as AuthedUser
 
+/** Нэг удаад буцаах захиалгын дээд тоо. */
+const ORDER_PAGE_LIMIT = 500
+
+/**
+ * GET /api/order — нэвтэрсэн хэрэглэгчийн ӨӨРИЙН захиалгууд.
+ *
+ * Өмнө нь энэ нь нүцгэн `Order.find()` бөгөөд нэвтрэлт огт шаарддаггүй байв:
+ * хүсэлт явуулсан ХЭН Ч системийн бүх захиалгыг — худалдан авагчийн нэр,
+ * хүргэх хаяг, утас, худалдаж авсан зүйлийг нь — татаж чаддаг байсан.
+ *
+ * Худалдан авагчийн жагсаалт `/mine`, худалдагчийнх `/seller` дээр байгаа тул
+ * энэ нь голдуу нийцтэй байдлын үүднээс үлдсэн ерөнхий зам.
+ */
 export const getOrder = async (c: Context) => {
     try {
-        const data = await Order.find()
-        return c.json({
-            message: "Amjilttai avlaa",
-            data
-        }, 200)
+        const userId = c.get("userId")
+        const myProducts = await Product.find({ seller_id: userId }).select("_id")
+
+        const data = await Order.find({
+            $or: [
+                { buyer_id: userId },
+                { product_id: { $in: myProducts.map((product) => product._id) } },
+            ],
+        }).sort({ createdAt: -1 })
+
+        return c.json({ message: "Amjilttai avlaa", data }, 200)
     } catch (error) {
-        return c.json({
-            message: "Aldaa garlaa"
-        }, 500)
+        console.error("getOrder алдаа:", error)
+        return c.json({ message: "Захиалгыг уншиж чадсангүй" }, 500)
     }
 }
 
@@ -175,7 +193,9 @@ export const getMyOrders = async (c: Context) => {
 
         const data = await Order.find({ buyer_id: userId })
             .sort({ createdAt: -1 })
-            .limit(50)
+            // 50 биш: аналитик 90 хоногийн БҮХ захиалгаас орлого, топ бараа,
+            // дундаж чекийг бодох тул тасалбал тоо нь дутуу гарна.
+            .limit(ORDER_PAGE_LIMIT)
             .populate("product_id", "name description price_coins images")
 
         return c.json({ data }, 200)
@@ -204,7 +224,9 @@ export const getMySellerOrders = async (c: Context) => {
 
         const data = await Order.find({ product_id: { $in: productIds } })
             .sort({ createdAt: -1 })
-            .limit(50)
+            // 50 биш: аналитик 90 хоногийн БҮХ захиалгаас орлого, топ бараа,
+            // дундаж чекийг бодох тул тасалбал тоо нь дутуу гарна.
+            .limit(ORDER_PAGE_LIMIT)
             .populate("product_id", "name description price_coins images")
             .populate("buyer_id", "display_name shop_name avatar_url")
 

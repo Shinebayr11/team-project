@@ -49,6 +49,12 @@ export interface ReelShow {
    * бодит дамжуулалт руу орно.
    */
   watchPath?: string;
+  /**
+   * Худалдагчийн бодит id. `slug` нь жинхэнэ эфирт LiveKit өрөөний нэр байдаг
+   * тул дэлгүүр рүү орох, дагах зэрэг нь ТҮҮГЭЭР БИШ үүгээр явна — эс тэгвэл
+   * эфир дуусахад дагасан бүртгэл нь алга болно.
+   */
+  sellerId?: string;
   item: ReelItem;
   products: Record<ReelTab, ReelProduct[]>;
   chat: ReelChatLine[];

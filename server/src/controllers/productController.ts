@@ -2,6 +2,7 @@ import { Context } from "hono"
 import mongoose from "mongoose"
 import { Product } from "../models/Product.js"
 import { ProductListing } from "../models/ProductListing.js"
+import { LISTING_STATUS, settleExpiredListings } from "../lib/auction.js"
 
 export const getProduct = async (c: Context) => {
     try {
@@ -40,7 +41,21 @@ export const getProductById = async (c: Context) => {
             return c.json({ message: "Бараа олдсонгүй" }, 404)
         }
 
-        return c.json({ product })
+        // Пост хэлбэрийн дуудлага худалдаа (эфиргүй) явж байвал ХАМТ буцаана:
+        // барааны хуудас нэг л дуудлагаар үнэ, тоолуур, одоогийн саналыг зурна.
+        // Уншихаас өмнө хугацаа дууссаныг хаана — эс тэгвэл дууссан аукцион
+        // хуудсан дээр амьд мэт харагдсаар байна.
+        await settleExpiredListings({ product_id: id, live_show_id: null })
+        const listing = await ProductListing.findOne({
+            product_id: id,
+            live_show_id: null,
+            status: LISTING_STATUS.active,
+        })
+            .populate("current_winner_id", "display_name")
+            // Санал өгөх цонх барааны нэр, зургийг лотоос нь уншдаг.
+            .populate("product_id", "name description price_coins images")
+
+        return c.json({ product, listing })
     } catch (error) {
         console.error("getProductById алдаа:", error)
         return c.json({ message: "Серверийн алдаа гарлаа" }, 500)

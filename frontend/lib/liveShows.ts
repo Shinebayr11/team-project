@@ -41,10 +41,13 @@ export const toHomeShow = (doc: LiveShowDoc): HomeShow => {
     typeof doc.seller_id === "object" && doc.seller_id?.display_name
       ? doc.seller_id.display_name
       : "Seller"
+  const sellerId =
+    typeof doc.seller_id === "string" ? doc.seller_id : doc.seller_id?._id
   const isLive = doc.status === "live"
 
   return {
     seller,
+    sellerId,
     title: doc.title,
     category: doc.category || (isLive ? "General" : "Scheduled"),
     tags: doc.tags || "",

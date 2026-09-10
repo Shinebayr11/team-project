@@ -24,6 +24,8 @@ export interface OrderShippingAddress {
 }
 
 export interface DirectOrder {
+  /** Нэрийн хуулбар — бүртгэл устсан ч захиалга уншигдана. */
+  buyer_name?: string
   _id: string
   product_id?: AuctionProduct | string
   buyer_id?: OrderBuyer | string
