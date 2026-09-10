@@ -29,6 +29,11 @@ export const useReelPlayer = (shows: ReelShow[], startIndex: number) => {
   }, [currentShow]);
 
   useEffect(() => {
+    // Жинхэнэ эфирийн үзэгчийн тоо серверээс ирдэг. Доорх хэлбэлзэл, `MIN_VIEWERS`
+    // хоёр нь mock мөрийг амьд харагдуулах чимэглэл — 3 үзэгчтэй бодит эфирийг
+    // 120 болгож харуулбал энэ нь зүгээр л ХУДАЛ тоо болно.
+    if (currentShow.item.mode === 'watch') return;
+
     const timer = setInterval(() => {
       if (currentShow.item.mode === 'bid') {
         setCountdown(c => (c <= 0 ? BID_RESET_SECONDS : c - 1));

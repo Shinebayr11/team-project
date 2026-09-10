@@ -15,10 +15,16 @@ interface ProductBuyPanelProps {
   onQtyChange: (qty: number) => void;
   onBuy: () => void;
   onAddToCart: () => void;
+  /**
+   * Дуудлага худалдаа явж байвал үнэ, тоо ширхэг, худалдан авах товчийг ЭНЭ
+   * ОРЛУУЛНА — тогтсон үнээр авах, санал өгөх хоёр зэрэг байвал худалдан
+   * авагч алийг нь хийж байгаагаа ойлгохгүй.
+   */
+  auction?: React.ReactNode;
 }
 
 export const ProductBuyPanel: React.FC<ProductBuyPanelProps> = ({
-  product, seller, qty, onQtyChange, onBuy, onAddToCart,
+  product, seller, qty, onQtyChange, onBuy, onAddToCart, auction,
 }) => {
   const shop = productShopName(seller);
   const shopKey = shopKeyOf(seller);
@@ -53,35 +59,39 @@ export const ProductBuyPanel: React.FC<ProductBuyPanelProps> = ({
         {product.name}
       </h1>
 
-      <div className="mb-6 flex items-center gap-3">
-        <div className="flex size-8 items-center justify-center rounded-full bg-[var(--wn-accent)] text-[14px] font-[700] text-white">₮</div>
-        <span className="text-[26px] font-[800] tracking-tight text-[var(--wn-ink)] sm:text-[32px]">
-          {price.toLocaleString()}
-        </span>
-      </div>
+      {auction ?? (
+        <>
+          <div className="mb-6 flex items-center gap-3">
+            <div className="flex size-8 items-center justify-center rounded-full bg-[var(--wn-accent)] text-[14px] font-[700] text-white">₮</div>
+            <span className="text-[26px] font-[800] tracking-tight text-[var(--wn-ink)] sm:text-[32px]">
+              {price.toLocaleString()}
+            </span>
+          </div>
 
-      {/* Нөөц нь жинхэнэ тоо — «Дууссан» гэдэг нь таамаг биш өгөгдөл. */}
-      <div
-        className={`mb-6 flex items-center gap-3 rounded-xl px-4 py-3 text-[14px] font-[600] ${
-          soldOut
-            ? 'bg-[var(--wn-live-soft)] text-[var(--wn-live-deep)]'
-            : 'bg-[var(--wn-surface-2)] text-[var(--wn-ink-2)]'
-        }`}
-      >
-        {soldOut ? (
-          <>
-            <Package className="size-5" /> Энэ бараа дууссан байна
-          </>
-        ) : (
-          <>
-            <Truck className="size-5 text-[var(--wn-ink-3)]" /> Нөөцөд {stock} ширхэг · 1–2 хоногт илгээнэ
-          </>
-        )}
-      </div>
+          {/* Нөөц нь жинхэнэ тоо — «Дууссан» гэдэг нь таамаг биш өгөгдөл. */}
+          <div
+            className={`mb-6 flex items-center gap-3 rounded-xl px-4 py-3 text-[14px] font-[600] ${
+              soldOut
+                ? 'bg-[var(--wn-live-soft)] text-[var(--wn-live-deep)]'
+                : 'bg-[var(--wn-surface-2)] text-[var(--wn-ink-2)]'
+            }`}
+          >
+            {soldOut ? (
+              <>
+                <Package className="size-5" /> Энэ бараа дууссан байна
+              </>
+            ) : (
+              <>
+                <Truck className="size-5 text-[var(--wn-ink-3)]" /> Нөөцөд {stock} ширхэг · 1–2 хоногт илгээнэ
+              </>
+            )}
+          </div>
 
-      {!soldOut && <QuantityStepper qty={qty} onChange={onQtyChange} max={Math.min(stock, 9)} />}
+          {!soldOut && <QuantityStepper qty={qty} onChange={onQtyChange} max={Math.min(stock, 9)} />}
 
-      <ProductActions price={price} qty={qty} soldOut={soldOut} onBuy={onBuy} onAddToCart={onAddToCart} />
+          <ProductActions price={price} qty={qty} soldOut={soldOut} onBuy={onBuy} onAddToCart={onAddToCart} />
+        </>
+      )}
 
       {product.description && (
         <>

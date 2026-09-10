@@ -16,34 +16,13 @@ interface ReelStageProps {
   onItemAction: (show: ReelShow) => void;
 }
 
-export const ReelStage: React.FC<ReelStageProps> = ({
-  shows, currentIndex, countdown, viewers, showScrollHint, onWheel, onGoTo, onItemAction,
-}) => {
-  // Гар утсан дээр гүйлгэлтийг хөтөч өөрөө (snap scroll) хийдэг тул хуруугаар
-  // гүйлгэхэд `onWheel` огт дуудагддаггүй. Иймд идэвхтэй шууд дамжуулалтыг гүйлгэлтийн
-  // байрлалаас нь уншиж, overlay-ууд (Buy/Bid, чат, худалдагч) үзэж буй шууд дамжуулалттай
-  // нь тааруулна — эс тэгвэл тэдгээр нь shows[0] дээр гацна.
-  const mobileScrollRef = useRef<HTMLDivElement>(null);
-
-  const indexFromScroll = (el: HTMLDivElement) =>
-    el.clientHeight > 0 ? Math.round(el.scrollTop / el.clientHeight) : 0;
-
-  const handleMobileScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const next = indexFromScroll(e.currentTarget);
-    if (next !== currentIndex && next >= 0 && next < shows.length) onGoTo(next);
-  };
-
-  // Гаднаас индекс өөрчлөгдсөн үед (deep link, эсвэл desktop-ийн nav rail)
-  // гүйлгэлтийн байрлалыг гүйцээнэ. Хэрэглэгч өөрөө гүйлгэсэн тохиолдолд
-  // байрлал аль хэдийн таарсан байх тул энэ нь юу ч хийхгүй өнгөрнө.
-  useEffect(() => {
-    const el = mobileScrollRef.current;
-    if (!el || indexFromScroll(el) === currentIndex) return;
-    el.scrollTo({ top: currentIndex * el.clientHeight, behavior: 'smooth' });
-  }, [currentIndex]);
-
 /**
  * Эфирийн дэвсгэр. Видеотой бол түүнийг, эс бөгөөс урьдчилсан зургийг үзүүлнэ.
+ *
+ * МОДУЛИЙН ТҮВШИНД байх ЁСТОЙ. `ReelStage`-ийн дотор зарлавал render бүрт
+ * шинэ компонент төрөл үүсдэг тул React дэвсгэр бүрийг unmount/mount хийнэ —
+ * үзэгчийн тоо секунд тутам шинэчлэгддэг учир видео секунд бүр тэгээс эхэлж,
+ * зураг бүр дахин ачаалагдаж байв.
  *
  * Видео нь ЗӨВХӨН харагдаж буй эфирт тоглоно: 10 бичлэгийг зэрэг ачаалуулбал
  * гар утсан дээр санах ой, сүлжээ хоёулаа дийлэхгүй. Бусад нь зурагтайгаа
@@ -74,6 +53,32 @@ const ReelMedia: React.FC<{ show: ReelShow; active: boolean; className?: string 
     <img src={show.thumbnail} alt={show.title} className={common} />
   ) : null;
 };
+
+export const ReelStage: React.FC<ReelStageProps> = ({
+  shows, currentIndex, countdown, viewers, showScrollHint, onWheel, onGoTo, onItemAction,
+}) => {
+  // Гар утсан дээр гүйлгэлтийг хөтөч өөрөө (snap scroll) хийдэг тул хуруугаар
+  // гүйлгэхэд `onWheel` огт дуудагддаггүй. Иймд идэвхтэй шууд дамжуулалтыг гүйлгэлтийн
+  // байрлалаас нь уншиж, overlay-ууд (Buy/Bid, чат, худалдагч) үзэж буй шууд дамжуулалттай
+  // нь тааруулна — эс тэгвэл тэдгээр нь shows[0] дээр гацна.
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
+
+  const indexFromScroll = (el: HTMLDivElement) =>
+    el.clientHeight > 0 ? Math.round(el.scrollTop / el.clientHeight) : 0;
+
+  const handleMobileScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const next = indexFromScroll(e.currentTarget);
+    if (next !== currentIndex && next >= 0 && next < shows.length) onGoTo(next);
+  };
+
+  // Гаднаас индекс өөрчлөгдсөн үед (deep link, эсвэл desktop-ийн nav rail)
+  // гүйлгэлтийн байрлалыг гүйцээнэ. Хэрэглэгч өөрөө гүйлгэсэн тохиолдолд
+  // байрлал аль хэдийн таарсан байх тул энэ нь юу ч хийхгүй өнгөрнө.
+  useEffect(() => {
+    const el = mobileScrollRef.current;
+    if (!el || indexFromScroll(el) === currentIndex) return;
+    el.scrollTo({ top: currentIndex * el.clientHeight, behavior: 'smooth' });
+  }, [currentIndex]);
 
   return (
   <>

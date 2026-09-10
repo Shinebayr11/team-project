@@ -116,11 +116,13 @@ export function useInventoryActions() {
     async (
       product: Omit<InventoryProduct, "id" | "createdAt" | "reservedQuantity" | "soldQuantity">
     ) => {
-      await callApi("/api/product", {
-        method: "POST",
-        body: JSON.stringify(toServerBody(product)),
-      })
+      // Үүссэн барааг БУЦААНА: дуудлага худалдаа эхлүүлэхэд түүний id хэрэгтэй.
+      const { product: created } = await callApi<{ product: { _id: string } }>(
+        "/api/product",
+        { method: "POST", body: JSON.stringify(toServerBody(product)) }
+      )
       await refresh()
+      return created
     },
     [callApi, refresh]
   )
@@ -136,6 +138,26 @@ export function useInventoryActions() {
     [callApi, refresh]
   )
 
+  /**
+   * Барааны хуудсан дээр хоногоор үргэлжлэх дуудлага худалдаа эхлүүлнэ.
+   *
+   * `live_show_id` ЯВУУЛАХГҮЙ — сервер түүнгүй ирсэн хүсэлтийг пост хэлбэр гэж
+   * үзэж, лотыг шууд худалдагч дээр (`seller_id`) бүртгэнэ.
+   */
+  const startPostAuction = useCallback(
+    async (productId: string, startingPrice: number, durationSeconds: number) => {
+      await callApi("/api/productlisting", {
+        method: "POST",
+        body: JSON.stringify({
+          product_id: productId,
+          starting_price_coins: startingPrice,
+          duration_seconds: durationSeconds,
+        }),
+      })
+    },
+    [callApi]
+  )
+
   const remove = useCallback(
     async (id: string) => {
       await callApi(`/api/product/${id}`, { method: "DELETE" })
@@ -144,5 +166,5 @@ export function useInventoryActions() {
     [callApi, refresh]
   )
 
-  return { create, update, remove, refresh }
+  return { create, update, remove, startPostAuction, refresh }
 }

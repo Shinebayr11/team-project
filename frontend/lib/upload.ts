@@ -18,6 +18,30 @@ export const MAX_BYTES = 4 * 1024 * 1024
 export class UploadError extends Error {}
 
 /**
+ * Blob дахь зам ба дарж бичих эрх.
+ *
+ * Клиентээс ирсэн замыг ХЭЗЭЭ Ч бүтнээр нь ашиглахгүй: `path` дурын утгатай
+ * ирвэл нэвтэрсэн ямар ч хэрэглэгч бусдын файлыг — жишээ нь өөр худалдагчийн
+ * эфирийн урьдчилсан зургийг — дарж бичих боломжтой болно. Зөвхөн файлын
+ * НЭРИЙГ нь авч, хэрэглэгчийн ӨӨРИЙН хавтас дотор байрлуулна.
+ *
+ * `fixed` нь дарж бичих эрхийг шийднэ: тогтмол нэртэй файл (эфирийн зураг 20
+ * секунд тутам шинэчлэгддэг) нэг байрыг дарж бичнэ, бусад нь санамсаргүй
+ * дагавартай шинэ файл болно.
+ */
+export function blobTarget(userId: string, rawPath: unknown, fileName: string) {
+  const base = (value: string) => value.split("/").pop() ?? ""
+  const name = typeof rawPath === "string" ? base(rawPath) : ""
+  // Эхний тэмдэгт нь үсэг/тоо байх ёстой — `.`, `..` зэрэг нь нэр биш.
+  const fixed = /^\w[\w.-]*$/.test(name)
+
+  return {
+    pathname: `uploads/${userId}/${fixed ? name : base(fileName) || "upload"}`,
+    fixed,
+  }
+}
+
+/**
  * Зургийг Vercel Blob руу байршуулж, нийтэд нээлттэй хаягийг нь буцаана.
  *
  * Файл нь өөрийн серверээр дамжина (`app/blob-upload/route.ts`). Хөтчөөс шууд

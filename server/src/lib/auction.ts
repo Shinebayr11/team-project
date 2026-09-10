@@ -1,6 +1,7 @@
 import { Types } from "mongoose"
 import { ProductListing } from "../models/ProductListing.js"
 import { Live_Show } from "../models/Live_show.js"
+import { Order } from "../models/Order.js"
 import { Wallet } from "../models/Wallet.js"
 import { CoinTransaction } from "../models/Cointransaction.js"
 
@@ -134,11 +135,18 @@ export const settleExpiredListings = async (filter: Record<string, unknown> = {}
 
         // Худалдагчийн орлого. Хэтэвчгүй бол үүсгэнэ — эс бөгөөс мөнгө
         // замдаа алга болно.
-        const show = await Live_Show.findById(claimed.live_show_id)
-        if (!show?.seller_id) continue
+        //
+        // Эзнийг ЛОТООС нь авна. Өмнө нь зөвхөн эфирээр дамжуулж олдог байсан
+        // тул эфиргүй (пост хэлбэрийн) лот энд ирээд чимээгүй унтардаг байв.
+        // Хуучин лотуудад `seller_id` байхгүй тул эфир нь нөөц хэвээр.
+        const show = claimed.live_show_id
+            ? await Live_Show.findById(claimed.live_show_id)
+            : null
+        const sellerId = claimed.seller_id ?? show?.seller_id
+        if (!sellerId) continue
 
         const sellerWallet = await Wallet.findOneAndUpdate(
-            { user_id: show.seller_id },
+            { user_id: sellerId },
             { $inc: { coin_balance: amount } },
             { new: true, upsert: true, setDefaultsOnInsert: true },
         )
@@ -147,6 +155,25 @@ export const settleExpiredListings = async (filter: Record<string, unknown> = {}
             wallet_id: sellerWallet._id,
             type: "auction_sale",
             amount,
+        })
+
+        // Ялсан лот бол ЗАХИАЛГА: худалдагч барааг нь илгээх ажил үлдсэн.
+        //
+        // Өмнө нь энэ нь захиалга үүсгэдэггүй байсан тул Seller Hub ялагчдыг
+        // "Захиалга" хүснэгтэндээ биш, түүний ДЭЭР тусдаа самбар дээр харуулж,
+        // хүргэлтийн явц нь ч ахидаггүй байв.
+        //
+        // Төлбөр нь ЭНД аль хэдийн хийгдсэн (зоос шилжсэн); хүргэлт эхлээгүй.
+        // `getMySellerOrders` эзнийг `product_id`-аар нь олдог тул нэмэлт
+        // талбар хэрэггүй.
+        await Order.create({
+            buyer_id: claimed.current_winner_id,
+            product_id: claimed.product_id,
+            listing_id: claimed._id,
+            live_show_id: claimed.live_show_id,
+            quantity: 1,
+            price_coins: amount,
+            fulfillment_status: "PENDING",
         })
       } catch (error) {
         console.error(`Аукцион ${listing._id} хаахад алдаа гарлаа:`, error)

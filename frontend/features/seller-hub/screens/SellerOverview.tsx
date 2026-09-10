@@ -56,8 +56,8 @@ export const SellerOverview: React.FC = () => {
         />
         <KpiCard
           title="Хүргэж өгөх бараа"
-          value={overview.pendingHandover.length}
-          caption="ялагчтайгаа холбогдоно уу"
+          value={overview.pendingHandoverCount}
+          caption="хүргэлт хүлээж байна"
           tone="coral"
         />
         <KpiCard
@@ -71,7 +71,7 @@ export const SellerOverview: React.FC = () => {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="flex flex-col gap-8">
           <ActionRequired
-            pendingHandover={overview.pendingHandover.length}
+            pendingHandover={overview.pendingHandoverCount}
             lowStockCount={overview.lowStockItems.length}
           />
         </div>

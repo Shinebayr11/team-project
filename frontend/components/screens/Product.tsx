@@ -9,6 +9,7 @@ import { BackButton } from "@/components/ui/BackButton"
 import { Skeleton, SkeletonScreen } from "@/components/ui/Skeleton"
 import { ProductGallery } from "@/components/product/ProductGallery"
 import { ProductBuyPanel } from "@/components/product/ProductBuyPanel"
+import { ProductAuctionPanel } from "@/components/product/ProductAuctionPanel"
 
 /**
  * Барааны хуудас.
@@ -25,7 +26,7 @@ export const Product: React.FC = () => {
   const { requireAuth } = useRequireAuth()
 
   const id = searchParams.get("id")
-  const { product, loading, notFound } = useProduct(id)
+  const { product, listing, loading, notFound, refresh } = useProduct(id)
   const [qty, setQty] = useState(1)
 
   const seller = sellerOf(product)
@@ -87,6 +88,11 @@ export const Product: React.FC = () => {
           qty={qty}
           onQtyChange={setQty}
           onBuy={() => requireAuth(() => openModal("buy", buyPayload))}
+          auction={
+            listing ? (
+              <ProductAuctionPanel listing={listing} onBidPlaced={refresh} />
+            ) : undefined
+          }
           onAddToCart={() =>
             requireAuth(() => {
               addToCart({

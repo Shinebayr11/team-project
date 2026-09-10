@@ -11,7 +11,6 @@ import { SellerSearchField } from "@/features/seller-hub/components/SellerSearch
 import { DataCard } from "@/features/seller-hub/components/DataCard"
 import { OrdersTable } from "@/features/seller-hub/components/orders/OrdersTable"
 import { OrderDetail } from "@/features/seller-hub/components/orders/OrderDetail"
-import { AuctionSalesPanel } from "@/features/seller-hub/components/orders/AuctionSalesPanel"
 import { OrderSalesPanel } from "@/features/seller-hub/components/orders/OrderSalesPanel"
 import { FULFILLMENT_STATUS_LABELS } from "@/features/seller-hub/components/statusTones"
 import { useSellerProfile } from "@/hooks/useSellerProfile"
@@ -133,7 +132,9 @@ export const SellerOrders: React.FC = () => {
       {/* Дуудлага худалдааны ялагчид болон шууд захиалгууд — хурдан
           нэг харцаар харах, чат руу шууд орох самбарууд. Доорх хүснэгт
           эдгээрийг явц удирдах горимоор харуулна. */}
-      <AuctionSalesPanel />
+      {/* Дуудлага худалдааны ялагчид ДООРХ хүснэгтэд бусад захиалгын хамт
+          орно: лот зарагдахдаа Order үүсгэдэг болсон (`lib/auction.ts`).
+          Тусад нь самбар үлдээвэл нэг ялагч хоёр газар харагдана. */}
       <OrderSalesPanel />
 
       <FilterTabs tabs={TABS} active={activeTab} onChange={setActiveTab} />

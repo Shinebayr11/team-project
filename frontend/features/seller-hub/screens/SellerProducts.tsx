@@ -46,7 +46,7 @@ export const SellerProducts: React.FC = () => {
 
   // Бараа сервер дээр амьдарна — шууд дамжуулалтын "Миний бараа" ЯГ ижил
   // цуглуулгыг уншдаг тул энд нэмсэн бараа тэнд шууд харагдана.
-  const { create, update, remove } = useInventoryActions()
+  const { create, update, remove, startPostAuction } = useInventoryActions()
 
   // Шинэ барааны маягтын урьдчилсан утгууд худалдагчийн тохиргооноос ирнэ.
   const { profile } = useSellerProfile()
@@ -80,15 +80,27 @@ export const SellerProducts: React.FC = () => {
     }
 
     const status = statusForDraft(draft, publish)
-    const { acceptOffers, ...fields } = draft
+    const { acceptOffers, auctionDurationSeconds, ...fields } = draft
 
     try {
       if (editing?.id) {
         await update(editing.id, { ...fields, status })
         addToast("Бараа шинэчлэгдлээ.")
       } else {
-        await create({ ...fields, status })
+        const created = await create({ ...fields, status })
         addToast(`Бараа ${publish ? "нийтлэгдлээ" : "ноорог хэлбэрээр хадгалагдлаа"}.`)
+
+        // Дуудлага худалдаа нь бараа НИЙТЛЭГДСЭН үед л эхэлнэ: ноорог дээр
+        // хэн ч санал өгч чадахгүй байтал тоолуур явж эхлэх нь утгагүй.
+        // Засварлахад дахин эхлүүлэхгүй — явж байгаа аукционыг тасалдуулна.
+        if (publish && draft.listingType === "auction" && created?._id) {
+          try {
+            await startPostAuction(created._id, draft.price, auctionDurationSeconds)
+            addToast("Дуудлага худалдаа эхэллээ.")
+          } catch {
+            addToast("Бараа хадгалагдсан ч дуудлага худалдаа эхэлсэнгүй.")
+          }
+        }
       }
       setEditing(null)
     } catch {

@@ -17,7 +17,7 @@ export const ShowInfoPanel: React.FC<ShowInfoPanelProps> = ({
 }) => (
   <div className="p-4 border-b border-[var(--wn-line)]">
     <div className="text-[10px] font-[800] tracking-wider text-[var(--wn-accent)] uppercase mb-1">
-      {show.cat1} • {show.cat2}
+      {[show.cat1, show.cat2].filter(Boolean).join(' • ')}
     </div>
     <h1 className="text-[20px] font-[800] text-[var(--wn-ink)] leading-tight mb-3">{show.title}</h1>
 

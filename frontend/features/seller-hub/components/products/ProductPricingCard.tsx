@@ -5,7 +5,7 @@ import { InventoryProduct } from '@/features/seller-hub/types';
 import { CONTROL } from "@/features/seller-hub/components/FormField"
 import { Toggle } from '@/features/seller-hub/components/Toggle';
 import { Panel } from '../DataCard';
-import { ProductDraft } from './productDraft';
+import { AUCTION_DURATIONS, ProductDraft } from './productDraft';
 
 interface ProductPricingCardProps {
   draft: ProductDraft;
@@ -28,6 +28,8 @@ export const ProductPricingCard: React.FC<ProductPricingCardProps> = ({ draft, o
     draft.quantity ? String(draft.quantity) : ''
   );
 
+  const isAuction = draft.listingType === 'auction';
+
   return (
   <Panel title="Үнэ, нөөц">
     <div className="flex p-1 bg-[var(--wn-admin-chip)] rounded-xl mb-4">
@@ -45,7 +47,9 @@ export const ProductPricingCard: React.FC<ProductPricingCardProps> = ({ draft, o
     </div>
 
     <div className="mb-4">
-      <label className="block text-[12px] font-[700] text-[var(--wn-admin-muted)] mb-1" htmlFor="price">Үнэ (₮) *</label>
+      <label className="block text-[12px] font-[700] text-[var(--wn-admin-muted)] mb-1" htmlFor="price">
+        {isAuction ? 'Эхлэх үнэ (₮) *' : 'Үнэ (₮) *'}
+      </label>
       <div className="relative">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--wn-admin-muted)] font-[600]">₮</span>
         <input
@@ -63,6 +67,30 @@ export const ProductPricingCard: React.FC<ProductPricingCardProps> = ({ draft, o
         />
       </div>
     </div>
+
+    {/* Дуудлага худалдаа нь эфирийн ДОТОР секундээр явдаг байсан. Пост хэлбэр
+        нь барааны хуудсан дээр хоногоор үргэлжилнэ — Yahoo Auctions шиг. */}
+    {isAuction && (
+      <div className="mb-4">
+        <label className="mb-1 block text-[12px] font-[700] text-[var(--wn-admin-muted)]" htmlFor="auction-duration">
+          Үргэлжлэх хугацаа
+        </label>
+        <select
+          id="auction-duration"
+          value={draft.auctionDurationSeconds}
+          onChange={e => onPatch({ auctionDurationSeconds: Number(e.target.value) })}
+          className={CONTROL}
+        >
+          {AUCTION_DURATIONS.map(({ seconds, label }) => (
+            <option key={seconds} value={seconds}>{label}</option>
+          ))}
+        </select>
+        <p className="mt-1 text-[12px] text-[var(--wn-admin-muted)] leading-tight">
+          Хадгалмагц эхэлнэ. Хугацаа дуусахад хамгийн өндөр санал өгсөн хүн
+          ялж, захиалга үүснэ.
+        </p>
+      </div>
+    )}
 
     <div className="mb-6">
       <label className="block text-[12px] font-[700] text-[var(--wn-admin-muted)] mb-1" htmlFor="quantity">Тоо ширхэг *</label>

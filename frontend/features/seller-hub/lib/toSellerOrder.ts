@@ -16,7 +16,7 @@ export const toSellerOrder = (order: DirectOrder): SellerOrder => {
     // Mongo-гийн `_id` урт тул сүүлийн 6 тэмдэгтээр богиносгож, mock-ийн
     // "#1041" маягтай ойролцоо харагдана.
     id: `#${order._id.slice(-6).toUpperCase()}`,
-    buyerName: orderBuyerName(buyer),
+    buyerName: order.buyer_name || orderBuyerName(buyer),
     buyerPhone: address?.phone,
     date: order.createdAt ?? order.updatedAt ?? new Date().toISOString(),
     total: order.price_coins ?? 0,

@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server"
 import { put } from "@vercel/blob"
 import { NextResponse } from "next/server"
 
-import { ALLOWED_TYPES, MAX_BYTES } from "@/lib/upload"
+import { ALLOWED_TYPES, MAX_BYTES, blobTarget } from "@/lib/upload"
 
 /**
  * Зургийг Vercel Blob руу байршуулна.
@@ -28,7 +28,8 @@ export async function POST(request: Request) {
     const form = await request.formData()
     const file = form.get("file")
     // Тогтмол зам — шууд дамжуулалтын урьдчилсан зураг нэг байрыг дарж бичдэг.
-    const fixedPath = form.get("path")
+    // ЗӨВХӨН ЗӨВЛӨМЖ: бодит замыг `blobTarget` доор хэрэглэгчийн id-аар бүтээнэ.
+    const rawPath = form.get("path")
 
     if (!(file instanceof File)) {
       return NextResponse.json({ message: "Файл алга байна" }, { status: 400 })
@@ -46,9 +47,9 @@ export async function POST(request: Request) {
       )
     }
 
-    const fixed = typeof fixedPath === "string" && fixedPath.length > 0
+    const { pathname, fixed } = blobTarget(userId, rawPath, file.name)
 
-    const blob = await put(fixed ? fixedPath : file.name, file, {
+    const blob = await put(pathname, file, {
       access: "public",
       contentType: file.type,
       addRandomSuffix: !fixed,
@@ -59,10 +60,14 @@ export async function POST(request: Request) {
   } catch (error) {
     // Vercel-ийн шалтгааныг битгий залги — store-ын тохиргоо, эрх, хэмжээний
     // алдааг ялгах цорын ганц мэдээлэл нь энэ мессеж.
+    //
+    // Статус нь 500: энд хүрсэн бүхэн серверийн тал (`BLOB_READ_WRITE_TOKEN`
+    // дутуу, эрх хүчингүй, Vercel унасан). Хэрэглэгчийн буруу оролтууд дээрх
+    // шалгалтуудаар аль хэдийн 400-аар буцсан байна.
     console.error("blob upload error:", error)
     return NextResponse.json(
       { message: error instanceof Error ? error.message : "Байршуулж чадсангүй" },
-      { status: 400 }
+      { status: 500 }
     )
   }
 }
