@@ -1,11 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
-/** Худалдагчийн хүргэлтийн явц. `features/seller-hub/types.ts`-ийн
- * `SellerOrder['fulfillmentStatus']`-той яг ижил утгууд. */
+/**
+ * Худалдагчийн хүргэлтийн явц. `features/seller-hub/types.ts`-ийн
+ * `SellerOrder['fulfillmentStatus']`-той яг ижил утгууд.
+ *
+ * Үндсэн урсгал: PENDING → CONFIRMED → SHIPPED → DELIVERED.
+ * CANCELLED/RETURNED нь урсгалын хэсэг биш, онцгой төгсгөлүүд — самбар дээр
+ * товчгүй, зөвхөн төлөв нь харагдана.
+ */
 export const FULFILLMENT_STATUSES = [
     "PENDING",
-    "PROCESSING",
-    "READY_TO_SHIP",
+    "CONFIRMED",
     "SHIPPED",
     "DELIVERED",
     "CANCELLED",

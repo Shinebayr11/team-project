@@ -27,7 +27,7 @@ export const SEED_SELLER_ORDERS: SellerOrder[] = [
     date: "2023-10-23T14:30:00Z",
     total: 64800,
     paymentStatus: "PAID",
-    fulfillmentStatus: "PROCESSING",
+    fulfillmentStatus: "CONFIRMED",
     items: [
       { productId: "inv_5", name: "Retro Arcade Console", sku: "ARC-RETRO-01", price: 64800, qty: 1 }
     ],
@@ -46,7 +46,7 @@ export const SEED_SELLER_ORDERS: SellerOrder[] = [
     date: "2023-10-22T09:15:00Z",
     total: 477000,
     paymentStatus: "PAID",
-    fulfillmentStatus: "READY_TO_SHIP",
+    fulfillmentStatus: "CONFIRMED",
     items: [
       { productId: "inv_3", name: "Pokemon Booster Box", sku: "PKMN-BB-ES", price: 350000, qty: 1 },
       { productId: "inv_4", name: "Silver Flatware Set", sku: "SLV-FLAT-42", price: 127000, qty: 1 }

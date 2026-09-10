@@ -19,8 +19,7 @@ import { settingsOf } from "@/features/seller-hub/sellerSettings"
 const TABS = [
   { value: "ALL", label: "Бүгд" },
   { value: "PENDING", label: FULFILLMENT_STATUS_LABELS.PENDING },
-  { value: "PROCESSING", label: FULFILLMENT_STATUS_LABELS.PROCESSING },
-  { value: "READY_TO_SHIP", label: FULFILLMENT_STATUS_LABELS.READY_TO_SHIP },
+  { value: "CONFIRMED", label: FULFILLMENT_STATUS_LABELS.CONFIRMED },
   { value: "SHIPPED", label: FULFILLMENT_STATUS_LABELS.SHIPPED },
   { value: "DELIVERED", label: FULFILLMENT_STATUS_LABELS.DELIVERED },
 ] as const
@@ -83,7 +82,7 @@ export const SellerOrders: React.FC = () => {
     setSelectedId(id)
     const order = allOrders.find((o) => o.id === id)
     if (autoConfirm && order?.fulfillmentStatus === "PENDING") {
-      advanceStatus(id, "PROCESSING")
+      advanceStatus(id, "CONFIRMED")
       addToast("Захиалгыг автоматаар боловсруулж эхэллээ.")
     }
   }

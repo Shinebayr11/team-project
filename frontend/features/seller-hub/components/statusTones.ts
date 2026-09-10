@@ -7,7 +7,7 @@ export const paymentTone = (status: SellerOrder['paymentStatus']): StatusTone =>
 export const fulfillmentTone = (status: SellerOrder['fulfillmentStatus']): StatusTone => {
   if (status === 'DELIVERED') return 'green';
   if (status === 'SHIPPED') return 'blue';
-  if (status === 'READY_TO_SHIP') return 'amber';
+  if (status === 'CONFIRMED') return 'amber';
   return 'gray';
 };
 
@@ -34,9 +34,8 @@ export const PAYMENT_STATUS_LABELS: Record<SellerOrder['paymentStatus'], string>
 
 export const FULFILLMENT_STATUS_LABELS: Record<SellerOrder['fulfillmentStatus'], string> = {
   PENDING: 'Хүлээгдэж буй',
-  PROCESSING: 'Боловсруулж буй',
-  READY_TO_SHIP: 'Хүргэхэд бэлэн',
-  SHIPPED: 'Илгээсэн',
+  CONFIRMED: 'Баталгаажсан',
+  SHIPPED: 'Хүргэлтэд гарсан',
   DELIVERED: 'Хүргэгдсэн',
   CANCELLED: 'Цуцлагдсан',
   RETURNED: 'Буцаагдсан',
