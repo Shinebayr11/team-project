@@ -12,7 +12,7 @@ interface ProductMediaCardProps {
 
 const MAX_IMAGES = 6
 
-const HINT = `JPG, PNG, WEBP, GIF · 5MB хүртэл · ${MAX_IMAGES} зураг хүртэл`
+const HINT = `JPG, PNG, WEBP, GIF · 4MB хүртэл · ${MAX_IMAGES} зураг хүртэл`
 
 /**
  * Барааны зураг.
