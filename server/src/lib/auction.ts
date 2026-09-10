@@ -137,11 +137,18 @@ export const settleExpiredListings = async (filter: Record<string, unknown> = {}
 
         // Худалдагчийн орлого. Хэтэвчгүй бол үүсгэнэ — эс бөгөөс мөнгө
         // замдаа алга болно.
-        const show = await Live_Show.findById(claimed.live_show_id)
-        if (!show?.seller_id) continue
+        //
+        // Эзнийг ЛОТООС нь авна. Өмнө нь зөвхөн эфирээр дамжуулж олдог байсан
+        // тул эфиргүй (пост хэлбэрийн) лот энд ирээд чимээгүй унтардаг байв.
+        // Хуучин лотуудад `seller_id` байхгүй тул эфир нь нөөц хэвээр.
+        const show = claimed.live_show_id
+            ? await Live_Show.findById(claimed.live_show_id)
+            : null
+        const sellerId = claimed.seller_id ?? show?.seller_id
+        if (!sellerId) continue
 
         const sellerWallet = await Wallet.findOneAndUpdate(
-            { user_id: show.seller_id },
+            { user_id: sellerId },
             { $inc: { coin_balance: amount } },
             { new: true, upsert: true, setDefaultsOnInsert: true },
         )
@@ -166,7 +173,7 @@ export const settleExpiredListings = async (filter: Record<string, unknown> = {}
         ])
 
         await Order.create({
-            seller_id: show.seller_id,
+            seller_id: sellerId,
             buyer_id: claimed.current_winner_id,
             listing_id: claimed._id,
             live_show_id: claimed.live_show_id,

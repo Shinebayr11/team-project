@@ -6,7 +6,14 @@ import { Live_Show } from "../models/Live_show.js"
 import { LISTING_STATUS, settleExpiredListings } from "../lib/auction.js"
 
 const DEFAULT_DURATION_SECONDS = 60
-const MAX_DURATION_SECONDS = 60 * 60
+/**
+ * Хамгийн урт хугацаа 7 хоног.
+ *
+ * Өмнө нь 1 цаг байсан: лот зөвхөн эфирийн ДОТОР явдаг байсан тул эфирээс урт
+ * байх утгагүй байв. Одоо барааны хуудсан дээр хоногоор үргэлжлэх пост хэлбэр
+ * нэмэгдсэн тул дээд хязгаар нь түүнийг багтаана.
+ */
+const MAX_DURATION_SECONDS = 7 * 24 * 60 * 60
 
 /**
  * Шууд дамжуулалтын аукционууд. live_show_id өгвөл зөвхөн тухайн шууд дамжуулалтынх, эс бөгөөс бүгд.
@@ -121,14 +128,14 @@ export const getMySales = async (c: Context) => {
         const myShows = await Live_Show.find({ seller_id: userId }).select("_id")
         const showIds = myShows.map((show) => show._id)
 
-        if (showIds.length === 0) {
-            return c.json({ data: [] }, 200)
-        }
+        // Эфирийн лот эзнээ эфирээрээ, пост хэлбэрийн лот өөрөө `seller_id`-тай.
+        // Хуучин лотуудад `seller_id` байхгүй тул хоёуланг нь хамрана.
+        const mine = { $or: [{ seller_id: userId }, { live_show_id: { $in: showIds } }] }
 
-        await settleExpiredListings({ live_show_id: { $in: showIds } })
+        await settleExpiredListings(mine)
 
         const data = await ProductListing.find({
-            live_show_id: { $in: showIds },
+            ...mine,
             status: LISTING_STATUS.sold,
         })
             .sort({ updatedAt: -1 })
@@ -154,21 +161,15 @@ export const postProductlisting = async (c: Context) => {
         const body = await c.req.json()
         const { product_id, live_show_id, starting_price_coins, duration_seconds } = body
 
-        if (!product_id || !live_show_id || starting_price_coins === undefined) {
+        // `live_show_id` СОНГОЛТТОЙ: байвал эфирийн лот, эс бөгөөс барааны
+        // хуудсан дээр хоногоор үргэлжлэх пост хэлбэрийн дуудлага худалдаа.
+        if (!product_id || starting_price_coins === undefined) {
             return c.json({ message: "shaardlagtai medeelel dutuu bn" }, 400)
         }
 
         const startingPrice = Number(starting_price_coins)
         if (!Number.isFinite(startingPrice) || startingPrice < 0) {
             return c.json({ message: "Эхлэх үнэ буруу байна" }, 400)
-        }
-
-        const show = await Live_Show.findById(live_show_id)
-        if (!show) {
-            return c.json({ message: "Live show olsongvi" }, 404)
-        }
-        if (String(show.seller_id) !== String(userId)) {
-            return c.json({ message: "Энэ шууд дамжуулалтыг өөрчлөх эрхгүй байна" }, 403)
         }
 
         const product = await Product.findById(product_id)
@@ -179,15 +180,41 @@ export const postProductlisting = async (c: Context) => {
             return c.json({ message: "Энэ бараа таных биш байна" }, 403)
         }
 
-        // Нэг шууд дамжуулалт дээр нэгэн зэрэг зөвхөн нэг аукцион явна — үзэгчид юун дээр
-        // санал болгож буй нь ойлгомжтой байх ёстой.
-        await settleExpiredListings({ live_show_id })
-        const running = await ProductListing.findOne({
-            live_show_id,
-            status: LISTING_STATUS.active,
-        })
-        if (running) {
-            return c.json({ message: "Өмнөх аукцион хараахан дуусаагүй байна" }, 409)
+        if (live_show_id) {
+            const show = await Live_Show.findById(live_show_id)
+            if (!show) {
+                return c.json({ message: "Live show olsongvi" }, 404)
+            }
+            if (String(show.seller_id) !== String(userId)) {
+                return c.json({ message: "Энэ шууд дамжуулалтыг өөрчлөх эрхгүй байна" }, 403)
+            }
+
+            // Нэг шууд дамжуулалт дээр нэгэн зэрэг зөвхөн нэг аукцион явна — үзэгчид юун дээр
+            // санал болгож буй нь ойлгомжтой байх ёстой.
+            await settleExpiredListings({ live_show_id })
+            const running = await ProductListing.findOne({
+                live_show_id,
+                status: LISTING_STATUS.active,
+            })
+            if (running) {
+                return c.json({ message: "Өмнөх аукцион хараахан дуусаагүй байна" }, 409)
+            }
+        } else {
+            // Пост хэлбэр: нэг бараан дээр нэг л дуудлага худалдаа явна. Эс
+            // тэгвэл нэг барааны хуудсан дээр хоёр өөр үнэ, хоёр өөр тоолуур
+            // харагдана.
+            await settleExpiredListings({ product_id })
+            const running = await ProductListing.findOne({
+                product_id,
+                live_show_id: null,
+                status: LISTING_STATUS.active,
+            })
+            if (running) {
+                return c.json(
+                    { message: "Энэ бараан дээр дуудлага худалдаа аль хэдийн явж байна" },
+                    409
+                )
+            }
         }
 
         const seconds = Math.min(
@@ -197,7 +224,8 @@ export const postProductlisting = async (c: Context) => {
 
         const data = await ProductListing.create({
             product_id,
-            live_show_id,
+            live_show_id: live_show_id || undefined,
+            seller_id: userId,
             sale_type: "auction",
             starting_price_coins: startingPrice,
             current_highest_bid_coins: null,
@@ -225,8 +253,11 @@ export const closeProductlisting = async (c: Context) => {
             return c.json({ message: "Аукцион олдсонгүй" }, 404)
         }
 
-        const show = await Live_Show.findById(listing.live_show_id)
-        if (!show || String(show.seller_id) !== String(userId)) {
+        const show = listing.live_show_id
+            ? await Live_Show.findById(listing.live_show_id)
+            : null
+        const sellerId = listing.seller_id ?? show?.seller_id
+        if (!sellerId || String(sellerId) !== String(userId)) {
             return c.json({ message: "Энэ аукционыг хаах эрхгүй байна" }, 403)
         }
 

@@ -12,7 +12,30 @@ export interface ProductDraft {
   listingType: InventoryProduct['listingType'];
   acceptOffers: boolean;
   images: string[];
+  /**
+   * Дуудлага худалдааны үргэлжлэх хугацаа секундээр. `listingType` нь
+   * `auction` үед л хэрэглэгдэнэ.
+   */
+  auctionDurationSeconds: number;
 }
+
+/**
+ * Дуудлага худалдааны хугацааны сонголт. Yahoo Auctions маягаар хоногоор
+ * үргэлжилдэг ч, шуурхай зарах хүнд цагийн сонголт бас хэрэгтэй.
+ */
+export const AUCTION_DURATIONS: { seconds: number; label: string }[] = [
+  { seconds: 60 * 60, label: '1 цаг' },
+  { seconds: 6 * 60 * 60, label: '6 цаг' },
+  { seconds: 12 * 60 * 60, label: '12 цаг' },
+  { seconds: 24 * 60 * 60, label: '1 хоног' },
+  { seconds: 2 * 24 * 60 * 60, label: '2 хоног' },
+  { seconds: 3 * 24 * 60 * 60, label: '3 хоног' },
+  { seconds: 5 * 24 * 60 * 60, label: '5 хоног' },
+  { seconds: 7 * 24 * 60 * 60, label: '7 хоног' },
+];
+
+/** Хамгийн түгээмэл сонголт — Yahoo дээр ч анхдагч нь 3 хоног. */
+export const DEFAULT_AUCTION_SECONDS = 3 * 24 * 60 * 60;
 
 export const PRODUCT_CATEGORIES = ['Sneakers', 'Vintage Decor', 'Trading Cards', 'Electronics', 'Other'];
 
@@ -44,6 +67,7 @@ export const emptyProductDraft = (defaults: SellerSettings): ProductDraft => ({
   listingType: defaults.selling.defaultListingType,
   acceptOffers: defaults.selling.acceptOffers,
   images: [],
+  auctionDurationSeconds: DEFAULT_AUCTION_SECONDS,
 });
 
 export const draftFromProduct = (product: InventoryProduct): ProductDraft => ({
@@ -57,6 +81,7 @@ export const draftFromProduct = (product: InventoryProduct): ProductDraft => ({
   listingType: product.listingType,
   acceptOffers: true,
   images: product.images ?? [],
+  auctionDurationSeconds: DEFAULT_AUCTION_SECONDS,
 });
 
 /** Published products follow their stock level; unpublished ones stay drafts. */
