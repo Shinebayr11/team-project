@@ -3,25 +3,25 @@
 import * as React from "react"
 
 import { CONTROL, Field } from "@/features/seller-hub/components/FormField"
-import { CARRIERS } from "@/features/seller-hub/components/orders/ShippingForm"
 import { SettingsSaveBar } from "./SettingsSaveBar"
 import { useSellerSettings } from "./useSellerSettings"
 import { useSettingsSave } from "./useSettingsSave"
 
-/** Захиалга илгээх маягтын тээвэрлэгч болон бэлтгэх хугацаа. */
+/**
+ * Захиалга бэлтгэх хугацаа. Тээвэрлэгчийн сонголт БАЙХГҮЙ — хүргэлтэд
+ * гаргахдаа тухайн жолоочийн утас, машины дугаарыг захиалга тус бүрд
+ * бөглөдөг тул урьдчилан тохируулах утга байхгүй.
+ */
 export const ShippingSettingsPanel: React.FC = () => {
   const { settings, save } = useSellerSettings()
   const { phase, footerError, submit } = useSettingsSave(save)
 
-  const [carrier, setCarrier] = React.useState(settings.shipping.defaultCarrier)
   const [days, setDays] = React.useState(String(settings.shipping.processingDays))
 
   const parsedDays = Number(days)
   const daysValid = Number.isInteger(parsedDays) && parsedDays >= 1 && parsedDays <= 30
 
-  const dirty =
-    carrier !== settings.shipping.defaultCarrier ||
-    parsedDays !== settings.shipping.processingDays
+  const dirty = parsedDays !== settings.shipping.processingDays
   const canSubmit = phase !== "saving" && dirty && daysValid
 
   return (
@@ -29,26 +29,11 @@ export const ShippingSettingsPanel: React.FC = () => {
       <div className="mb-6">
         <h2 className="text-[24px] font-[800] mb-1 text-black">Хүргэлтийн тохиргоо</h2>
         <p className="text-[14px] text-[var(--wn-admin-muted)] font-[500]">
-          Захиалга илгээхэд ямар тээвэрлэгч бэлэн байхыг эндээс сонгоно.
+          Захиалгыг бэлтгэхэд хэдэн хоног шаардагдахыг эндээс тохируулна.
         </p>
       </div>
 
       <div className="flex flex-col gap-5 rounded-2xl border border-[var(--wn-admin-card-border)] bg-white p-6 shadow-sm">
-        <Field label="Үндсэн тээвэрлэгч">
-          <select
-            value={carrier}
-            onChange={(event) => setCarrier(event.target.value)}
-            disabled={phase === "saving"}
-            className={CONTROL}
-          >
-            {CARRIERS.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </Field>
-
         <div>
           <Field label="Бэлтгэх хугацаа (хоног)">
             <input
@@ -76,10 +61,7 @@ export const ShippingSettingsPanel: React.FC = () => {
           phase={phase}
           canSubmit={canSubmit}
           footerError={footerError}
-          onSubmit={() =>
-            canSubmit &&
-            submit({ shipping: { defaultCarrier: carrier, processingDays: parsedDays } })
-          }
+          onSubmit={() => canSubmit && submit({ shipping: { processingDays: parsedDays } })}
         />
       </div>
     </div>

@@ -51,7 +51,7 @@ export const toSellerOrder = (order: DirectOrder): SellerOrder => {
           postalCode: "",
           country: "",
         },
-    trackingNumber: order.tracking_number,
-    carrier: order.carrier,
+    driverPhone: order.driver_phone,
+    vehiclePlate: order.vehicle_plate,
   }
 }

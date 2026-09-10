@@ -38,7 +38,6 @@ const sellerSettingsSchema = new Schema(
         shipping: {
             type: new Schema(
                 {
-                    defaultCarrier: { type: String, required: true, default: "USPS", trim: true },
                     processingDays: { type: Number, required: true, default: 2, min: 1, max: 30 },
                 },
                 { _id: false }

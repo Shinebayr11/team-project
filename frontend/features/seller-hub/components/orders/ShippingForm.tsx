@@ -3,23 +3,20 @@
 import React, { useState } from 'react';
 import { FileText } from 'lucide-react';
 import { CONTROL } from "@/features/seller-hub/components/FormField"
-import { useSellerProfile } from '@/hooks/useSellerProfile';
-import { settingsOf } from '@/features/seller-hub/sellerSettings';
 import { btn } from "@/features/seller-hub/components/buttons"
 
 interface ShippingFormProps {
   onGenerateLabel: () => void;
-  onShip: (carrier: string, trackingNumber: string) => void;
+  onShip: (driverPhone: string, vehiclePlate: string) => void;
 }
 
-/** Тохиргооны хуудас ч ижил жагсаалтаас сонгодог тул эндээс экспортлов. */
-export const CARRIERS = ['USPS', 'UPS', 'FedEx'];
+/**
+ * Хүргэлтэд гаргах маягт. Олон улсын тээвэрлэгч биш — барааг хүргэж яваа
+ * ЖОЛООЧИЙН утас, машины дугаарыг бүртгэнэ (дотоодын хүргэлтийн бодит хэлбэр).
+ */
 export const ShippingForm: React.FC<ShippingFormProps> = ({ onGenerateLabel, onShip }) => {
-  const { profile } = useSellerProfile();
-  const settings = settingsOf(profile);
-
-  const [carrier, setCarrier] = useState(settings.shipping.defaultCarrier);
-  const [tracking, setTracking] = useState('');
+  const [driverPhone, setDriverPhone] = useState('');
+  const [vehiclePlate, setVehiclePlate] = useState('');
 
   return (
     <>
@@ -33,26 +30,36 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({ onGenerateLabel, onS
       <div className="h-px bg-[var(--wn-admin-chip)] my-2" />
 
       <div className="flex flex-col gap-2">
-        <label className="text-[12px] font-[700] text-[var(--wn-admin-muted)]" htmlFor="carrier">Тээвэрлэгч</label>
-        <select id="carrier" value={carrier} onChange={e => setCarrier(e.target.value)} className={CONTROL}>
-          {CARRIERS.map(c => <option key={c}>{c}</option>)}
-        </select>
-
-        <label className="text-[12px] font-[700] text-[var(--wn-admin-muted)] mt-2" htmlFor="tracking">Хүргэлтийн код</label>
+        <label className="text-[12px] font-[700] text-[var(--wn-admin-muted)]" htmlFor="driver-phone">
+          Жолоочийн утас
+        </label>
         <input
-          id="tracking"
+          id="driver-phone"
+          type="tel"
+          inputMode="numeric"
+          value={driverPhone}
+          onChange={e => setDriverPhone(e.target.value)}
+          placeholder="99112233"
+          className={CONTROL}
+        />
+
+        <label className="text-[12px] font-[700] text-[var(--wn-admin-muted)] mt-2" htmlFor="vehicle-plate">
+          Машины дугаар
+        </label>
+        <input
+          id="vehicle-plate"
           type="text"
-          value={tracking}
-          onChange={e => setTracking(e.target.value)}
-          placeholder="Хүргэлтийн код оруулах..."
+          value={vehiclePlate}
+          onChange={e => setVehiclePlate(e.target.value)}
+          placeholder="1234 УБА"
           className={CONTROL}
         />
 
         <button
-          onClick={() => onShip(carrier, tracking.trim())}
+          onClick={() => onShip(driverPhone.trim(), vehiclePlate.trim())}
           className={`${btn("ink", "block")} mt-2`}
         >
-          Илгээсэн гэж тэмдэглэх
+          Хүргэлтэд гарсан гэж тэмдэглэх
         </button>
       </div>
     </>

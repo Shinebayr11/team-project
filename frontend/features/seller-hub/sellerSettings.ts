@@ -10,7 +10,7 @@ export const DEFAULT_SELLER_SETTINGS: SellerSettings = {
   // `listing` нь тохиргооны дэлгэцээс хасагдсан — эдгээр нь одоо шинэ барааны
   // маягтын тогтмол урьдчилсан утга (`productDraft.ts`) болж үлдэв.
   listing: { defaultCategory: "Sneakers", defaultCondition: "New", defaultQuantity: 1 },
-  shipping: { defaultCarrier: "USPS", processingDays: 2 },
+  shipping: { processingDays: 2 },
   orders: { autoConfirm: false, packingSlipNote: "" },
 }
 

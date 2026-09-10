@@ -42,8 +42,9 @@ export interface SellerOrder {
     postalCode: string;
     country: string;
   };
-  trackingNumber?: string;
-  carrier?: string;
+  /** Хүргэлтэд гарахад бөглөгддөг — барааг хүргэж яваа жолоочийн мэдээлэл. */
+  driverPhone?: string;
+  vehiclePlate?: string;
   labelUrl?: string;
 }
 

@@ -13,7 +13,7 @@ interface OrderDetailProps {
   onBack: () => void;
   onAdvance: (status: SellerOrder['fulfillmentStatus']) => void;
   onGenerateLabel: () => void;
-  onShip: (carrier: string, trackingNumber: string) => void;
+  onShip: (driverPhone: string, vehiclePlate: string) => void;
 }
 
 export const OrderDetail: React.FC<OrderDetailProps> = ({

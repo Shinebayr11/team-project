@@ -290,24 +290,31 @@ export const updateOrderFulfillment = async (c: Context) => {
     }
 }
 
+/** Хүргэлтийн хаягтай ижил дүрэм (`userController.ts`). */
+const MONGOLIAN_PHONE = /^(\+?976[\s-]?)?\d{8}$/
+
 /**
- * PATCH /api/order/:id/tracking
+ * PATCH /api/order/:id/delivery
  *
- * Захиалгыг илгээсэн гэж тэмдэглэнэ — тээвэрлэгч, хүргэлтийн кодыг
- * хадгалж, хүргэлтийн явцыг шууд "SHIPPED" болгоно.
+ * Захиалгыг хүргэлтэд гаргана — барааг хүргэж яваа жолоочийн утас, машины
+ * дугаарыг хадгалж, хүргэлтийн явцыг шууд "SHIPPED" болгоно.
  */
-export const updateOrderTracking = async (c: Context) => {
+export const updateOrderDelivery = async (c: Context) => {
     try {
         const userId = c.get("userId")
         const id = c.req.param("id")
         const body = await c.req.json()
-        const { carrier, tracking_number } = body
+        const driver_phone = String(body.driver_phone ?? "").trim()
+        const vehicle_plate = String(body.vehicle_plate ?? "").trim()
 
         if (!id) {
             return c.json({ message: "Захиалга олдсонгүй" }, 404)
         }
-        if (!carrier || !tracking_number) {
-            return c.json({ message: "Тээвэрлэгч, хүргэлтийн код шаардлагатай" }, 400)
+        if (!MONGOLIAN_PHONE.test(driver_phone)) {
+            return c.json({ message: "Жолоочийн утас 8 оронтой байна" }, 400)
+        }
+        if (!vehicle_plate) {
+            return c.json({ message: "Машины дугаар оруулна уу" }, 400)
         }
 
         const { order, forbidden } = await findOwnedOrder(id, userId)
@@ -318,14 +325,14 @@ export const updateOrderTracking = async (c: Context) => {
             return c.json({ message: "Энэ захиалгыг өөрчлөх эрхгүй байна" }, 403)
         }
 
-        order.carrier = carrier
-        order.tracking_number = tracking_number
+        order.driver_phone = driver_phone
+        order.vehicle_plate = vehicle_plate
         order.fulfillment_status = "SHIPPED"
         await order.save()
 
         return c.json({ message: "Шинэчлэгдлээ", data: order }, 200)
     } catch (error) {
-        console.error("updateOrderTracking алдаа:", error)
+        console.error("updateOrderDelivery алдаа:", error)
         return c.json({ message: "Aldaa garlaa" }, 500)
     }
 }
