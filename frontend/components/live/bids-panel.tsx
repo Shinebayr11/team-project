@@ -12,6 +12,10 @@ import { ShowProduct, productOfEntry } from "@/hooks/useShowProducts"
 
 const DURATIONS = [30, 60, 120]
 
+/** Серверийн хязгаар (`postProductlisting`). Энд давтаж, гараар бичсэнийг тэр хэмжээнд барина. */
+const MIN_DURATION = 10
+const MAX_DURATION = 60 * 60
+
 const productOf = (listing: Listing): AuctionProduct | undefined =>
   typeof listing.product_id === "object" ? listing.product_id : undefined
 
@@ -100,6 +104,10 @@ function StartAuctionForm({
   const [pickedId, setPickedId] = useState<string | null>(null)
   const [typedPrice, setTypedPrice] = useState<string | null>(null)
   const [duration, setDuration] = useState(60)
+  // Хугацааг мөн ДАРАЛТ болгож хадгална: товч дарвал `null` буцаж, бэлэн
+  // сонголт руу шилжинэ. 30/60/120 нь түгээмэл боловч цорын ганц биш —
+  // худалдагч 15 секундын шуурхай лот ч, 10 минутын удаан лот ч гаргаж болно.
+  const [typedDuration, setTypedDuration] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -140,13 +148,18 @@ function StartAuctionForm({
   // шаардлагагүй, бичсэн бол түүнийг нь дарж бичихгүй.
   const price = typedPrice ?? String(selected?.price_coins ?? 0)
 
+  const seconds =
+    typedDuration !== null
+      ? Math.min(Math.max(Number(typedDuration) || 0, MIN_DURATION), MAX_DURATION)
+      : duration
+
   const start = async () => {
     setBusy(true)
     setError(null)
     const result = await onStart({
       product_id: productId,
       starting_price_coins: Number(price) || 0,
-      duration_seconds: duration,
+      duration_seconds: seconds,
     })
     if (!result.ok) setError(result.message ?? "Эхлүүлж чадсангүй")
     setBusy(false)
@@ -214,20 +227,55 @@ function StartAuctionForm({
         />
       </label>
 
-      <div className="flex gap-1">
-        {DURATIONS.map((option) => (
-          <button
-            key={option}
-            onClick={() => setDuration(option)}
-            className={`flex-1 rounded-lg py-1.5 text-[12px] font-[700] transition-colors ${
-              duration === option
-                ? "bg-[var(--wn-accent)] text-white"
-                : "bg-[var(--wn-surface-2)] text-[var(--wn-ink-2)]"
+      <div className="flex flex-col gap-1.5">
+        <span className="text-[12px] font-[700] text-[var(--wn-ink-3)]">
+          Санал авах хугацаа
+        </span>
+
+        <div className="flex gap-1">
+          {DURATIONS.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => {
+                setDuration(option)
+                // Бэлэн сонголт дармагц гараар бичсэнийг орхино — эс тэгвэл
+                // товч идэвхтэй харагдаад бодит хугацаа нь өөр байна.
+                setTypedDuration(null)
+              }}
+              className={`flex-1 rounded-lg py-1.5 text-[12px] font-[700] transition-colors ${
+                typedDuration === null && duration === option
+                  ? "bg-[var(--wn-accent)] text-white"
+                  : "bg-[var(--wn-surface-2)] text-[var(--wn-ink-2)]"
+              }`}
+            >
+              {option}с
+            </button>
+          ))}
+
+          <input
+            type="number"
+            min={MIN_DURATION}
+            max={MAX_DURATION}
+            value={typedDuration ?? ""}
+            onChange={(e) => setTypedDuration(e.target.value === "" ? null : e.target.value)}
+            placeholder="Өөр"
+            aria-label="Хугацаа секундээр"
+            className={`h-[30px] w-[68px] rounded-lg border px-2 text-[12px] font-[700] text-[var(--wn-ink)] ${
+              typedDuration !== null
+                ? "border-[var(--wn-accent)] bg-[var(--wn-accent-soft)]"
+                : "border-[var(--wn-line)] bg-white"
             }`}
-          >
-            {option}с
-          </button>
-        ))}
+          />
+        </div>
+
+        <span className="text-[11px] font-[600] text-[var(--wn-ink-4)]">
+          {seconds >= 60
+            ? `${Math.floor(seconds / 60)} мин ${seconds % 60 ? `${seconds % 60} с` : ""}`.trim()
+            : `${seconds} секунд`}
+          {" · "}
+          {MIN_DURATION}–{MAX_DURATION}с хооронд
+        </span>
       </div>
 
       {error && <p className="text-[12px] text-red-500">{error}</p>}
