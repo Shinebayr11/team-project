@@ -4,6 +4,22 @@ import { Product } from "../models/Product.js";
 import { Wallet } from "../models/Wallet.js";
 import { CoinTransaction } from "../models/Cointransaction.js";
 
+/**
+ * `requireAuth` нь Mongo-гийн хэрэглэгчийг `c.get("user")` дээр тавьдаг. Hono-гийн
+ * ерөнхий Context үүнийг `any` гэж үздэг тул энд нарийсгаж уншина.
+ */
+type OrderAddress = {
+    _id: unknown
+    fullName: string
+    phone: string
+    city: string
+    district: string
+    khoroo?: string
+    detail: string
+}
+type AuthedUser = { addresses?: OrderAddress[] }
+const authedUser = (c: Context): AuthedUser => c.get("user") as AuthedUser
+
 export const getOrder = async (c: Context) => {
     try {
         const data = await Order.find()
@@ -38,6 +54,28 @@ export const postOrder = async (c: Context) => {
             return c.json({ message: "shaardlagtai medeelel dutuu bn" }, 400)
         }
         quantity = parsedQuantity
+
+        // Хүргэлтийн хаяг сонголтоор ирнэ (жишээ нь сагсны захиалга хараахан
+        // хаяг асуудаггүй) — байвал хэрэглэгчийн ХАДГАЛСАН хаягуудаас олж,
+        // тухайн үеийн хэвлэмэл хуулбарыг захиалга дээр хадгална.
+        const address_id = body.address_id as string | undefined
+        let shipping_address: Omit<OrderAddress, "_id"> | undefined
+        if (address_id) {
+            const address = authedUser(c).addresses?.find(
+                (a) => String(a._id) === String(address_id),
+            )
+            if (!address) {
+                return c.json({ message: "Хүргэлтийн хаяг олдсонгүй" }, 400)
+            }
+            shipping_address = {
+                fullName: address.fullName,
+                phone: address.phone,
+                city: address.city,
+                district: address.district,
+                khoroo: address.khoroo,
+                detail: address.detail,
+            }
+        }
 
         const product = await Product.findById(product_id)
         if (!product) {
@@ -84,6 +122,7 @@ export const postOrder = async (c: Context) => {
             quantity,
             price_coins: total,
             status: "PAID",
+            shipping_address,
         })
 
         await CoinTransaction.create({
