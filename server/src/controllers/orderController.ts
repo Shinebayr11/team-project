@@ -191,12 +191,18 @@ export const getMyOrders = async (c: Context) => {
     try {
         const userId = c.get("userId")
 
+        // Барааны худалдагчийг ХАМТ буцаана — профайл дээрээс худалдагчтай
+        // чатаар холбогдох товч түүний id-г шаарддаг (`getMyWonListings`-тэй адил).
         const data = await Order.find({ buyer_id: userId })
             .sort({ createdAt: -1 })
             // 50 биш: аналитик 90 хоногийн БҮХ захиалгаас орлого, топ бараа,
             // дундаж чекийг бодох тул тасалбал тоо нь дутуу гарна.
             .limit(ORDER_PAGE_LIMIT)
-            .populate("product_id", "name description price_coins images")
+            .populate({
+                path: "product_id",
+                select: "name description price_coins images seller_id",
+                populate: { path: "seller_id", select: "display_name shop_name avatar_url" },
+            })
 
         return c.json({ data }, 200)
     } catch (error) {
