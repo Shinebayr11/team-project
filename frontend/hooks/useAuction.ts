@@ -35,6 +35,10 @@ export interface AuctionBid {
   buyer_id?: AuctionWinner | string
 }
 
+/** Санал өгөгчийн нэр. Populate хийгдээгүй бол зөвхөн id ирнэ. */
+export const bidderName = (bid: AuctionBid) =>
+  (typeof bid.buyer_id === "object" && bid.buyer_id?.display_name) || "Хэрэглэгч"
+
 /** Дараагийн санал хамгийн багадаа хэд байх ёстой — серверийн дүрэмтэй ижил. */
 export const minimumBid = (listing: Listing) =>
   listing.current_highest_bid_coins != null
