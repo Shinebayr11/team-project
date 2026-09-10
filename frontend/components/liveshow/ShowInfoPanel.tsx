@@ -27,11 +27,15 @@ export const ShowInfoPanel: React.FC<ShowInfoPanelProps> = ({
         <div className="font-[700] text-[14px] text-[var(--wn-ink)] group-hover:text-[var(--wn-accent)] transition-colors">
           {show.seller}
         </div>
-        <div className="text-[12px] text-[var(--wn-ink-3)] flex items-center gap-1">
-          <Star className="w-3 h-3 fill-[var(--wn-accent)] text-[var(--wn-accent)]" />
-          <span className="font-[600] text-[var(--wn-ink-2)]">{show.rating}</span>
-          <span>({show.reviews})</span>
-        </div>
+        {/* Жинхэнэ эфирт үнэлгээ энэ endpoint-оос ирдэггүй тул хоосон байна —
+            тэр үед од, хоосон хаалт хоёрыг зурахгүй. */}
+        {show.rating && (
+          <div className="text-[12px] text-[var(--wn-ink-3)] flex items-center gap-1">
+            <Star className="w-3 h-3 fill-[var(--wn-accent)] text-[var(--wn-accent)]" />
+            <span className="font-[600] text-[var(--wn-ink-2)]">{show.rating}</span>
+            {show.reviews && <span>({show.reviews})</span>}
+          </div>
+        )}
       </div>
     </div>
 

@@ -102,7 +102,7 @@ const ReelMedia: React.FC<{ show: ReelShow; active: boolean; className?: string 
                   байна. Энэ нь товч дүрстэй байсан ч дардаг ч юу ч болдоггүй
                   байв. */}
               <span className="px-3 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center gap-2 text-white text-[12px] font-[600]">
-                whynot.live/{show.slug}
+                whynot.live/{show.seller}
               </span>
             </div>
 

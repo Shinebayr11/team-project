@@ -11,6 +11,7 @@ interface ReelItemBarProps {
 
 export const ReelItemBar: React.FC<ReelItemBarProps> = ({ item, seconds, onAction }) => {
   const isBidding = item.mode === 'bid';
+  const isWatch = item.mode === 'watch';
 
   return (
     <div
@@ -21,12 +22,14 @@ export const ReelItemBar: React.FC<ReelItemBarProps> = ({ item, seconds, onActio
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <span className="px-1.5 py-0.5 rounded text-[9px] font-[800] tracking-wider uppercase bg-[var(--wn-accent-soft)] text-[var(--wn-accent)]">
-            {isBidding ? 'Дуудлага' : 'Шууд авах'}
+            {isWatch ? 'Шууд' : isBidding ? 'Дуудлага' : 'Шууд авах'}
           </span>
           <span className="text-[11px] text-[var(--wn-ink-3)] font-[500] truncate">{item.subline}</span>
         </div>
         <div className="text-[14px] font-[800] text-[var(--wn-ink)] truncate leading-tight">{item.name}</div>
-        <div className="text-[13px] font-[700] text-[var(--wn-ink-2)] mt-0.5">₮{item.price}</div>
+        {!isWatch && (
+          <div className="text-[13px] font-[700] text-[var(--wn-ink-2)] mt-0.5">₮{item.price}</div>
+        )}
       </div>
 
       <div className="flex items-center gap-2 shrink-0">
@@ -40,7 +43,7 @@ export const ReelItemBar: React.FC<ReelItemBarProps> = ({ item, seconds, onActio
           className="h-[40px] px-5 rounded-xl bg-[var(--wn-accent)] text-white text-[13px] font-[800] hover:bg-[var(--wn-accent-hover)] transition-colors"
           style={{ boxShadow: '0 6px 18px rgba(91,63,224,0.3)' }}
         >
-          {isBidding ? 'Санал өгөх' : 'Худалдаж авах'}
+          {isWatch ? 'Эфир үзэх' : isBidding ? 'Санал өгөх' : 'Худалдаж авах'}
         </button>
       </div>
     </div>
