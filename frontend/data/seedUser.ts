@@ -1,19 +1,9 @@
-// Худалдан авагчийн талын анхны (demo) төлөв. Хэтэвчний гүйлгээний жагсаалт,
-// зурвасны жагсаалт дээр шууд харагддаг тул текст нь монголоор.
-export const SEED_CREDITS = 2480;
-
+// Худалдан авагчийн талын анхны (demo) төлөв. Зурвасны жагсаалт дээр шууд
+// харагддаг тул текст нь монголоор.
 export const SEED_FOLLOWING = {
   amyperrin: true, thewittleshop: true, mysticroseantiques: true,
   dirtyrichesauctions: true, kellys_lighthouse: true,
 };
-
-export const SEED_PURCHASES = [
-  { id: "p5", title: "Сүүн шилэн ваар, товгор хээтэй", seller: "amyperrin", price: "240", date: "8-р сарын 3", status: "delivered" as const },
-  { id: "p4", title: "Мурано шилэн аяга, 1960-аад он", seller: "thewittleshop", price: "180", date: "8-р сарын 5", status: "shipped" as const },
-  { id: "p3", title: "Хээтэй шаазан аяга", seller: "mysticroseantiques", price: "155", date: "8-р сарын 7", status: "processing" as const },
-  { id: "p2", title: "Мөнгөн халбага сэрээний иж бүрдэл, 42 ширхэг", seller: "dirtyrichesauctions", price: "620", date: "7-р сарын 29", status: "delivered" as const },
-  { id: "p1", title: "Шаазан эдлэлийн багц", seller: "kellys_lighthouse", price: "88", date: "7-р сарын 22", status: "delivered" as const },
-];
 
 export const SEED_THREADS = [
   {
