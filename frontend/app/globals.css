@@ -477,6 +477,13 @@
   --wn-accent-deep: #3a22a8;
   --wn-paper: #fbfaff;
   --wn-noir: #0e0b18;
+  /* --wn-noir дээрх hover. Гурван газар (header, CTA товч) hex-ээр давхардаж
+     бичигдсэн байсныг нэг болгов. */
+  --wn-noir-hover: #241f35;
+  /* Идэвхтэй төлөвийн ганц accent — зөвхөн "яг одоо болж байна" гэдгийг
+     заана (эфирийн заагч, идэвхтэй алхам). Дүүргэлт болж ажиллах ба дээр нь
+     ЗӨВХӨН --wn-noir бичнэ: цагаан текст үүн дээр 1.3:1 буюу уншигдахгүй. */
+  --wn-lime: #c9f73d;
 }
 
 /* Lenis-ийн шаардлагатай суурь дүрмүүд (lenis/dist/lenis.css-ийн хуулбар —
@@ -496,32 +503,6 @@ html.lenis body {
 }
 .lenis.lenis-smooth iframe {
   pointer-events: none;
-}
-
-/* Категорийн chip-үүдийн marquee. Жагсаалт нь 2 удаа давхарлагдсан тул
-   -50% хүрэхэд эхнээсээ ижил кадр дээр эргэж ирнэ. */
-@keyframes wn-marquee {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-.wn-marquee {
-  animation: wn-marquee var(--wn-marquee-duration, 42s) linear infinite;
-  will-change: transform;
-}
-
-.wn-marquee-reverse {
-  animation-direction: reverse;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wn-marquee {
-    animation: none;
-  }
 }
 
 /* Hero-гийн reveal — CSS-ээр.

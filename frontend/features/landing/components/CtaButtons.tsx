@@ -30,7 +30,7 @@ export function PrimaryCta({
       to={to}
       className={cn(
         base,
-        "bg-[var(--wn-noir)] text-white hover:bg-[#241f35]",
+        "bg-[var(--wn-noir)] text-white hover:bg-[var(--wn-noir-hover)]",
         className
       )}
     >

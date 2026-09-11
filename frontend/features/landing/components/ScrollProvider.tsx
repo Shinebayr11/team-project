@@ -21,11 +21,19 @@ import {
   useState,
 } from "react"
 import Lenis from "lenis"
-import { useReducedMotion } from "framer-motion"
+import { useReducedMotion, useScroll, type MotionValue } from "framer-motion"
 
 import { LENIS, SECTIONS, type SectionSpec } from "../motion"
 
 interface ScrollContextValue {
+  /**
+   * Хуудсын цорын ганц scroll эх сурвалж.
+   *
+   * Өмнө нь hero, BackgroundMorph, header гурвуулаа өөр өөрийн `useScroll()`
+   * дуудаж, гурван listener зэрэг ажилладаг байв. Scroll-той уясан бүх зүйл
+   * эндээс уншина — Lenis-ийн нэг rAF, нэг утга.
+   */
+  scrollY: MotionValue<number>
   /** SECTIONS доторх идэвхтэй section-ийн индекс. */
   activeIndex: number
   /** Идэвхтэй section-ийн тодорхойлолт. */
@@ -49,6 +57,7 @@ export function useLandingScroll(): ScrollContextValue {
 export function ScrollProvider({ children }: { children: React.ReactNode }) {
   const reduced = useReducedMotion()
   const motionOn = !reduced
+  const { scrollY } = useScroll()
   const lenisRef = useRef<Lenis | null>(null)
   const [activeIndex, setActiveIndex] = useState(0)
 
@@ -106,12 +115,13 @@ export function ScrollProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<ScrollContextValue>(
     () => ({
+      scrollY,
       activeIndex,
       active: SECTIONS[activeIndex] ?? SECTIONS[0],
       scrollToSection,
       motionOn,
     }),
-    [activeIndex, scrollToSection, motionOn]
+    [scrollY, activeIndex, scrollToSection, motionOn]
   )
 
   return (

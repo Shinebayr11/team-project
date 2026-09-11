@@ -80,7 +80,8 @@ export function MaskText({
                   className="wn-rise inline-block"
                   style={{
                     ["--wn-delay" as string]: `${
-                      delay + (lineOffsets[lineIndex] + tokenIndex) * WORD_STAGGER
+                      delay +
+                      (lineOffsets[lineIndex] + tokenIndex) * WORD_STAGGER
                     }s`,
                   }}
                 >

@@ -10,7 +10,7 @@
  */
 
 import { useState } from "react"
-import { useMotionValueEvent, useScroll } from "framer-motion"
+import { useMotionValueEvent } from "framer-motion"
 import { useUser } from "@clerk/nextjs"
 
 import { Link } from "@/lib/router"
@@ -29,8 +29,7 @@ const NAV = [
 const BLUR_AT = 80
 
 export function MarketingHeader() {
-  const { active } = useLandingScroll()
-  const { scrollY } = useScroll()
+  const { active, scrollY } = useLandingScroll()
   const [solid, setSolid] = useState(false)
   // Landing нь нэвтэрсэн хэрэглэгчид ч "Нэвтрэх / Бүртгүүлэх" гэж харуулсаар
   // байсан тул нэвтэрсэн хүн энд буцаж ирэхэд орж чадаагүй мэт санагддаг байв.
@@ -69,7 +68,10 @@ export function MarketingHeader() {
           WhyNot
         </Link>
 
-        <nav aria-label="Үндсэн цэс" className="hidden items-center gap-1 md:flex">
+        <nav
+          aria-label="Үндсэн цэс"
+          className="hidden items-center gap-1 md:flex"
+        >
           {NAV.map((item) => (
             <Link
               key={item.to}
@@ -89,7 +91,7 @@ export function MarketingHeader() {
                 "rounded-[6px] px-4 py-2 text-[15px] font-[700] transition-colors focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-current",
                 light
                   ? "bg-white text-[var(--wn-noir)] hover:bg-white/85"
-                  : "bg-[var(--wn-noir)] text-white hover:bg-[#241f35]"
+                  : "bg-[var(--wn-noir)] text-white hover:bg-[var(--wn-noir-hover)]"
               )}
             >
               Дэлгүүр рүү
@@ -108,7 +110,7 @@ export function MarketingHeader() {
                   "rounded-[6px] px-4 py-2 text-[15px] font-[700] transition-colors focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-current",
                   light
                     ? "bg-white text-[var(--wn-noir)] hover:bg-white/85"
-                    : "bg-[var(--wn-noir)] text-white hover:bg-[#241f35]"
+                    : "bg-[var(--wn-noir)] text-white hover:bg-[var(--wn-noir-hover)]"
                 )}
               >
                 Бүртгүүлэх

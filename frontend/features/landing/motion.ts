@@ -54,6 +54,9 @@ export const HERO_EXIT = {
   perspective: 1200,
 } as const
 
+/** Hero дээрх утасны хулгана дагасан налалтын дээд өнцөг (deg). */
+export const HERO_TILT = 6
+
 export const LENIS = { lerp: 0.09, duration: 1.1 } as const
 
 /** Section reveal-ийн нийтлэг trigger. */
@@ -61,12 +64,48 @@ export const VIEWPORT = { once: true, amount: 0.4 } as const
 
 /** Auction картын loop (мс). */
 export const AUCTION = {
-  /** Дуудлага худалдааны таймер. */
+  /** Дуудлага худалдааны таймер. Санал өгөх бүрд эндээс дахин эхэлнэ. */
   window: 10_000,
   /** Үнийн саналуудын хоорондын завсар. */
-  gap: 3_000,
-  /** "Ялагч" badge харагдах хугацаа. */
-  win: 1_500,
+  gap: 2_600,
+  /** "Ялагч" төлөв харагдах хугацаа, дараа нь мөчлөг эргэнэ. */
+  win: 3_000,
+} as const
+
+/**
+ * Дуудлага худалдааны section-ий sticky замын урт (svh).
+ *
+ * Гурван алхам (Цэнэглэх → Санал өгөх → Суутгах) энэ замын дагуу солигдоно:
+ * 280svh гэдэг нь "нэг дэлгэц харагдаад, дараа нь 1.8 дэлгэц гүйлгэхэд гурван
+ * алхам дуусна" гэсэн үг. Үүнээс богино бол алхам солигдох нь мэдрэгдэхгүй,
+ * урт бол хэрэглэгч гацсан гэж бодно.
+ */
+export const STICKY_TRACK = 280
+
+/** Алхмуудын нэр — зүүн талын rail болон progress хоёулаа эндээс уншина. */
+export const AUCTION_STEPS = [
+  {
+    title: "Цэнэглэх",
+    body: "Дансаа ₮-өөр цэнэглэнэ. Зоос авах шаардлагагүй.",
+  },
+  {
+    title: "Санал өгөх",
+    body: "Эфирт шууд санал өгнө. Санал бүр таймерыг сэргээнэ.",
+  },
+  {
+    title: "Ялвал суутгана",
+    body: "Ялагчийн дансаас ялсан дүн автоматаар хасагдана.",
+  },
+] as const
+
+/** SVG зурааст график: шугам зурагдах, дараа нь цэгүүд дараалан гарах. */
+export const CHART = {
+  /** `pathLength` 0 → 1. */
+  draw: 1.4,
+  /** Цэг тус бүрийн хоорондын завсар. */
+  dotStagger: 0.08,
+  /** Tab-ууд өөрөө солигдох давтамж (мс). */
+  cycle: 3_400,
 } as const
 
 /* -------------------------------------------------------------------------
@@ -94,9 +133,8 @@ export interface SectionSpec {
 export const SECTIONS: readonly SectionSpec[] = [
   { id: "hero", label: "Нүүр", bg: "#5b3fe0", tone: "light" },
   { id: "auction", label: "Дуудлага худалдаа", bg: "#0e0b18", tone: "light" },
-  { id: "wallet", label: "Зоосны хэтэвч", bg: "#fbfaff", tone: "dark" },
   { id: "sellers", label: "Худалдагчид", bg: "#f1edfe", tone: "dark" },
-  { id: "categories", label: "Ангилал", bg: "#0e0b18", tone: "light" },
+  { id: "shop", label: "Дэлгүүр", bg: "#0e0b18", tone: "light" },
   { id: "cta", label: "Эхлэх", bg: "#5b3fe0", tone: "light" },
 ] as const
 
@@ -140,19 +178,11 @@ export const ctaVariants = (reduced: boolean): Variants => ({
   },
 })
 
-/** Дараалан ирэх картуудын бүрхүүл (wallet, categories). */
-export const listVariants = (delay = DELAY.cta): Variants => ({
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08, delayChildren: delay } },
-})
-
-export const itemVariants = (reduced: boolean): Variants => ({
-  hidden: reduced ? { opacity: 0 } : { opacity: 0, y: 28 },
-  show: { opacity: 1, y: 0, transition: { duration: DUR.sub, ease: EASE } },
-})
-
 /** Hero дээр хөвж буй картуудын сул хөдөлгөөн. */
-export const floatTransition = (duration: number, delay: number): Transition => ({
+export const floatTransition = (
+  duration: number,
+  delay: number
+): Transition => ({
   duration,
   delay,
   repeat: Infinity,

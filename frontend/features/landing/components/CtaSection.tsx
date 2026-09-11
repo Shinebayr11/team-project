@@ -32,11 +32,11 @@ export function CtaSection() {
         <ParallaxLayer depth="mid">
           <MaskText
             id="cta-title"
-            text={"Өнөөдөр эхлээрэй"}
+            text={"Эфир чамайг\nхүлээж байна"}
             className="text-[clamp(2.75rem,7vw,6.5rem)] leading-[0.95] font-[800] tracking-[-0.03em]"
           />
           <RevealCta className="mt-10 flex flex-wrap justify-center gap-3">
-            <PrimaryCta to="/sign-up">Үнэгүй бүртгүүлэх</PrimaryCta>
+            <PrimaryCta to="/sign-up">Бүртгүүлэх</PrimaryCta>
             <GhostCta to="/sell">Худалдагч болох</GhostCta>
           </RevealCta>
         </ParallaxLayer>
@@ -49,7 +49,10 @@ export function CtaSection() {
           WhyNot
         </span>
 
-        <nav aria-label="Хөлийн хэсгийн цэс" className="flex flex-wrap gap-x-6 gap-y-2">
+        <nav
+          aria-label="Хөлийн хэсгийн цэс"
+          className="flex flex-wrap gap-x-6 gap-y-2"
+        >
           {LINKS.map((link) => (
             <Link
               key={link.to}
