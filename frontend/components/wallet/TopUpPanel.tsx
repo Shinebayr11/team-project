@@ -54,6 +54,6 @@ export const TopUpPanel: React.FC<TopUpPanelProps> = ({ packs, selected, onSelec
     >
       <Plus className="w-5 h-5" /> ₮{selected.toLocaleString()} цэнэглэх
     </button>
-    <div className="text-center text-[12px] font-[600] text-[var(--wn-ink-4)] mt-4">Зөвхөн туршилт — бодит төлбөр хийгдэхгүй</div>
+    <div className="text-center text-[12px] font-[600] text-[var(--wn-ink-4)] mt-4">Банкны апп эсвэл QR-аар төлнө</div>
   </div>
 );
