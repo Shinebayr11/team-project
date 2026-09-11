@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ReelShow } from '../../types';
 import { useStore, parsePrice } from '../../store';
+import { useWallet } from '@/hooks/useWallet';
 import { Modal } from '../ui/Modal';
 import { BalanceSummary } from './BalanceSummary';
 import { ModalActionButton } from './ModalActionButton';
@@ -19,7 +20,8 @@ const INCREMENTS = [
 ];
 
 export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
-  const { closeModal, credits, bid, addToast } = useStore();
+  const { closeModal, bid, addToast } = useStore();
+  const { available, loading: walletLoading } = useWallet();
   const [increment, setIncrement] = useState(25);
   // Гараар бичсэн дүн. `null` бол товчны сонголтыг дага.
   const [typedAmount, setTypedAmount] = useState<string | null>(null);
@@ -39,7 +41,7 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
   const myBid =
     typedAmount !== null ? Math.max(0, Math.floor(Number(typedAmount) || 0)) : stepBid;
   const tooLow = myBid < minimumBid;
-  const balance = credits();
+  const balance = available;
 
   const handleBid = () => {
     bid({ title: show.item.name, seller: show.seller, amount: myBid.toString() });
@@ -100,13 +102,15 @@ export const BidModal: React.FC<{ data: BidModalData }> = ({ data }) => {
 
         <ModalActionButton
           onClick={handleBid}
-          enabled={balance >= myBid && !tooLow && seconds > 0}
+          enabled={balance >= myBid && !tooLow && seconds > 0 && !walletLoading}
           disabledLabel={
-            seconds <= 0
-              ? 'Хугацаа дууслаа'
-              : tooLow
-                ? `Доод дүн ₮${minimumBid.toLocaleString()}`
-                : 'Үлдэгдэл хүрэлцэхгүй'
+            walletLoading
+              ? 'Үлдэгдэл шалгаж байна…'
+              : seconds <= 0
+                ? 'Хугацаа дууслаа'
+                : tooLow
+                  ? `Доод дүн ₮${minimumBid.toLocaleString()}`
+                  : 'Үлдэгдэл хүрэлцэхгүй'
           }
           label={`Санал өгөх — ₮${myBid.toLocaleString()}`}
         />
