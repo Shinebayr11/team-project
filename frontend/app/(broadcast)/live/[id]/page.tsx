@@ -13,7 +13,7 @@ import { LiveViewer } from "@/components/live/live-viewer"
 
 function Notice({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto flex h-[calc(100vh-68px)] max-w-[1440px] items-center justify-center px-4">
+    <div className="mx-auto flex h-[calc(100svh-68px)] max-w-[1440px] items-center justify-center px-4">
       <p className="text-sm text-[var(--wn-ink-3)]">{children}</p>
     </div>
   )
