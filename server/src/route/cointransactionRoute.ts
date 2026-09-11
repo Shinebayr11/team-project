@@ -3,7 +3,7 @@ import { getCointransaction, postCointransaction } from "../controllers/cointran
 import { requireAuth } from "../middleware/auth.js";
 
 const CointransactionRoutes = new Hono()
-// Зоосны хөдөлгөөн бол санхүүгийн хувийн бүртгэл — нээлттэй зам БАЙХГҮЙ.
+// Үлдэгдлийн хөдөлгөөн бол санхүүгийн хувийн бүртгэл — нээлттэй зам БАЙХГҮЙ.
 CointransactionRoutes.get("/", requireAuth, getCointransaction)
 CointransactionRoutes.post("/", requireAuth, postCointransaction)
 export default CointransactionRoutes

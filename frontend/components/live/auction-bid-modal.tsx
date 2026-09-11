@@ -197,7 +197,7 @@ export function AuctionBidModal({
             <p role="alert" className="text-center text-[13px] font-[700] text-[var(--wn-live-deep)]">
               Таныг давуулав — шинэ доод үнэ ₮{minimum.toLocaleString()}
             </p>
-            {/* Энэ товч зоос зарцуулахгүй, зөвхөн шинэ дүнг харуулна. Зарцуулах
+            {/* Энэ товч үлдэгдэл зарцуулахгүй, зөвхөн шинэ дүнг харуулна. Зарцуулах
                 эсэхийг дараагийн алхамд үлдэгдэлтэй тулгаж шийднэ. */}
             <ModalActionButton
               onClick={() => {

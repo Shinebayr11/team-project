@@ -82,7 +82,7 @@ export const postbids = async (c: Context) => {
         }
 
         // Дүнг барьцаанд авна. Зарцуулж болох үлдэгдлээр нөхцөлддөг тул нэг
-        // зоосыг хэд хэдэн аукционд давхар амлах боломжгүй.
+        // дүнг хэд хэдэн аукционд давхар амлах боломжгүй.
         const held = await holdCoins(buyerId, amount)
         if (!held) {
             return c.json({ message: "Үлдэгдэл хүрэлцэхгүй байна" }, 402)
@@ -126,7 +126,7 @@ export const postbids = async (c: Context) => {
             )
         }
 
-        // Давуулагдсан тэргүүлэгчийн зоос тэр даруй чөлөөтэй болно.
+        // Давуулагдсан тэргүүлэгчийн барьцаа тэр даруй чөлөөтэй болно.
         if (previous.current_winner_id && previous.current_highest_bid_coins) {
             await releaseCoins(
                 previous.current_winner_id,

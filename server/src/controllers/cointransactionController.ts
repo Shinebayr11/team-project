@@ -3,7 +3,7 @@ import { CoinTransaction } from "../models/Cointransaction.js"
 import { Wallet } from "../models/Wallet.js"
 
 /**
- * GET /api/cointransaction — нэвтэрсэн хэрэглэгчийн ӨӨРИЙН зоосны хөдөлгөөн.
+ * GET /api/cointransaction — нэвтэрсэн хэрэглэгчийн ӨӨРИЙН үлдэгдлийн хөдөлгөөн.
  *
  * Өмнө нь энэ нь нүцгэн `CoinTransaction.find()` байсан бөгөөд нэвтрэлт огт
  * шаарддаггүй байв: хүсэлт явуулсан хэн ч БҮХ хэрэглэгчийн санхүүгийн
