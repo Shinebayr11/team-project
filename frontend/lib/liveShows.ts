@@ -36,6 +36,32 @@ export interface LiveShowDoc {
   createdAt?: string
 }
 
+/**
+ * Шууд эфир хамгийн ихдээ хэдэн цаг үргэлжлэх боломжтой вэ. Үүнээс хэтэрсэн
+ * "live" бичлэг бол эфир нь тасарсан/унтарсан ч төлөв нь буцаж шинэчлэгдээгүй
+ * гацсан мөр гэсэн үг.
+ */
+const LIVE_MAX_HOURS = 12
+
+/**
+ * Нүүрний тэжээлд гаргах эсэх.
+ *
+ * `/api/liveshow` нь хэзээ ч үүссэн БҮХ эфирийг буцаадаг — дууссан нь ч,
+ * өгөгдлийн санд гараар нэмэгдсэн туршилтын мөр ч. Хоёр тохиолдлыг шүүнэ:
+ *
+ * 1. Төлөвгүй мөр — аппаар үүссэн эфир үргэлж төлөвтэй байдаг тул эдгээр нь
+ *    бодит дамжуулалт биш (`toHomeShow` тэднийг "Scheduled" гэсэн хуурамч
+ *    ангилалд хийж, нүүрний эхэнд гаргачихдаг).
+ * 2. Хэт удаан "live" байгаа мөр — доорх хугацаанаас хэтэрсэн бол гацсан.
+ */
+export const isOnAir = (doc: LiveShowDoc): boolean => {
+  if (doc.status !== "live") return false
+  const startedAt = doc.started_at ?? doc.createdAt
+  if (!startedAt) return false
+  const hours = (Date.now() - new Date(startedAt).getTime()) / 3_600_000
+  return hours < LIVE_MAX_HOURS
+}
+
 export const toHomeShow = (doc: LiveShowDoc): HomeShow => {
   const seller =
     typeof doc.seller_id === "object" && doc.seller_id?.display_name
