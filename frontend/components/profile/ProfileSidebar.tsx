@@ -7,9 +7,11 @@ import {
   Users,
   Settings,
   MapPin,
+  Wallet,
   LogOut,
 } from "lucide-react"
 import { useClerk } from "@clerk/nextjs"
+import { Link } from "@/lib/router"
 import { useDisplayName } from "@/hooks/useDisplayName"
 
 export type ProfileTab =
@@ -28,10 +30,16 @@ interface ProfileSidebarProps {
   onEditProfile: () => void
 }
 
-const NAV_GROUPS: {
-  section: string
-  items: { id: ProfileTab; label: string; icon: React.ElementType }[]
-}[] = [
+/**
+ * Таб солих (`id`) эсвэл өөр маршрут руу үсрэх (`href`) гэсэн хоёр төрөл.
+ * Хэтэвч нь Topbar дээр `hidden sm:flex` тул гар утсан дээр ЗӨВХӨН эндүүр
+ * хүрэх боломжтой — цэснээс хасах юм бол утсаар данс цэнэглэх зам үлдэхгүй.
+ */
+type NavItem =
+  | { label: string; icon: React.ElementType; id: ProfileTab; href?: never }
+  | { label: string; icon: React.ElementType; href: string; id?: never }
+
+const NAV_GROUPS: { section: string; items: NavItem[] }[] = [
   {
     section: "Худалдан авалт",
     items: [
@@ -45,10 +53,18 @@ const NAV_GROUPS: {
     section: "Бүртгэл",
     items: [
       { id: "settings", label: "Тохиргоо", icon: Settings },
+      { href: "/wallet", label: "Хэтэвч цэнэглэх", icon: Wallet },
       { id: "addresses", label: "Хүргэлтийн хаяг", icon: MapPin },
     ],
   },
 ]
+
+const itemClass = (active: boolean) =>
+  `flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] font-[600] transition-colors ${
+    active
+      ? "bg-[var(--wn-surface-2)] text-[var(--wn-ink)]"
+      : "text-[var(--wn-ink-2)] hover:bg-[var(--wn-accent-wash)]"
+  }`
 
 export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
   activeTab,
@@ -94,20 +110,23 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
               {group.section}
             </div>
             <nav className="flex flex-col gap-1">
-              {group.items.map(({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  onClick={() => onSelect(id)}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-2 text-[14px] font-[600] transition-colors ${
-                    activeTab === id
-                      ? "bg-[var(--wn-surface-2)] text-[var(--wn-ink)]"
-                      : "text-[var(--wn-ink-2)] hover:bg-[var(--wn-accent-wash)]"
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </button>
-              ))}
+              {group.items.map((item) =>
+                item.id === undefined ? (
+                  <Link key={item.href} to={item.href} className={itemClass(false)}>
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => onSelect(item.id)}
+                    className={itemClass(activeTab === item.id)}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </button>
+                )
+              )}
             </nav>
           </div>
         ))}

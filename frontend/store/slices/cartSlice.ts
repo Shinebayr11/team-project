@@ -47,8 +47,8 @@ export const createCartSlice = (
    * Сагс нь өөр өөр худалдагчийн бараа агуулж болох тул нэг том транзакц
    * биш, мөр тус бүрийг бие даасан захиалга гэж үзнэ: зарим нь амжилттай,
    * зарим нь (жишээ нь нөөц дууссан) амжилтгүй байж болно. `productId`-тэй
-   * мөр бодит `POST /api/order`-оор явна; хуучин (id-гүй) мөр локал mock
-   * замаараа хэвээр явна.
+   * мөр бодит `POST /api/order`-оор явна; хуучин (id-гүй) demo мөр зөвхөн
+   * локал жагсаалтад тэмдэглэгдэнэ — хасах үлдэгдэл байхгүй.
    */
   checkoutCart: async () => {
     const lines = state.cart;
@@ -75,19 +75,11 @@ export const createCartSlice = (
       }
     }
 
-    const mockTotal = sumLines(mockLines);
-    const mockAffordable = mockLines.length > 0 && state.credits >= mockTotal;
-    const succeededMock = mockAffordable ? mockLines : [];
-    if (mockLines.length > 0 && !mockAffordable) {
-      mockLines.forEach(line => failed.push({ line, message: 'Үлдэгдэл хүрэлцэхгүй байна.' }));
-    }
-
-    const succeeded = [...succeededReal, ...succeededMock];
+    const succeeded = [...succeededReal, ...mockLines];
     const succeededKeys = new Set(succeeded.map(lineKey));
 
     update(s => ({
       ...s,
-      credits: succeededMock.length > 0 ? s.credits - mockTotal : s.credits,
       cart: s.cart.filter(line => !succeededKeys.has(lineKey(line))),
       purchases: [
         ...succeeded.map(line => ({

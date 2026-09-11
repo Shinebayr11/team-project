@@ -21,17 +21,17 @@ export interface BuyModalData {
 }
 
 export const BuyModal: React.FC<{ data: BuyModalData }> = ({ data }) => {
-  const { closeModal, credits, buy, addToast } = useStore();
+  const { closeModal, buy, addToast } = useStore();
   const { callApi } = useApiClient();
   const { available, loading: walletLoading, refresh: refreshWallet } = useWallet();
   const { product, seller, qty } = data;
   const [submitting, setSubmitting] = useState(false);
 
   const total = parsePrice(product.price) * qty;
-  // Бодит `productId`-тай бол сервер дээрх Wallet-ийг ашиглана — mock
-  // localStorage-ийн `credits` нь энэ тохиолдолд огт хөндөгдөхгүй.
+  // Үлдэгдэл үргэлж сервер дээрх хэтэвчнээс. `productId`-гүй demo бараа
+  // (`LiveShow`-ийн reel) зөвхөн локал бичлэг үлдээнэ.
   const isReal = !!product.productId;
-  const balance = isReal ? available : credits();
+  const balance = available;
 
   // Хүргэлтийн хаяг — зөвхөн бодит захиалгад хэрэгтэй, `Profile`-ийн
   // "Хүргэлтийн хаяг" таб ашигладаг ЯГ ТЭР л hook/маягтыг дахин ашиглана.
@@ -60,7 +60,7 @@ export const BuyModal: React.FC<{ data: BuyModalData }> = ({ data }) => {
 
   const handleBuy = async () => {
     if (!isReal) {
-      if (!buy({ title: product.name, seller, price: product.price, qty })) return;
+      buy({ title: product.name, seller, price: product.price, qty });
       closeModal();
       addToast('Захиалга баталгаажлаа.');
       return;
@@ -87,7 +87,7 @@ export const BuyModal: React.FC<{ data: BuyModalData }> = ({ data }) => {
   };
 
   const needsAddress = isReal && !selectedAddressId;
-  const canSubmit = balance >= total && !submitting && !(isReal && walletLoading) && !needsAddress;
+  const canSubmit = balance >= total && !submitting && !walletLoading && !needsAddress;
 
   return (
     <Modal title="Худалдан авалт баталгаажуулах" onClose={closeModal}>
@@ -170,7 +170,7 @@ export const BuyModal: React.FC<{ data: BuyModalData }> = ({ data }) => {
           enabled={canSubmit}
           label={submitting ? 'Боловсруулж байна…' : `Худалдаж авах — ₮${total.toLocaleString()}`}
           disabledLabel={
-            isReal && walletLoading
+            walletLoading
               ? 'Үлдэгдэл шалгаж байна…'
               : needsAddress
                 ? 'Эхлээд хаяг сонгоно уу'

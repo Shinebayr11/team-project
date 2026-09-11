@@ -1,15 +1,16 @@
 import { StoreState } from '../types';
-import { SEED_CREDITS, SEED_FOLLOWING, SEED_PURCHASES, SEED_THREADS } from '../data';
+import { SEED_FOLLOWING, SEED_THREADS } from '../data';
 import { SEED_INVENTORY } from '@/features/seller-hub/data/seedInventory';
 import { SEED_SELLER_ORDERS } from '@/features/seller-hub/data/seedOrders';
 import { SEED_SELLER_SHOWS } from '@/features/seller-hub/data/seedShows';
 
-export const STORAGE_KEY = 'whynot_store';
+// v2: хувилбар ахиулснаар хөтөч дээр хадгалагдсан хуучин demo өгөгдөл
+// (SEED_PURCHASES, mock `credits`) шинэ бүртгэл дээр дахин гарч ирэхгүй.
+export const STORAGE_KEY = 'whynot_store_v2';
 
 export const defaultState: StoreState = {
-  credits: SEED_CREDITS,
   following: SEED_FOLLOWING,
-  purchases: SEED_PURCHASES,
+  purchases: [],
   bids: [],
   cart: [],
   threads: SEED_THREADS,
@@ -39,7 +40,6 @@ export const loadState = (): StoreState => {
   try {
     const parsed = JSON.parse(saved) as PersistedState;
     return {
-      credits: typeof parsed.credits === 'number' ? parsed.credits : defaultState.credits,
       following: parsed.following ?? defaultState.following,
       purchases: Array.isArray(parsed.purchases) ? parsed.purchases : defaultState.purchases,
       bids: Array.isArray(parsed.bids) ? parsed.bids : defaultState.bids,
