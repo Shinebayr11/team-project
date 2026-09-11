@@ -10,7 +10,7 @@
 import { Link } from "@/lib/router"
 
 import { GhostCta, PrimaryCta } from "./CtaButtons"
-import { MaskText, RevealCta } from "./MaskText"
+import { MaskText, RevealCta, RevealSub } from "./MaskText"
 import { ParallaxLayer, SectionShell } from "./SectionShell"
 
 const LINKS = [
@@ -32,10 +32,13 @@ export function CtaSection() {
         <ParallaxLayer depth="mid">
           <MaskText
             id="cta-title"
-            text={"Эфир чамайг\nхүлээж байна"}
-            className="text-[clamp(2.75rem,7vw,6.5rem)] leading-[0.95] font-[800] tracking-[-0.03em]"
+            text={"Дуртай зүйлсээ олоод,\nхөгжилтэй байдлаар\nүнэ хаялцаарай."}
+            className="mx-auto max-w-[16ch] text-[clamp(2.125rem,5vw,4.25rem)] leading-[1.02] font-[800] tracking-[-0.03em]"
           />
-          <RevealCta className="mt-10 flex flex-wrap justify-center gap-3">
+          <RevealSub className="mx-auto mt-6 max-w-[44ch] text-[clamp(1rem,1.4vw,1.2rem)] leading-relaxed text-white/75">
+            Сонирхолтой бараа, онцгой хямдрал, боломжит үнийг нэг дороос.
+          </RevealSub>
+          <RevealCta className="mt-9 flex flex-wrap justify-center gap-3">
             <PrimaryCta to="/sign-up">Бүртгүүлэх</PrimaryCta>
             <GhostCta to="/sell">Худалдагч болох</GhostCta>
           </RevealCta>
