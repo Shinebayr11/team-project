@@ -13,12 +13,14 @@ export interface ToastState {
   msg: string;
 }
 
+/**
+ * Үлдэгдэл ЭНД БАЙХГҮЙ — цорын ганц эх сурвалж нь сервер дээрх хэтэвч
+ * (`useWallet`). Өмнө нь localStorage-д зэрэгцээ mock `credits` ledger
+ * явдаг байсан тул шинэ хэрэглэгч ₮2,480 гэсэн хуурамч дүн хардаг байв.
+ * Энд зөвхөн demo дэлгэц (`LiveShow`)-ийн локал бичлэгүүд үлдэнэ.
+ */
 export interface WalletSlice {
-  credits: () => number;
-  creditsLabel: () => string;
-  canAfford: (price: string | number) => boolean;
-  topUp: (amount: number) => void;
-  buy: (item: { title: string; seller: string; price: string; qty: number }) => boolean;
+  buy: (item: { title: string; seller: string; price: string; qty: number }) => void;
   bid: (item: { title: string; seller: string; amount: string }) => void;
 }
 

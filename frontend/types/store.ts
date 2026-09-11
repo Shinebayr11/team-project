@@ -4,7 +4,6 @@ import { Thread } from './messaging';
 import { InventoryProduct, SellerOrder, SellerShow } from '@/features/seller-hub/types';
 
 export interface StoreState {
-  credits: number;
   following: Record<string, boolean>;
   purchases: Purchase[];
   bids: Bid[];

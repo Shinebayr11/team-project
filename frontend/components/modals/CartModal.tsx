@@ -15,7 +15,7 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
 );
 
 export const CartModal: React.FC = () => {
-  const { state, closeModal, cart, cartTotal, credits, setCartQty, removeFromCart, checkoutCart, addToast } = useStore();
+  const { state, closeModal, cart, cartTotal, setCartQty, removeFromCart, checkoutCart, addToast } = useStore();
   const { available: realAvailable, refresh: refreshWallet } = useWallet();
   const [submitting, setSubmitting] = useState(false);
 
@@ -24,15 +24,13 @@ export const CartModal: React.FC = () => {
   const total = cartTotal();
   const isEmpty = items.length === 0 && bids.length === 0 && purchases.length === 0;
 
-  // Сагс өөр өөр эх сурвалжийн мөр агуулж болно: `productId`-тэй мөр
-  // бодит Wallet-аас, id-гүй нь mock `credits`-ээс төлөгдөнө — тул
-  // хоёуланг нь тус тусад нь шалгана.
+  // Төлбөр бодитоор хийгддэг цорын ганц мөр нь `productId`-тэй нь —
+  // demo мөр сервер рүү очдоггүй тул үлдэгдэлд нөлөөлөхгүй.
   const realTotal = items.reduce(
     (sum, line) => sum + (line.productId ? parsePrice(line.price) * line.qty : 0),
     0,
   );
-  const mockTotal = total - realTotal;
-  const affordable = realTotal <= realAvailable && mockTotal <= credits();
+  const affordable = realTotal <= realAvailable;
 
   const handleCheckout = async () => {
     setSubmitting(true);
