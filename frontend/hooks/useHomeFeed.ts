@@ -45,8 +45,12 @@ export const useHomeFeed = (query: string, category: string, statusFilter: Statu
     // A real seller broadcast (has a LiveKit room) always outranks a
     // decorative/demo card so the front-page spotlight never gets stuck on
     // filler content while someone is actually live.
-    const real = liveShows.filter(s => s.roomId);
-    const pool = real.length ? real : liveShows;
+    // Эрэмбэ: бодит өрөөтэй эфир → үзүүлэн БИШ карт → бусад. Хоёр дахь шат нь
+    // `data/mockShows.ts`-ийн дүүргэгч картуудыг нүүрний том байрнаас хол
+    // байлгана.
+    const withRoom = liveShows.filter(s => s.roomId);
+    const notDemo = liveShows.filter(s => !s.demo);
+    const pool = withRoom.length ? withRoom : notDemo.length ? notDemo : liveShows;
     // Том карт бол хамгийн их хандалттай эфирийн байр: ҮЗЭГЧИЙН ТОО шийднэ.
     //
     // Өмнө нь хамгийн сүүлд эхэлсэн нь тэргүүлдэг байв — учир нь дөнгөж
