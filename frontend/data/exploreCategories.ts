@@ -16,6 +16,7 @@ export const EXPLORE_CATEGORIES: ExploreCategory[] = [
   { id: 'sports-cards', name: 'Спортын карт', viewers: '15.2K', shows: 45, icon: '⚾' },
   { id: 'trading-cards', name: 'Цуглуулгын карт', viewers: '22.1K', shows: 62, icon: '🃏' },
   { id: 'collectibles', name: 'Цуглуулга', viewers: '5.3K', shows: 12, icon: '🧸' },
+  { id: 'beauty', name: 'Гоо сайхан', viewers: '11.6K', shows: 31, icon: '💄' },
   { id: 'electronics', name: 'Электроник', viewers: '3.8K', shows: 8, icon: '🎮' },
   { id: 'vintage-decor', name: 'Винтаж чимэглэл', viewers: '9.1K', shows: 28, icon: '🏺' },
   { id: 'jewelry', name: 'Гоёл чимэглэл', viewers: '4.5K', shows: 15, icon: '💎' },

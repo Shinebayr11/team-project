@@ -8,11 +8,12 @@ interface CategorySectionProps {
   category: string;
   shows: HomeShow[];
   onSeeMore: () => void;
+  /** Хамгийн ихдээ хэдэн карт. 16 = 4 багана × 4 мөр (xl дээр). */
   limit?: number;
 }
 
 export const CategorySection: React.FC<CategorySectionProps> = ({
-  category, shows, onSeeMore, limit = 4,
+  category, shows, onSeeMore, limit = 16,
 }) => (
   <div>
     <div className="flex items-center justify-between mb-6">
