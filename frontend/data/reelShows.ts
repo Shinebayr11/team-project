@@ -71,7 +71,7 @@ export const REEL_SHOWS: ReelShow[] = [
       { name: "junglefinds", text: "Нэгдлээ" },
       { name: "sandra_j", text: "Хэд үлдсэн бэ" },
       { name: "hollyd", mod: true, text: "3 үлдлээ шүү" },
-      { name: "coastalcurios", text: "Зоосыг минь аваад яв" },
+      { name: "coastalcurios", text: "Мөнгийг минь аваад яв" },
       { name: "rosebudmarket", text: "Дараагийнх нь цэнхэрийг харуулаач" },
     ],
   },
