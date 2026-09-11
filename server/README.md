@@ -42,8 +42,11 @@ Webhook бүртгэх (нэг удаа, орчин тус бүрд):
 curl -X POST https://api.wire.mn/v1/webhook_endpoints \
   -H "Authorization: Bearer $WIRE_SECRET_KEY" \
   -H "Content-Type: application/json" \
+  -H "Idempotency-Key: $(uuidgen)" \
   -d '{"url":"https://<домэйн>/api/payment/webhook","enabled_events":["payment_intent.succeeded"]}'
 ```
+
+Wire-ийн БҮХ POST хүсэлт `Idempotency-Key` толгой шаарддаг (байхгүй бол 400).
 
 Буцаж ирэх signing secret-ийг НЭГ Л УДАА харуулна — `WIRE_WEBHOOK_SECRET`-д
 хадгална. Дараа нь Wire дээрээс "Баталгаажуулах" дарахад ping ирж, 2xx авбал
