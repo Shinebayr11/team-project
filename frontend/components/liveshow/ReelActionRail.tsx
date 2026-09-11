@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ShoppingBag, MessageCircle, Heart, ShoppingCart, Share2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ReelActionRailProps {
   itemCount: number;
@@ -11,6 +12,9 @@ interface ReelActionRailProps {
   onLike?: () => void;
   onCart?: () => void;
   onShare?: () => void;
+  /** Байрлал солих. `static` өгвөл урсгал дотор сууж, доорх `bottom` үйлчлэхгүй
+   *  (`live-viewer.tsx` чатын хажууд ингэж байрлуулдаг). */
+  className?: string;
 }
 
 export const ReelActionRail: React.FC<ReelActionRailProps> = ({
@@ -21,9 +25,10 @@ export const ReelActionRail: React.FC<ReelActionRailProps> = ({
   onLike,
   onCart,
   onShare,
+  className,
 }) => (
   <div
-    className="absolute right-3 z-20 flex flex-col items-center gap-3 lg:hidden"
+    className={cn("absolute right-3 z-20 flex flex-col items-center gap-3 lg:hidden", className)}
     style={{ bottom: 'calc(115px + max(12px, env(safe-area-inset-bottom)))' }}
   >
     {/* Shop */}

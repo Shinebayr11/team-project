@@ -91,9 +91,11 @@ export function AuctionBidPanel({
   return (
     <>
       {/* Browse (`ReelItemBar`)-тай ижил хэмжээ, өнгө, сүүдэр — үзэгч хоёр
-          дэлгэцийн хооронд шилжихэд ижил мөр угтана. */}
+          дэлгэцийн хооронд шилжихэд ижил мөр угтана. Байрлалыг нь эцэг
+          (`live-viewer.tsx`-ийн доод давхарга) шийднэ: гар утсан дээр чатын
+          оролтын дээр, дэлгэц дээр тайзын ёроолд. */}
       <div
-        className="absolute inset-x-4 bottom-4 z-20 flex items-center gap-3 rounded-[16px] bg-white p-2.5"
+        className="flex items-center gap-3 rounded-[16px] bg-white p-2.5"
         style={{ boxShadow: "0 12px 32px rgba(12,12,24,0.24)" }}
       >
         {product?.images?.[0] ? (
