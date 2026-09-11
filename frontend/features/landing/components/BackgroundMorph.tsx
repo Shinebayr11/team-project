@@ -19,13 +19,13 @@ import {
   motion,
   useMotionValue,
   useMotionValueEvent,
-  useScroll,
   useSpring,
   useTransform,
 } from "framer-motion"
 
 import { SECTIONS, SPRING } from "../motion"
 import { useAmplitude } from "../useAmplitude"
+import { useLandingScroll } from "./ScrollProvider"
 
 /** Hold-той шилжилт: 0..1 → 0..1, эхний/сүүлийн 30% нь тэгш. */
 function holdEase(blend: number): number {
@@ -37,27 +37,24 @@ const LAST = SECTIONS.length - 1
 
 export function BackgroundMorph() {
   const { amp } = useAmplitude()
-  const { scrollY } = useScroll()
+  const { scrollY } = useLandingScroll()
   const centers = useRef<number[]>([])
   /** Бутархай section индекс: 0 → SECTIONS.length - 1. */
   const index = useMotionValue(0)
 
-  const compute = useCallback(
-    (y: number) => {
-      const list = centers.current
-      if (list.length < 2) return 0
-      const viewCenter = y + window.innerHeight / 2
-      if (viewCenter <= list[0]) return 0
-      for (let i = 0; i < list.length - 1; i += 1) {
-        if (viewCenter <= list[i + 1]) {
-          const span = Math.max(1, list[i + 1] - list[i])
-          return i + holdEase((viewCenter - list[i]) / span)
-        }
+  const compute = useCallback((y: number) => {
+    const list = centers.current
+    if (list.length < 2) return 0
+    const viewCenter = y + window.innerHeight / 2
+    if (viewCenter <= list[0]) return 0
+    for (let i = 0; i < list.length - 1; i += 1) {
+      if (viewCenter <= list[i + 1]) {
+        const span = Math.max(1, list[i + 1] - list[i])
+        return i + holdEase((viewCenter - list[i]) / span)
       }
-      return LAST
-    },
-    []
-  )
+    }
+    return LAST
+  }, [])
 
   useEffect(() => {
     const measure = () => {
@@ -114,7 +111,10 @@ export function BackgroundMorph() {
     useTransform(index, [0, LAST], [0, -220 * amp]),
     SPRING
   )
-  const blobB = useSpring(useTransform(index, [0, LAST], [0, 260 * amp]), SPRING)
+  const blobB = useSpring(
+    useTransform(index, [0, LAST], [0, 260 * amp]),
+    SPRING
+  )
   const scaleA = useSpring(
     useTransform(index, [0, LAST], [1, 1 + 0.35 * amp]),
     SPRING

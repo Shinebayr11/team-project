@@ -40,6 +40,20 @@ interface SectionShellProps {
   labelledBy: string
   tone: SectionTone
   className?: string
+  /**
+   * Дотоод wrapper-ийн класс. `sticky` хэрэглэдэг section-д хэрэгтэй: sticky
+   * элемент өөрөө "гүйлгэх зайтай" эцэгтэй байх ёстой тул тэр өндрийг энд өгнө.
+   */
+  innerClassName?: string
+  /**
+   * `false` бол section-ээс `overflow-hidden` хасагдана.
+   *
+   * Яагаад хэрэгтэй вэ: CSS-ийн дүрмээр `overflow` нь `visible`-ээс өөр байх
+   * ямар ч эцэг доторх `position: sticky` ажиллахаа больдог. Sticky-тэй
+   * section (дуудлага худалдаа) үүнийг унтраана; хайчлах хэрэгтэй давхаргаа
+   * (marquee, blob) дотроо өөрөө хайчилна.
+   */
+  clip?: boolean
   children: React.ReactNode
 }
 
@@ -48,6 +62,8 @@ export function SectionShell({
   labelledBy,
   tone,
   className,
+  innerClassName,
+  clip = true,
   children,
 }: SectionShellProps) {
   const ref = useRef<HTMLElement>(null)
@@ -63,13 +79,16 @@ export function SectionShell({
       data-tone={tone}
       aria-labelledby={labelledBy}
       className={cn(
-        "relative grid min-h-[100svh] w-full place-items-center overflow-hidden px-5 py-20 sm:px-8 sm:py-28",
+        "relative grid min-h-[100svh] w-full place-items-center px-5 py-20 sm:px-8 sm:py-28",
+        clip && "overflow-hidden",
         tone === "light" ? "text-white" : "text-[var(--wn-noir)]",
         className
       )}
     >
       <SectionScroll.Provider value={scrollYProgress}>
-        <div className="mx-auto w-full max-w-[1120px]">{children}</div>
+        <div className={cn("mx-auto w-full max-w-[1120px]", innerClassName)}>
+          {children}
+        </div>
       </SectionScroll.Provider>
     </section>
   )
@@ -111,7 +130,11 @@ export function ParallaxLayer({
       progress,
       [0, 0.5, 1],
       depth === "mid"
-        ? [1 - (1 - PARALLAX.midScale) * amp, 1, 1 - (1 - PARALLAX.midScale) * amp]
+        ? [
+            1 - (1 - PARALLAX.midScale) * amp,
+            1,
+            1 - (1 - PARALLAX.midScale) * amp,
+          ]
         : [1, 1, 1]
     ),
     SPRING

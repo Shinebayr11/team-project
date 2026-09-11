@@ -12,6 +12,8 @@ import { useEffect, useState } from "react"
 import { useReducedMotion } from "framer-motion"
 
 const MOBILE_QUERY = "(max-width: 767px)"
+/** Tailwind-ийн `lg`. Sticky/scroll-linked зохион байгуулалт эндээс эхэлнэ. */
+const WIDE_QUERY = "(min-width: 1024px)"
 
 export interface Amplitude {
   /** Parallax-ийн үржигдэхүүн: 0 | 0.5 | 1. */
@@ -21,18 +23,36 @@ export interface Amplitude {
   /** Loop, marquee, float ажиллуулж болох эсэх. */
   motionOn: boolean
   mobile: boolean
+  /**
+   * `lg`-ээс дээш үү. Sticky, scroll-д уясан алхам зэрэг ЗӨВХӨН өргөн дэлгэц
+   * дээр утгатай зүйлс үүнийг шалгана.
+   *
+   * ЗӨВХӨН ЛОГИКТ. Зохион байгуулалтыг үүгээр битгий сольж болно: серверт
+   * `false` тул эхний render дээр narrow хувилбар гарч, дараа нь үсэрнэ.
+   * Layout-ийг `lg:` класcаар л сольж байгаа шалтгаан энэ.
+   */
+  wide: boolean
 }
 
 export function useAmplitude(): Amplitude {
   const reduced = useReducedMotion()
   const [mobile, setMobile] = useState(false)
+  const [wide, setWide] = useState(false)
 
   useEffect(() => {
-    const query = window.matchMedia(MOBILE_QUERY)
-    const sync = () => setMobile(query.matches)
+    const narrow = window.matchMedia(MOBILE_QUERY)
+    const large = window.matchMedia(WIDE_QUERY)
+    const sync = () => {
+      setMobile(narrow.matches)
+      setWide(large.matches)
+    }
     sync()
-    query.addEventListener("change", sync)
-    return () => query.removeEventListener("change", sync)
+    narrow.addEventListener("change", sync)
+    large.addEventListener("change", sync)
+    return () => {
+      narrow.removeEventListener("change", sync)
+      large.removeEventListener("change", sync)
+    }
   }, [])
 
   const motionOn = !reduced
@@ -41,5 +61,6 @@ export function useAmplitude(): Amplitude {
     tilt: !motionOn || mobile ? 0 : 1,
     motionOn,
     mobile,
+    wide,
   }
 }
