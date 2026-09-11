@@ -12,6 +12,10 @@ import {
   TransactionList,
   WalletTransaction,
 } from "@/components/wallet/TransactionList"
+import {
+  PaymentIntent,
+  TopUpPaymentModal,
+} from "@/components/wallet/TopUpPaymentModal"
 
 const PACKS: CreditPack[] = [
   { amount: 5000, price: "₮5,000", bonus: 0 },
@@ -41,23 +45,35 @@ export const Wallet: React.FC = () => {
     [state.purchases]
   )
 
-  const handleTopUp = async () => {
-    const pack = PACKS.find((p) => p.amount === selectedPack)
-    const amount = selectedPack + (pack?.bonus ?? 0)
+  // Банкны QR цонх. Дүнг СЕРВЕР багцаас нь тооцно — энд зөвхөн аль багц
+  // сонгосныг л явуулна.
+  const [payment, setPayment] = useState<{
+    intent: PaymentIntent
+    creditAmount: number
+  } | null>(null)
 
+  const handleTopUp = async () => {
     setSubmitting(true)
     try {
-      await callApi("/api/wallet/topup", {
-        method: "PATCH",
-        body: JSON.stringify({ amount }),
+      const { data } = await callApi<{
+        data: { payment_intent: PaymentIntent; credit_amount: number }
+      }>("/api/payment/topup", {
+        method: "POST",
+        body: JSON.stringify({ amount: selectedPack }),
       })
-      await refreshWallet()
-      addToast(`Хэтэвчинд ₮${amount.toLocaleString()} амжилттай нэмэгдлээ.`)
+      setPayment({ intent: data.payment_intent, creditAmount: data.credit_amount })
     } catch (error) {
       addToast(error instanceof ApiError ? error.message : "Цэнэглэхэд алдаа гарлаа.")
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const handlePaid = async () => {
+    const amount = payment?.creditAmount ?? 0
+    setPayment(null)
+    await refreshWallet()
+    addToast(`Хэтэвчинд ₮${amount.toLocaleString()} амжилттай нэмэгдлээ.`)
   }
 
   return (
@@ -89,6 +105,15 @@ export const Wallet: React.FC = () => {
           <TransactionList transactions={transactions} />
         </div>
       </div>
+
+      {payment && (
+        <TopUpPaymentModal
+          intent={payment.intent}
+          creditAmount={payment.creditAmount}
+          onClose={() => setPayment(null)}
+          onPaid={handlePaid}
+        />
+      )}
     </div>
   )
 }
